@@ -316,15 +316,18 @@ final class QueryPathImpl implements QueryPath {
   public function wrap($markup) {
     $data = $this->prepareInsert($markup);
     
-    // Find the deepest element.
-    
-    // Remove the match
-    
-    // If there is more than one match, clone the wrapper.
-    
-    // Add the match to the wrapper
-    
-    // Insert the wrapper.
+    foreach ($this->matches as $m) {
+      $copy = $data->firstChild->cloneNode(TRUE);
+      
+      // XXX: Should be able to avoid doing this over and over.
+      $bottom = $copy->hasChildNodes() ? $this->deepestNode($copy) : $copy; 
+      $parent = $m->parentNode;
+      
+      $m = $parent->removeChild($m);
+      $bottom->appendChild($m);
+      $parent->appendChild($copy);
+    }
+    return $this;  
   }
   
   public function wrapAll($markup) {
@@ -367,10 +370,12 @@ final class QueryPathImpl implements QueryPath {
           $current = $this->deepestNode($child, $depth + 1, $current, $deepest);
         }
       }
-    } elseif ($depth > $deepest) {
+    }
+    elseif ($depth > $deepest) {
       $current = array($ele);
       $deepest = $depth;
-    } elseif ($depth === $deepest) {
+    }
+    elseif ($depth === $deepest) {
       $current[] = $ele;
     }
     return $current;

@@ -203,7 +203,12 @@ class QueryPathTests extends PHPUnit_Framework_TestCase {
   }
   
   public function testWrap() {
+    $file = './data.xml';
+    $xml = qp($file,'unary')->wrap('<test id="testWrap"></test>')->get(0)->ownerDocument->saveXML();
+    $this->assertEquals(1, qp($xml, '#testWrap')->get(0)->childNodes->length);
     
+    $xml = qp($file,'li')->wrap('<test class="testWrap"></test>')->get(0)->ownerDocument->saveXML();
+    $this->assertEquals(5, qp($xml, '.testWrap')->size());
   }
   
   public function testWrapAll() {
@@ -211,6 +216,7 @@ class QueryPathTests extends PHPUnit_Framework_TestCase {
   }
   
   public function testWrapInner() {
+    
     
   }
 }
