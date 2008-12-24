@@ -188,7 +188,7 @@ class QueryPathTests extends PHPUnit_Framework_TestCase {
   
   public function testAppend() {
     $file = './data.xml';
-    $this->assertEquals(1, qp($file,'unary')->append('test')->find(':root > unary > test')->size());
+    $this->assertEquals(1, qp($file,'unary')->append('<test/>')->find(':root > unary > test')->size());
     $qp = qp($file,'#inner-one')->append('<li id="appended"/>');
     $this->assertEquals(1, $qp->find('#appended')->size());
     $this->assertNull($qp->get(0)->nextSibling);
@@ -196,10 +196,21 @@ class QueryPathTests extends PHPUnit_Framework_TestCase {
   
   public function testPrepend() {
     $file = './data.xml';
-    $this->assertEquals(1, qp($file,'unary')->prepend('test')->find(':root > unary > test')->size());
+    $this->assertEquals(1, qp($file,'unary')->prepend('<test/>')->find(':root > unary > test')->size());
     $qp = qp($file,'#inner-one')->prepend('<li id="appended"/>')->find('#appended');
     $this->assertEquals(1, $qp->size());
     $this->assertNull($qp->get(0)->previousSibling);
+  }
+  
+  public function testReplaceWith() {
+    $file = './data.xml';
+    $qp = qp($file,'unary')->replaceWith('<test><foo/></test>')->find(':root test');
+    //print $qp->get(0)->ownerDocument->saveXML();
+    $this->assertEquals(1, $qp->size());
+  }
+  
+  public function testReplaceAll() {
+    // TODO: write unit test for this.
   }
   
   public function testWrap() {
@@ -209,14 +220,34 @@ class QueryPathTests extends PHPUnit_Framework_TestCase {
     
     $xml = qp($file,'li')->wrap('<test class="testWrap"></test>')->get(0)->ownerDocument->saveXML();
     $this->assertEquals(5, qp($xml, '.testWrap')->size());
+    
+    $xml = qp($file,'li')->wrap('<test class="testWrap"><inside><center/></inside></test>')->get(0)->ownerDocument->saveXML();
+    $this->assertEquals(5, qp($xml, '.testWrap > inside > center > li')->size());
   }
   
   public function testWrapAll() {
+    $file = './data.xml';
+    $xml = qp($file,'unary')->wrapAll('<test id="testWrap"></test>')->get(0)->ownerDocument->saveXML();
+    $this->assertEquals(1, qp($xml, '#testWrap')->get(0)->childNodes->length);
+    
+    $xml = qp($file,'li')->wrapAll('<test class="testWrap"><inside><center/></inside></test>')->get(0)->ownerDocument->saveXML();
+    $this->assertEquals(5, qp($xml, '.testWrap > inside > center > li')->size());
     
   }
   
   public function testWrapInner() {
-    
-    
+    $file = './data.xml';
+    $xml = qp($file,'#inner-one')->wrapInner('<test class="testWrap"></test>')->get(0)->ownerDocument->saveXML();
+    // FIXME: 9 includes text nodes. Should fix this.
+    $this->assertEquals(9, qp($xml, '.testWrap')->get(0)->childNodes->length);
+  }
+  
+  public function testRemove() {
+    $file = './data.xml';
+    $qp = qp($file, 'li');
+    $start = $qp->size();
+    $finish = $qp->remove()->size();
+    $this->assertEquals($start, $finish);
+    $this->assertEquals(0, $qp->find(':root li')->size());
   }
 }

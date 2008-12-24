@@ -351,9 +351,12 @@ interface QueryPath {
    * Wrap all elements inside of the given markup.
    *
    * So all elements will be grouped together under this single marked up 
-   * item.
+   * item. This works by first determining the parent element of the first item
+   * in the list. It then moves all of the matching elements under the wrapper
+   * and inserts the wrapper where that first element was found. (This is in 
+   * accordance with the way jQuery works.)
    *
-   * Markup is usually a string, but it can also be a DOMNode, a document
+   * Markup is usually XML in a string, but it can also be a DOMNode, a document
     * fragment, a SimpleXMLElement, or another QueryPath object (in which case
     * the first item in the list will be used.)
     * 
@@ -381,6 +384,56 @@ interface QueryPath {
    * The tag name of the first element in the list.
    */
   public function tag();
+  
+  /**
+   * Replace the existing element(s) in the list with a new one.
+   *
+   * @param mixed $new
+   *  A DOMElement or XML in a string. This will replace all elements
+   *  currently wrapped in the QueryPath object.
+   * @return QueryPath
+   *  The QueryPath object wrapping <b>the items that were removed</b>.
+   *  This remains consistent with the jQuery API.
+   */
+  public function replaceWith($new);
+  
+  /**
+   * Remove any items from the list if they match the selector.
+   *
+   * In other words, each item that matches the selector will be remove 
+   * from the DOM document. The returned QueryPath wraps the list of 
+   * removed elements.
+   *
+   * @param string $selector
+   *  A CSS Selector.
+   * @return QueryPath
+   *  The Query path wrapping a list of removed items.
+   */
+  public function remove($selector = NULL);
+  
+  /**
+   * This replaces everything that matches the selector with the first value
+   * in the current list.
+   *
+   * This is the reverse of replaceWith.
+   *
+   * Unlike jQuery, QueryPath cannot assume a default document. Consequently,
+   * you must specify the intended destination document. If it is omitted, the
+   * present document is assumed to be tthe document. However, that can result
+   * in undefined behavior if the selector and the replacement are not sufficiently
+   * distinct.
+   *
+   * @param string $selector
+   *  The selector.
+   * @param DOMDocument $document
+   *  The destination document.
+   * @return QueryPath
+   *  The QueryPath wrapping the modified document.
+   * @deprecated Due to the fact that this is not a particularly friendly method,
+   *  and that it can be easily replicated using {@see replaceWith()}, it is to be 
+   *  considered deprecated.
+   */
+  public function replaceAll($selector, $document = NULL);
   
   /**
    * Set or get the markup for an element.
@@ -426,12 +479,8 @@ interface QueryPath {
 
   
   public function clear();
-  public function removeAll($selector);
-  public function replaceWith($something);
-  public function replaceAll($selector);
   
-  
-  public function remoteAttr($name);
+  public function removeAttr($name);
   public function addClass($class);
   public function removeClass($class);
   public function hasClass($class);

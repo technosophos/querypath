@@ -313,6 +313,18 @@ final class QueryPathImpl implements QueryPath {
     return $this;
   }
   
+  public function replaceWith($new) {
+    $data = $this->prepareInsert($new);
+    $found = array();
+    foreach ($this->matches as $m) {
+      $parent = $m->parentNode;
+      $parent->insertBefore($data->cloneNode(TRUE), $m);
+      $found[] = $parent->removeChild($m);
+    }
+    $this->matches = $found;
+    return $this;
+  }
+  
   public function wrap($markup) {
     $data = $this->prepareInsert($markup);
     
@@ -320,22 +332,61 @@ final class QueryPathImpl implements QueryPath {
       $copy = $data->firstChild->cloneNode(TRUE);
       
       // XXX: Should be able to avoid doing this over and over.
-      $bottom = $copy->hasChildNodes() ? $this->deepestNode($copy) : $copy; 
+      if ($copy->hasChildNodes()) {
+        $deepest = $this->deepestNode($copy); 
+        $bottom = $deepest[0];
+      }
+      else
+        $bottom = $copy;
+
       $parent = $m->parentNode;
-      
+      $parent->insertBefore($copy, $m);
       $m = $parent->removeChild($m);
       $bottom->appendChild($m);
-      $parent->appendChild($copy);
+      //$parent->appendChild($copy);
     }
     return $this;  
   }
   
   public function wrapAll($markup) {
+    if (empty($this->matches))
+      return;
     
+    $data = $this->prepareInsert($markup);
+    if ($data->hasChildNodes()) {
+      $deepest = $this->deepestNode($data); 
+      $bottom = $deepest[0];
+    }
+    else
+      $bottom = $data;
+
+    $parent = $this->matches[0]->parentNode;
+    $parent->insertBefore($data, $this->matches[0]);
+    foreach ($this->matches as $m) {
+      $bottom->appendChild($m->parentNode->removeChild($m));
+    }
+    return $this;
   }
   
   public function wrapInner($markup) {
-    
+    $data = $this->prepareInsert($markup);
+    if ($data->hasChildNodes()) {
+      $deepest = $this->deepestNode($data); 
+      $bottom = $deepest[0];
+    }
+    else
+      $bottom = $data;
+      
+    foreach ($this->matches as $m) {
+      if ($m->hasChildNodes()) {
+        while($m->firstChild) {
+          $kid = $m->removeChild($m->firstChild);
+          $bottom->appendChild($kid);
+        }
+      }
+      $m->appendChild($data);
+    }
+    return $this; 
   }
   
   public function deepest() {
@@ -391,6 +442,7 @@ final class QueryPathImpl implements QueryPath {
    */
   protected function prepareInsert($item) {
     if (is_string($item)) {
+      /* This isn't what jQuery does, so we won't do it that way.
       if ($this->isXMLish($item)) {
         $frag = $this->document->createDocumentFragment();
         $frag->appendXML($item);
@@ -399,6 +451,10 @@ final class QueryPathImpl implements QueryPath {
       else {
         return $this->document->createElement($item);
       }
+      */
+      $frag = $this->document->createDocumentFragment();
+      $frag->appendXML($item);
+      return $frag;
     }
     elseif ($item instanceof QueryPath && $item->size()  > 0) {
       return $this->prepareInsert($item->get(0));
@@ -420,6 +476,33 @@ final class QueryPathImpl implements QueryPath {
   
   public function tag() {
     return ($this->size() > 0) ? $this->matches[0]->tagName : '';
+  }
+  
+  public function remove($selector = NULL) {
+    
+    if(!empty($selector))
+      $this->find($selector);
+    
+    $found = array();
+    foreach ($this->matches as $item) {
+      // The item returned is (according to docs) different from 
+      // the one passed in, so we have to re-store it.
+      $found[] = $item->parentNode->removeChild($item);
+    }
+    $this->matches = $found;
+    return $this;
+  }
+  
+  public function replaceAll($selector, DOMDocument $document = NULL) {
+    $replacement = $this->size() > 0 ? $this->matches[0] : $this->document->createTextNode('');
+    
+    $c = new QueryPathCssEventHandler($document);
+    $c->find($selector);
+    $temp = $c->getMatches();
+    foreach ($temp as $item)
+      $item->parentNode->replaceChild($item, $replacement);
+      
+    return $this;
   }
   
   public function html($markup = NULL) {
@@ -471,13 +554,11 @@ final class QueryPathImpl implements QueryPath {
   public function before($something) {}
   
   public function clear() {}
-  public function removeAll($selector) {}
-  public function replaceWith($something) {}
-  public function replaceAll($selector) {}
+  
   
 
   
-  public function remoteAttr($name) {}
+  public function removeAttr($name) {}
   public function addClass($class) {}
   public function removeClass($class) {}
   public function hasClass($class) {}
