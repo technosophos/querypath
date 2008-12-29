@@ -63,6 +63,15 @@ class QueryPathTests extends PHPUnit_Framework_TestCase {
     
   }
   
+  public function testRemoveAttr() {
+    $file = './data.xml';
+    
+    $qp = qp($file, 'inner')->removeAttr('class');
+    $this->assertEquals(2, $qp->size());
+    $this->assertFalse($qp->get(0)->hasAttribute('class'));
+    
+  }
+  
   public function testEq() {
     $file = './data.xml';
     $qp = qp($file)->find('li')->eq(0);
@@ -250,4 +259,53 @@ class QueryPathTests extends PHPUnit_Framework_TestCase {
     $this->assertEquals($start, $finish);
     $this->assertEquals(0, $qp->find(':root li')->size());
   }
+  
+  public function testHasClass() {
+    $file = './data.xml';
+    $this->assertTrue(qp($file, '#inner-one')->hasClass('innerClass'));
+  }
+  
+  public function testAddClass() {
+    $file = './data.xml';
+    $this->assertTrue(qp($file, '#inner-one')->addClass('testClass')->hasClass('testClass'));
+  }
+  public function testRemoveClass() {
+    $file = './data.xml';
+    // The add class tests to make sure that this works with multiple values.
+    $this->assertFalse(qp($file, '#inner-one')->removeClass('innerClass')->hasClass('innerClass'));
+    $this->assertTrue(qp($file, '#inner-one')->addClass('testClass')->removeClass('innerClass')->hasClass('testClass'));
+  }
+  
+  public function testAdd() {
+    $file = './data.xml';
+    $this->assertEquals(7, qp($file, 'li')->add('inner')->size());
+  }
+  
+  public function testEnd() {
+    $file = './data.xml';
+    $this->assertEquals(2, qp($file, 'inner')->find('li')->end()->size());
+  }
+  
+  public function testAndSelf() {
+    $file = './data.xml';
+    $this->assertEquals(7, qp($file, 'inner')->find('li')->andSelf()->size());
+  }
+  
+  public function testChildren() {
+    $file = './data.xml';
+    $this->assertEquals(5, qp($file, 'inner')->children()->size());
+    $this->assertEquals(5, qp($file, 'inner')->children('li')->size());
+    $this->assertEquals(1, qp($file, ':root')->children('unary')->size());
+  }
+  
+  
+  /*
+  public function testSerialize() {
+    $file = './data.xml';
+    $ser = qp($file)->serialize();
+    print $ser;
+    $qp = unserialize($ser);
+    $this->assertEquals('inner-one', $qp->find('#inner-one')->attr('id'));
+  }
+  */
 }

@@ -134,6 +134,16 @@ interface QueryPath {
   public function attr($name, $value = NULL);
   
   /**
+   * Remove the named attribute from all elements in the current QueryPath.
+   *
+   * @param string $name
+   *  Name of the parameter to remove.
+   * @return QueryPath
+   *  The QueryPath object with the same elements.
+   */
+  public function removeAttr($name);
+  
+  /**
    * Given a selector, this checks to see if the current set has one or more matches.
    *
    * Unlike jQuery's version, this supports full selectors (not just simple ones).
@@ -433,7 +443,82 @@ interface QueryPath {
    *  and that it can be easily replicated using {@see replaceWith()}, it is to be 
    *  considered deprecated.
    */
-  public function replaceAll($selector, $document = NULL);
+  public function replaceAll($selector, DOMDocument $document);
+  
+  /**
+   * Add more elements to the current set of matches.
+   *
+   * This begins the new query at the top of the DOM again. The results found
+   * when running this selector are then merged into the existing results. In
+   * this way, you can add additional elements to the existing set.
+   *
+   * @param string $selector
+   *  A valid selector.
+   * @return QueryPath
+   *  The QueryPath object with the newly added elements.
+   */
+  public function add($selector);
+  
+  /**
+   * Revert to the previous set of matches.
+   *
+   * This will revert back to the last set of matches (before the last 
+   * "destructive" set of operations). This undoes any change made to the set of
+   * matched objects. Functions like {@see find()} and {@see filter()} change the 
+   * list of matched objects. The end() function will revert back to the last set of
+   * matched items.
+   *
+   * Note that functions that modify the document, but do not change the list of 
+   * matched objects, are not "destructive". Thus, calling append('something')->end()
+   * will not undo the append() call.
+   *
+   * Only one level of changes is stored. Reverting beyond that will result in 
+   * an empty set of matches. Example:
+   * <code>
+   * // The line below returns the same thing as qp(document, 'p');
+   * qp(document, 'p')->find('div')->end();
+   * // This returns an empty array:
+   * qp(document, 'p')->end();
+   * // This returns an empty array:
+   * qp(document, 'p')->find('div')->find('span')->end()->end();
+   * </code>
+   *
+   * The last one returns an empty array because only one level of changes is stored.
+   *
+   * @return QueryPath
+   *  A QueryPath object reflecting the list of matches prior to the last destructive
+   *  operation.
+   */
+  public function end();
+  
+  /**
+   * Combine the current and previous set of matched objects.
+   *
+   * Example:
+   * <code>
+   * qp(document, 'p')->find('div')->andSelf();
+   * </code>
+   * The code above will contain a list of all p elements and all div elements that 
+   * are beneath p elements.
+   *
+   * @see end();
+   * @return QueryPath
+   *  A QueryPath object with the results of the last two "destructive" operations.
+   */
+  public function andSelf();
+  
+  /**
+   * Get the children of the elements in the QueryPath object.
+   *
+   * If a selector is provided, the list of children will be filtered through
+   * the selector.
+   *
+   * @param string $selector
+   *  A valid selector.
+   * @return QueryNode
+   *  A QueryNode wrapping all of the children.
+   */
+  public function children($selector = NULL);
   
   /**
    * Set or get the markup for an element.
@@ -452,20 +537,39 @@ interface QueryPath {
    */
   public function html($markup = NULL);
   public function text($text = NULL);
-  public function val();
   public function xml($markup = NULL);
+    
+  /**
+   * Set or get the value of an element's 'value' attribute.
+   *
+   * The 'value' attribute is common in HTML form elements. This is a 
+   * convenience function for accessing the values. Since this is not  common
+   * task on the server side, this method may be removed in future releases. (It 
+   * is currently provided for jQuery compatibility.)
+   *
+   * If a value is provided in the params, then the value will be set for all 
+   * matches. If no params are given, then the value of the first matched element
+   * will be returned. This may be NULL.
+   *
+   * @deprecated Just use attr(). There's no reason to use this on the server.
+   * @see attr()
+   * @param string $value
+   * @return mixed
+   *  Returns a QueryPath if a string was passed in, and a string if no string
+   *  was passed in. In the later case, an error will produce NULL.
+   */
+  public function val($value = NULL);
+
   
-  public function end();
-  public function andSelf();
   
-  public function add();
-  public function children();
+  
+
   public function siblings();
   public function contents();
   public function next();
   public function nextAll();
-  public function parent();
-  public function parents();
+  public function parent($selector = NULL);
+  public function parents($selector = NULL);
   public function prev();
   public function prevAll();
   
@@ -480,9 +584,58 @@ interface QueryPath {
   
   public function clear();
   
-  public function removeAttr($name);
+  /**
+   * Add a class to all elements in the current QueryPath.
+   *
+   * This searchers for a class attribute on each item wrapped by the current 
+   * QueryPath object. If no attribute is found, a new one is added and its value
+   * is set to $class. If a class attribute is found, then the value is appended
+   * on to the end.
+   *
+   * @param string $class 
+   *  The name of the class.
+   * @return QueryPath
+   *  Returns the QueryPath object.
+   */
   public function addClass($class);
+  /**
+   * Remove the named class from any element in the QueryPath that has it.
+   *
+   * This may result in the entire class attribute being removed. If there
+   * are other items in the class attribute, though, they will not be removed.
+   * 
+   * Example:
+   * Consider this XML:
+   * <code>
+   * <element class="first second"/>
+   * </code>
+   *
+   * Executing this fragment of code will remove only the 'first' class:
+   * <code>
+   * qp(document, 'element')->removeClass('first');
+   * </code>
+   *
+   * The resulting XML will be:
+   * <code>
+   * <element class="second"/>
+   * </code>
+   *
+   * To remove the entire 'class' attribute, you should use {@see removeAttr()}.
+   *
+   * @param string $class
+   *  The class name to remove.
+   * @return QueryPath
+   *  The modified QueryPath object.
+   */
   public function removeClass($class);
+  /**
+   * Returns TRUE if any of the elements in the QueryPath have the specified class.
+   *
+   * @param string $class
+   *  The name of the class.
+   * @return boolean 
+   *  TRUE if the class exists in one or more of the elements, FALSE otherwise.
+   */
   public function hasClass($class);
   
   public function cloneE();

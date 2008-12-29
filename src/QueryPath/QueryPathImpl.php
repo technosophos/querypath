@@ -16,6 +16,7 @@ final class QueryPathImpl implements QueryPath {
   private $document = NULL;
   private $options = array();
   private $matches = array();
+  private $last = array(); // Last set of matches.
   
   /**
    * Create a new query path object.
@@ -73,7 +74,8 @@ final class QueryPathImpl implements QueryPath {
   public function find($selector) {
     $query = new QueryPathCssEventHandler($this->matches);
     $query->find($selector);
-    $this->matches = $query->getMatches();
+    //$this->matches = $query->getMatches();
+    $this->setMatches($query->getMatches());
     return $this;
   }
   
@@ -105,10 +107,18 @@ final class QueryPathImpl implements QueryPath {
     if (empty($this->matches)) return NULL;
     // Always return first match's attr.
     return $this->matches[0]->getAttribute($name);
-  }  
+  }
+  
+  public function removeAttr($name) {
+    foreach ($this->matches as $m) {
+      //if ($m->hasAttribute($name))
+        $m->removeAttribute($name);
+    }
+    return $this;
+  }
   
   public function eq($index) {
-    $this->matches = array($this->matches[$index]);
+    $this->setMatches(array($this->matches[$index]));
     return $this;
   }
   
@@ -125,7 +135,7 @@ final class QueryPathImpl implements QueryPath {
   public function filter($selector) {
     $found = array();
     foreach ($this->matches as $m) if (qp($m)->is($selector)) $found[] = $m;
-    $this->matches = $found;
+    $this->setMatches($found);
     return $this;
   }
   
@@ -137,7 +147,7 @@ final class QueryPathImpl implements QueryPath {
       $item = $this->matches[$i];
       if ($function($i, $item) !== FALSE) $found[] = $item;
     }
-    $this->matches = $found;
+    $this->setMatches($found);
     return $this;
   }
   
@@ -171,7 +181,7 @@ final class QueryPathImpl implements QueryPath {
         if ($callback($i, $item) !== FALSE) $found[] = $item;
       }
     }
-    $this->matches = $found;
+    $this->setMatches($found);
     return $this;
   }
   
@@ -186,7 +196,7 @@ final class QueryPathImpl implements QueryPath {
     else {
       foreach ($this->matches as $m) if (!qp($m)->is($selector)) $found[] = $m;
     }
-    $this->matches = $found;
+    $this->setMatches($found);
     return $this;
   }
   
@@ -238,16 +248,16 @@ final class QueryPathImpl implements QueryPath {
         }
       }
     }
-    $this->matches = $found;
+    $this->setMatches($found);
     return $this;
   }
   
   public function slice($start, $end = NULL) {
     if ($start >= $this->size()) {
-      $this->matches = array();
+      $this->setMatches(array());
       return $this;
     }
-    $this->matches = array_slice($this->matches, $start, $end);
+    $this->setMatches(array_slice($this->matches, $start, $end));
     return $this;
   }
   
@@ -321,7 +331,7 @@ final class QueryPathImpl implements QueryPath {
       $parent->insertBefore($data->cloneNode(TRUE), $m);
       $found[] = $parent->removeChild($m);
     }
-    $this->matches = $found;
+    $this->setMatches($found);
     return $this;
   }
   
@@ -403,7 +413,7 @@ final class QueryPathImpl implements QueryPath {
         $winner = array_merge($winner, $local_ele);
       }
     }
-    $this->matches = $winner;//array($winner);
+    $this->setMatches($winner);//array($winner);
     return $this;
   }
   
@@ -489,11 +499,11 @@ final class QueryPathImpl implements QueryPath {
       // the one passed in, so we have to re-store it.
       $found[] = $item->parentNode->removeChild($item);
     }
-    $this->matches = $found;
+    $this->setMatches($found);
     return $this;
   }
   
-  public function replaceAll($selector, DOMDocument $document = NULL) {
+  public function replaceAll($selector, DOMDocument $document) {
     $replacement = $this->size() > 0 ? $this->matches[0] : $this->document->createTextNode('');
     
     $c = new QueryPathCssEventHandler($document);
@@ -504,6 +514,42 @@ final class QueryPathImpl implements QueryPath {
       
     return $this;
   }
+  
+  public function add($selector) {
+    $found = qp($this->document, $selector)->get();
+    // XXX: Need to test if this correctly handles duplicates.
+    $this->setMatches(array_merge($this->matches, $found));
+    return $this;
+  }
+  
+  public function end() {
+    // Note that this does not use setMatches because it must set the previous
+    // set of matches to empty array.
+    $this->matches = $this->last;
+    $this->last = array();
+    return $this;
+  }
+  public function andSelf() {
+    $this->setMatches(array_merge($this->matches, $this->last));
+    return $this;
+  }
+  
+  public function children($selector = NULL) {
+    $found = array();
+    foreach ($this->matches as $m) {
+      foreach($m->childNodes as $c) {
+        if ($c->nodeType == XML_ELEMENT_NODE) $found[] = $c;
+      }
+    }
+    if (empty($selector)) {
+      $this->setMatches($found);
+    }
+    else {
+      $this->matches = $found; // Don't buffer this. It is temporary.
+      $this->filter($selector);
+    }
+    return $this;
+  } 
   
   public function html($markup = NULL) {
     if (isset($markup)) {
@@ -527,21 +573,25 @@ final class QueryPathImpl implements QueryPath {
     foreach ($this->matches as $m) $buf .= $m->textContent;
     return $buf;
   }
-  public function val() {}
+  public function val($value = NULL) {
+    if (isset($value)) {
+      foreach ($this->matches as $m) $m->attr('value', $value);
+      return;
+    }
+    return empty($this->matches) ? NULL : $this->matches[0]->attr('value');
+  }
   
   public function xml($markup = NULL) { return $this->html($markup); }
   
-  public function end() { return $this; }
-  public function andSelf() {}
   
-  public function add() {}
-  public function children() {}
+  
+  
   public function siblings() {}
   public function contents() {}
   public function next() {}
   public function nextAll() {}
-  public function parent() {}
-  public function parents() {}
+  public function parent($selector = NULL) {}
+  public function parents($selector = NULL) {}
   public function prev() {}
   public function prevAll() {}
   
@@ -558,10 +608,45 @@ final class QueryPathImpl implements QueryPath {
   
 
   
-  public function removeAttr($name) {}
-  public function addClass($class) {}
-  public function removeClass($class) {}
-  public function hasClass($class) {}
+  public function addClass($class) {
+    foreach ($this->matches as $m) {
+      if ($m->hasAttribute('class')) {
+        $val = $m->getAttribute('class');
+        $m->setAttribute('class', $val . ' ' . $class);
+      }
+      else {
+        $m->setAttribute('class', $class);
+      }
+    }
+    return $this;
+  }
+  public function removeClass($class) {
+    foreach ($this->matches as $m) {
+      if ($m->hasAttribute('class')) {
+        $vals = explode(' ', $m->getAttribute('class'));
+        if (in_array($class, $vals)) {
+          $buf = array();
+          foreach ($vals as $v) {
+            if ($v != $class) $buf[] = $v;
+          }
+          if (count($buf) == 0)
+            $m->removeAttribute('class');
+          else
+            $m->setAttribute('class', implode(' ', $buf));
+        }
+      }
+    }
+    return $this;
+  }
+  public function hasClass($class) {
+    foreach ($this->matches as $m) {
+      if ($m->hasAttribute('class')) {
+        $vals = explode(' ', $m->getAttribute('class'));
+        if (in_array($class, $vals)) return TRUE;
+      }
+    }
+    return FALSE;
+  }
   
   public function cloneE() {}
   public function serialize() {}
@@ -587,6 +672,15 @@ final class QueryPathImpl implements QueryPath {
       $document->loadHTML($string);
     }
     return $document;
+  }
+  
+  /**
+   * A utility function for setting the current set of matches.
+   * It makes sure the last matches buffer is set (for end() and andSelf()).
+   */
+  private function setMatches($matches) {
+    $this->last = $this->matches;
+    $this->matches = $matches;
   }
   
   /**
