@@ -297,7 +297,17 @@ class QueryPathTests extends PHPUnit_Framework_TestCase {
     $this->assertEquals(5, qp($file, 'inner')->children('li')->size());
     $this->assertEquals(1, qp($file, ':root')->children('unary')->size());
   }
+  public function testRemoveChildren() {
+    $file = './data.xml';
+    $this->assertEquals(0, qp($file, '#inner-one')->removeChildren()->find('li')->size());
+  }
   
+  public function testContents() {
+    $file = './data.xml';
+    $this->assertGreaterThan(5, qp($file, 'inner')->contents()->size());
+    // Two cdata nodes and one element node.
+    $this->assertEquals(3, qp($file, '#inner-two')->contents()->size());
+  }
   
   /*
   public function testSerialize() {

@@ -508,6 +508,17 @@ interface QueryPath {
   public function andSelf();
   
   /**
+   * Remove all child nodes.
+   *
+   * This is equivalent to jQuery's empty() function. (However, empty() is a 
+   * PHP built-in, and cannot be used as a method name.)
+   *
+   * @return QueryPath
+   *  The QueryPath object with the child nodes removed.
+   */
+  public function removeChildren();
+  
+  /**
    * Get the children of the elements in the QueryPath object.
    *
    * If a selector is provided, the list of children will be filtered through
@@ -519,6 +530,20 @@ interface QueryPath {
    *  A QueryNode wrapping all of the children.
    */
   public function children($selector = NULL);
+  
+  /**
+   * Get all child nodes (not just elements) of all items in the matched set.
+   *
+   * It gets only the immediate children, not all nodes in the subtree.
+   *
+   * This does not process iframes. Xinclude processing is dependent on the 
+   * DOM implementation and configuration.
+   *
+   * @return QueryPath
+   *  A QueryPath object wrapping all child nodes for all elements in the 
+   *  QueryPath object.
+   */
+  public function contents();
   
   /**
    * Set or get the markup for an element.
@@ -559,13 +584,9 @@ interface QueryPath {
    *  was passed in. In the later case, an error will produce NULL.
    */
   public function val($value = NULL);
-
-  
-  
   
 
   public function siblings();
-  public function contents();
   public function next();
   public function nextAll();
   public function parent($selector = NULL);

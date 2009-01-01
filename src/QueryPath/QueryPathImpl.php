@@ -534,6 +534,15 @@ final class QueryPathImpl implements QueryPath {
     return $this;
   }
   
+  public function removeChildren() {
+    foreach ($this->matches as $m) {
+      while($kid = $m->firstChild) {
+        $m->removeChild($kid);
+      }
+    }
+    return $this;
+  }
+  
   public function children($selector = NULL) {
     $found = array();
     foreach ($this->matches as $m) {
@@ -549,7 +558,19 @@ final class QueryPathImpl implements QueryPath {
       $this->filter($selector);
     }
     return $this;
-  } 
+  }
+  
+  public function contents() {
+    $found = array();
+    foreach ($this->matches as $m) {
+      foreach ($m->childNodes as $c) {
+        $found[] = $c;
+      }
+    }
+    $this->setMatches(UniqueElementList::get($found));
+    return $this;
+  }
+   
   
   public function html($markup = NULL) {
     if (isset($markup)) {
@@ -587,7 +608,6 @@ final class QueryPathImpl implements QueryPath {
   
   
   public function siblings() {}
-  public function contents() {}
   public function next() {}
   public function nextAll() {}
   public function parent($selector = NULL) {}
