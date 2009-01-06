@@ -721,10 +721,91 @@ final class QueryPathImpl implements QueryPath {
     return $this;
   }
 
-  public function next() {}
-  public function nextAll() {}
-  public function prev() {}
-  public function prevAll() {}
+  public function next($selector = NULL) {
+    $found = array();
+    foreach ($this->matches as $m) {
+      while (isset($m->nextSibling)) {
+        $m = $m->nextSibling;
+        if ($m->nodeType === XML_ELEMENT_NODE) {
+          if (!empty($selector)) {
+            if (qp($m)->is($selector) > 0) {
+              $found[] = $m;
+              break;
+            }
+          }
+          else {
+            $found[] = $m;
+            break;
+          }
+        }
+      }
+    }
+    $this->setMatches($found);
+    return $this;
+  }
+  public function nextAll($selector = NULL) {
+    $found = array();
+    foreach ($this->matches as $m) {
+      while (isset($m->nextSibling)) {
+        $m = $m->nextSibling;
+        if ($m->nodeType === XML_ELEMENT_NODE) {
+          if (!empty($selector)) {
+            if (qp($m)->is($selector) > 0) {
+              $found[] = $m;
+            }
+          }
+          else {
+            $found[] = $m;
+          }
+        }
+      }
+    }
+    $this->setMatches($found);
+    return $this;
+  }
+  
+  public function prev($selector = NULL) {
+    $found = array();
+    foreach ($this->matches as $m) {
+      while (isset($m->previousSibling)) {
+        $m = $m->previousSibling;
+        if ($m->nodeType === XML_ELEMENT_NODE) {
+          if (!empty($selector)) {
+            if (qp($m)->is($selector)) {
+              $found[] = $m;
+              break;
+            }
+          }
+          else {
+            $found[] = $m;
+            break;
+          }
+        }
+      }
+    }
+    $this->setMatches($found);
+    return $this;
+  }
+  public function prevAll($selector = NULL) {
+    $found = array();
+    foreach ($this->matches as $m) {
+      while (isset($m->previousSibling)) {
+        $m = $m->previousSibling;
+        if ($m->nodeType === XML_ELEMENT_NODE) {
+          if (!empty($selector)) {
+            if (qp($m)->is($selector)) {
+              $found[] = $m;
+            }
+          }
+          else {
+            $found[] = $m;
+          }
+        }
+      }
+    }
+    $this->setMatches($found);
+    return $this;
+  }
   
   
   

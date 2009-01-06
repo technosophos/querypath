@@ -745,12 +745,68 @@ interface QueryPath {
    */
   public function siblings($selector = NULL);
   
-  public function next();
-  public function nextAll();
+  /**
+   * Get the next sibling of each element in the QueryPath.
+   *
+   * If a selector is provided, the next matching sibling will be returned.
+   *
+   * @param string $selector
+   *  A CSS3 selector.
+   * @return QueryPath
+   *  The QueryPath object.
+   * @see nextAll()
+   * @see prev()
+   */
+  public function next($selector = NULL);
+  
+  /**
+   * Get all siblings after an element.
+   *
+   * For each element in the QueryPath, get all siblings that appear after
+   * it. If a selector is passed in, then only siblings that match the 
+   * selector will be included.
+   *
+   * @param string $selector 
+   *  A valid CSS 3 selector.
+   * @return QueryPath
+   *  The QueryPath object, now containing the matching siblings.
+   * @see next()
+   * @see prevAll()
+   */
+  public function nextAll($selector = NULL);
+  
+  /**
+   * Get the next sibling before each element in the QueryPath.
+   *
+   * For each element in the QueryPath, this retrieves the previous sibling
+   * (if any). If a selector is supplied, it retrieves the first matching 
+   * sibling (if any is found).
+   *
+   * @param string $selector
+   *  A valid CSS 3 selector.
+   * @return QueryPath
+   *  A QueryPath object, now containing any previous siblings that have been 
+   *  found.
+   * @see prevAll()
+   * @see next()
+   */
+  public function prev($selector = NULL);
+  
+  /**
+   * Get the previous siblings for each element in the QueryPath.
+   *
+   * For each element in the QueryPath, get all previous siblings. If a 
+   * selector is provided, only matching siblings will be retrieved.
+   *
+   * @param string $selector
+   *  A valid CSS 3 selector.
+   * @return QueryPath
+   *  The QueryPath object, now wrapping previous sibling elements.
+   */
+  public function prevAll($selector = NULL);
+  
   public function parent($selector = NULL);
   public function parents($selector = NULL);
-  public function prev();
-  public function prevAll();
   
   
   
