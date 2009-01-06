@@ -310,6 +310,11 @@ final class QueryPathImpl implements QueryPath {
     return $this;
   }
   
+  public function appendTo(QueryPath $dest) {
+    foreach ($this->matches as $m) $dest->append($m);
+    return $this;
+  }
+  
   public function prepend($data) {
     $data = $this->prepareInsert($data);
     if (isset($data)) {
@@ -319,6 +324,39 @@ final class QueryPathImpl implements QueryPath {
         else
           $m->appendChild($data);
       }
+    }
+    return $this;
+  }
+  
+  public function prependTo(QueryPath $dest) {
+    foreach ($this->matches as $m) $dest->prepend($m);
+    return $this;
+  }
+
+  
+  public function before($data) {
+    $data = $this->prepareInsert($data);
+    foreach ($this->matches as $m) $m->parentNode->insertBefore($data, $m);
+    
+    return $this;
+  }
+  public function insertBefore(QueryPath $dest) {
+    foreach ($this->matches as $m) $dest->before($m);
+    return $this;
+  }
+  
+  public function insertAfter(QueryPath $dest) {
+    foreach ($this->matches as $m) $dest->after($m);
+    return $this;
+  }
+  
+  public function after($data) {
+    $data = $this->prepareInsert($data);
+    foreach ($this->matches as $m) {
+      if (isset($m->nextSibling)) 
+        $m->parentNode->insertBefore($data, $m->nextSibling);
+      else
+        $m->parentNode->appendChild($data);
     }
     return $this;
   }
@@ -443,6 +481,10 @@ final class QueryPathImpl implements QueryPath {
   }
   
   /**
+   * Prepare an item for insertion into a DOM.
+   *
+   * This handles a variety of boilerplate tasks that need doing before an 
+   * indeterminate object can be inserted into a DOM tree.
    * - If item is a string, this is converted into a document fragment and returned.
    * - If item is a QueryPath, then the first item is retrieved and this call function
    *   is called recursivel.
@@ -570,7 +612,37 @@ final class QueryPathImpl implements QueryPath {
     $this->setMatches(UniqueElementList::get($found));
     return $this;
   }
-   
+  
+  public function siblings($selector = NULL) {
+    $found = array();
+    foreach ($this->matches as $m) {
+      $parent = $m->parentNode;
+      foreach ($parent->childNodes as $n) {
+        if ($n->nodeType == XML_ELEMENT_NODE && $n !== $m) {
+          $found[] = $n;
+        }
+      }
+    }
+    if (empty($selector)) {
+      $this->setMatches($found);
+    }
+    else {
+      $this->matches = $found; // Don't buffer this. It is temporary.
+      $this->filter($selector);
+    }
+    return $this;
+  }
+  
+  public function parent($selector = NULL) {
+
+  }
+  
+  public function parents($selector = NULL) {
+  }
+  
+  private function findParent(DomNode $node) {
+    
+  }
   
   public function html($markup = NULL) {
     if (isset($markup)) {
@@ -594,6 +666,7 @@ final class QueryPathImpl implements QueryPath {
     foreach ($this->matches as $m) $buf .= $m->textContent;
     return $buf;
   }
+  
   public function val($value = NULL) {
     if (isset($value)) {
       foreach ($this->matches as $m) $m->attr('value', $value);
@@ -607,21 +680,15 @@ final class QueryPathImpl implements QueryPath {
   
   
   
-  public function siblings() {}
+
   public function next() {}
   public function nextAll() {}
-  public function parent($selector = NULL) {}
-  public function parents($selector = NULL) {}
   public function prev() {}
   public function prevAll() {}
   
   
-  public function appendTo($something) {}
-  public function prependTo($something) {}
-  public function insertAfter($something) {}
-  public function after($something) {}
-  public function insertBefore($something) {}
-  public function before($something) {}
+  
+  
   
   public function clear() {}
   

@@ -318,6 +318,78 @@ interface QueryPath {
   public function append($apendage);
   
   /**
+   * Append the current elements to the destination passed into the function.
+   *
+   * This cycles through all of the current matches and appends them to 
+   * the context given in $destination. If a selector is provided then the 
+   * $destination is queried (using that selector) prior to the data being
+   * appended. The data is then appended to the found items.
+   *
+   * @param QueryPath $destination
+   *  A QueryPath object that will be appended to.
+   * @return QueryPath
+   *  The original QueryPath, unaltered. Only the destination QueryPath will
+   *  be modified.
+   */
+  public function appendTo(QueryPath $destination);
+  
+  /**
+   * Insert the contents of the current QueryPath after the nodes in the 
+   * destination QueryPath object.
+   *
+   * @param QueryPath $dest
+   *  Destination object where the current elements will be deposited.
+   * @return QueryPath
+   *  The present QueryPath, unaltered. Only the destination object is altered.
+   * @see after()
+   * @see insertBefore()
+   * @see append()
+   */
+  public function insertAfter(QueryPath $dest);
+  
+  /**
+   * Insert the given data after each element in the current QueryPath object.
+   *
+   * This inserts the element as a peer to the currently matched elements.
+   * Contrast this with {@link append()}, which inserts the data as children
+   * of matched elements.
+   *
+   * @param mixed $data
+   *  The data to be appended.
+   * @return QueryPath
+   *  The QueryPath object (with the items inserted).
+   * @see before()
+   * @see append()
+   */
+  public function after($data);
+  /**
+   * Insert the current elements into the destination document.
+   * The items are inserted before each element in the given QueryPath document.
+   * That is, they will be siblings with the current elements.
+   *
+   * @param QueryPath $dest
+   *  Destination QueryPath document.
+   * @return QueryPath
+   *  The current QueryPath object, unaltered. Only the destination QueryPath
+   *  object is altered.
+   * @see before()
+   * @see insertAfter()
+   * @see appendTo()
+   */
+  public function insertBefore(QueryPath $dest);
+  /**
+   * Insert the given data before each element in the current set of matches.
+   * 
+   * @param mixed $data
+   *  The data to be inserted. This can be XML in a string, a DomFragment, a DOMElement,
+   *  or the other usual suspects. (See {@link qp()}).
+   * @return QueryPath
+   *  Returns the QueryPath with the new modifications. The list of elements currently
+   *  selected will remain the same.
+   */
+  public function before($data);
+  
+  /**
    * Insert the given markup as the first child.
    *
    * The markup will be inserted into each match in the set.
@@ -326,6 +398,23 @@ interface QueryPath {
    *  This can be either a string (the usual case), or a DOM Element.
    */
   public function prepend($prependage);
+  
+  /**
+   * Take all nodes in the current object and prepend them to the children nodes of
+   * each matched node in the passed-in QueryPath object.
+   *
+   * This will iterate through each item in the current QueryPath object and 
+   * add each item to the beginning of the children of each element in the 
+   * passed-in QueryPath object.
+   *
+   * @see prepend()
+   * @see appendTo()
+   * @param QueryPath $dest
+   *  The destination QueryPath object.
+   * @return QueryPath
+   *  The original QueryPath, unmodified. NOT the destination QueryPath.
+   */
+  public function prependTo(QueryPath $dest);
   
   /**
    * Reduce the set of matches to the deepest child node in the tree.
@@ -585,8 +674,26 @@ interface QueryPath {
    */
   public function val($value = NULL);
   
-
-  public function siblings();
+  /**
+   * Get a list of siblings for elements currently wrapped by this object.
+   *
+   * This will compile a list of every sibling of every element in the 
+   * current list of elements. 
+   *
+   * Note that if two siblings are present in the QueryPath object to begin with,
+   * then both will be returned in the matched set, since they are siblings of each 
+   * other. In other words,if the matches contain a and b, and a and b are siblings of 
+   * each other, than running siblings will return a set that contains 
+   * both a and b.
+   *
+   * @param string $selector
+   *  If the optional selector is provided, siblings will be filtered through
+   *  this expression.
+   * @return QueryPath
+   *  The QueryPath containing the matched siblings.
+   */
+  public function siblings($selector = NULL);
+  
   public function next();
   public function nextAll();
   public function parent($selector = NULL);
@@ -595,12 +702,9 @@ interface QueryPath {
   public function prevAll();
   
   
-  public function appendTo($something);
-  public function prependTo($something);
-  public function insertAfter($something);
-  public function after($something);
-  public function insertBefore($something);
-  public function before($something);
+  
+  
+
 
   
   public function clear();

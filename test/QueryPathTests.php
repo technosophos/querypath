@@ -203,6 +203,13 @@ class QueryPathTests extends PHPUnit_Framework_TestCase {
     $this->assertNull($qp->get(0)->nextSibling);
   }
   
+  public function testAppendTo() {
+    $file = './data.xml';
+    $dest = qp('<?xml version="1.0"?><root><dest/></root>', 'dest');
+    $qp = qp($file,'li')->appendTo($dest);
+    $this->assertEquals(5, $dest->find(':root li')->size());
+  }
+  
   public function testPrepend() {
     $file = './data.xml';
     $this->assertEquals(1, qp($file,'unary')->prepend('<test/>')->find(':root > unary > test')->size());
@@ -211,6 +218,39 @@ class QueryPathTests extends PHPUnit_Framework_TestCase {
     $this->assertNull($qp->get(0)->previousSibling);
   }
   
+  public function testPrependTo() {
+    $file = './data.xml';
+    $dest = qp('<?xml version="1.0"?><root><dest/></root>', 'dest');
+    $qp = qp($file,'li')->prependTo($dest);
+    $this->assertEquals(5, $dest->find(':root li')->size());
+  }
+  
+  public function testBefore() {
+    $file = './data.xml';
+    $this->assertEquals(1, qp($file,'unary')->before('<test/>')->find(':root > unary ~ test')->size());
+    $this->assertEquals('unary', qp($file,'unary')->before('<test/>')->find(':root > test')->get(0)->nextSibling->tagName);
+  }
+  
+  public function testAfter() {
+    $file = './data.xml';
+    $this->assertEquals(1, qp($file,'unary')->after('<test/>')->find(':root > unary ~ test')->size());
+    $this->assertEquals('unary', qp($file,'unary')->after('<test/>')->find(':root > test')->get(0)->previousSibling->tagName);
+  }
+  
+  public function testInsertBefore() {
+    $file = './data.xml';
+    $dest = qp('<?xml version="1.0"?><root><dest/></root>', 'dest');
+    $qp = qp($file,'li')->insertBefore($dest);
+    $this->assertEquals(5, $dest->find(':root > li')->size());
+    $this->assertEquals('li', $dest->end()->find('dest')->get(0)->previousSibling->tagName);
+  }
+  public function testInsertAfter() {
+    $file = './data.xml';
+    $dest = qp('<?xml version="1.0"?><root><dest/></root>', 'dest');
+    $qp = qp($file,'li')->insertAfter($dest);
+    //print $dest->get(0)->ownerDocument->saveXML();
+    $this->assertEquals(5, $dest->find(':root > li')->size());
+  }
   public function testReplaceWith() {
     $file = './data.xml';
     $qp = qp($file,'unary')->replaceWith('<test><foo/></test>')->find(':root test');
@@ -307,6 +347,12 @@ class QueryPathTests extends PHPUnit_Framework_TestCase {
     $this->assertGreaterThan(5, qp($file, 'inner')->contents()->size());
     // Two cdata nodes and one element node.
     $this->assertEquals(3, qp($file, '#inner-two')->contents()->size());
+  }
+  
+  public function testSiblings() {
+    $file = './data.xml';
+    $this->assertEquals(3, qp($file, '#one')->siblings()->size());
+    $this->assertEquals(2, qp($file, 'unary')->siblings('inner')->size());
   }
   
   /*
