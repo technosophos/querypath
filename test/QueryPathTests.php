@@ -401,6 +401,12 @@ class QueryPathTests extends PHPUnit_Framework_TestCase {
     $this->assertEquals('<!DOC', substr($out, 0, 5));
   }
   
+  public function testText() {
+    $xml = '<?xml version="1.0"?><root><div>Text A</div><div>Text B</div></root>';
+    $this->assertEquals('Text AText B', qp($xml)->text());
+    $this->assertEquals('Foo', qp($xml, 'div')->eq(0)->text('Foo')->text());
+  }
+  
   /*
   public function testSerialize() {
     $file = './data.xml';

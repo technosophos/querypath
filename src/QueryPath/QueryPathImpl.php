@@ -671,7 +671,9 @@ final class QueryPathImpl implements QueryPath {
   }
   public function text($text = NULL) {
     if (isset($text)) {
-      foreach($this->matches as $m) $m->textContent = $text;
+      $this->removeChildren();
+      $textNode = $this->document->createTextNode($text);
+      foreach($this->matches as $m) $m->appendChild($textNode);
       return $this;
     }
     // Returns all text as one string:
@@ -718,8 +720,6 @@ final class QueryPathImpl implements QueryPath {
     print $this->document->saveHTML();
     return $this;
   }
-  
-  
 
   public function next() {}
   public function nextAll() {}
