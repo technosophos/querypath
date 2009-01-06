@@ -634,7 +634,9 @@ final class QueryPathImpl implements QueryPath {
   }
   
   public function parent($selector = NULL) {
-
+    if (empty($selector)) {
+      
+    }
   }
   
   public function parents($selector = NULL) {
@@ -647,13 +649,24 @@ final class QueryPathImpl implements QueryPath {
   public function html($markup = NULL) {
     if (isset($markup)) {
       // Parse the HTML and insert it into the DOM
+      //$doc = DOMDocument::loadHTML($markup);
+      $doc = $this->document->createDocumentFragment();
+      $doc->appendXML($markup);
+      $this->removeChildren();
+      $this->append($doc);
       return $this;
     }
     $length = $this->size();
     if ($length == 0) {
       return NULL;
     }
-    // Only retrn the first item -- that's what JQ does.
+    // Only return the first item -- that's what JQ does.
+    $first = $this->matches[0];
+    if ($first instanceof DOMDocument || $first->isSameNode($first->ownerDocument->documentElement)) {
+      return $this->document->saveHTML();
+    }
+    // saveHTML cannot take a node and serialize it.
+    return $this->document->saveXML($this->matches[0]);
     
   }
   public function text($text = NULL) {
@@ -675,9 +688,36 @@ final class QueryPathImpl implements QueryPath {
     return empty($this->matches) ? NULL : $this->matches[0]->attr('value');
   }
   
-  public function xml($markup = NULL) { return $this->html($markup); }
+  public function xml($markup = NULL) {
+    if (isset($markup)) {
+      $doc = $this->document->createDocumentFragment();
+      $doc->appendXML($markup);
+      $this->removeChildren();
+      $this->append($doc);
+      return $this;
+    }
+    $length = $this->size();
+    if ($length == 0) {
+      return NULL;
+    }
+    // Only return the first item -- that's what JQ does.
+    $first = $this->matches[0];
+    if ($first instanceof DOMDocument || $first->isSameNode($first->ownerDocument->documentElement)) {
+      return $this->document->saveXML();
+    }
+    // saveHTML cannot take a node and serialize it.
+    return $this->document->saveXML($this->matches[0]);
+  }
   
+  public function writeXML() {
+    print $this->document->saveXML();
+    return $this;
+  }
   
+  public function writeHTML($headers = array()) {
+    print $this->document->saveHTML();
+    return $this;
+  }
   
   
 

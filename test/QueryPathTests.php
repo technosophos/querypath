@@ -355,6 +355,52 @@ class QueryPathTests extends PHPUnit_Framework_TestCase {
     $this->assertEquals(2, qp($file, 'unary')->siblings('inner')->size());
   }
   
+  public function testHTML() {
+    $file = './data.xml';
+    $qp = qp($file, 'unary');
+    $html = '<b>test</b>';
+    $this->assertEquals($html, $qp->html($html)->find('b')->html());
+    
+    $html = '<html><head><title>foo</title></head><body>bar</body></html>';
+    // We expect a DocType to be prepended:
+    $this->assertEquals('<!DOCTYPE', substr(qp($html)->html(), 0, 9));
+  }
+  
+  public function testXML() {
+    $file = './data.xml';
+    $qp = qp($file, 'unary');
+    $xml = '<b>test</b>';
+    $this->assertEquals($xml, $qp->xml($xml)->find('b')->xml());
+    
+    $xml = '<html><head><title>foo</title></head><body>bar</body></html>';
+    // We expect a DocType to be prepended:
+    $this->assertEquals('<?xml', substr(qp($xml, 'html')->xml(), 0, 5));
+  }
+  
+  public function testWriteXML() {
+    $xml = '<?xml version="1.0"?><html><head><title>foo</title></head><body>bar</body></html>';
+    
+    if (!ob_start()) die ("Could not start OB.");
+    qp($xml, 'tml')->writeXML();
+    $out = ob_get_contents();
+    ob_end_clean();
+    
+    // We expect an XML declaration at the top.
+    $this->assertEquals('<?xml', substr($out, 0, 5));
+  }
+  
+  public function testWriteHTML() {
+    $xml = '<html><head><title>foo</title></head><body>bar</body></html>';
+    
+    if (!ob_start()) die ("Could not start OB.");
+    qp($xml, 'tml')->writeHTML();
+    $out = ob_get_contents();
+    ob_end_clean();
+    
+    // We expect a doctype declaration at the top.
+    $this->assertEquals('<!DOC', substr($out, 0, 5));
+  }
+  
   /*
   public function testSerialize() {
     $file = './data.xml';

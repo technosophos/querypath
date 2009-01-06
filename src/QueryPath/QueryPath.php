@@ -639,19 +639,70 @@ interface QueryPath {
    * 
    * If $markup is set, then the giving markup will be injected into each
    * item in the set. All other children of that node will be deleted, and this
-   * new code will be the only child or children.
+   * new code will be the only child or children. The markup MUST BE WELL FORMED.
    *
    * If no markup is given, this will return a string representing the child 
    * markup of the first node.
+   *
+   * <b>Important:</b> This differs from jQuery's html() function. This function
+   * returns <i>the current node</i> and all of its children. jQuery returns only
+   * the children. This means you do not need to do things like this: 
+   * <code>$qp->parent()->html()</code>.
    *
    * @param string $markup
    *  The text to insert.
    * @return mixed
    *  A string if no markup was passed, or a QueryPath if markup was passed.
+   * @see xml()
+   * @see text()
    */
   public function html($markup = NULL);
+  
   public function text($text = NULL);
+  
+  /**
+   * Set or get the XML markup for an element or elements.
+   *
+   * Like {@link html()}, this functions in both a setter and a getter mode.
+   * 
+   * In setter mode, the string passed in will be parsed and then appended to the 
+   * elements wrapped by this QueryPath object.When in setter mode, this parses 
+   * the XML using the DOMFragment parser. For that reason, an XML declaration 
+   * is not necessary.
+   *
+   * In getter mode, the first element wrapped by this QueryPath object will be 
+   * converted to an XML string and returned.
+   *
+   * @param string $markup
+   *  A string containing XML data.
+   * @return mixed
+   *  If markup is passed in, a QueryPath is returned. If no markup is passed
+   *  in, XML representing the first matched element is returned.
+   * @see html()
+   * @see text()
+   */
   public function xml($markup = NULL);
+  
+  /**
+   * Send the XML document to the client.
+   * 
+   * Write the document to stdout (usually the client).
+   *
+   * This prints the entire document.
+   *
+   * @return QueryPath
+   *  The QueryPath object, unmodified.
+   */
+  public function writeXML();
+  
+  /**
+   * Send the HTML to the client.
+   * 
+   * Write the document to stdout (usually the client).
+   * @return QueryPath
+   *  The QueryPath object, unmodified.
+   */
+  public function writeHTML();
     
   /**
    * Set or get the value of an element's 'value' attribute.
