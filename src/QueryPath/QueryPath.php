@@ -805,16 +805,32 @@ interface QueryPath {
    */
   public function prevAll($selector = NULL);
   
+  /**
+   * Get the immediate parent of each element in the QueryPath.
+   *
+   * If a selector is passed, this will return the nearest matching parent for
+   * each element in the QueryPath.
+   *
+   * @param string $selector
+   *  A valid CSS3 selector.
+   * @return QueryPath
+   *  A QueryPath object wrapping the matching parents.
+   */
   public function parent($selector = NULL);
+  /**
+   * Get all ancestors of each element in the QueryPath.
+   * 
+   * If a selector is present, only matching ancestors will be retrieved.
+   *
+   * @see parent()
+   * @param string $selector
+   *  A valid CSS 3 Selector.
+   * @return QueryPath
+   *  A QueryPath object containing the matching ancestors.
+   */
   public function parents($selector = NULL);
   
   
-  
-  
-
-
-  
-  public function clear();
   
   /**
    * Add a class to all elements in the current QueryPath.
@@ -870,10 +886,19 @@ interface QueryPath {
    */
   public function hasClass($class);
   
-  public function cloneE();
-  public function serialize();
-  public function serializeArray();
-  
+  /**
+   * Perform a deep clone of each node in the QueryPath.
+   *
+   * This does not clone the QueryPath object, but instead clones the 
+   * list of nodes wrapped by the QueryPath. Every element is deeply 
+   * cloned.
+   *
+   * This method is analogous to jQuery's clone() method.
+   *
+   * This is a destructive operation, which means that end() will revert
+   * the list back to the clone's original.
+   */
+  public function cloneAll();
 }
 
 /**

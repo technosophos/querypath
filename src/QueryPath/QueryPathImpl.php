@@ -19,6 +19,15 @@ final class QueryPathImpl implements QueryPath {
   private $last = array(); // Last set of matches.
   
   /**
+   * Take a list of DOMNodes and return a unique list.
+   *
+   * Constructs a new array of elements with no duplicate DOMNodes.
+   */
+  public static function unique($list) {
+    return UniqueElementList::get($list);
+  }
+  
+  /**
    * Create a new query path object.
    * @param mixed $document
    *  A path, XML/HTML string, DOMNode, DOMDocument, or SimpleXMLElement.
@@ -248,7 +257,7 @@ final class QueryPathImpl implements QueryPath {
         }
       }
     }
-    $this->setMatches($found);
+    $this->setMatches($found, FALSE);
     return $this;
   }
   
@@ -634,16 +643,47 @@ final class QueryPathImpl implements QueryPath {
   }
   
   public function parent($selector = NULL) {
-    if (empty($selector)) {
-      
+    $found = array();
+    foreach ($this->matches as $m) {
+      while ($m->parentNode->nodeType !== XML_DOCUMENT_NODE) {
+        $m = $m->parentNode;
+        // Is there any case where parent node is not an element?
+        if ($m->nodeType === XML_ELEMENT_NODE) {
+          if (!empty($selector)) {
+            if (qp($m)->is($selector) > 0) {
+              $found[] = $m;
+              break;
+            }
+          }
+          else {
+            $found[] = $m;
+            break;
+          }
+        }
+      }
     }
+    $this->setMatches($found);
+    return $this;
   }
   
   public function parents($selector = NULL) {
-  }
-  
-  private function findParent(DomNode $node) {
-    
+    $found = array();
+    foreach ($this->matches as $m) {
+      while ($m->parentNode->nodeType !== XML_DOCUMENT_NODE) {
+        $m = $m->parentNode;
+        // Is there any case where parent node is not an element?
+        if ($m->nodeType === XML_ELEMENT_NODE) {
+          if (!empty($selector)) {
+            if (qp($m)->is($selector) > 0)
+              $found[] = $m;
+          }
+          else 
+            $found[] = $m;
+        }
+      }
+    }
+    $this->setMatches($found);
+    return $this;
   }
   
   public function html($markup = NULL) {
@@ -807,15 +847,6 @@ final class QueryPathImpl implements QueryPath {
     return $this;
   }
   
-  
-  
-  
-  
-  public function clear() {}
-  
-  
-
-  
   public function addClass($class) {
     foreach ($this->matches as $m) {
       if ($m->hasAttribute('class')) {
@@ -855,17 +886,36 @@ final class QueryPathImpl implements QueryPath {
     }
     return FALSE;
   }
+  public function cloneAll() {
+    $found = array();
+    foreach ($this->matches as $m) $found[] = $m->cloneNode(TRUE);
+    $this->setMatches($found, FALSE);
+    return $this;
+  }
   
-  public function cloneE() {}
-  public function serialize() {}
-  public function serializeArray() {}
+  /**
+   * Clone the QueryPath.
+   *
+   * This makes a deep clone of the elements inside of the QueryPath. It also
+   * destroys the history buffer, so an end() will not return you to a 
+   * pre-cloned state.
+   *
+   * This clones only the QueryPathImpl, not all of the decorators. The
+   * clone operator in PHP should handle the cloning of the decorators.
+   */
+  public function __clone() {
+    return new QueryPathImpl($this->cloneAll()->get());
+  }
   
   /////// PRIVATE FUNCTIONS ////////
+  // Functions are declared private because nothing can subclass QueryPathImpl.
+  // (It is, after all, final). Instead of extending this class, you 
+  // should create a decorator for the class.
+  
   // Subclasses may not implment this. Altering them may be altering
   // core assumptions about how things work. Instead, classes should 
   // override the constructor and pass in only one of the parsed types
   // that this class expects.
-  
   private function isXMLish($string) {
     return preg_match(ML_EXP, $string) > 0;
   }
@@ -886,7 +936,10 @@ final class QueryPathImpl implements QueryPath {
    * A utility function for setting the current set of matches.
    * It makes sure the last matches buffer is set (for end() and andSelf()).
    */
-  private function setMatches($matches) {
+  private function setMatches($matches, $unique = TRUE) {
+    // This causes a lot of overhead....
+    if ($unique) $matches = self::unique($matches);
+    
     $this->last = $this->matches;
     $this->matches = $matches;
   }

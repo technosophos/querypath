@@ -1366,7 +1366,7 @@ class UniqueElementList {
    * If it is unique, it is kept. If it is not, it is discarded from
    * the list.
    */
-  private function compare($element) {
+  protected function compare($element) {
     if (!in_array($element, $this->result, TRUE)) {
       $this->result[] = $element;
     }
