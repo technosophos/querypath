@@ -420,6 +420,16 @@ class QueryPathTests extends PHPUnit_Framework_TestCase {
     $this->assertEquals('inner', qp($file, 'inner')->prev()->eq(1)->tag());
     $this->assertEquals('head', qp($file, 'foot')->prev('head')->tag());
   }
+  public function testNextAll() {
+    $file = './data.xml';
+    $this->assertEquals(3, qp($file, '#one')->nextAll()->size());
+    $this->assertEquals(2, qp($file, 'unary')->nextAll('inner')->size());
+  }
+  public function testPrevAll() {
+    $file = './data.xml';
+    $this->assertEquals(3, qp($file, '#four')->prevAll()->size());
+    $this->assertEquals(2, qp($file, 'foot')->prevAll('inner')->size());
+  }
   
   /*
   public function testSerialize() {
