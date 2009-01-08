@@ -98,6 +98,8 @@ interface QueryPath {
    * @param string $selector
    *   CSS 3 Selector
    * @return QueryPath
+   * @see filter()
+   * @see is()
    */
   public function find($selector);
   
@@ -118,6 +120,7 @@ interface QueryPath {
    * @return mixed
    *   If an index is passed, one element will be returned. If no index is
    *   present, an array of all matches will be returned.
+   * @see eq()
    */
   public function get($index = NULL);
   
@@ -126,6 +129,8 @@ interface QueryPath {
    * @param $index
    *  The index of the element to keep. The rest will be 
    *  discarded.
+   * @see get()
+   * @see is()
    */
   public function eq($index);
   
@@ -147,6 +152,8 @@ interface QueryPath {
    * @return mixed
    *   If this was a setter request, return the QueryPath object. If this was
    *   an access request (getter), return the string value.
+   * @see removeAttr()
+   * @see tag()
    */
   public function attr($name, $value = NULL);
   
@@ -157,6 +164,7 @@ interface QueryPath {
    *  Name of the parameter to remove.
    * @return QueryPath
    *  The QueryPath object with the same elements.
+   * @see attr()
    */
   public function removeAttr($name);
   
@@ -169,6 +177,8 @@ interface QueryPath {
    *   The selector to search for.
    * @return boolean
    *   TRUE if one or more elements match. FALSE if no match is found.
+   * @see get()
+   * @see eq()
    */
   public function is($selector);
   
@@ -181,6 +191,11 @@ interface QueryPath {
    *   The selector to use as a filter.
    * @return QueryPath
    *   The QueryPath with non-matching items filtered out.
+   * @see filterLambda()
+   * @see filterCallback()
+   * @see map()
+   * @see find()
+   * @see is()
    */
   public function filter($selector);
   
@@ -204,6 +219,10 @@ interface QueryPath {
    *
    * @param string $function
    *  Inline lambda function in a string.
+   * @see filter()
+   * @see map()
+   * @see mapLambda()
+   * @see filterCallback()
    */
   public function filterLambda($function);
   
@@ -225,6 +244,11 @@ interface QueryPath {
    *   classname, method).
    * @return QueryPath
    *   Query path object augmented according to the function.
+   * @see filter()
+   * @see filterLambda()
+   * @see map()
+   * @see is()
+   * @see find()
    */
   public function filterCallback($callback);
 
@@ -236,6 +260,7 @@ interface QueryPath {
    *  element will be removed from the list.
    * @return QueryPath
    *  The QueryPath object with matching items filtered out.
+   * @see find()
    */
   public function not($selector);
   
@@ -251,6 +276,8 @@ interface QueryPath {
    * @return mixed
    *  The index as an integer (if found), or boolean FALSE. Since 0 is a 
    *  valid index, you should use strong equality (===) to test..
+   * @see get()
+   * @see is()
    */
   public function index($subject);
   
@@ -279,6 +306,8 @@ interface QueryPath {
    *  by each run of the callback.
    *
    * @see QueryPath::get()
+   * @see filter()
+   * @see find()
    */
   public function map($callback);
 
@@ -311,6 +340,9 @@ interface QueryPath {
    *  The callback to run.
    * @return QueryPath
    *  The QueryPath.
+   * @see eachLambda()
+   * @see filter()
+   * @see map()
    */
   public function each($callback);
   
@@ -321,6 +353,10 @@ interface QueryPath {
    *  The lambda function. This will be passed ($index, &$item).
    * @return QueryPath.
    *  The QueryPath object.
+   * @see each()
+   * @see filterLambda()
+   * @see filterCallback()
+   * @see map()
    */
   public function eachLambda($lambda);
   
@@ -331,6 +367,10 @@ interface QueryPath {
    *
    * @param mixed $apendage
    *  This can be either a string (the usual case), or a DOM Element.
+   * @return QueryPath
+   *  The QueryPath object.
+   * @see appendTo()
+   * @see prepend()
    */
   public function append($apendage);
   
@@ -347,6 +387,8 @@ interface QueryPath {
    * @return QueryPath
    *  The original QueryPath, unaltered. Only the destination QueryPath will
    *  be modified.
+   * @see append()
+   * @see prependTo()
    */
   public function appendTo(QueryPath $destination);
   

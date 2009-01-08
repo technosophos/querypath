@@ -61,6 +61,9 @@ class QueryPathTests extends PHPUnit_Framework_TestCase {
     $qp->attr(array('foo2' => 'bar', 'foo3' => 'baz'));
     $this->assertEquals('baz', $qp->attr('foo3'));
     
+    // Check magic nodeType attribute:
+    $this->assertEquals(XML_ELEMENT_NODE, qp($file)->find('#head')->attr('nodeType'));
+    
   }
   
   public function testRemoveAttr() {

@@ -914,19 +914,15 @@ final class QueryPathImpl implements QueryPath {
   /**
    * Clone the QueryPath.
    *
-   * This makes a deep clone of the elements inside of the QueryPath. It also
-   * destroys the history buffer, so an end() will not return you to a 
-   * pre-cloned state.
+   * This makes a deep clone of the elements inside of the QueryPath.
    *
    * This clones only the QueryPathImpl, not all of the decorators. The
    * clone operator in PHP should handle the cloning of the decorators.
    */
   public function __clone() {
-    //$found = array();
-    // We don't use cloneAll because that would destroy the present
-    // context.
-    //foreach ($this->matches as $m) $found[] = $m->cloneNode(TRUE);
-    //return new QueryPathImpl($found);
+    //XXX: Should we clone the document?
+    
+    // Make sure we clone the kids.
     $this->cloneAll();
   }
   
