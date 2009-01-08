@@ -57,9 +57,14 @@ require_once 'CssEventHandler.php';
  *  A document in one of the following forms:
  *  - A string of XML or HTML
  *  - A path on the file system
- *  - A {@see DOMDocument} object
- *  - A {@see SimpleXMLElement} object.
- *  - A {@see DOMNode} object.
+ *  - A {@link DOMDocument} object
+ *  - A {@link SimpleXMLElement} object.
+ *  - A {@link DOMNode} object.
+ *  - An array of {@link DOMNode} objects (generally {@link DOMElement} nodes).
+ *  - Another QueryPath object.
+ *
+ * Keep in mind that most features of QueryPath operate on elements. Other 
+ * sorts of DOMNodes might not work with all features.
  * @param string $string 
  *  Either an XML/HTML string of data or a CSS 3 Selector.
  */
@@ -75,6 +80,18 @@ function qp($document, $string = NULL) {
  * To create a new Query Path, use the {@see $dq()} function.
  */
 interface QueryPath {
+  
+  const HTML_STUB = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+  	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  	<title>Untitled</title>
+  </head>
+  <body>
+  </body>
+  </html>';
+  
   /**
    * Given a CSS Selector, find matching items.
    *
@@ -759,6 +776,7 @@ interface QueryPath {
    */
   public function next($selector = NULL);
   
+  
   /**
    * Get all siblings after an element.
    *
@@ -829,7 +847,6 @@ interface QueryPath {
    *  A QueryPath object containing the matching ancestors.
    */
   public function parents($selector = NULL);
-  
   
   
   /**

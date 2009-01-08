@@ -39,7 +39,12 @@ final class QueryPathImpl implements QueryPath {
     // Figure out if document is DOM, HTML/XML, or a filename
     if (is_object($document)) {
       
-      if ($document instanceof DOMDocument) {
+      if ($document instanceof QueryPath) {
+        $this->matches = $document->get();
+        if (!empty($this->matches))
+          $this->document = $this->matches[0]->ownerDocument;
+      }
+      elseif ($document instanceof DOMDocument) {
         $this->document = $document;
         $this->matches = array($document->documentElement);
       }
@@ -54,6 +59,12 @@ final class QueryPathImpl implements QueryPath {
       }
       else {
         throw new QueryPathException('Unsupported class type: ' . get_class($document));
+      }
+    }
+    elseif (is_array($document)) {
+      if (!empty($document) && $document[0] instanceof DOMNode) {
+        $this->matches = $document;
+        $this->document = $this->matches[0]->ownerDocument;
       }
     }
     elseif ($this->isXMLish($document)) {
@@ -114,6 +125,12 @@ final class QueryPathImpl implements QueryPath {
     
     //getter
     if (empty($this->matches)) return NULL;
+    
+    // Special node type handler:
+    if ($name == 'nodeType') {
+      return $this->matches[0]->nodeType;
+    }
+    
     // Always return first match's attr.
     return $this->matches[0]->getAttribute($name);
   }
@@ -886,6 +903,7 @@ final class QueryPathImpl implements QueryPath {
     }
     return FALSE;
   }
+  
   public function cloneAll() {
     $found = array();
     foreach ($this->matches as $m) $found[] = $m->cloneNode(TRUE);
@@ -904,7 +922,12 @@ final class QueryPathImpl implements QueryPath {
    * clone operator in PHP should handle the cloning of the decorators.
    */
   public function __clone() {
-    return new QueryPathImpl($this->cloneAll()->get());
+    //$found = array();
+    // We don't use cloneAll because that would destroy the present
+    // context.
+    //foreach ($this->matches as $m) $found[] = $m->cloneNode(TRUE);
+    //return new QueryPathImpl($found);
+    $this->cloneAll();
   }
   
   /////// PRIVATE FUNCTIONS ////////

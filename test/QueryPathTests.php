@@ -444,13 +444,36 @@ class QueryPathTests extends PHPUnit_Framework_TestCase {
     $this->assertEquals(3, qp($file, 'li')->parents()->size());
     $this->assertEquals('root', qp($file, 'li')->parents('root')->tag());
   }
-  /*
-  public function testSerialize() {
+  
+  public function testCloneAll() {
     $file = './data.xml';
-    $ser = qp($file)->serialize();
-    print $ser;
-    $qp = unserialize($ser);
-    $this->assertEquals('inner-one', $qp->find('#inner-one')->attr('id'));
+    
+    // Shallow test
+    $qp = qp($file, 'unary');
+    $one = $qp->get(0);
+    $two = $qp->cloneAll()->get(0);
+    $this->assertTrue($one !== $two);
+    $this->assertEquals('unary', $two->tagName);
+    
+    // Deep test: make sure children are also cloned.
+    $qp = qp($file, 'inner');
+    $one = $qp->find('li')->get(0);
+    $two = $qp->find(':root inner')->cloneAll()->find('li')->get(0);
+    $this->assertTrue($one !== $two);
+    $this->assertEquals('li', $two->tagName);
   }
-  */
+  
+  public function test__clone() {
+    $file = './data.xml';
+    $qp = qp($file, 'inner:first');
+    $qp2 = clone $qp;
+    $this->assertFalse($qp === $qp2);
+    $qp2->find('li')->attr('foo', 'bar');
+    $this->assertEquals('', $qp->find('li')->attr('foo'));
+    $this->assertEquals('bar', $qp2->attr('foo'));
+  }
+  
+  public function testStub() {
+    $this->assertEquals(1, qp(QueryPath::HTML_STUB)->find('title')->size());
+  }
 }
