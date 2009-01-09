@@ -8,8 +8,10 @@
  *
  * Standard usage:
  * <code>
- * $qp = qp('#myID', '<?xml?><test><foo id="myID"/></test>);
- * print $qp->append('<new><elements/></new>')->html();
+ * <?php
+ * $qp = qp('#myID', '<?xml version="1.0"?><test><foo id="myID"/></test>');
+ * $qp->append('<new><elements/></new>')->writeHTML();
+ * ?>
  * </code>
  *
  * The above would print (formatted for readability):
@@ -24,9 +26,36 @@
  * </test>
  * </code>
  *
+ * To learn about the functions available to a Query Path object, 
+ * see {@link QueryPath}. The {@link qp()} function is used to build
+ * new QueryPath objects. The documentation for that function explains the
+ * wealth of arguments that the function can take.
+ *
+ * Included with the source code for QueryPath is a complete set of unit tests
+ * as well as some example files. THose are good resources for learning about
+ * how to apply QueryPath's tools.
+ *
+ * If you are interested in building extensions for QueryParser, see the 
+ * {@link QueryPathExtender} class. There, you will find information on adding
+ * your own tools to QueryPath.
+ *
+ * QueryPath also comes with a full CSS 3 selector parser implementation. If
+ * you are interested in reusing that in other code, you will want to start
+ * with {@link CssEventHandler.php}, which is the event interface for the parser.
+ *
+ * If you want to learn the nitty gritty details of QueryPath, you can take a 
+ * look at the implementation in {@link QueryPathImpl.php}. There you will find
+ * the "real" code.
+ *
+ * All of the code in QueryPath is licensed under either the LGPL or an MIT-like
+ * license (you may choose which you prefer). All of the code is Copyright, 2009
+ * by Matt Butcher.
+ *
  * @package QueryPath
  * @author M Butcher <matt @aleph-null.tv>
- * @license LGPL v2
+ * @license The GNU Lesser GPL (LGPL) or an MIT-like license.
+ * @see QueryPath
+ * @see qp()
  */
  
 //define('QUICK_EXP', '/^[^<]*(<(.|\s)+>)[^>]*$|^#([\w-]+)$/');
@@ -36,7 +65,7 @@
 define('ML_EXP','/^[^<]*(<(.|\s)+>)[^>]*$/');
 
 /**
- * The main implementation of the file is stored seprately from here.
+ * The main implementation of Query Path is stored in the QueryPathImple.php file.
  */
 require_once 'QueryPathImpl.php';
 /**
@@ -53,20 +82,42 @@ require_once 'CssEventHandler.php';
  * This builds a new Query Path object. The new object can be used for 
  * reading, search, and modifying a document.
  *
+ * While it is permissible to directly create new instances of a QueryPath
+ * implementation, it is not advised. Instead, you should use this function
+ * as a factory.
+ *
+ * Example:
+ * <code>
+ * <?php
+ * qp(); // New empty QueryPath
+ * qp('path/to/file.xml'); // From a file
+ * qp('<html><head></head><body></body></html>'); // From HTML or XML
+ * qp(HTML_STUB); // From a basic HTML document.
+ * qp(HTML_STUB, 'title'); // Create one from a basic HTML doc and position it at the title element.
+ *
+ * // Most of the time, methods are chained directly off of this call.
+ * qp(HTML_STUB, 'body')->append('<h1>Title</h1>')->addClass('body-class');
+ * ?>
+ * </code>
+ *
+ * This function is used internally by QueryPath. Anything that modifies the
+ * behavior of this function may also modify the behavior of common QueryPath
+ * methods.
+ *
  * @param mixed $document
  *  A document in one of the following forms:
- *  - A string of XML or HTML
+ *  - A string of XML or HTML (See {@link HTML_STUB})
  *  - A path on the file system
  *  - A {@link DOMDocument} object
  *  - A {@link SimpleXMLElement} object.
  *  - A {@link DOMNode} object.
  *  - An array of {@link DOMNode} objects (generally {@link DOMElement} nodes).
- *  - Another QueryPath object.
+ *  - Another {@link QueryPath} object.
  *
  * Keep in mind that most features of QueryPath operate on elements. Other 
  * sorts of DOMNodes might not work with all features.
  * @param string $string 
- *  Either an XML/HTML string of data or a CSS 3 Selector.
+ *  A CSS 3 selector.
  */
 function qp($document, $string = NULL) {
   $qp = new QueryPathImpl($document, $string);
@@ -77,19 +128,30 @@ function qp($document, $string = NULL) {
  
 /**
  * The Query Path object is the primary tool in this library.
- * To create a new Query Path, use the {@see $dq()} function.
+ *
+ * To create a new Query Path, use the {@link qp()} function.
+ *
+ * If you are new to these documents, start at the {@link QueryPath.php} page.
+ * There you will find a quick guide to the tools contained in this project.
+ *
+ * @see qp()
+ * @see QueryPath.php
  */
 interface QueryPath {
   
-  const HTML_STUB = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-  	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-  <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  /**
+   * This is a stub HTML document.
+   * 
+   * It can be passed into {@link qp()} to begin a new basic HTML document.
+   */
+  const HTML_STUB = '<?xml version="1.0"?>
+  <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
   	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
   	<title>Untitled</title>
   </head>
-  <body>
-  </body>
+  <body></body>
   </html>';
   
   /**
@@ -445,6 +507,10 @@ interface QueryPath {
    * @return QueryPath
    *  Returns the QueryPath with the new modifications. The list of elements currently
    *  selected will remain the same.
+   * @see insertBefore()
+   * @see after()
+   * @see append()
+   * @see prepend()
    */
   public function before($data);
   
@@ -455,6 +521,10 @@ interface QueryPath {
    *
    * @param mixed $prependage
    *  This can be either a string (the usual case), or a DOM Element.
+   * @see append()
+   * @see before()
+   * @see after()
+   * @see prependTo()
    */
   public function prepend($prependage);
   
@@ -466,6 +536,8 @@ interface QueryPath {
    * add each item to the beginning of the children of each element in the 
    * passed-in QueryPath object.
    *
+   * @see insertBefore()
+   * @see insertAfter()
    * @see prepend()
    * @see appendTo()
    * @param QueryPath $dest
@@ -503,6 +575,8 @@ interface QueryPath {
    *  Markup that will wrap each element in the current list.
    * @return QueryPath
    *  The QueryPath object with the wrapping changes made.
+   * @see wrapAll()
+   * @see wrapInner()
    */
   public function wrap($markup);
   /**
@@ -522,6 +596,8 @@ interface QueryPath {
    *  Markup that will wrap all elements in the current list.
    * @return QueryPath
    *  The QueryPath object with the wrapping changes made.
+   * @see wrap()
+   * @see wrapInner()
    */
   public function wrapAll($markup);
   /**
@@ -535,11 +611,15 @@ interface QueryPath {
    *  Markup that will wrap children of each element in the current list.
    * @return QueryPath
    *  The QueryPath object with the wrapping changes made.
+   * @see wrap()
+   * @see wrapAll()
    */
   public function wrapInner($element);
   
   /**
    * The tag name of the first element in the list.
+   * @return string
+   *  The tag name of the first element in the list.
    */
   public function tag();
   
@@ -552,6 +632,12 @@ interface QueryPath {
    * @return QueryPath
    *  The QueryPath object wrapping <b>the items that were removed</b>.
    *  This remains consistent with the jQuery API.
+   * @see append()
+   * @see prepend()
+   * @see before()
+   * @see after()
+   * @see remove()
+   * @see replaceAll()
    */
   public function replaceWith($new);
   
@@ -566,6 +652,9 @@ interface QueryPath {
    *  A CSS Selector.
    * @return QueryPath
    *  The Query path wrapping a list of removed items.
+   * @see replaceAll()
+   * @see replaceWith()
+   * @see removeChildren()
    */
   public function remove($selector = NULL);
   
@@ -590,6 +679,8 @@ interface QueryPath {
    * @deprecated Due to the fact that this is not a particularly friendly method,
    *  and that it can be easily replicated using {@see replaceWith()}, it is to be 
    *  considered deprecated.
+   * @see remove()
+   * @see replaceWith()
    */
   public function replaceAll($selector, DOMDocument $document);
   
@@ -604,6 +695,10 @@ interface QueryPath {
    *  A valid selector.
    * @return QueryPath
    *  The QueryPath object with the newly added elements.
+   * @see append()
+   * @see after()
+   * @see andSelf()
+   * @see end()
    */
   public function add($selector);
   
@@ -636,6 +731,8 @@ interface QueryPath {
    * @return QueryPath
    *  A QueryPath object reflecting the list of matches prior to the last destructive
    *  operation.
+   * @see andSelf()
+   * @see add()
    */
   public function end();
   
@@ -652,6 +749,8 @@ interface QueryPath {
    * @see end();
    * @return QueryPath
    *  A QueryPath object with the results of the last two "destructive" operations.
+   * @see add()
+   * @see end()
    */
   public function andSelf();
   
@@ -663,6 +762,9 @@ interface QueryPath {
    *
    * @return QueryPath
    *  The QueryPath object with the child nodes removed.
+   * @see replaceWith()
+   * @see replaceAll()
+   * @see remove()
    */
   public function removeChildren();
   
@@ -676,6 +778,11 @@ interface QueryPath {
    *  A valid selector.
    * @return QueryNode
    *  A QueryNode wrapping all of the children.
+   * @see removeChildren()
+   * @see parent()
+   * @see parents()
+   * @see next()
+   * @see prev()
    */
   public function children($selector = NULL);
   
@@ -690,6 +797,10 @@ interface QueryPath {
    * @return QueryPath
    *  A QueryPath object wrapping all child nodes for all elements in the 
    *  QueryPath object.
+   * @see find()
+   * @see text()
+   * @see html()
+   * @see xml()
    */
   public function contents();
   
@@ -714,9 +825,16 @@ interface QueryPath {
    *  A string if no markup was passed, or a QueryPath if markup was passed.
    * @see xml()
    * @see text()
+   * @see contents()
    */
   public function html($markup = NULL);
   
+  /**
+   * Get or set the text contents of a node.
+   * @see html()
+   * @see xml()
+   * @see contents()
+   */
   public function text($text = NULL);
   
   /**
@@ -739,6 +857,7 @@ interface QueryPath {
    *  in, XML representing the first matched element is returned.
    * @see html()
    * @see text()
+   * @see content()
    */
   public function xml($markup = NULL);
   
@@ -751,6 +870,7 @@ interface QueryPath {
    *
    * @return QueryPath
    *  The QueryPath object, unmodified.
+   * @see xml()
    */
   public function writeXML();
   
@@ -760,6 +880,7 @@ interface QueryPath {
    * Write the document to stdout (usually the client).
    * @return QueryPath
    *  The QueryPath object, unmodified.
+   * @see html()
    */
   public function writeHTML();
     
@@ -801,6 +922,10 @@ interface QueryPath {
    *  this expression.
    * @return QueryPath
    *  The QueryPath containing the matched siblings.
+   * @see contents()
+   * @see children()
+   * @see parent()
+   * @see parents()
    */
   public function siblings($selector = NULL);
   
@@ -815,6 +940,10 @@ interface QueryPath {
    *  The QueryPath object.
    * @see nextAll()
    * @see prev()
+   * @see children()
+   * @see contents()
+   * @see parent()
+   * @see parents()
    */
   public function next($selector = NULL);
   
@@ -832,6 +961,8 @@ interface QueryPath {
    *  The QueryPath object, now containing the matching siblings.
    * @see next()
    * @see prevAll()
+   * @see children()
+   * @see siblings()
    */
   public function nextAll($selector = NULL);
   
@@ -849,6 +980,8 @@ interface QueryPath {
    *  found.
    * @see prevAll()
    * @see next()
+   * @see siblings()
+   * @see children()
    */
   public function prev($selector = NULL);
   
@@ -862,6 +995,11 @@ interface QueryPath {
    *  A valid CSS 3 selector.
    * @return QueryPath
    *  The QueryPath object, now wrapping previous sibling elements.
+   * @see prev()
+   * @see nextAll()
+   * @see siblings()
+   * @see contents()
+   * @see children()
    */
   public function prevAll($selector = NULL);
   
@@ -875,6 +1013,9 @@ interface QueryPath {
    *  A valid CSS3 selector.
    * @return QueryPath
    *  A QueryPath object wrapping the matching parents.
+   * @see children()
+   * @see siblings()
+   * @see parents()
    */
   public function parent($selector = NULL);
   /**
@@ -887,6 +1028,8 @@ interface QueryPath {
    *  A valid CSS 3 Selector.
    * @return QueryPath
    *  A QueryPath object containing the matching ancestors.
+   * @see siblings()
+   * @see children()
    */
   public function parents($selector = NULL);
   
@@ -903,6 +1046,10 @@ interface QueryPath {
    *  The name of the class.
    * @return QueryPath
    *  Returns the QueryPath object.
+   * @see css()
+   * @see attr()
+   * @see removeClass()
+   * @see hasClass()
    */
   public function addClass($class);
   /**
@@ -933,6 +1080,9 @@ interface QueryPath {
    *  The class name to remove.
    * @return QueryPath
    *  The modified QueryPath object.
+   * @see attr()
+   * @see addClass()
+   * @see hasClass()
    */
   public function removeClass($class);
   /**
@@ -942,6 +1092,8 @@ interface QueryPath {
    *  The name of the class.
    * @return boolean 
    *  TRUE if the class exists in one or more of the elements, FALSE otherwise.
+   * @see addClass()
+   * @see removeClass()
    */
   public function hasClass($class);
   
@@ -956,6 +1108,7 @@ interface QueryPath {
    *
    * This is a destructive operation, which means that end() will revert
    * the list back to the clone's original.
+   * @see qp()
    */
   public function cloneAll();
 }

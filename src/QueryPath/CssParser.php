@@ -1,8 +1,18 @@
 <?php
 /**
  * CSS selector parsing classes.
+ *
+ * This file contains the tools necessary for parsing CSS 3 selectors.
+ * In the future it may be expanded to handle all of CSS 3.
+ *
+ * The parser contained herein is has an event-based API. Implementors should
+ * begin by implementing the {@link CssEventHandler} interface. For an example
+ * of how this is done, see {@link CssEventHandler.php}.
+ *
  * @package QueryPath
  * @subpackage CSSParser
+ * @author M Butcher <matt@aleph-null.tv>
+ * @license The GNU Lesser GPL (LGPL) or an MIT-like license. 
  */
 
 require_once 'CssEventHandler.php';
@@ -19,35 +29,140 @@ require_once 'CssEventHandler.php';
  * selector fires an event, passing the necessary data on to the event handler.
  */
 interface CssEventHandler {
+  /** The is-exactly (=) operator. */
   const isExactly = 0; // = 
+  /** The contains-with-space operator (~=). */
   const containsWithSpace = 1; // ~=
+  /** The contains-with-hyphen operator (!=). */
   const containsWithHyphen = 2; // |=
+  /** The contains-in-string operator (*=). */
   const containsInString = 3; // *=
+  /** The begins-with operator (^=). */
   const beginsWith = 4; // ^=
+  /** The ends-with operator ($=). */
   const endsWith = 5; // $=
-  
+  /** The any-element operator (*). */
   const anyElement = '*';
   
+  /**
+   * This event is fired when a CSS ID is encountered.
+   * An ID begins with an octothorp: #name.
+   *
+   * @param string $id
+   *  The ID passed in.
+   */
   public function elementID($id); // #name
+  /**
+   * Handle an element name.
+   * Example: name
+   * @param string $name
+   *  The name of the element.
+   */
   public function element($name); // name
+  /**
+   * Handle a namespaced element name.
+   * example: namespace|name
+   * @param string $name
+   *  The tag name.
+   * @param string $namespace
+   *  The namespace identifier (Not the URI)
+   */
   public function elementNS($name, $namespace = NULL);
+  /**
+   * Handle an any-element (*) operator.
+   * Example: *
+   */
   public function anyElement(); // *
+  /**
+   * Handle an any-element operator that is constrained to a namespace.
+   * Example: ns|*
+   * @param string $ns
+   *  The namespace identifier (not the URI).
+   */
   public function anyElementInNS($ns); // ns|*
+  /**
+   * Handle a CSS class selector.
+   * Example: .name
+   * @param string $name 
+   *  The name of the class.
+   */
   public function elementClass($name); // .name
+  /**
+   * Handle an attribute selector.
+   * Example: [name=attr]
+   * Example: [name~=attr]
+   * @param string $name
+   *  The attribute name.
+   * @param string $value
+   *  The value of the attribute, if given.
+   * @param int $operation
+   *  The operation to be used for matching. See {@link CssEventHandler}
+   *  constants for a list of supported operations.
+   */
   public function attribute($name, $value = NULL, $operation = CssEventHandler::isExactly); // [name=attr]
+  /**
+   * Handle an attribute selector bound to a specific namespace.
+   * Example: [ns|name=attr]
+   * Example: [ns|name~=attr]
+   * @param string $name
+   *  The attribute name.
+   * @param string $value
+   *  The value of the attribute, if given.
+   * @param int $operation
+   *  The operation to be used for matching. See {@link CssEventHandler}
+   *  constants for a list of supported operations.
+   * @param string $namespace
+   *  The namespace identifier (not the URI).
+   */
   public function attributeNS($name, $ns, $value = NULL, $operation = CssEventHandler::isExactly);
+  /**
+   * Handle a pseudo-class.
+   * Example: :name(value)
+   * @param string $name
+   *  The pseudo-class name.
+   * @param string $value
+   *  The value, if one is found.
+   */
   public function pseudoClass($name, $value = NULL); //:name(value)
+  /**
+   * Handle a pseudo-element.
+   * Example: ::name
+   * @param string $name
+   *  The pseudo-element name.
+   */
   public function pseudoElement($name); // ::name
+  /**
+   * Handle a direct descendant combinator.
+   * Example: >
+   */
   public function directDescendant(); // >
+  /**
+   * Handle a adjacent combinator.
+   * Example: +
+   */
   public function adjacent(); // +
+  /**
+   * Handle an another-selector combinator.
+   * Example: ,
+   */
   public function anotherSelector(); // ,
+  /**
+   * Handle a sibling combinator.
+   * Example: ~
+   */
   public function sibling(); // ~ combinator
+  /**
+   * Handle an any-descendant combinator.
+   * Example: ' '
+   */
   public function anyDescendant(); // ' ' (space) operator.
   
 }
 
 /**
  * Tokens for CSS.
+ * This class defines the recognized tokens for the parser, and also 
+ * provides utility functions for error reporting.
  */
 final class CssToken {
   const char = 0;
@@ -418,10 +533,12 @@ class CssParser {
    * This will call the CssEventHandler::elementName().
    *
    * This handles:
+   * <code>
    *  name (CssEventHandler::element())
    *  |name (CssEventHandler::element())
    *  ns|name (CssEventHandler::elementNS())
    *  ns|* (CssEventHandler::elementNS())
+   * </code>
    */
   private function elementName() {
     if ($this->DEBUG) print "ELEMENT NAME\n";
@@ -638,6 +755,8 @@ class CssParser {
 
 /**
  * Scanner for CSS selector parsing.
+ *
+ * This provides a simple scanner for traversing an input stream.
  */
 final class CssScanner {
   var $is = NULL;
@@ -649,6 +768,9 @@ final class CssScanner {
   
   /**
    * Given a new input stream, tokenize the CSS selector string.
+   * @see CssInputStream
+   * @param CssInputStream $in
+   *  An input stream to be scanned.
    */
   public function __construct(CssInputStream $in) {
     $this->is = $in;

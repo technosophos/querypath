@@ -1,4 +1,12 @@
 <?php
+/**
+ * Tests for the QueryPath library.
+ * @package QueryPath
+ * @subpackage Tests
+ * @author M Butcher <matt@aleph-null.tv>
+ * @license The GNU Lesser GPL (LGPL) or an MIT-like license.
+ */
+
 require_once 'PHPUnit/Framework.php';
 require_once '../src/QueryPath/QueryPath.php';
 
@@ -10,21 +18,26 @@ require_once '../src/QueryPath/QueryPath.php';
 class QueryPathTests extends PHPUnit_Framework_TestCase {
   
   public function testQueryPathConstructors() {
+    
+    // From XML file
     $file = './data.xml';
     $qp = qp($file);
     $this->assertEquals(1, count($qp->get()));
     $this->assertTrue($qp->get(0) instanceof DOMNode);
     
+    // From XML string
     $str = '<?xml version="1.0" ?><root><inner/></root>';
     $qp = qp($str);
     $this->assertEquals(1, count($qp->get()));
     $this->assertTrue($qp->get(0) instanceof DOMNode);
-
+    
+    // From SimpleXML
     $str = '<?xml version="1.0" ?><root><inner/></root>';    
     $qp = qp(simplexml_load_string($str));
     $this->assertEquals(1, count($qp->get()));
     $this->assertTrue($qp->get(0) instanceof DOMNode);
     
+    // Test from DOMDocument
     $qp = qp(DOMDocument::loadXML($str));
     $this->assertEquals(1, count($qp->get()));
     $this->assertTrue($qp->get(0) instanceof DOMNode);
@@ -37,6 +50,17 @@ class QueryPathTests extends PHPUnit_Framework_TestCase {
     // Test HTML:
     $htmlFile = './data.html';
     $qp = qp($htmlFile);
+    $this->assertEquals(1, count($qp->get()));
+    $this->assertTrue($qp->get(0) instanceof DOMNode);
+    
+    // Test with another QueryPath
+    $qp = qp($qp);
+    $this->assertEquals(1, count($qp->get()));
+    $this->assertTrue($qp->get(0) instanceof DOMNode);
+    
+    // Test from array of DOMNodes
+    $array = $qp->get();
+    $qp = qp($array);
     $this->assertEquals(1, count($qp->get()));
     $this->assertTrue($qp->get(0) instanceof DOMNode);
   }
@@ -64,6 +88,12 @@ class QueryPathTests extends PHPUnit_Framework_TestCase {
     // Check magic nodeType attribute:
     $this->assertEquals(XML_ELEMENT_NODE, qp($file)->find('#head')->attr('nodeType'));
     
+  }
+  
+  public function testCss() {
+    $file = './data.xml';
+    $this->assertEquals('foo: bar', qp($file, 'unary')->css('foo', 'bar')->attr('style'));
+    $this->assertEquals('foo: bar', qp($file, 'unary')->css('foo', 'bar')->css());
   }
   
   public function testRemoveAttr() {

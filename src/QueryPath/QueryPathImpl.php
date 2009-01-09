@@ -3,6 +3,10 @@
  * This file contains the QueryPathImpl, the main implementation of the 
  * QueryPath interface.
  * @see QueryPath
+ * @package QueryPath
+ * @subpackage Internals
+ * @author M Butcher <matt@aleph-null.tv>
+ * @license The GNU Lesser GPL (LGPL) or an MIT-like license.
  */
 
 /**
@@ -11,6 +15,7 @@
  * It provides core services for the Query Path. The class is final.
  * To extend the QueryPath library, you should write a decorator that
  * extends QueryPathExtension.
+ * @see QueryPath
  */
 final class QueryPathImpl implements QueryPath {
   private $document = NULL;
@@ -27,17 +32,16 @@ final class QueryPathImpl implements QueryPath {
     return UniqueElementList::get($list);
   }
   
-  /**
-   * Create a new query path object.
-   * @param mixed $document
-   *  A path, XML/HTML string, DOMNode, DOMDocument, or SimpleXMLElement.
-   */
-  public function __construct($document, $string = NULL, $options = array()) {
+  public function __construct($document = NULL, $string = NULL, $options = array()) {
     $string = trim($string);
     $this->options = $options;
 
     // Figure out if document is DOM, HTML/XML, or a filename
-    if (is_object($document)) {
+    if (empty($document)) {
+      $this->document = new DOMDocument();
+      $this->matches = array();
+    }
+    elseif (is_object($document)) {
       
       if ($document instanceof QueryPath) {
         $this->matches = $document->get();
@@ -133,6 +137,14 @@ final class QueryPathImpl implements QueryPath {
     
     // Always return first match's attr.
     return $this->matches[0]->getAttribute($name);
+  }
+  
+  public function css($name = NULL, $value = '') {
+    if (empty($name)) {
+      return $this->attr('style');
+    }
+    $this->attr('style', $name . ': ' . $value);
+    return $this;
   }
   
   public function removeAttr($name) {
@@ -989,5 +1001,4 @@ final class QueryPathImpl implements QueryPath {
     }
     return $document;
   }
-
 }

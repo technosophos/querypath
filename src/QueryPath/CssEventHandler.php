@@ -112,6 +112,16 @@ class QueryPathCssEventHandler implements CssEventHandler {
     }
   }
   
+  /**
+   * Generic finding method.
+   *
+   * This is the primary searching method used throughout QueryPath.
+   *
+   * @param string $filter
+   *  A valid CSS 3 filter.
+   * @return QueryPathCssEventHandler
+   *  Returns itself.
+   */
   public function find($filter) {
     $parser = new CssParser($filter, $this);
     $parser->parse();
@@ -122,6 +132,11 @@ class QueryPathCssEventHandler implements CssEventHandler {
    * Get the elements that match the evaluated selector.
    *
    * This should be called after the filter has been parsed.
+   *
+   * @return array
+   *  The matched items. This is almost always an array of 
+   *  {@link DOMElement} objects. It is always an instance of
+   *  {@link DOMNode} objects.
    */
   public function getMatches() {
     $result = array_merge($this->alreadyMatched, $this->matches);
@@ -1338,6 +1353,11 @@ class UniqueElementList {
   /**
    * Given an array of elements, return an array of unique elements.
    * Static utility method.
+   *
+   * @param array $list
+   *  An array of objects.
+   * @return 
+   *  An array of objects with all duplicates removed.
    */
   public static function get($list) {
     $uel = new UniqueElementList($list);
@@ -1375,5 +1395,8 @@ class UniqueElementList {
 
 /**
  * Exception thrown for unimplemented CSS.
+ *
+ * This is thrown in cases where some feature is expected, but the current 
+ * implementation does not support that feature.
  */
 class NotImplementedException extends Exception {}
