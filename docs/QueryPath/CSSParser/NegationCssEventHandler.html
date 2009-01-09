@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs For Class NegationCssEventHandler</title>
+			<link rel="stylesheet" href="../../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="class-name">Class NegationCssEventHandler</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+													<a href="#sec-vars">Vars</a>
+						|											<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+						
+					</div>
+	<div class="info-box-body">
+        		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Specialized handler for only parsing the contents of a negation  selector.</p>
+<p class="description"><p>According to the CSS 3 selector specification, the negation pseudo-class  (:not()) can only contain a simple selector with no negation handler and  no pseudo-elements. To meet this requirement, this class implements a  restricted version of the CssEventHandler that will only parse simple  selectors.</p></p>
+	<ul class="tags">
+				<li><span class="field">deprecated:</span> This has been replaced by a full CssEventHandler implementation.</li>
+			</ul>
+		<p class="notes">
+			Located in <a class="field" href="_CssEventHandler.php.html">/CssEventHandler.php</a> (line <span class="field"><a href="../../__filesource/fsource_QueryPath_CSSParser_CssEventHandler.php.html#a1335">1335</a></span>)
+		</p>
+		
+				
+		<pre><a href="../../QueryPath/CSSParser/QueryPathCssEventHandler.html">QueryPathCssEventHandler</a>
+   |
+   --NegationCssEventHandler</pre>
+	
+			</div>
+</div>
+
+
+
+
+	<a name="sec-method-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Method Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+																		<a href="#sec-vars">Vars</a>
+				 
+				|
+						<span class="disabled">Methods</span> (<a href="#sec-methods">details</a>)
+		</div>
+		<div class="info-box-body">			
+			<div class="method-summary">
+																						
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#find" title="details" class="method-name">find</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$filter</span>)
+									</div>
+											</div>
+		</div>
+	</div>		
+
+	<a name="sec-vars"></a>
+	<div class="info-box">
+		<div class="info-box-title">Variables</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+										<a href="#sec-var-summary">Vars</a> (<span class="disabled">details</span>)
+						
+			
+										| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+			
+							<h4>Inherited Variables</h4>
+				<A NAME='inherited_vars'><!-- --></A>
+									<p>Inherited from <span class="classname"><a href="../../QueryPath/CSSParser/QueryPathCssEventHandler.html">QueryPathCssEventHandler</a></span></p>
+					<blockquote>
+													<span class="var-title">
+								<span class="var-name"><a href="../../QueryPath/CSSParser/QueryPathCssEventHandler.html#var$alreadyMatched">QueryPathCssEventHandler::$alreadyMatched</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../../QueryPath/CSSParser/QueryPathCssEventHandler.html#var$dom">QueryPathCssEventHandler::$dom</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../../QueryPath/CSSParser/QueryPathCssEventHandler.html#var$findAnyElement">QueryPathCssEventHandler::$findAnyElement</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../../QueryPath/CSSParser/QueryPathCssEventHandler.html#var$matches">QueryPathCssEventHandler::$matches</a></span><br>
+							</span>
+											</blockquote> 
+										
+		</div>
+	</div>
+	
+	<a name="sec-methods"></a>
+	<div class="info-box">
+		<div class="info-box-title">Methods</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+															<a href="#sec-vars">Vars</a>
+																	<a href="#sec-method-summary">Methods</a> (<span class="disabled">details</span>)
+						
+		</div>
+		<div class="info-box-body">
+			<A NAME='method_detail'></A>
+<a name="methodfind" id="find"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">find</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_CSSParser_CssEventHandler.php.html#a1336">1336</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			find
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$filter</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$filter</span>			</li>
+				</ul>
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../../QueryPath/CSSParser/QueryPathCssEventHandler.html#methodfind">QueryPathCssEventHandler::find()</a></dt>
+						<dd>Generic finding method.</dd>
+					</dl>
+			
+	</div>
+							<h4>Inherited Methods</h4>
+				<a name='inherited_methods'><!-- --></a>	
+									<!-- =========== Summary =========== -->
+					<p>Inherited From <span class="classname"><a href="../../QueryPath/CSSParser/QueryPathCssEventHandler.html">QueryPathCssEventHandler</a></span></p>
+					<blockquote>
+													<span class="method-name"><a href="../../QueryPath/CSSParser/QueryPathCssEventHandler.html#method__construct">QueryPathCssEventHandler::__construct()</a></span><br>
+													<span class="method-name"><a href="../../QueryPath/CSSParser/QueryPathCssEventHandler.html#methodadjacent">QueryPathCssEventHandler::adjacent()</a></span><br>
+													<span class="method-name"><a href="../../QueryPath/CSSParser/QueryPathCssEventHandler.html#methodanotherSelector">QueryPathCssEventHandler::anotherSelector()</a></span><br>
+													<span class="method-name"><a href="../../QueryPath/CSSParser/QueryPathCssEventHandler.html#methodanyDescendant">QueryPathCssEventHandler::anyDescendant()</a></span><br>
+													<span class="method-name"><a href="../../QueryPath/CSSParser/QueryPathCssEventHandler.html#methodanyElement">QueryPathCssEventHandler::anyElement()</a></span><br>
+													<span class="method-name"><a href="../../QueryPath/CSSParser/QueryPathCssEventHandler.html#methodanyElementInNS">QueryPathCssEventHandler::anyElementInNS()</a></span><br>
+													<span class="method-name"><a href="../../QueryPath/CSSParser/QueryPathCssEventHandler.html#methodattribute">QueryPathCssEventHandler::attribute()</a></span><br>
+													<span class="method-name"><a href="../../QueryPath/CSSParser/QueryPathCssEventHandler.html#methodattributeNS">QueryPathCssEventHandler::attributeNS()</a></span><br>
+													<span class="method-name"><a href="../../QueryPath/CSSParser/QueryPathCssEventHandler.html#methodattrValMatches">QueryPathCssEventHandler::attrValMatches()</a></span><br>
+													<span class="method-name"><a href="../../QueryPath/CSSParser/QueryPathCssEventHandler.html#methodchildAtIndex">QueryPathCssEventHandler::childAtIndex()</a></span><br>
+													<span class="method-name"><a href="../../QueryPath/CSSParser/QueryPathCssEventHandler.html#methoddirectDescendant">QueryPathCssEventHandler::directDescendant()</a></span><br>
+													<span class="method-name"><a href="../../QueryPath/CSSParser/QueryPathCssEventHandler.html#methodelement">QueryPathCssEventHandler::element()</a></span><br>
+													<span class="method-name"><a href="../../QueryPath/CSSParser/QueryPathCssEventHandler.html#methodelementClass">QueryPathCssEventHandler::elementClass()</a></span><br>
+													<span class="method-name"><a href="../../QueryPath/CSSParser/QueryPathCssEventHandler.html#methodelementID">QueryPathCssEventHandler::elementID()</a></span><br>
+													<span class="method-name"><a href="../../QueryPath/CSSParser/QueryPathCssEventHandler.html#methodelementNS">QueryPathCssEventHandler::elementNS()</a></span><br>
+													<span class="method-name"><a href="../../QueryPath/CSSParser/QueryPathCssEventHandler.html#methodemptyElement">QueryPathCssEventHandler::emptyElement()</a></span><br>
+													<span class="method-name"><a href="../../QueryPath/CSSParser/QueryPathCssEventHandler.html#methodfind">QueryPathCssEventHandler::find()</a></span><br>
+													<span class="method-name"><a href="../../QueryPath/CSSParser/QueryPathCssEventHandler.html#methodfirstOfType">QueryPathCssEventHandler::firstOfType()</a></span><br>
+													<span class="method-name"><a href="../../QueryPath/CSSParser/QueryPathCssEventHandler.html#methodgetMatches">QueryPathCssEventHandler::getMatches()</a></span><br>
+													<span class="method-name"><a href="../../QueryPath/CSSParser/QueryPathCssEventHandler.html#methodhas">QueryPathCssEventHandler::has()</a></span><br>
+													<span class="method-name"><a href="../../QueryPath/CSSParser/QueryPathCssEventHandler.html#methodlang">QueryPathCssEventHandler::lang()</a></span><br>
+													<span class="method-name"><a href="../../QueryPath/CSSParser/QueryPathCssEventHandler.html#methodlastOfType">QueryPathCssEventHandler::lastOfType()</a></span><br>
+													<span class="method-name"><a href="../../QueryPath/CSSParser/QueryPathCssEventHandler.html#methodlistPeerElements">QueryPathCssEventHandler::listPeerElements()</a></span><br>
+													<span class="method-name"><a href="../../QueryPath/CSSParser/QueryPathCssEventHandler.html#methodnodeListToArray">QueryPathCssEventHandler::nodeListToArray()</a></span><br>
+													<span class="method-name"><a href="../../QueryPath/CSSParser/QueryPathCssEventHandler.html#methodnot">QueryPathCssEventHandler::not()</a></span><br>
+													<span class="method-name"><a href="../../QueryPath/CSSParser/QueryPathCssEventHandler.html#methodnthChild">QueryPathCssEventHandler::nthChild()</a></span><br>
+													<span class="method-name"><a href="../../QueryPath/CSSParser/QueryPathCssEventHandler.html#methodnthLastChild">QueryPathCssEventHandler::nthLastChild()</a></span><br>
+													<span class="method-name"><a href="../../QueryPath/CSSParser/QueryPathCssEventHandler.html#methodnthLastOfTypeChild">QueryPathCssEventHandler::nthLastOfTypeChild()</a></span><br>
+													<span class="method-name"><a href="../../QueryPath/CSSParser/QueryPathCssEventHandler.html#methodnthOfTypeChild">QueryPathCssEventHandler::nthOfTypeChild()</a></span><br>
+													<span class="method-name"><a href="../../QueryPath/CSSParser/QueryPathCssEventHandler.html#methodonlyChild">QueryPathCssEventHandler::onlyChild()</a></span><br>
+													<span class="method-name"><a href="../../QueryPath/CSSParser/QueryPathCssEventHandler.html#methodonlyOfType">QueryPathCssEventHandler::onlyOfType()</a></span><br>
+													<span class="method-name"><a href="../../QueryPath/CSSParser/QueryPathCssEventHandler.html#methodparseAnB">QueryPathCssEventHandler::parseAnB()</a></span><br>
+													<span class="method-name"><a href="../../QueryPath/CSSParser/QueryPathCssEventHandler.html#methodpseudoClass">QueryPathCssEventHandler::pseudoClass()</a></span><br>
+													<span class="method-name"><a href="../../QueryPath/CSSParser/QueryPathCssEventHandler.html#methodpseudoElement">QueryPathCssEventHandler::pseudoElement()</a></span><br>
+													<span class="method-name"><a href="../../QueryPath/CSSParser/QueryPathCssEventHandler.html#methodsearchForAttr">QueryPathCssEventHandler::searchForAttr()</a></span><br>
+													<span class="method-name"><a href="../../QueryPath/CSSParser/QueryPathCssEventHandler.html#methodsibling">QueryPathCssEventHandler::sibling()</a></span><br>
+											</blockquote>
+										
+		</div>
+	</div>
+
+
+	<p class="notes" id="credit">
+		Documentation generated on Fri, 09 Jan 2009 00:28:52 -0600 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.2</a>
+	</p>
+	</div></body>
+</html>

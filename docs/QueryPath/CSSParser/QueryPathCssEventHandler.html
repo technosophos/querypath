@@ -1,0 +1,1585 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs For Class QueryPathCssEventHandler</title>
+			<link rel="stylesheet" href="../../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="class-name">Class QueryPathCssEventHandler</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+							<a href="#sec-descendents">Descendents</a>
+			|											<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+						|											<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+						
+					</div>
+	<div class="info-box-body">
+                <p class="implements">
+            Implements interfaces:
+            <ul>
+                <li><a href="../../QueryPath/CSSParser/CssEventHandler.html">CssEventHandler</a></li>            </ul>
+        </p>
+        		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Handler that tracks progress of a query through a DOM.</p>
+<p class="description"><p>The main idea is that we keep a copy of the tree, and then use an  array to keep track of matches. To handle a list of selectors (using  the comma separator), we have to track both the currently progressing  match and the previously matched elements.</p><p>To use this handler:  <div class="src-code"><ol><li><div class="src-line">&nbsp;<span class="src-var">$filter&nbsp;</span>=&nbsp;<span class="src-str">'#id'</span><span class="src-sym">;&nbsp;</span><span class="src-comm">//&nbsp;Some&nbsp;CSS&nbsp;selector</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$handler&nbsp;</span>=&nbsp;<span class="src-key">new&nbsp;</span><span class="src-id">QueryPathCssParser</span><span class="src-sym">(</span><span class="src-id">DOMNode&nbsp;</span><span class="src-var">$dom</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$parser&nbsp;</span>=&nbsp;<span class="src-key">new&nbsp;</span><span class="src-id"><a href="../../QueryPath/CSSParser/CssParser.html">CssParser</a></span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$parser</span><span class="src-sym">-&gt;</span><span class="src-id">parse</span><span class="src-sym">(</span><span class="src-var">$filter</span><span class="src-sym">,&nbsp;</span><span class="src-var">$handler</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$matches&nbsp;</span>=&nbsp;<span class="src-var">$handler</span><span class="src-sym">-&gt;</span><a href="../../QueryPath/CSSParser/QueryPathCssEventHandler.html#methodgetMatches">getMatches</a><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol></div></p><p>$matches will be an array of zero or more DOMElement objects.</p></p>
+		<p class="notes">
+			Located in <a class="field" href="_CssEventHandler.php.html">/CssEventHandler.php</a> (line <span class="field"><a href="../../__filesource/fsource_QueryPath_CSSParser_CssEventHandler.php.html#a65">65</a></span>)
+		</p>
+		
+				
+		<pre></pre>
+	
+			</div>
+</div>
+
+	<a name="sec-descendents"></a>
+	<div class="info-box">
+		<div class="info-box-title">Direct descendents</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+			<span class="disabled">Descendents</span>
+			|												<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+								|															<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+								</div>
+		<div class="info-box-body">
+			<table cellpadding="2" cellspacing="0" class="class-table">
+				<tr>
+					<th class="class-table-header">Class</th>
+					<th class="class-table-header">Description</th>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../QueryPath/CSSParser/NegationCssEventHandler.html">NegationCssEventHandler</a></td>
+					<td>
+											Specialized handler for only parsing the contents of a negation  selector.
+										</td>
+				</tr>
+							</table>
+		</div>
+	</div>
+
+
+	<a name="sec-var-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Variable Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+							<a href="#sec-descendents">Descendents</a> |
+						<span class="disabled">Vars</span> (<a href="#sec-vars">details</a>)
+							| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+								</div>
+		<div class="info-box-body">
+			<div class="var-summary">
+																																																<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$alreadyMatched" title="details" class="var-name">$alreadyMatched</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$dom" title="details" class="var-name">$dom</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$findAnyElement" title="details" class="var-name">$findAnyElement</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$matches" title="details" class="var-name">$matches</a>
+				</div>
+											</div>
+		</div>
+	</div>
+
+	<a name="sec-method-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Method Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+							<a href="#sec-descendents">Descendents</a> |
+																		<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+				 
+				|
+						<span class="disabled">Methods</span> (<a href="#sec-methods">details</a>)
+		</div>
+		<div class="info-box-body">			
+			<div class="method-summary">
+																																																																																																																																																																																																																																																																																																														
+				<div class="method-definition">
+											<span class="method-result">QueryPathCssEventHandler</span>
+										<a href="#__construct" title="details" class="method-name">__construct</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$dom</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#adjacent" title="details" class="method-name">adjacent</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#anotherSelector" title="details" class="method-name">anotherSelector</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#anyDescendant" title="details" class="method-name">anyDescendant</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#anyElement" title="details" class="method-name">anyElement</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#anyElementInNS" title="details" class="method-name">anyElementInNS</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$ns</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#attribute" title="details" class="method-name">attribute</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$name</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$value</span> = <span class="var-default">NULL</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$operation</span> = <span class="var-default">CssEventHandler::isExactly</span>])
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#attributeNS" title="details" class="method-name">attributeNS</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$lname</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$ns</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$value</span> = <span class="var-default">NULL</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$operation</span> = <span class="var-default">CssEventHandler::isExactly</span>])
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#attrValMatches" title="details" class="method-name">attrValMatches</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$needle</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$haystack</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$operation</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#childAtIndex" title="details" class="method-name">childAtIndex</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$index</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$tagName</span> = <span class="var-default">NULL</span>])
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#directDescendant" title="details" class="method-name">directDescendant</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#element" title="details" class="method-name">element</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$name</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#elementClass" title="details" class="method-name">elementClass</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$name</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#elementID" title="details" class="method-name">elementID</a>
+											(<span class="var-type">$id</span>&nbsp;<span class="var-name">$id</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#elementNS" title="details" class="method-name">elementNS</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$lname</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$namespace</span> = <span class="var-default">NULL</span>])
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#emptyElement" title="details" class="method-name">emptyElement</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result"><a href="../../QueryPath/CSSParser/QueryPathCssEventHandler.html">QueryPathCssEventHandler</a></span>
+										<a href="#find" title="details" class="method-name">find</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$filter</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#firstOfType" title="details" class="method-name">firstOfType</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">array</span>
+										<a href="#getMatches" title="details" class="method-name">getMatches</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#has" title="details" class="method-name">has</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$filter</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#lang" title="details" class="method-name">lang</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$value</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#lastOfType" title="details" class="method-name">lastOfType</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">Array</span>
+										<a href="#listPeerElements" title="details" class="method-name">listPeerElements</a>
+											(<span class="var-type">$element</span>&nbsp;<span class="var-name">$element</span>, [<span class="var-type">$requireSameTag</span>&nbsp;<span class="var-name">$requireSameTag</span> = <span class="var-default">FALSE</span>])
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#nodeListToArray" title="details" class="method-name">nodeListToArray</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$nodeList</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#not" title="details" class="method-name">not</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$filter</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#nthChild" title="details" class="method-name">nthChild</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$groupSize</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$elementInGroup</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#nthLastChild" title="details" class="method-name">nthLastChild</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$groupSize</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$elementInGroup</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#nthLastOfTypeChild" title="details" class="method-name">nthLastOfTypeChild</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$groupSize</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$elementInGroup</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#nthOfTypeChild" title="details" class="method-name">nthOfTypeChild</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$groupSize</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$elementInGroup</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#onlyChild" title="details" class="method-name">onlyChild</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#onlyOfType" title="details" class="method-name">onlyOfType</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">Array</span>
+										<a href="#parseAnB" title="details" class="method-name">parseAnB</a>
+											(<span class="var-type">$rule</span>&nbsp;<span class="var-name">$rule</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#pseudoClass" title="details" class="method-name">pseudoClass</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$name</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$value</span> = <span class="var-default">NULL</span>])
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#pseudoElement" title="details" class="method-name">pseudoElement</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$name</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#searchForAttr" title="details" class="method-name">searchForAttr</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$name</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$value</span> = <span class="var-default">NULL</span>])
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#sibling" title="details" class="method-name">sibling</a>
+										()
+									</div>
+											</div>
+		</div>
+	</div>		
+
+	<a name="sec-vars"></a>
+	<div class="info-box">
+		<div class="info-box-title">Variables</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+							<a href="#sec-descendents">Descendents</a> |
+										<a href="#sec-var-summary">Vars</a> (<span class="disabled">details</span>)
+						
+			
+										| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+			
+<a name="var$alreadyMatched" id="$alreadyMatched"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$alreadyMatched</span>
+			 = <span class="var-default">array()</span>			(line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_CSSParser_CssEventHandler.php.html#a68">68</a></span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+		
+		
+
+</div>
+<a name="var$dom" id="$dom"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$dom</span>
+			 = <span class="var-default"> NULL</span>			(line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_CSSParser_CssEventHandler.php.html#a66">66</a></span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+		
+		
+
+</div>
+<a name="var$findAnyElement" id="$findAnyElement"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$findAnyElement</span>
+			 = <span class="var-default"> TRUE</span>			(line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_CSSParser_CssEventHandler.php.html#a69">69</a></span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+		
+		
+
+</div>
+<a name="var$matches" id="$matches"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$matches</span>
+			 = <span class="var-default"> NULL</span>			(line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_CSSParser_CssEventHandler.php.html#a67">67</a></span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+		
+		
+
+</div>
+						
+		</div>
+	</div>
+	
+	<a name="sec-methods"></a>
+	<div class="info-box">
+		<div class="info-box-title">Methods</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+							<a href="#sec-descendents">Descendents</a> |
+															<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+																	<a href="#sec-method-summary">Methods</a> (<span class="disabled">details</span>)
+						
+		</div>
+		<div class="info-box-body">
+			<A NAME='method_detail'></A>
+<a name="method__construct" id="__construct"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">Constructor __construct</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_CSSParser_CssEventHandler.php.html#a75">75</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Create a new event handler.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">QueryPathCssEventHandler</span>
+		<span class="method-name">
+			__construct
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$dom</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$dom</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodadjacent" id="adjacent"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">adjacent</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_CSSParser_CssEventHandler.php.html#a1208">1208</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">For an element to be adjacent to another, it must be THE NEXT NODE  in the node list. So if an element is surrounded by pcdata, there are  no adjacent nodes. E.g. in &lt;a/&gt;FOO&lt;b/&gt;, the a and b elements are not  adjacent.</p>
+<p class="description"><p>In a strict DOM parser, line breaks and empty spaces are nodes. That means  nodes like this will not be adjacent: &lt;test/&gt; &lt;test/&gt;. The space between  them makes them non-adjacent. If this is not the desired behavior, pass  in the appropriate flags to your parser. Example:  <div class="src-code"><ol><li><div class="src-line">&nbsp;<span class="src-var">$doc&nbsp;</span>=&nbsp;<span class="src-key">new&nbsp;</span><span class="src-id">DomDocument</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$doc</span><span class="src-sym">-&gt;</span><span class="src-id">loadXML</span><span class="src-sym">(</span><span class="src-str">'&lt;test/&gt;&nbsp;&lt;test/&gt;'</span><span class="src-sym">,&nbsp;</span><span class="src-id">LIBXML_NOBLANKS</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol></div></p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			adjacent
+		</span>
+				()
+			</div>
+	
+		
+				<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../../QueryPath/CSSParser/CssEventHandler.html#methodadjacent">CssEventHandler::adjacent()</a></dt>
+						<dd>Handle a adjacent combinator.</dd>
+					</dl>
+			
+	</div>
+<a name="methodanotherSelector" id="anotherSelector"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">anotherSelector</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_CSSParser_CssEventHandler.php.html#a1220">1220</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			anotherSelector
+		</span>
+				()
+			</div>
+	
+		
+				<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../../QueryPath/CSSParser/CssEventHandler.html#methodanotherSelector">CssEventHandler::anotherSelector()</a></dt>
+						<dd>Handle an another-selector combinator.</dd>
+					</dl>
+			
+	</div>
+<a name="methodanyDescendant" id="anyDescendant"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">anyDescendant</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_CSSParser_CssEventHandler.php.html#a1262">1262</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Get any descendant.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			anyDescendant
+		</span>
+				()
+			</div>
+	
+		
+				<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../../QueryPath/CSSParser/CssEventHandler.html#methodanyDescendant">CssEventHandler::anyDescendant()</a></dt>
+						<dd>Handle an any-descendant combinator.</dd>
+					</dl>
+			
+	</div>
+<a name="methodanyElement" id="anyElement"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">anyElement</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_CSSParser_CssEventHandler.php.html#a204">204</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			anyElement
+		</span>
+				()
+			</div>
+	
+		
+				<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../../QueryPath/CSSParser/CssEventHandler.html#methodanyElement">CssEventHandler::anyElement()</a></dt>
+						<dd>Handle an any-element (*) operator.</dd>
+					</dl>
+			
+	</div>
+<a name="methodanyElementInNS" id="anyElementInNS"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">anyElementInNS</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_CSSParser_CssEventHandler.php.html#a217">217</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			anyElementInNS
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$ns</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$ns</span>			</li>
+				</ul>
+		
+				<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../../QueryPath/CSSParser/CssEventHandler.html#methodanyElementInNS">CssEventHandler::anyElementInNS()</a></dt>
+						<dd>Handle an any-element operator that is constrained to a namespace.</dd>
+					</dl>
+			
+	</div>
+<a name="methodattribute" id="attribute"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">attribute</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_CSSParser_CssEventHandler.php.html#a235">235</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			attribute
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$name</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$value</span> = <span class="var-default">NULL</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$operation</span> = <span class="var-default">CssEventHandler::isExactly</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$name</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$value</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$operation</span>			</li>
+				</ul>
+		
+				<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../../QueryPath/CSSParser/CssEventHandler.html#methodattribute">CssEventHandler::attribute()</a></dt>
+						<dd>Handle an attribute selector.</dd>
+					</dl>
+			
+	</div>
+<a name="methodattributeNS" id="attributeNS"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">attributeNS</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_CSSParser_CssEventHandler.php.html#a280">280</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			attributeNS
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$lname</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$ns</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$value</span> = <span class="var-default">NULL</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$operation</span> = <span class="var-default">CssEventHandler::isExactly</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$lname</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$ns</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$value</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$operation</span>			</li>
+				</ul>
+		
+				<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../../QueryPath/CSSParser/CssEventHandler.html#methodattributeNS">CssEventHandler::attributeNS()</a></dt>
+						<dd>Handle an attribute selector bound to a specific namespace.</dd>
+					</dl>
+			
+	</div>
+<a name="methodattrValMatches" id="attrValMatches"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">attrValMatches</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_CSSParser_CssEventHandler.php.html#a1109">1109</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Check for attr value matches based on an operation.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			attrValMatches
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$needle</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$haystack</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$operation</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$needle</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$haystack</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$operation</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodchildAtIndex" id="childAtIndex"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">childAtIndex</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_CSSParser_CssEventHandler.php.html#a864">864</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Get the nth child (by index) from matching candidates.</p>
+<p class="description"><p>This is used by pseudo-class handlers.</p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			childAtIndex
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$index</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$tagName</span> = <span class="var-default">NULL</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$index</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$tagName</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methoddirectDescendant" id="directDescendant"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">directDescendant</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_CSSParser_CssEventHandler.php.html#a1179">1179</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			directDescendant
+		</span>
+				()
+			</div>
+	
+		
+				<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../../QueryPath/CSSParser/CssEventHandler.html#methoddirectDescendant">CssEventHandler::directDescendant()</a></dt>
+						<dd>Handle a direct descendant combinator.</dd>
+					</dl>
+			
+	</div>
+<a name="methodelement" id="element"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">element</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_CSSParser_CssEventHandler.php.html#a170">170</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			element
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$name</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$name</span>			</li>
+				</ul>
+		
+				<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../../QueryPath/CSSParser/CssEventHandler.html#methodelement">CssEventHandler::element()</a></dt>
+						<dd>Handle an element name.</dd>
+					</dl>
+			
+	</div>
+<a name="methodelementClass" id="elementClass"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">elementClass</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_CSSParser_CssEventHandler.php.html#a221">221</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			elementClass
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$name</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$name</span>			</li>
+				</ul>
+		
+				<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../../QueryPath/CSSParser/CssEventHandler.html#methodelementClass">CssEventHandler::elementClass()</a></dt>
+						<dd>Handle a CSS class selector.</dd>
+					</dl>
+			
+	</div>
+<a name="methodelementID" id="elementID"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">elementID</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_CSSParser_CssEventHandler.php.html#a155">155</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Find any element with the ID that matches $id.</p>
+<p class="description"><p>If this finds an ID, it will immediately quit. Essentially, it doesn't  enforce ID uniqueness, but it assumes it.</p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			elementID
+		</span>
+					(<span class="var-type">$id</span>&nbsp;<span class="var-name">$id</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">$id</span>
+				<span class="var-name">$id</span><span class="var-description">: String ID for an element.</span>			</li>
+				</ul>
+		
+				<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../../QueryPath/CSSParser/CssEventHandler.html#methodelementID">CssEventHandler::elementID()</a></dt>
+						<dd>This event is fired when a CSS ID is encountered.</dd>
+					</dl>
+			
+	</div>
+<a name="methodelementNS" id="elementNS"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">elementNS</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_CSSParser_CssEventHandler.php.html#a190">190</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			elementNS
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$lname</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$namespace</span> = <span class="var-default">NULL</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$lname</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$namespace</span>			</li>
+				</ul>
+		
+				<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../../QueryPath/CSSParser/CssEventHandler.html#methodelementNS">CssEventHandler::elementNS()</a></dt>
+						<dd>Handle a namespaced element name.</dd>
+					</dl>
+			
+	</div>
+<a name="methodemptyElement" id="emptyElement"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">emptyElement</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_CSSParser_CssEventHandler.php.html#a1064">1064</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Pseudo-class handler for :empty.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			emptyElement
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodfind" id="find"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">find</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_CSSParser_CssEventHandler.php.html#a125">125</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Generic finding method.</p>
+<p class="description"><p>This is the primary searching method used throughout QueryPath.</p></p>
+	<ul class="tags">
+				<li><span class="field">return:</span> Returns itself.</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result"><a href="../../QueryPath/CSSParser/QueryPathCssEventHandler.html">QueryPathCssEventHandler</a></span>
+		<span class="method-name">
+			find
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$filter</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$filter</span><span class="var-description">: A valid CSS 3 filter.</span>			</li>
+				</ul>
+		
+			
+			<hr class="separator" />
+		<div class="notes">Redefined in descendants as:</div>
+		<ul class="redefinitions">
+					<li>
+				<a href="../../QueryPath/CSSParser/NegationCssEventHandler.html#methodfind">NegationCssEventHandler::find()</a>
+							</li>
+				</ul>
+	</div>
+<a name="methodfirstOfType" id="firstOfType"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">firstOfType</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_CSSParser_CssEventHandler.php.html#a998">998</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Pseudo-class handler for :first-of-type.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			firstOfType
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetMatches" id="getMatches"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">getMatches</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_CSSParser_CssEventHandler.php.html#a141">141</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Get the elements that match the evaluated selector.</p>
+<p class="description"><p>This should be called after the filter has been parsed.</p></p>
+	<ul class="tags">
+				<li><span class="field">return:</span> The matched items. This is almost always an array of   DOMElement objects. It is always an instance of   DOMNode objects.</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">array</span>
+		<span class="method-name">
+			getMatches
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodhas" id="has"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">has</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_CSSParser_CssEventHandler.php.html#a981">981</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Pseudo-class handler for :has(filter).</p>
+<p class="description"><p>This can also be used as a general filtering routine.</p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			has
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$filter</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$filter</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodlang" id="lang"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">lang</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_CSSParser_CssEventHandler.php.html#a928">928</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			lang
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$value</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$value</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodlastOfType" id="lastOfType"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">lastOfType</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_CSSParser_CssEventHandler.php.html#a1019">1019</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Pseudo-class handler for :last-of-type.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			lastOfType
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodlistPeerElements" id="listPeerElements"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">listPeerElements</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_CSSParser_CssEventHandler.php.html#a838">838</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Get a list of peer elements.</p>
+<p class="description"><p>If $requireSameTag is TRUE, then only peer elements with the same  tagname as the given element will be returned.</p></p>
+	<ul class="tags">
+				<li><span class="field">return:</span> of peer elements.</li>
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">Array</span>
+		<span class="method-name">
+			listPeerElements
+		</span>
+					(<span class="var-type">$element</span>&nbsp;<span class="var-name">$element</span>, [<span class="var-type">$requireSameTag</span>&nbsp;<span class="var-name">$requireSameTag</span> = <span class="var-default">FALSE</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">$element</span>
+				<span class="var-name">$element</span><span class="var-description">: A DomElement.</span>			</li>
+					<li>
+				<span class="var-type">$requireSameTag</span>
+				<span class="var-name">$requireSameTag</span><span class="var-description">: Boolean flag indicating whether all matches should have the same   element name (tagName) as $element.</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodnodeListToArray" id="nodeListToArray"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">nodeListToArray</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_CSSParser_CssEventHandler.php.html#a1311">1311</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			nodeListToArray
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$nodeList</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$nodeList</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodnot" id="not"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">not</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_CSSParser_CssEventHandler.php.html#a962">962</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Pseudo-class handler for :not(filter).</p>
+<p class="description"><p>This does not follow the specification in the following way: The CSS 3  selector spec says the value of not() must be a simple selector. This  function allows complex selectors.</p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			not
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$filter</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$filter</span><span class="var-description">: A CSS selector.</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodnthChild" id="nthChild"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">nthChild</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_CSSParser_CssEventHandler.php.html#a586">586</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			nthChild
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$groupSize</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$elementInGroup</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$groupSize</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$elementInGroup</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodnthLastChild" id="nthLastChild"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">nthLastChild</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_CSSParser_CssEventHandler.php.html#a723">723</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			nthLastChild
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$groupSize</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$elementInGroup</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$groupSize</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$elementInGroup</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodnthLastOfTypeChild" id="nthLastOfTypeChild"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">nthLastOfTypeChild</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_CSSParser_CssEventHandler.php.html#a924">924</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			nthLastOfTypeChild
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$groupSize</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$elementInGroup</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$groupSize</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$elementInGroup</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodnthOfTypeChild" id="nthOfTypeChild"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">nthOfTypeChild</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_CSSParser_CssEventHandler.php.html#a920">920</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			nthOfTypeChild
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$groupSize</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$elementInGroup</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$groupSize</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$elementInGroup</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodonlyChild" id="onlyChild"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">onlyChild</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_CSSParser_CssEventHandler.php.html#a1041">1041</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Pseudo-class handler for :only-child.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			onlyChild
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodonlyOfType" id="onlyOfType"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">onlyOfType</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_CSSParser_CssEventHandler.php.html#a1087">1087</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Pseudo-class handler for :only-of-type.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			onlyOfType
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodparseAnB" id="parseAnB"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">parseAnB</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_CSSParser_CssEventHandler.php.html#a563">563</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Parse an an+b rule for CSS pseudo-classes.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> (list($aVal, $bVal)) of the two values.</li>
+				<li><span class="field">throws:</span> CssParseException   If the rule does not follow conventions.</li>
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">Array</span>
+		<span class="method-name">
+			parseAnB
+		</span>
+					(<span class="var-type">$rule</span>&nbsp;<span class="var-name">$rule</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">$rule</span>
+				<span class="var-name">$rule</span><span class="var-description">: Some rule in the an+b format.</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodpseudoClass" id="pseudoClass"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">pseudoClass</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_CSSParser_CssEventHandler.php.html#a315">315</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">This also supports the following nonstandard pseudo classes:</p>
+<p class="description"><p><ul><li>:x-reset/:x-root (reset to the main item passed into the constructor. Less drastic than :root)</li><li>:odd/:even (shorthand for :nth-child(odd)/:nth-child(even))</li></ul></p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			pseudoClass
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$name</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$value</span> = <span class="var-default">NULL</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$name</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$value</span>			</li>
+				</ul>
+		
+				<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../../QueryPath/CSSParser/CssEventHandler.html#methodpseudoClass">CssEventHandler::pseudoClass()</a></dt>
+						<dd>Handle a pseudo-class.</dd>
+					</dl>
+			
+	</div>
+<a name="methodpseudoElement" id="pseudoElement"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">pseudoElement</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_CSSParser_CssEventHandler.php.html#a1140">1140</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">As the spec mentions, these must be at the end of a selector or  else they will cause errors. Most selectors return elements. Pseudo-elements  do not.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			pseudoElement
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$name</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$name</span>			</li>
+				</ul>
+		
+				<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../../QueryPath/CSSParser/CssEventHandler.html#methodpseudoElement">CssEventHandler::pseudoElement()</a></dt>
+						<dd>Handle a pseudo-element.</dd>
+					</dl>
+			
+	</div>
+<a name="methodsearchForAttr" id="searchForAttr"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">searchForAttr</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_CSSParser_CssEventHandler.php.html#a261">261</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Helper function to find all elements with exact matches.</p>
+	<ul class="tags">
+				<li><span class="field">deprecated:</span> All use cases seem to be covered by attribute().</li>
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			searchForAttr
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$name</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$value</span> = <span class="var-default">NULL</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$name</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$value</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsibling" id="sibling"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">sibling</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_CSSParser_CssEventHandler.php.html#a1240">1240</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Get all nodes that are siblings to currently selected nodes.</p>
+<p class="description"><p>If two passed in items are siblings of each other, neither will  be included in the list of siblings. Their status as being candidates  excludes them from being considered siblings.</p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			sibling
+		</span>
+				()
+			</div>
+	
+		
+				<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../../QueryPath/CSSParser/CssEventHandler.html#methodsibling">CssEventHandler::sibling()</a></dt>
+						<dd>Handle a sibling combinator.</dd>
+					</dl>
+			
+	</div>
+						
+		</div>
+	</div>
+
+
+	<p class="notes" id="credit">
+		Documentation generated on Fri, 09 Jan 2009 00:28:52 -0600 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.2</a>
+	</p>
+	</div></body>
+</html>
