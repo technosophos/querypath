@@ -36,12 +36,14 @@ final class QueryPathImpl implements QueryPath {
     $string = trim($string);
     $this->options = $options;
 
-    // Figure out if document is DOM, HTML/XML, or a filename
+    // Empty: Just create an empty QP.
     if (empty($document)) {
       $this->document = new DOMDocument();
       $this->matches = array();
+      return;
     }
-    elseif (is_object($document)) {
+    // Figure out if document is DOM, HTML/XML, or a filename
+    if (is_object($document)) {
       
       if ($document instanceof QueryPath) {
         $this->matches = $document->get();
@@ -143,7 +145,18 @@ final class QueryPathImpl implements QueryPath {
     if (empty($name)) {
       return $this->attr('style');
     }
-    $this->attr('style', $name . ': ' . $value);
+    $format = '%s: %s';
+    if (is_array($name)) {
+      $buf = array();
+      foreach ($name as $key => $val) {
+        $buf[] = sprintf($format, $key, $val);
+      }
+      implode(';', $buf);
+    }
+    else {
+      $css = sprintf($format, $name, $value);
+    }
+    $this->attr('style', $css);
     return $this;
   }
   

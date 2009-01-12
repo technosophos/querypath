@@ -28,9 +28,9 @@
         </p>
         		<!-- ========== Info from phpDoc block ========= -->
 <p class="short-description">The extension class for Query Path.</p>
-<p class="description"><p>This class is used to build extensions to the Query Path library.  To create a new custom Query Path extension, create a new class that  extends this, add your own methods, and then register it. The extension  will then be automatically available.</p></p>
+<p class="description"><p>This class is used to build extensions to the Query Path library.  To create a new custom Query Path extension, create a new class that  extends this, add your own methods, and then register it. The extension  will then be automatically available.</p><p>How this class works:</p><p>The extension mechanism for QueryPath uses a Decorator pattern.  Essentially, each extension creates a new wrapper around the main QueryPath  implementation. This class provides the generic decorator implementation. All other  extensions should extend this class.</p><p>Since extensions are decorators, they can reliably trap and override the behavior  of functions. So you gain the main advantages of inheritance. But You also gain two  major additional advantages: You get what equates to 'multiple inheritance'. Many  different extensions can wrap a single QueryPath, essentially combining many  QueryPath-like objects.</p><p>The second advantage is explicit orderability. You can determine based on order of  import which extensions will be fired last (first imported) and which will be fired  first (last imported). This gives you an additional degree of control.</p><p>Of course, all of the downsides to multiple inheritance are present in a decorator  pattern: You can have undefined behaviors when multiple decorator classes override  the same base method. You can also have difficult-to-debug issues when many  different classes *could* be responsible for errant behavior.</p></p>
 		<p class="notes">
-			Located in <a class="field" href="_QueryPathExtender.php.html">/QueryPathExtender.php</a> (line <span class="field"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a19">19</a></span>)
+			Located in <a class="field" href="_QueryPathExtender.php.html">/QueryPathExtender.php</a> (line <span class="field"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a41">41</a></span>)
 		</p>
 		
 				
@@ -57,7 +57,11 @@
 					static <span class="var-type">mixed</span>
 					<a href="#$extensionRegistry" title="details" class="var-name">$extensionRegistry</a>
 				</div>
-																							</div>
+																<div class="var-title">
+					static <span class="var-type">mixed</span>
+					<a href="#$useRegistry" title="details" class="var-name">$useRegistry</a>
+				</div>
+																															</div>
 		</div>
 	</div>
 
@@ -73,23 +77,35 @@
 		</div>
 		<div class="info-box-body">			
 			<div class="method-summary">
-																																																																																																																																										
+																																																																										
+				<div class="method-definition">
+					static 						<span class="method-result">void</span>
+										<a href="#autoloadExtensions" title="details" class="method-name">autoloadExtensions</a>
+											([<span class="var-type"></span>&nbsp;<span class="var-name">$boolean</span> = <span class="var-default">TRUE</span>])
+									</div>
+																																																																																														
 				<div class="method-definition">
 					static 						<span class="method-result">void</span>
 										<a href="#extend" title="details" class="method-name">extend</a>
 											(<span class="var-type"></span>&nbsp;<span class="var-name">$classname</span>)
 									</div>
+																																																						
+				<div class="method-definition">
+					static 						<span class="method-result">void</span>
+										<a href="#getExtensions" title="details" class="method-name">getExtensions</a>
+										()
+									</div>
 																																																																																																																																																																																																																																																																																																										
 				<div class="method-definition">
 											<span class="method-result">QueryPathExtender</span>
 										<a href="#__construct" title="details" class="method-name">__construct</a>
-											(<span class="var-type"></span>&nbsp;<span class="var-name">$string</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$document</span> = <span class="var-default">NULL</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$options</span> = <span class="var-default">array()</span>])
+											(<span class="var-type"><a href="../QueryPath/QueryPath.html">QueryPath</a></span>&nbsp;<span class="var-name">$qp</span>)
 									</div>
 														
 				<div class="method-definition">
 											<span class="method-result">void</span>
 										<a href="#add" title="details" class="method-name">add</a>
-										()
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$selector</span>)
 									</div>
 														
 				<div class="method-definition">
@@ -101,7 +117,7 @@
 				<div class="method-definition">
 											<span class="method-result">void</span>
 										<a href="#after" title="details" class="method-name">after</a>
-											(<span class="var-type"></span>&nbsp;<span class="var-name">$something</span>)
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$data</span>)
 									</div>
 														
 				<div class="method-definition">
@@ -119,36 +135,30 @@
 				<div class="method-definition">
 											<span class="method-result">void</span>
 										<a href="#appendTo" title="details" class="method-name">appendTo</a>
-											(<span class="var-type"></span>&nbsp;<span class="var-name">$something</span>)
+											(<span class="var-type"><a href="../QueryPath/QueryPath.html">QueryPath</a></span>&nbsp;<span class="var-name">$destination</span>)
 									</div>
 														
 				<div class="method-definition">
 											<span class="method-result">void</span>
 										<a href="#attr" title="details" class="method-name">attr</a>
-											(<span class="var-type"></span>&nbsp;<span class="var-name">$name</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$value</span>)
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$name</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$value</span> = <span class="var-default">NULL</span>])
 									</div>
-														
+																						
 				<div class="method-definition">
 											<span class="method-result">void</span>
 										<a href="#before" title="details" class="method-name">before</a>
-											(<span class="var-type"></span>&nbsp;<span class="var-name">$something</span>)
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$data</span>)
 									</div>
 														
 				<div class="method-definition">
 											<span class="method-result">void</span>
 										<a href="#children" title="details" class="method-name">children</a>
-										()
+											([<span class="var-type"></span>&nbsp;<span class="var-name">$selector</span> = <span class="var-default">NULL</span>])
 									</div>
 														
 				<div class="method-definition">
 											<span class="method-result">void</span>
-										<a href="#clear" title="details" class="method-name">clear</a>
-										()
-									</div>
-														
-				<div class="method-definition">
-											<span class="method-result">void</span>
-										<a href="#cloneE" title="details" class="method-name">cloneE</a>
+										<a href="#cloneAll" title="details" class="method-name">cloneAll</a>
 										()
 									</div>
 														
@@ -160,8 +170,26 @@
 														
 				<div class="method-definition">
 											<span class="method-result">void</span>
-										<a href="#each" title="details" class="method-name">each</a>
+										<a href="#css" title="details" class="method-name">css</a>
+											([<span class="var-type"></span>&nbsp;<span class="var-name">$name</span> = <span class="var-default">NULL</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$value</span> = <span class="var-default">''</span>])
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#deepest" title="details" class="method-name">deepest</a>
 										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#each" title="details" class="method-name">each</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$callback</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#eachLambda" title="details" class="method-name">eachLambda</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$lambda</span>)
 									</div>
 														
 				<div class="method-definition">
@@ -184,6 +212,18 @@
 														
 				<div class="method-definition">
 											<span class="method-result">void</span>
+										<a href="#filterCallback" title="details" class="method-name">filterCallback</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$callback</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#filterLambda" title="details" class="method-name">filterLambda</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$function</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
 										<a href="#find" title="details" class="method-name">find</a>
 											(<span class="var-type"></span>&nbsp;<span class="var-name">$selector</span>)
 									</div>
@@ -193,7 +233,7 @@
 										<a href="#get" title="details" class="method-name">get</a>
 											([<span class="var-type"></span>&nbsp;<span class="var-name">$index</span> = <span class="var-default">NULL</span>])
 									</div>
-														
+																						
 				<div class="method-definition">
 											<span class="method-result">void</span>
 										<a href="#hasClass" title="details" class="method-name">hasClass</a>
@@ -215,37 +255,37 @@
 				<div class="method-definition">
 											<span class="method-result">void</span>
 										<a href="#insertAfter" title="details" class="method-name">insertAfter</a>
-											(<span class="var-type"></span>&nbsp;<span class="var-name">$something</span>)
+											(<span class="var-type"><a href="../QueryPath/QueryPath.html">QueryPath</a></span>&nbsp;<span class="var-name">$dest</span>)
 									</div>
 														
 				<div class="method-definition">
 											<span class="method-result">void</span>
 										<a href="#insertBefore" title="details" class="method-name">insertBefore</a>
-											(<span class="var-type"></span>&nbsp;<span class="var-name">$something</span>)
+											(<span class="var-type"><a href="../QueryPath/QueryPath.html">QueryPath</a></span>&nbsp;<span class="var-name">$dest</span>)
 									</div>
 														
 				<div class="method-definition">
 											<span class="method-result">void</span>
 										<a href="#is" title="details" class="method-name">is</a>
-										()
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$selector</span>)
 									</div>
 														
 				<div class="method-definition">
 											<span class="method-result">void</span>
 										<a href="#map" title="details" class="method-name">map</a>
-										()
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$callback</span>)
 									</div>
 														
 				<div class="method-definition">
 											<span class="method-result">void</span>
 										<a href="#next" title="details" class="method-name">next</a>
-										()
+											([<span class="var-type"></span>&nbsp;<span class="var-name">$selector</span> = <span class="var-default">NULL</span>])
 									</div>
 														
 				<div class="method-definition">
 											<span class="method-result">void</span>
 										<a href="#nextAll" title="details" class="method-name">nextAll</a>
-										()
+											([<span class="var-type"></span>&nbsp;<span class="var-name">$selector</span> = <span class="var-default">NULL</span>])
 									</div>
 														
 				<div class="method-definition">
@@ -257,13 +297,13 @@
 				<div class="method-definition">
 											<span class="method-result">void</span>
 										<a href="#parent" title="details" class="method-name">parent</a>
-										()
+											([<span class="var-type"></span>&nbsp;<span class="var-name">$selector</span> = <span class="var-default">NULL</span>])
 									</div>
 														
 				<div class="method-definition">
 											<span class="method-result">void</span>
 										<a href="#parents" title="details" class="method-name">parents</a>
-										()
+											([<span class="var-type"></span>&nbsp;<span class="var-name">$selector</span> = <span class="var-default">NULL</span>])
 									</div>
 														
 				<div class="method-definition">
@@ -275,31 +315,37 @@
 				<div class="method-definition">
 											<span class="method-result">void</span>
 										<a href="#prependTo" title="details" class="method-name">prependTo</a>
-											(<span class="var-type"></span>&nbsp;<span class="var-name">$something</span>)
+											(<span class="var-type"><a href="../QueryPath/QueryPath.html">QueryPath</a></span>&nbsp;<span class="var-name">$dest</span>)
 									</div>
 														
 				<div class="method-definition">
 											<span class="method-result">void</span>
 										<a href="#prev" title="details" class="method-name">prev</a>
-										()
+											([<span class="var-type"></span>&nbsp;<span class="var-name">$selector</span> = <span class="var-default">NULL</span>])
 									</div>
 														
 				<div class="method-definition">
 											<span class="method-result">void</span>
 										<a href="#prevAll" title="details" class="method-name">prevAll</a>
-										()
+											([<span class="var-type"></span>&nbsp;<span class="var-name">$selector</span> = <span class="var-default">NULL</span>])
 									</div>
 														
 				<div class="method-definition">
 											<span class="method-result">void</span>
-										<a href="#removeAll" title="details" class="method-name">removeAll</a>
-											(<span class="var-type"></span>&nbsp;<span class="var-name">$selector</span>)
+										<a href="#remove" title="details" class="method-name">remove</a>
+											([<span class="var-type"></span>&nbsp;<span class="var-name">$selector</span> = <span class="var-default">NULL</span>])
 									</div>
 														
 				<div class="method-definition">
 											<span class="method-result">void</span>
 										<a href="#removeAttr" title="details" class="method-name">removeAttr</a>
 											(<span class="var-type"></span>&nbsp;<span class="var-name">$name</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#removeChildren" title="details" class="method-name">removeChildren</a>
+										()
 									</div>
 														
 				<div class="method-definition">
@@ -311,31 +357,19 @@
 				<div class="method-definition">
 											<span class="method-result">void</span>
 										<a href="#replaceAll" title="details" class="method-name">replaceAll</a>
-											(<span class="var-type"></span>&nbsp;<span class="var-name">$selector</span>)
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$selector</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$document</span>)
 									</div>
 														
 				<div class="method-definition">
 											<span class="method-result">void</span>
 										<a href="#replaceWith" title="details" class="method-name">replaceWith</a>
-											(<span class="var-type"></span>&nbsp;<span class="var-name">$something</span>)
-									</div>
-														
-				<div class="method-definition">
-											<span class="method-result">void</span>
-										<a href="#serialize" title="details" class="method-name">serialize</a>
-										()
-									</div>
-														
-				<div class="method-definition">
-											<span class="method-result">void</span>
-										<a href="#serializeArray" title="details" class="method-name">serializeArray</a>
-										()
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$new</span>)
 									</div>
 														
 				<div class="method-definition">
 											<span class="method-result">void</span>
 										<a href="#siblings" title="details" class="method-name">siblings</a>
-										()
+											([<span class="var-type"></span>&nbsp;<span class="var-name">$selector</span> = <span class="var-default">NULL</span>])
 									</div>
 														
 				<div class="method-definition">
@@ -347,31 +381,37 @@
 				<div class="method-definition">
 											<span class="method-result">void</span>
 										<a href="#slice" title="details" class="method-name">slice</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$start</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$end</span> = <span class="var-default">NULL</span>])
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#tag" title="details" class="method-name">tag</a>
 										()
 									</div>
 														
 				<div class="method-definition">
 											<span class="method-result">void</span>
 										<a href="#text" title="details" class="method-name">text</a>
-											(<span class="var-type"></span>&nbsp;<span class="var-name">$text</span>)
+											([<span class="var-type"></span>&nbsp;<span class="var-name">$text</span> = <span class="var-default">NULL</span>])
 									</div>
 														
 				<div class="method-definition">
 											<span class="method-result">void</span>
 										<a href="#val" title="details" class="method-name">val</a>
-										()
+											([<span class="var-type"></span>&nbsp;<span class="var-name">$value</span> = <span class="var-default">NULL</span>])
 									</div>
 														
 				<div class="method-definition">
 											<span class="method-result">void</span>
 										<a href="#wrap" title="details" class="method-name">wrap</a>
-											(<span class="var-type"></span>&nbsp;<span class="var-name">$element</span>)
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$markup</span>)
 									</div>
 														
 				<div class="method-definition">
 											<span class="method-result">void</span>
 										<a href="#wrapAll" title="details" class="method-name">wrapAll</a>
-											(<span class="var-type"></span>&nbsp;<span class="var-name">$element</span>)
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$markup</span>)
 									</div>
 														
 				<div class="method-definition">
@@ -382,8 +422,26 @@
 														
 				<div class="method-definition">
 											<span class="method-result">void</span>
+										<a href="#writeHTML" title="details" class="method-name">writeHTML</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#writeXML" title="details" class="method-name">writeXML</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
 										<a href="#xml" title="details" class="method-name">xml</a>
 											([<span class="var-type"></span>&nbsp;<span class="var-name">$markup</span> = <span class="var-default">NULL</span>])
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#__clone" title="details" class="method-name">__clone</a>
+										()
 									</div>
 											</div>
 		</div>
@@ -409,11 +467,34 @@
 		<span class="var-title">
 			static <span class="var-type">mixed</span>
 			<span class="var-name">$extensionRegistry</span>
-			 = <span class="var-default">array()</span>			(line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a22">22</a></span>)
+			 = <span class="var-default">array()</span>			(line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a55">55</a></span>)
 		</span>
 	</div>
 
 	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">The extension registry. This should consist of an array of class  names.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$useRegistry" id="$useRegistry"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			static <span class="var-type">mixed</span>
+			<span class="var-name">$useRegistry</span>
+			 = <span class="var-default"> TRUE</span>			(line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a50">50</a></span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Internal flag indicating whether or not the registry should  be used for automatic extension loading. If this is false, then  implementations should not automatically load extensions.</p>
 	<ul class="tags">
 				<li><span class="field">access:</span> public</li>
 			</ul>
@@ -439,14 +520,45 @@
 		</div>
 		<div class="info-box-body">
 			<A NAME='method_detail'></A>
+<a name="methodautoloadExtensions" id="autoloadExtensions"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">static autoloadExtensions</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a73">73</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Enable or disable automatic extension loading.</p>
+<p class="description"><p>If extension autoloading is disabled, then QueryPath will not  automatically load all registred extensions when a new QueryPath  object is created using <a href="../QueryPath/_QueryPath.php.html#functionqp">qp()</a>.</p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		static <span class="method-result">void</span>
+		<span class="method-name">
+			autoloadExtensions
+		</span>
+					([<span class="var-type"></span>&nbsp;<span class="var-name">$boolean</span> = <span class="var-default">TRUE</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$boolean</span>			</li>
+				</ul>
+		
+			
+	</div>
 <a name="methodextend" id="extend"><!-- --></a>
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">static extend</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a23">23</a></span>)
+		<span class="method-title">static extend</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a59">59</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Extend QueryPath with the given extension class.</p>
 	<ul class="tags">
 				<li><span class="field">access:</span> public</li>
 			</ul>
@@ -467,14 +579,39 @@
 		
 			
 	</div>
-<a name="method__construct" id="__construct"><!-- --></a>
+<a name="methodgetExtensions" id="getExtensions"><!-- --></a>
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">Constructor __construct</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a28">28</a></span>)
+		<span class="method-title">static getExtensions</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a63">63</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		static <span class="method-result">void</span>
+		<span class="method-name">
+			getExtensions
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="method__construct" id="__construct"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">Constructor __construct</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a91">91</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Create a new instance of this QueryPathExtension.</p>
+<p class="description"><p>This and all instance methods in the class are used to decorate an existing  QueryPath object. The construct takes a QueryPath instance and wraps it for  internal use. By default, all implementations of QueryPath in this class  simply pass data through to the underlying QueryPath instance. You may  extend this class and selectively override if you want custom behavior.  More likely, though, you will want to just define your own new methods that  will be added to the object returned by <a href="../QueryPath/_QueryPath.php.html#functionqp">qp()</a>.</p></p>
 	<ul class="tags">
 				<li><span class="field">access:</span> public</li>
 			</ul>
@@ -484,28 +621,22 @@
 		<span class="method-name">
 			__construct
 		</span>
-					(<span class="var-type"></span>&nbsp;<span class="var-name">$string</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$document</span> = <span class="var-default">NULL</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$options</span> = <span class="var-default">array()</span>])
+					(<span class="var-type"><a href="../QueryPath/QueryPath.html">QueryPath</a></span>&nbsp;<span class="var-name">$qp</span>)
 			</div>
 	
 			<ul class="parameters">
 					<li>
-				<span class="var-type"></span>
-				<span class="var-name">$string</span>			</li>
-					<li>
-				<span class="var-type"></span>
-				<span class="var-name">$document</span>			</li>
-					<li>
-				<span class="var-type"></span>
-				<span class="var-name">$options</span>			</li>
+				<span class="var-type"><a href="../QueryPath/QueryPath.html">QueryPath</a></span>
+				<span class="var-name">$qp</span>			</li>
 				</ul>
 		
 			
 	</div>
 <a name="methodadd" id="add"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">add</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a53">53</a></span>)
+		<span class="method-title">add</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a132">132</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -518,9 +649,14 @@
 		<span class="method-name">
 			add
 		</span>
-				()
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$selector</span>)
 			</div>
 	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$selector</span>			</li>
+				</ul>
 		
 				<hr class="separator" />
 		<div class="notes">Implementation of:</div>
@@ -531,10 +667,10 @@
 			
 	</div>
 <a name="methodaddClass" id="addClass"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">addClass</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a80">80</a></span>)
+		<span class="method-title">addClass</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a163">163</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -565,10 +701,10 @@
 			
 	</div>
 <a name="methodafter" id="after"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">after</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a68">68</a></span>)
+		<span class="method-title">after</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a119">119</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -581,13 +717,13 @@
 		<span class="method-name">
 			after
 		</span>
-					(<span class="var-type"></span>&nbsp;<span class="var-name">$something</span>)
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$data</span>)
 			</div>
 	
 			<ul class="parameters">
 					<li>
 				<span class="var-type"></span>
-				<span class="var-name">$something</span>			</li>
+				<span class="var-name">$data</span>			</li>
 				</ul>
 		
 				<hr class="separator" />
@@ -599,10 +735,10 @@
 			
 	</div>
 <a name="methodandSelf" id="andSelf"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">andSelf</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a52">52</a></span>)
+		<span class="method-title">andSelf</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a134">134</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -628,10 +764,10 @@
 			
 	</div>
 <a name="methodappend" id="append"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">append</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a63">63</a></span>)
+		<span class="method-title">append</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a116">116</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -662,10 +798,10 @@
 			
 	</div>
 <a name="methodappendTo" id="appendTo"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">appendTo</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a65">65</a></span>)
+		<span class="method-title">appendTo</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a117">117</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -678,13 +814,13 @@
 		<span class="method-name">
 			appendTo
 		</span>
-					(<span class="var-type"></span>&nbsp;<span class="var-name">$something</span>)
+					(<span class="var-type"><a href="../QueryPath/QueryPath.html">QueryPath</a></span>&nbsp;<span class="var-name">$destination</span>)
 			</div>
 	
 			<ul class="parameters">
 					<li>
-				<span class="var-type"></span>
-				<span class="var-name">$something</span>			</li>
+				<span class="var-type"><a href="../QueryPath/QueryPath.html">QueryPath</a></span>
+				<span class="var-name">$destination</span>			</li>
 				</ul>
 		
 				<hr class="separator" />
@@ -696,10 +832,10 @@
 			
 	</div>
 <a name="methodattr" id="attr"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">attr</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a78">78</a></span>)
+		<span class="method-title">attr</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a101">101</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -712,7 +848,7 @@
 		<span class="method-name">
 			attr
 		</span>
-					(<span class="var-type"></span>&nbsp;<span class="var-name">$name</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$value</span>)
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$name</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$value</span> = <span class="var-default">NULL</span>])
 			</div>
 	
 			<ul class="parameters">
@@ -733,10 +869,10 @@
 			
 	</div>
 <a name="methodbefore" id="before"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">before</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a70">70</a></span>)
+		<span class="method-title">before</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a121">121</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -749,13 +885,13 @@
 		<span class="method-name">
 			before
 		</span>
-					(<span class="var-type"></span>&nbsp;<span class="var-name">$something</span>)
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$data</span>)
 			</div>
 	
 			<ul class="parameters">
 					<li>
 				<span class="var-type"></span>
-				<span class="var-name">$something</span>			</li>
+				<span class="var-name">$data</span>			</li>
 				</ul>
 		
 				<hr class="separator" />
@@ -767,10 +903,10 @@
 			
 	</div>
 <a name="methodchildren" id="children"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">children</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a54">54</a></span>)
+		<span class="method-title">children</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a136">136</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -783,9 +919,14 @@
 		<span class="method-name">
 			children
 		</span>
-				()
+					([<span class="var-type"></span>&nbsp;<span class="var-name">$selector</span> = <span class="var-default">NULL</span>])
 			</div>
 	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$selector</span>			</li>
+				</ul>
 		
 				<hr class="separator" />
 		<div class="notes">Implementation of:</div>
@@ -795,34 +936,11 @@
 					</dl>
 			
 	</div>
-<a name="methodclear" id="clear"><!-- --></a>
-<div class="evenrow">
-	
-	<div class="method-header">
-		<span class="method-title">clear</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a74">74</a></span>)
-	</div> 
-	
-	<!-- ========== Info from phpDoc block ========= -->
-	<ul class="tags">
-				<li><span class="field">access:</span> public</li>
-			</ul>
-	
-	<div class="method-signature">
-		<span class="method-result">void</span>
-		<span class="method-name">
-			clear
-		</span>
-				()
-			</div>
-	
-		
-			
-	</div>
-<a name="methodcloneE" id="cloneE"><!-- --></a>
+<a name="methodcloneAll" id="cloneAll"><!-- --></a>
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">cloneE</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a83">83</a></span>)
+		<span class="method-title">cloneAll</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a166">166</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -833,19 +951,25 @@
 	<div class="method-signature">
 		<span class="method-result">void</span>
 		<span class="method-name">
-			cloneE
+			cloneAll
 		</span>
 				()
 			</div>
 	
 		
+				<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../QueryPath/QueryPath.html#methodcloneAll">QueryPath::cloneAll()</a></dt>
+						<dd>Perform a deep clone of each node in the QueryPath.</dd>
+					</dl>
 			
 	</div>
 <a name="methodcontents" id="contents"><!-- --></a>
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">contents</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a56">56</a></span>)
+		<span class="method-title">contents</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a137">137</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -870,11 +994,77 @@
 					</dl>
 			
 	</div>
+<a name="methodcss" id="css"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">css</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a167">167</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			css
+		</span>
+					([<span class="var-type"></span>&nbsp;<span class="var-name">$name</span> = <span class="var-default">NULL</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$value</span> = <span class="var-default">''</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$name</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$value</span>			</li>
+				</ul>
+		
+				<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../QueryPath/QueryPath.html#methodcss">QueryPath::css()</a></dt>
+						<dd>Set/get a CSS value for the current element(s).</dd>
+					</dl>
+			
+	</div>
+<a name="methoddeepest" id="deepest"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">deepest</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a124">124</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			deepest
+		</span>
+				()
+			</div>
+	
+		
+				<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../QueryPath/QueryPath.html#methoddeepest">QueryPath::deepest()</a></dt>
+						<dd>Reduce the set of matches to the deepest child node in the tree.</dd>
+					</dl>
+			
+	</div>
 <a name="methodeach" id="each"><!-- --></a>
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">each</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a45">45</a></span>)
+		<span class="method-title">each</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a114">114</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -887,9 +1077,14 @@
 		<span class="method-name">
 			each
 		</span>
-				()
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$callback</span>)
 			</div>
 	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$callback</span>			</li>
+				</ul>
 		
 				<hr class="separator" />
 		<div class="notes">Implementation of:</div>
@@ -899,11 +1094,45 @@
 					</dl>
 			
 	</div>
-<a name="methodend" id="end"><!-- --></a>
+<a name="methodeachLambda" id="eachLambda"><!-- --></a>
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">end</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a51">51</a></span>)
+		<span class="method-title">eachLambda</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a115">115</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			eachLambda
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$lambda</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$lambda</span>			</li>
+				</ul>
+		
+				<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../QueryPath/QueryPath.html#methodeachLambda">QueryPath::eachLambda()</a></dt>
+						<dd>An each() iterator that takes a lambda function.</dd>
+					</dl>
+			
+	</div>
+<a name="methodend" id="end"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">end</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a133">133</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -929,10 +1158,10 @@
 			
 	</div>
 <a name="methodeq" id="eq"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">eq</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a39">39</a></span>)
+		<span class="method-title">eq</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a100">100</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -963,10 +1192,10 @@
 			
 	</div>
 <a name="methodfilter" id="filter"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">filter</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a40">40</a></span>)
+		<span class="method-title">filter</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a107">107</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -996,11 +1225,79 @@
 					</dl>
 			
 	</div>
-<a name="methodfind" id="find"><!-- --></a>
+<a name="methodfilterCallback" id="filterCallback"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">filterCallback</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a109">109</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			filterCallback
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$callback</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$callback</span>			</li>
+				</ul>
+		
+				<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../QueryPath/QueryPath.html#methodfilterCallback">QueryPath::filterCallback()</a></dt>
+						<dd>Filter based on a callback function.</dd>
+					</dl>
+			
+	</div>
+<a name="methodfilterLambda" id="filterLambda"><!-- --></a>
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">find</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a36">36</a></span>)
+		<span class="method-title">filterLambda</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a108">108</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			filterLambda
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$function</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$function</span>			</li>
+				</ul>
+		
+				<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../QueryPath/QueryPath.html#methodfilterLambda">QueryPath::filterLambda()</a></dt>
+						<dd>Filter based on a lambda function.</dd>
+					</dl>
+			
+	</div>
+<a name="methodfind" id="find"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">find</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a97">97</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1031,10 +1328,10 @@
 			
 	</div>
 <a name="methodget" id="get"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">get</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a38">38</a></span>)
+		<span class="method-title">get</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a99">99</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1065,10 +1362,10 @@
 			
 	</div>
 <a name="methodhasClass" id="hasClass"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">hasClass</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a82">82</a></span>)
+		<span class="method-title">hasClass</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a165">165</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1099,10 +1396,10 @@
 			
 	</div>
 <a name="methodhtml" id="html"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">html</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a47">47</a></span>)
+		<span class="method-title">html</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a141">141</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1133,10 +1430,10 @@
 			
 	</div>
 <a name="methodindex" id="index"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">index</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a46">46</a></span>)
+		<span class="method-title">index</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a111">111</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1167,10 +1464,10 @@
 			
 	</div>
 <a name="methodinsertAfter" id="insertAfter"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">insertAfter</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a67">67</a></span>)
+		<span class="method-title">insertAfter</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a118">118</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1183,13 +1480,13 @@
 		<span class="method-name">
 			insertAfter
 		</span>
-					(<span class="var-type"></span>&nbsp;<span class="var-name">$something</span>)
+					(<span class="var-type"><a href="../QueryPath/QueryPath.html">QueryPath</a></span>&nbsp;<span class="var-name">$dest</span>)
 			</div>
 	
 			<ul class="parameters">
 					<li>
-				<span class="var-type"></span>
-				<span class="var-name">$something</span>			</li>
+				<span class="var-type"><a href="../QueryPath/QueryPath.html">QueryPath</a></span>
+				<span class="var-name">$dest</span>			</li>
 				</ul>
 		
 				<hr class="separator" />
@@ -1201,10 +1498,10 @@
 			
 	</div>
 <a name="methodinsertBefore" id="insertBefore"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">insertBefore</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a69">69</a></span>)
+		<span class="method-title">insertBefore</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a120">120</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1217,13 +1514,13 @@
 		<span class="method-name">
 			insertBefore
 		</span>
-					(<span class="var-type"></span>&nbsp;<span class="var-name">$something</span>)
+					(<span class="var-type"><a href="../QueryPath/QueryPath.html">QueryPath</a></span>&nbsp;<span class="var-name">$dest</span>)
 			</div>
 	
 			<ul class="parameters">
 					<li>
-				<span class="var-type"></span>
-				<span class="var-name">$something</span>			</li>
+				<span class="var-type"><a href="../QueryPath/QueryPath.html">QueryPath</a></span>
+				<span class="var-name">$dest</span>			</li>
 				</ul>
 		
 				<hr class="separator" />
@@ -1235,10 +1532,10 @@
 			
 	</div>
 <a name="methodis" id="is"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">is</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a41">41</a></span>)
+		<span class="method-title">is</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a106">106</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1251,9 +1548,14 @@
 		<span class="method-name">
 			is
 		</span>
-				()
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$selector</span>)
 			</div>
 	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$selector</span>			</li>
+				</ul>
 		
 				<hr class="separator" />
 		<div class="notes">Implementation of:</div>
@@ -1264,10 +1566,10 @@
 			
 	</div>
 <a name="methodmap" id="map"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">map</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a42">42</a></span>)
+		<span class="method-title">map</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a112">112</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1280,9 +1582,14 @@
 		<span class="method-name">
 			map
 		</span>
-				()
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$callback</span>)
 			</div>
 	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$callback</span>			</li>
+				</ul>
 		
 				<hr class="separator" />
 		<div class="notes">Implementation of:</div>
@@ -1293,10 +1600,10 @@
 			
 	</div>
 <a name="methodnext" id="next"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">next</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a57">57</a></span>)
+		<span class="method-title">next</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a157">157</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1309,9 +1616,14 @@
 		<span class="method-name">
 			next
 		</span>
-				()
+					([<span class="var-type"></span>&nbsp;<span class="var-name">$selector</span> = <span class="var-default">NULL</span>])
 			</div>
 	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$selector</span>			</li>
+				</ul>
 		
 				<hr class="separator" />
 		<div class="notes">Implementation of:</div>
@@ -1322,10 +1634,10 @@
 			
 	</div>
 <a name="methodnextAll" id="nextAll"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">nextAll</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a58">58</a></span>)
+		<span class="method-title">nextAll</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a158">158</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1338,9 +1650,14 @@
 		<span class="method-name">
 			nextAll
 		</span>
-				()
+					([<span class="var-type"></span>&nbsp;<span class="var-name">$selector</span> = <span class="var-default">NULL</span>])
 			</div>
 	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$selector</span>			</li>
+				</ul>
 		
 				<hr class="separator" />
 		<div class="notes">Implementation of:</div>
@@ -1351,10 +1668,10 @@
 			
 	</div>
 <a name="methodnot" id="not"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">not</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a43">43</a></span>)
+		<span class="method-title">not</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a110">110</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1385,10 +1702,10 @@
 			
 	</div>
 <a name="methodparent" id="parent"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">parent</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a59">59</a></span>)
+		<span class="method-title">parent</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a161">161</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1401,9 +1718,14 @@
 		<span class="method-name">
 			parent
 		</span>
-				()
+					([<span class="var-type"></span>&nbsp;<span class="var-name">$selector</span> = <span class="var-default">NULL</span>])
 			</div>
 	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$selector</span>			</li>
+				</ul>
 		
 				<hr class="separator" />
 		<div class="notes">Implementation of:</div>
@@ -1414,10 +1736,10 @@
 			
 	</div>
 <a name="methodparents" id="parents"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">parents</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a60">60</a></span>)
+		<span class="method-title">parents</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a162">162</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1430,9 +1752,14 @@
 		<span class="method-name">
 			parents
 		</span>
-				()
+					([<span class="var-type"></span>&nbsp;<span class="var-name">$selector</span> = <span class="var-default">NULL</span>])
 			</div>
 	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$selector</span>			</li>
+				</ul>
 		
 				<hr class="separator" />
 		<div class="notes">Implementation of:</div>
@@ -1443,10 +1770,10 @@
 			
 	</div>
 <a name="methodprepend" id="prepend"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">prepend</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a64">64</a></span>)
+		<span class="method-title">prepend</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a122">122</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1477,10 +1804,10 @@
 			
 	</div>
 <a name="methodprependTo" id="prependTo"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">prependTo</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a66">66</a></span>)
+		<span class="method-title">prependTo</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a123">123</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1493,13 +1820,13 @@
 		<span class="method-name">
 			prependTo
 		</span>
-					(<span class="var-type"></span>&nbsp;<span class="var-name">$something</span>)
+					(<span class="var-type"><a href="../QueryPath/QueryPath.html">QueryPath</a></span>&nbsp;<span class="var-name">$dest</span>)
 			</div>
 	
 			<ul class="parameters">
 					<li>
-				<span class="var-type"></span>
-				<span class="var-name">$something</span>			</li>
+				<span class="var-type"><a href="../QueryPath/QueryPath.html">QueryPath</a></span>
+				<span class="var-name">$dest</span>			</li>
 				</ul>
 		
 				<hr class="separator" />
@@ -1511,10 +1838,10 @@
 			
 	</div>
 <a name="methodprev" id="prev"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">prev</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a61">61</a></span>)
+		<span class="method-title">prev</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a159">159</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1527,9 +1854,14 @@
 		<span class="method-name">
 			prev
 		</span>
-				()
+					([<span class="var-type"></span>&nbsp;<span class="var-name">$selector</span> = <span class="var-default">NULL</span>])
 			</div>
 	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$selector</span>			</li>
+				</ul>
 		
 				<hr class="separator" />
 		<div class="notes">Implementation of:</div>
@@ -1540,10 +1872,10 @@
 			
 	</div>
 <a name="methodprevAll" id="prevAll"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">prevAll</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a62">62</a></span>)
+		<span class="method-title">prevAll</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a160">160</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1556,9 +1888,14 @@
 		<span class="method-name">
 			prevAll
 		</span>
-				()
+					([<span class="var-type"></span>&nbsp;<span class="var-name">$selector</span> = <span class="var-default">NULL</span>])
 			</div>
 	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$selector</span>			</li>
+				</ul>
 		
 				<hr class="separator" />
 		<div class="notes">Implementation of:</div>
@@ -1568,11 +1905,11 @@
 					</dl>
 			
 	</div>
-<a name="methodremoveAll" id="removeAll"><!-- --></a>
-<div class="oddrow">
+<a name="methodremove" id="remove"><!-- --></a>
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">removeAll</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a75">75</a></span>)
+		<span class="method-title">remove</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a130">130</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1583,9 +1920,9 @@
 	<div class="method-signature">
 		<span class="method-result">void</span>
 		<span class="method-name">
-			removeAll
+			remove
 		</span>
-					(<span class="var-type"></span>&nbsp;<span class="var-name">$selector</span>)
+					([<span class="var-type"></span>&nbsp;<span class="var-name">$selector</span> = <span class="var-default">NULL</span>])
 			</div>
 	
 			<ul class="parameters">
@@ -1594,13 +1931,19 @@
 				<span class="var-name">$selector</span>			</li>
 				</ul>
 		
+				<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../QueryPath/QueryPath.html#methodremove">QueryPath::remove()</a></dt>
+						<dd>Remove any items from the list if they match the selector.</dd>
+					</dl>
 			
 	</div>
 <a name="methodremoveAttr" id="removeAttr"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">removeAttr</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a79">79</a></span>)
+		<span class="method-title">removeAttr</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a105">105</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1630,11 +1973,40 @@
 					</dl>
 			
 	</div>
+<a name="methodremoveChildren" id="removeChildren"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">removeChildren</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a135">135</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			removeChildren
+		</span>
+				()
+			</div>
+	
+		
+				<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../QueryPath/QueryPath.html#methodremoveChildren">QueryPath::removeChildren()</a></dt>
+						<dd>Remove all child nodes.</dd>
+					</dl>
+			
+	</div>
 <a name="methodremoveClass" id="removeClass"><!-- --></a>
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">removeClass</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a81">81</a></span>)
+		<span class="method-title">removeClass</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a164">164</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1668,7 +2040,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">replaceAll</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a77">77</a></span>)
+		<span class="method-title">replaceAll</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a131">131</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1681,13 +2053,16 @@
 		<span class="method-name">
 			replaceAll
 		</span>
-					(<span class="var-type"></span>&nbsp;<span class="var-name">$selector</span>)
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$selector</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$document</span>)
 			</div>
 	
 			<ul class="parameters">
 					<li>
 				<span class="var-type"></span>
 				<span class="var-name">$selector</span>			</li>
+					<li>
+				<span class="var-type">DOMDocument</span>
+				<span class="var-name">$document</span>			</li>
 				</ul>
 		
 				<hr class="separator" />
@@ -1702,7 +2077,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">replaceWith</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a76">76</a></span>)
+		<span class="method-title">replaceWith</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a129">129</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1715,13 +2090,13 @@
 		<span class="method-name">
 			replaceWith
 		</span>
-					(<span class="var-type"></span>&nbsp;<span class="var-name">$something</span>)
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$new</span>)
 			</div>
 	
 			<ul class="parameters">
 					<li>
 				<span class="var-type"></span>
-				<span class="var-name">$something</span>			</li>
+				<span class="var-name">$new</span>			</li>
 				</ul>
 		
 				<hr class="separator" />
@@ -1732,57 +2107,11 @@
 					</dl>
 			
 	</div>
-<a name="methodserialize" id="serialize"><!-- --></a>
-<div class="evenrow">
-	
-	<div class="method-header">
-		<span class="method-title">serialize</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a84">84</a></span>)
-	</div> 
-	
-	<!-- ========== Info from phpDoc block ========= -->
-	<ul class="tags">
-				<li><span class="field">access:</span> public</li>
-			</ul>
-	
-	<div class="method-signature">
-		<span class="method-result">void</span>
-		<span class="method-name">
-			serialize
-		</span>
-				()
-			</div>
-	
-		
-			
-	</div>
-<a name="methodserializeArray" id="serializeArray"><!-- --></a>
-<div class="oddrow">
-	
-	<div class="method-header">
-		<span class="method-title">serializeArray</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a85">85</a></span>)
-	</div> 
-	
-	<!-- ========== Info from phpDoc block ========= -->
-	<ul class="tags">
-				<li><span class="field">access:</span> public</li>
-			</ul>
-	
-	<div class="method-signature">
-		<span class="method-result">void</span>
-		<span class="method-name">
-			serializeArray
-		</span>
-				()
-			</div>
-	
-		
-			
-	</div>
 <a name="methodsiblings" id="siblings"><!-- --></a>
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">siblings</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a55">55</a></span>)
+		<span class="method-title">siblings</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a156">156</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1795,9 +2124,14 @@
 		<span class="method-name">
 			siblings
 		</span>
-				()
+					([<span class="var-type"></span>&nbsp;<span class="var-name">$selector</span> = <span class="var-default">NULL</span>])
 			</div>
 	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$selector</span>			</li>
+				</ul>
 		
 				<hr class="separator" />
 		<div class="notes">Implementation of:</div>
@@ -1811,7 +2145,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">size</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a37">37</a></span>)
+		<span class="method-title">size</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a98">98</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1840,7 +2174,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">slice</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a44">44</a></span>)
+		<span class="method-title">slice</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a113">113</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1853,9 +2187,17 @@
 		<span class="method-name">
 			slice
 		</span>
-				()
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$start</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$end</span> = <span class="var-default">NULL</span>])
 			</div>
 	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$start</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$end</span>			</li>
+				</ul>
 		
 				<hr class="separator" />
 		<div class="notes">Implementation of:</div>
@@ -1865,11 +2207,40 @@
 					</dl>
 			
 	</div>
-<a name="methodtext" id="text"><!-- --></a>
+<a name="methodtag" id="tag"><!-- --></a>
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">text</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a48">48</a></span>)
+		<span class="method-title">tag</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a128">128</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			tag
+		</span>
+				()
+			</div>
+	
+		
+				<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../QueryPath/QueryPath.html#methodtag">QueryPath::tag()</a></dt>
+						<dd>The tag name of the first element in the list.</dd>
+					</dl>
+			
+	</div>
+<a name="methodtext" id="text"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">text</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a145">145</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1882,7 +2253,7 @@
 		<span class="method-name">
 			text
 		</span>
-					(<span class="var-type"></span>&nbsp;<span class="var-name">$text</span>)
+					([<span class="var-type"></span>&nbsp;<span class="var-name">$text</span> = <span class="var-default">NULL</span>])
 			</div>
 	
 			<ul class="parameters">
@@ -1900,10 +2271,10 @@
 			
 	</div>
 <a name="methodval" id="val"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">val</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a49">49</a></span>)
+		<span class="method-title">val</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a155">155</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1916,9 +2287,14 @@
 		<span class="method-name">
 			val
 		</span>
-				()
+					([<span class="var-type"></span>&nbsp;<span class="var-name">$value</span> = <span class="var-default">NULL</span>])
 			</div>
 	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$value</span>			</li>
+				</ul>
 		
 				<hr class="separator" />
 		<div class="notes">Implementation of:</div>
@@ -1929,10 +2305,10 @@
 			
 	</div>
 <a name="methodwrap" id="wrap"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">wrap</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a71">71</a></span>)
+		<span class="method-title">wrap</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a125">125</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1945,13 +2321,13 @@
 		<span class="method-name">
 			wrap
 		</span>
-					(<span class="var-type"></span>&nbsp;<span class="var-name">$element</span>)
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$markup</span>)
 			</div>
 	
 			<ul class="parameters">
 					<li>
 				<span class="var-type"></span>
-				<span class="var-name">$element</span>			</li>
+				<span class="var-name">$markup</span>			</li>
 				</ul>
 		
 				<hr class="separator" />
@@ -1963,10 +2339,10 @@
 			
 	</div>
 <a name="methodwrapAll" id="wrapAll"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">wrapAll</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a72">72</a></span>)
+		<span class="method-title">wrapAll</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a126">126</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1979,13 +2355,13 @@
 		<span class="method-name">
 			wrapAll
 		</span>
-					(<span class="var-type"></span>&nbsp;<span class="var-name">$element</span>)
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$markup</span>)
 			</div>
 	
 			<ul class="parameters">
 					<li>
 				<span class="var-type"></span>
-				<span class="var-name">$element</span>			</li>
+				<span class="var-name">$markup</span>			</li>
 				</ul>
 		
 				<hr class="separator" />
@@ -1997,10 +2373,10 @@
 			
 	</div>
 <a name="methodwrapInner" id="wrapInner"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">wrapInner</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a73">73</a></span>)
+		<span class="method-title">wrapInner</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a127">127</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -2030,11 +2406,69 @@
 					</dl>
 			
 	</div>
-<a name="methodxml" id="xml"><!-- --></a>
+<a name="methodwriteHTML" id="writeHTML"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">writeHTML</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a154">154</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			writeHTML
+		</span>
+				()
+			</div>
+	
+		
+				<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../QueryPath/QueryPath.html#methodwriteHTML">QueryPath::writeHTML()</a></dt>
+						<dd>Send the HTML to the client.</dd>
+					</dl>
+			
+	</div>
+<a name="methodwriteXML" id="writeXML"><!-- --></a>
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">xml</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a50">50</a></span>)
+		<span class="method-title">writeXML</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a153">153</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			writeXML
+		</span>
+				()
+			</div>
+	
+		
+				<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../QueryPath/QueryPath.html#methodwriteXML">QueryPath::writeXML()</a></dt>
+						<dd>Send the XML document to the client.</dd>
+					</dl>
+			
+	</div>
+<a name="methodxml" id="xml"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">xml</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a149">149</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -2064,13 +2498,36 @@
 					</dl>
 			
 	</div>
+<a name="method__clone" id="__clone"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">__clone</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtender.php.html#a94">94</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			__clone
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
 						
 		</div>
 	</div>
 
 
 	<p class="notes" id="credit">
-		Documentation generated on Fri, 09 Jan 2009 00:28:55 -0600 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.2</a>
+		Documentation generated on Sun, 11 Jan 2009 21:07:56 -0600 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.2</a>
 	</p>
 	</div></body>
 </html>

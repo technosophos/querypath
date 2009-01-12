@@ -75,7 +75,7 @@ require_once 'CssEventHandler.php';
 /**
  * The extender is used to provide support for extensions.
  */
-//require_once 'QueryPathExtender.php';
+require_once 'QueryPathExtender.php';
 
 /**
  * Build a new Query Path.
@@ -119,9 +119,14 @@ require_once 'CssEventHandler.php';
  * @param string $string 
  *  A CSS 3 selector.
  */
-function qp($document, $string = NULL) {
+function qp($document = NULL, $string = NULL) {
   $qp = new QueryPathImpl($document, $string);
   // Do wrapping here...
+  if (QueryPathExtender::$useRegistry) {
+    foreach (QueryPathExtender::getExtensions() as $ext) {
+      $qp = new $ext($qp);
+    }
+  }
   
   return $qp;
 }
@@ -390,9 +395,10 @@ interface QueryPath {
    * Run a callback on each item in the list of items.
    *
    * Rules of the callback:
-   * - A callback is passed to variables: $index and $item. (There is no 
+   * - A callback is passed two variables: $index and $item. (There is no 
    *   special treatment of $this, as there is in jQuery.)
-   *   - Typically, you will want to pass $item by reference.
+   *   - You will want to pass $item by reference if it is not an
+   *     object (DOMNodes are all objects).
    * - A callback that returns FALSE will stop execution of the each() loop. This
    *   works like break in a standard loop.
    * - A TRUE return value from the callback is analogous to a continue statement.
@@ -1033,7 +1039,40 @@ interface QueryPath {
    */
   public function parents($selector = NULL);
   
-  
+  /**
+   * Set/get a CSS value for the current element(s).
+   * This sets the CSS value for each element in the QueryPath object.
+   * It does this by setting (or getting) the style attribute (without a namespace).
+   *
+   * For example, consider this code:
+   * <code>
+   * <?php
+   * qp(HTML_STUB, 'body')->css('background-color','red')->html();
+   * ?>
+   * </code>
+   * This will return the following HTML:
+   * <code>
+   * <body style="background-color: red"/>
+   * </code>
+   *
+   * If no parameters are passed into this function, then the current style
+   * element will be returned unparsed. Example:
+   * <code>
+   * <?php
+   * qp(HTML_STUB, 'body')->css('background-color','red')->css();
+   * ?>
+   * </code>
+   * This will return the following:
+   * <code>
+   * background-color: red
+   * </code>
+   *
+   * @param mixed $name
+   *  If this is a string, it will be used as a CSS name. If it is an array,
+   *  this will assume it is an array of name/value pairs of CSS rules. It will
+   *  apply all rules to all elements in the set.
+   */
+  public function css($name = NULL, $value = '');
   /**
    * Add a class to all elements in the current QueryPath.
    *

@@ -171,7 +171,7 @@ class QueryPathTests extends PHPUnit_Framework_TestCase {
     $this->assertEquals(7, qp($file, 'li')->map(array($this, $fn))->size());
   }
   
-  public function eachCallbackFunction($index, &$item) {
+  public function eachCallbackFunction($index, $item) {
     if ($index < 2) {
       qp($item)->attr('class', 'test');
     }
