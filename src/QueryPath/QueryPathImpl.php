@@ -6,15 +6,13 @@
  * @package QueryPath
  * @subpackage Internals
  * @author M Butcher <matt@aleph-null.tv>
- * @license The GNU Lesser GPL (LGPL) or an MIT-like license.
+ * @license LGPL (The GNU Lesser GPL) or an MIT-like license.
  */
 
 /**
  * This is the main implementation of the QueryPath interface.
  *
  * It provides core services for the Query Path. The class is final.
- * To extend the QueryPath library, you should write a decorator that
- * extends QueryPathExtension.
  * @see QueryPath
  */
 final class QueryPathImpl implements QueryPath {
@@ -22,6 +20,7 @@ final class QueryPathImpl implements QueryPath {
   private $options = array();
   private $matches = array();
   private $last = array(); // Last set of matches.
+  private $ext = array(); // Extensions array.
   
   /**
    * Take a list of DOMNodes and return a unique list.
@@ -35,15 +34,14 @@ final class QueryPathImpl implements QueryPath {
   public function __construct($document = NULL, $string = NULL, $options = array()) {
     $string = trim($string);
     $this->options = $options;
-
+    
     // Empty: Just create an empty QP.
     if (empty($document)) {
       $this->document = new DOMDocument();
       $this->matches = array();
-      return;
     }
     // Figure out if document is DOM, HTML/XML, or a filename
-    if (is_object($document)) {
+    elseif (is_object($document)) {
       
       if ($document instanceof QueryPath) {
         $this->matches = $document->get();
@@ -84,17 +82,15 @@ final class QueryPathImpl implements QueryPath {
       $this->matches = array($this->document->documentElement);
     }
     
+    // Do a find if the second param was set.
     if (isset($string) && strlen($string) > 0) {
-      /*
-      $query = new QueryPathCssEventHandler($this->document);
-      print "Finding $string \n";
-      $query->find($string);
-      $this->matches = $query->getMatches();
-      */
       $this->find($string);
-      //print_r($this->matches);
     }
     
+    // Do extensions loading.
+    if (QueryPathExtensionRegistry::$useRegistry) {
+      $this->ext = QueryPathExtensionRegistry::getExtensions($this);
+    }
   }
   
   public function find($selector) {
@@ -1013,5 +1009,25 @@ final class QueryPathImpl implements QueryPath {
       $document->load($filename);
     }
     return $document;
+  }
+  
+  /**
+   * Call extension methods.
+   *
+   * This function is used to invoke extension methods. It searches the
+   * registered extenstensions for a matching function name. If one is found,
+   * it is executed with the arguments in the $arguments array.
+   * 
+   * @throws QueryPathException
+   *  An expcetion is thrown if a non-existent method is called.
+   */
+  public function __call($name, $arguments) {
+    // Note that an empty ext registry indicates that extensions are disabled.
+    if (!empty($this->ext && QueryPathExtensionRegistry::hasMethod($name)) {
+      $owner = QueryPathExtensionRegistry::getMethodClass($name);
+      $method = new ReflectionMethod($owner, $name);
+      return $method->invokeArgs($this->ext[$owner], $arguments);
+    }
+    throw new QueryPathException("No method named $name found.");
   }
 }

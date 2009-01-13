@@ -118,16 +118,20 @@ require_once 'QueryPathExtender.php';
  * sorts of DOMNodes might not work with all features.
  * @param string $string 
  *  A CSS 3 selector.
+ * @param array $options
+ *  An associative array of options. Currently supported options are:
+ *  - <none> (Coming soon: DOM parser settings.)
  */
-function qp($document = NULL, $string = NULL) {
-  $qp = new QueryPathImpl($document, $string);
+function qp($document = NULL, $string = NULL, $options = array()) {
+  $qp = new QueryPathImpl($document, $string, $options);
   // Do wrapping here...
-  if (QueryPathExtender::$useRegistry) {
-    foreach (QueryPathExtender::getExtensions() as $ext) {
+  /*
+  if (QueryPathExtensionRegistry::$useRegistry) {
+    foreach (QueryPathExtensionRegistry::getExtensions() as $ext) {
       $qp = new $ext($qp);
     }
   }
-  
+  */
   return $qp;
 }
  
