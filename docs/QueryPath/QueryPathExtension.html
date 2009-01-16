@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs For Class QueryPathExtension</title>
+			<link rel="stylesheet" href="../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="class-name">Interface QueryPathExtension</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+															<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+						
+					</div>
+	<div class="info-box-body">
+        		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">A QueryPathExtension is a tool that extends the capabilities of a QueryPath object.</p>
+<p class="description"><p>Extensions to QueryPath should implement the QueryPathExtension interface. The  only requirement is that the extension provide a constructor that takes a  QueryPath object as a parameter.</p><p>Here is an example QueryPath extension:  <div class="src-code"><ol><li><div class="src-line"><span class="src-php">&lt;?php</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-key">class&nbsp;</span><span class="src-id">StubExtensionOne&nbsp;</span><span class="src-key">implements&nbsp;</span><span class="src-id">QueryPathExtension&nbsp;</span><span class="src-sym">{</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-key">private&nbsp;</span><span class="src-var">$qp&nbsp;</span>=&nbsp;<span class="src-id">NULL</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-key">public&nbsp;</span><span class="src-key">function&nbsp;</span><span class="src-id">__construct</span><span class="src-sym">(</span><span class="src-id">QueryPath&nbsp;</span><span class="src-var">$qp</span><span class="src-sym">)&nbsp;</span><span class="src-sym">{</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-var">qp&nbsp;</span>=&nbsp;<span class="src-var">$qp</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-sym">}</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-key">public&nbsp;</span><span class="src-key">function&nbsp;</span><span class="src-id">stubToe</span><span class="src-sym">(</span><span class="src-sym">)&nbsp;</span><span class="src-sym">{</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-var">qp</span><span class="src-sym">-&gt;</span><span class="src-id">find</span><span class="src-sym">(</span><span class="src-str">':root'</span><span class="src-sym">)</span><span class="src-sym">-&gt;</span><span class="src-id">append</span><span class="src-sym">(</span><span class="src-str">'&lt;toe/&gt;'</span><span class="src-sym">)</span><span class="src-sym">-&gt;</span><span class="src-id">end</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">return&nbsp;</span><span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-var">qp</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-sym">}</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-sym">}</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-id"><a href="../QueryPath/QueryPathExtensionRegistry.html">QueryPathExtensionRegistry</a></span><span class="src-sym">::</span><a href="../QueryPath/QueryPathExtensionRegistry.html#methodextend">extend</a><span class="src-sym">(</span><span class="src-str">'StubExtensionOne'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-php">?&gt;</span></div></li>
+</ol></div>  In this example, the StubExtensionOne class implements QueryPathExtension.  The constructor stores a local copyof the QueryPath object. This is important  if you are planning on fully integrating with QueryPath's Fluent Interface.</p><p>Finally, the stubToe() function illustrates how the extension makes use of  QueryPath internally, and remains part of the fluent interface by returning  the $qp object.</p><p>Notice that beneath the class, there is a single call to register the  extension with QueryPath's registry. Your extension should end with a line  similar to this.</p><p><strong>How is a QueryPath extension called?</strong></p><p>QueryPath extensions are called like regular QueryPath functions. For  example, the extension above can be called like this:  <div class="src-code"><ol><li><div class="src-line">&nbsp;<a href="../QueryPath/_QueryPath.php.html#functionqp">qp</a><span class="src-sym">(</span><span class="src-str">'some.xml'</span><span class="src-sym">)</span><span class="src-sym">-&gt;</span><span class="src-id">stubToe</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol></div>  Since it returns the QueryPath ($qp) object, chaining is supported:  <div class="src-code"><ol><li><div class="src-line">&nbsp;print&nbsp;<a href="../QueryPath/_QueryPath.php.html#functionqp">qp</a><span class="src-sym">(</span><span class="src-str">'some.xml'</span><span class="src-sym">)</span><span class="src-sym">-&gt;</span><span class="src-id">stubToe</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">-&gt;</span><span class="src-id">xml</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol></div>  When you write your own extensions, anything that does not need to return a  specific value should return the QueryPath object. Between that and the  extension registry, this will provide the best developer experience.</p></p>
+		<p class="notes">
+			Located in <a class="field" href="_QueryPathExtension.php.html">/QueryPathExtension.php</a> (line <span class="field"><a href="../__filesource/fsource_QueryPath__QueryPathExtension.php.html#a70">70</a></span>)
+		</p>
+		
+				
+		<pre></pre>
+	
+			</div>
+</div>
+
+
+
+
+	<a name="sec-method-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Method Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+												<span class="disabled">Methods</span> (<a href="#sec-methods">details</a>)
+		</div>
+		<div class="info-box-body">			
+			<div class="method-summary">
+																						
+				<div class="method-definition">
+											<span class="method-result">QueryPathExtension</span>
+										<a href="#__construct" title="details" class="method-name">__construct</a>
+											(<span class="var-type"><a href="../QueryPath/QueryPath.html">QueryPath</a></span>&nbsp;<span class="var-name">$qp</span>)
+									</div>
+											</div>
+		</div>
+	</div>		
+
+	
+	<a name="sec-methods"></a>
+	<div class="info-box">
+		<div class="info-box-title">Methods</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+																<a href="#sec-method-summary">Methods</a> (<span class="disabled">details</span>)
+						
+		</div>
+		<div class="info-box-body">
+			<A NAME='method_detail'></A>
+<a name="method__construct" id="__construct"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">Constructor __construct</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtension.php.html#a71">71</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">QueryPathExtension</span>
+		<span class="method-name">
+			__construct
+		</span>
+					(<span class="var-type"><a href="../QueryPath/QueryPath.html">QueryPath</a></span>&nbsp;<span class="var-name">$qp</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"><a href="../QueryPath/QueryPath.html">QueryPath</a></span>
+				<span class="var-name">$qp</span>			</li>
+				</ul>
+		
+			
+	</div>
+						
+		</div>
+	</div>
+
+
+	<p class="notes" id="credit">
+		Documentation generated on Tue, 13 Jan 2009 00:08:27 -0600 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.2</a>
+	</p>
+	</div></body>
+</html>

@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs For Class QueryPathExtensionRegistry</title>
+			<link rel="stylesheet" href="../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="class-name">Class QueryPathExtensionRegistry</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+													<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+						|											<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+						
+					</div>
+	<div class="info-box-body">
+        		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">A registry for QueryPath extensions.</p>
+<p class="description"><p>QueryPath extensions should call the <a href="../QueryPath/QueryPathExtensionRegistry.html#methodextend">QueryPathExtensionRegistry::extend()</a>  function to register their extension classes. The QueryPath library then  uses this information to determine what QueryPath extensions should be loaded and  executed.</p></p>
+		<p class="notes">
+			Located in <a class="field" href="_QueryPathExtension.php.html">/QueryPathExtension.php</a> (line <span class="field"><a href="../__filesource/fsource_QueryPath__QueryPathExtension.php.html#a82">82</a></span>)
+		</p>
+		
+				
+		<pre></pre>
+	
+			</div>
+</div>
+
+
+
+	<a name="sec-var-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Variable Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+						<span class="disabled">Vars</span> (<a href="#sec-vars">details</a>)
+							| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+								</div>
+		<div class="info-box-body">
+			<div class="var-summary">
+												<div class="var-title">
+					static <span class="var-type">mixed</span>
+					<a href="#$extensionMethodRegistry" title="details" class="var-name">$extensionMethodRegistry</a>
+				</div>
+																<div class="var-title">
+					static <span class="var-type">mixed</span>
+					<a href="#$extensionRegistry" title="details" class="var-name">$extensionRegistry</a>
+				</div>
+																<div class="var-title">
+					static <span class="var-type">mixed</span>
+					<a href="#$useRegistry" title="details" class="var-name">$useRegistry</a>
+				</div>
+																																							</div>
+		</div>
+	</div>
+
+	<a name="sec-method-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Method Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+																		<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+				 
+				|
+						<span class="disabled">Methods</span> (<a href="#sec-methods">details</a>)
+		</div>
+		<div class="info-box-body">			
+			<div class="method-summary">
+										
+				<div class="method-definition">
+					static 						<span class="method-result">void</span>
+										<a href="#autoloadExtensions" title="details" class="method-name">autoloadExtensions</a>
+											([<span class="var-type"></span>&nbsp;<span class="var-name">$boolean</span> = <span class="var-default">TRUE</span>])
+									</div>
+														
+				<div class="method-definition">
+					static 						<span class="method-result">void</span>
+										<a href="#extend" title="details" class="method-name">extend</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$classname</span>)
+									</div>
+														
+				<div class="method-definition">
+					static 						<span class="method-result">array</span>
+										<a href="#getExtensions" title="details" class="method-name">getExtensions</a>
+											(<span class="var-type"><a href="../QueryPath/QueryPath.html">QueryPath</a></span>&nbsp;<span class="var-name">$qp</span>)
+									</div>
+														
+				<div class="method-definition">
+					static 						<span class="method-result">string</span>
+										<a href="#getMethodClass" title="details" class="method-name">getMethodClass</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$name</span>)
+									</div>
+														
+				<div class="method-definition">
+					static 						<span class="method-result">boolean</span>
+										<a href="#hasExtension" title="details" class="method-name">hasExtension</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$name</span>)
+									</div>
+														
+				<div class="method-definition">
+					static 						<span class="method-result">boolean</span>
+										<a href="#hasMethod" title="details" class="method-name">hasMethod</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$name</span>)
+									</div>
+																																																															</div>
+		</div>
+	</div>		
+
+	<a name="sec-vars"></a>
+	<div class="info-box">
+		<div class="info-box-title">Variables</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+										<a href="#sec-var-summary">Vars</a> (<span class="disabled">details</span>)
+						
+			
+										| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+			<a name="var$extensionMethodRegistry" id="$extensionMethodRegistry"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			static <span class="var-type">mixed</span>
+			<span class="var-name">$extensionMethodRegistry</span>
+			 = <span class="var-default">array()</span>			(line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtension.php.html#a94">94</a></span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$extensionRegistry" id="$extensionRegistry"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			static <span class="var-type">mixed</span>
+			<span class="var-name">$extensionRegistry</span>
+			 = <span class="var-default">array()</span>			(line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtension.php.html#a93">93</a></span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">The extension registry. This should consist of an array of class  names.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$useRegistry" id="$useRegistry"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			static <span class="var-type">mixed</span>
+			<span class="var-name">$useRegistry</span>
+			 = <span class="var-default"> TRUE</span>			(line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtension.php.html#a88">88</a></span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Internal flag indicating whether or not the registry should  be used for automatic extension loading. If this is false, then  implementations should not automatically load extensions.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+
+						
+		</div>
+	</div>
+	
+	<a name="sec-methods"></a>
+	<div class="info-box">
+		<div class="info-box-title">Methods</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+															<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+																	<a href="#sec-method-summary">Methods</a> (<span class="disabled">details</span>)
+						
+		</div>
+		<div class="info-box-body">
+			<A NAME='method_detail'></A>
+<a name="methodautoloadExtensions" id="autoloadExtensions"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">static autoloadExtensions</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtension.php.html#a181">181</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Enable or disable automatic extension loading.</p>
+<p class="description"><p>If extension autoloading is disabled, then QueryPath will not  automatically load all registred extensions when a new QueryPath  object is created using <a href="../QueryPath/_QueryPath.php.html#functionqp">qp()</a>.</p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		static <span class="method-result">void</span>
+		<span class="method-name">
+			autoloadExtensions
+		</span>
+					([<span class="var-type"></span>&nbsp;<span class="var-name">$boolean</span> = <span class="var-default">TRUE</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$boolean</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodextend" id="extend"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">static extend</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtension.php.html#a98">98</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Extend QueryPath with the given extension class.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		static <span class="method-result">void</span>
+		<span class="method-name">
+			extend
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$classname</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$classname</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodgetExtensions" id="getExtensions"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">static getExtensions</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtension.php.html#a166">166</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Get extensions for the given QueryPath object.</p>
+<p class="description"><p>Given a <a href="../QueryPath/QueryPath.html">QueryPath</a> object, this will return  an associative array of extension names to (new) instances.  Generally, this is intended to be used internally.</p></p>
+	<ul class="tags">
+				<li><span class="field">return:</span> An associative array of classnames to instances.</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		static <span class="method-result">array</span>
+		<span class="method-name">
+			getExtensions
+		</span>
+					(<span class="var-type"><a href="../QueryPath/QueryPath.html">QueryPath</a></span>&nbsp;<span class="var-name">$qp</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"><a href="../QueryPath/QueryPath.html">QueryPath</a></span>
+				<span class="var-name">$qp</span><span class="var-description">: The QueryPath into which the extensions should be registered.</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodgetMethodClass" id="getMethodClass"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">static getMethodClass</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtension.php.html#a150">150</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Get the class that a given method belongs to.</p>
+<p class="description"><p>Given a method name, this will check all registered extension classes  to see if any of them has the named method. If so, this will return  the classname.</p><p>Note that if two extensions are registered that contain the same  method name, the last one registred will be the only one recognized.</p></p>
+	<ul class="tags">
+				<li><span class="field">return:</span> The name of the class.</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		static <span class="method-result">string</span>
+		<span class="method-name">
+			getMethodClass
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$name</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$name</span><span class="var-description">: The name of the method.</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodhasExtension" id="hasExtension"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">static hasExtension</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtension.php.html#a132">132</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Check to see if the given extension class is registered.</p>
+<p class="description"><p>Given a class name for a <a href="../QueryPath/QueryPathExtension.html">QueryPathExtension</a> class, this  will check to see if that class is registered. If so, it will return  TRUE.</p></p>
+	<ul class="tags">
+				<li><span class="field">return:</span> TRUE if the class is registered, FALSE otherwise.</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		static <span class="method-result">boolean</span>
+		<span class="method-name">
+			hasExtension
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$name</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$name</span><span class="var-description">: The name of the class.</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodhasMethod" id="hasMethod"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">static hasMethod</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPathExtension.php.html#a117">117</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Check to see if a method is known.</p>
+<p class="description"><p>This checks to see if the given method name belongs to one of the  registered extensions. If it does, then this will return TRUE.</p></p>
+	<ul class="tags">
+				<li><span class="field">return:</span> TRUE if the method exists, false otherwise.</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		static <span class="method-result">boolean</span>
+		<span class="method-name">
+			hasMethod
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$name</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$name</span><span class="var-description">: The name of the method to search for.</span>			</li>
+				</ul>
+		
+			
+	</div>
+						
+		</div>
+	</div>
+
+
+	<p class="notes" id="credit">
+		Documentation generated on Tue, 13 Jan 2009 00:08:27 -0600 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.2</a>
+	</p>
+	</div></body>
+</html>
