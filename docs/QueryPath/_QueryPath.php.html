@@ -36,7 +36,7 @@
 <li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&lt;/new&gt;</div></li>
 <li><div class="src-line">&nbsp;&nbsp;&lt;/foo&gt;</div></li>
 <li><div class="src-line">&nbsp;&lt;/test&gt;</div></li>
-</ol></div></p><p>To learn about the functions available to a Query Path object,  see <a href="../QueryPath/QueryPath.html">QueryPath</a>. The <a href="../QueryPath/_QueryPath.php.html#functionqp">qp()</a> function is used to build  new QueryPath objects. The documentation for that function explains the  wealth of arguments that the function can take.</p><p>Included with the source code for QueryPath is a complete set of unit tests  as well as some example files. THose are good resources for learning about  how to apply QueryPath's tools.</p><p>If you are interested in building extensions for QueryParser, see the  <a href="../QueryPath/QueryPathExtender.html">QueryPathExtender</a> class. There, you will find information on adding  your own tools to QueryPath.</p><p>QueryPath also comes with a full CSS 3 selector parser implementation. If  you are interested in reusing that in other code, you will want to start  with <a href="../QueryPath/CSSParser/_CssEventHandler.php.html">CssEventHandler.php</a>, which is the event interface for the parser.</p><p>If you want to learn the nitty gritty details of QueryPath, you can take a  look at the implementation in <a href="../QueryPath/Internals/_QueryPathImpl.php.html">QueryPathImpl.php</a>. There you will find  the &quot;real&quot; code.</p><p>All of the code in QueryPath is licensed under either the LGPL or an MIT-like  license (you may choose which you prefer). All of the code is Copyright, 2009  by Matt Butcher.</p></p>
+</ol></div></p><p>To learn about the functions available to a Query Path object,  see <a href="../QueryPath/QueryPath.html">QueryPath</a>. The <a href="../QueryPath/_QueryPath.php.html#functionqp">qp()</a> function is used to build  new QueryPath objects. The documentation for that function explains the  wealth of arguments that the function can take.</p><p>Included with the source code for QueryPath is a complete set of unit tests  as well as some example files. THose are good resources for learning about  how to apply QueryPath's tools.</p><p>If you are interested in building extensions for QueryParser, see the  QueryPathExtender class. There, you will find information on adding  your own tools to QueryPath.</p><p>QueryPath also comes with a full CSS 3 selector parser implementation. If  you are interested in reusing that in other code, you will want to start  with <a href="../QueryPath/CSSParser/_CssEventHandler.php.html">CssEventHandler.php</a>, which is the event interface for the parser.</p><p>If you want to learn the nitty gritty details of QueryPath, you can take a  look at the implementation in <a href="../QueryPath/Internals/_QueryPathImpl.php.html">QueryPathImpl.php</a>. There you will find  the &quot;real&quot; code.</p><p>All of the code in QueryPath is licensed under either the LGPL or an MIT-like  license (you may choose which you prefer). All of the code is Copyright, 2009  by Matt Butcher.</p></p>
 	<ul class="tags">
 				<li><span class="field">author:</span> M Butcher &lt;<a href="mailto:matt">@aleph-null.tv matt @aleph-null.tv</a>&gt;</li>
 				<li><span class="field">see:</span> <a href="../QueryPath/_QueryPath.php.html#functionqp">qp()</a></li>
@@ -116,7 +116,7 @@
 	<div>
 		<span class="include-title">
 			<span class="include-type">require_once</span>
-			(<span class="include-name"><a href="../QueryPath/_QueryPathExtender.php.html">'QueryPathExtender.php'</a></span>)
+			(<span class="include-name">'QueryPathExtender.php'</span>)
 			(line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a78">78</a></span>)
 		</span>
 	</div>
@@ -188,7 +188,7 @@
 <div class="oddrow">
 	
 	<div>
-		<span class="method-title">qp</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a122">122</a></span>)
+		<span class="method-title">qp</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a125">125</a></span>)
 	</div> 
 
 	<!-- ========== Info from phpDoc block ========= -->
@@ -210,7 +210,7 @@
 		<span class="method-name">
 			qp
 		</span>
-					([<span class="var-type">mixed</span>&nbsp;<span class="var-name">$document</span> = <span class="var-default">NULL</span>], [<span class="var-type">string</span>&nbsp;<span class="var-name">$string</span> = <span class="var-default">NULL</span>])
+					([<span class="var-type">mixed</span>&nbsp;<span class="var-name">$document</span> = <span class="var-default">NULL</span>], [<span class="var-type">string</span>&nbsp;<span class="var-name">$string</span> = <span class="var-default">NULL</span>], [<span class="var-type">array</span>&nbsp;<span class="var-name">$options</span> = <span class="var-default">array()</span>])
 			</div>
 
 			<ul class="parameters">
@@ -220,6 +220,9 @@
 					<li>
 				<span class="var-type">string</span>
 				<span class="var-name">$string</span><span class="var-description">: A CSS 3 selector.</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$options</span><span class="var-description">: An associative array of options. Currently supported options are: <ul><li>&lt;none&gt; (Coming soon: DOM parser settings.)</li></ul></span>			</li>
 				</ul>
 		
 	
@@ -228,7 +231,7 @@
 	</div>
 	
 	<p class="notes" id="credit">
-		Documentation generated on Sun, 11 Jan 2009 21:07:55 -0600 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.2</a>
+		Documentation generated on Tue, 13 Jan 2009 00:08:26 -0600 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.2</a>
 	</p>
 	</div></body>
 </html>

@@ -75,7 +75,7 @@ require_once 'CssEventHandler.php';
 /**
  * The extender is used to provide support for extensions.
  */
-require_once 'QueryPathExtender.php';
+require_once 'QueryPathExtension.php';
 
 /**
  * Build a new Query Path.

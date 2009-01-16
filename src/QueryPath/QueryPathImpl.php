@@ -350,9 +350,17 @@ final class QueryPathImpl implements QueryPath {
   }
   
   public function append($data) {
+    //print "Append " . strval($data) . PHP_EOL;
     $data = $this->prepareInsert($data);
     if (isset($data)) {
-      foreach ($this->matches as $m) $m->appendChild($data);
+      //print empty($this->document->documentElement) ? 'empty' : 'ne';
+      if (empty($this->document->documentElement) && empty($this->matches)) {
+        // Then we assume we are writing to the doc root
+        $this->document->appendChild($data);
+        $this->matches = array($this->document->documentElement);
+      }
+      else
+        foreach ($this->matches as $m) $m->appendChild($data);
     }
     return $this;
   }
@@ -1023,7 +1031,7 @@ final class QueryPathImpl implements QueryPath {
    */
   public function __call($name, $arguments) {
     // Note that an empty ext registry indicates that extensions are disabled.
-    if (!empty($this->ext && QueryPathExtensionRegistry::hasMethod($name)) {
+    if (!empty($this->ext) && QueryPathExtensionRegistry::hasMethod($name)) {
       $owner = QueryPathExtensionRegistry::getMethodClass($name);
       $method = new ReflectionMethod($owner, $name);
       return $method->invokeArgs($this->ext[$owner], $arguments);

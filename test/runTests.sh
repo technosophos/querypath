@@ -6,3 +6,4 @@ phpunit=/Applications/MAMP/bin/php5/bin/phpunit
 #$phpunit QueryPathCssEventHandlerTests CssEventTests.php
 $phpunit QueryPathTests
 $phpunit QueryPathExtensionTests
+$phpunit QPListTests
