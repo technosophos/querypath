@@ -171,6 +171,13 @@ interface QueryPath {
    * @return QueryPath
    * @see filter()
    * @see is()
+   * @todo If a find() returns zero matches, then a subsequent find() will
+   *  also return zero matches, even if that find has a selector like :root.
+   *  The reason for this is that the {@link QueryPathCssEventHandler} does
+   *  not set the root of the document tree if it cannot find any elements
+   *  from which to determine what the root is. The workaround is to use end()
+   *  to revert back to the state before the zero-matching find. A better fix 
+   *  may be possible.
    */
   public function find($selector);
   

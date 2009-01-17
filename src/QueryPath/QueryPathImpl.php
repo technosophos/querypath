@@ -351,6 +351,7 @@ final class QueryPathImpl implements QueryPath {
   
   public function append($data) {
     //print "Append " . strval($data) . PHP_EOL;
+    //var_dump($data);
     $data = $this->prepareInsert($data);
     if (isset($data)) {
       //print empty($this->document->documentElement) ? 'empty' : 'ne';
@@ -548,7 +549,10 @@ final class QueryPathImpl implements QueryPath {
    *   imported.
    */
   protected function prepareInsert($item) {
-    if (is_string($item)) {
+    if(empty($item)) {
+      return;
+    }
+    elseif (is_string($item)) {
       /* This isn't what jQuery does, so we won't do it that way.
       if ($this->isXMLish($item)) {
         $frag = $this->document->createDocumentFragment();
@@ -563,7 +567,10 @@ final class QueryPathImpl implements QueryPath {
       $frag->appendXML($item);
       return $frag;
     }
-    elseif ($item instanceof QueryPath && $item->size()  > 0) {
+    elseif ($item instanceof QueryPath) {
+      if ($item->size() == 0) 
+        return;
+        
       return $this->prepareInsert($item->get(0));
     }
     elseif ($item instanceof DOMNode) {
@@ -578,7 +585,8 @@ final class QueryPathImpl implements QueryPath {
       return $this->document->importNode($element, TRUE);
     }
     // What should we do here?
-    throw new QueryPathException("Cannot prepare item of unsupported type.");
+    //var_dump($item);
+    throw new QueryPathException("Cannot prepare item of unsupported type: " . gettype($item));
   }
   
   public function tag() {

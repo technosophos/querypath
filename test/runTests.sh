@@ -7,3 +7,4 @@ phpunit=/Applications/MAMP/bin/php5/bin/phpunit
 $phpunit QueryPathTests
 $phpunit QueryPathExtensionTests
 $phpunit QPListTests
+$phpunit QPTPLTests
