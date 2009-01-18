@@ -72,6 +72,13 @@ class QueryPathTests extends PHPUnit_Framework_TestCase {
     $this->assertEquals($qp->get(0)->tagName, 'head');
   }
   
+  public function testTop() {
+    $file = './data.xml';
+    $qp = qp($file)->find('li');
+    $this->assertGreaterThan(2, $qp->size());
+    $this->assertEquals(1, $qp->top()->size());
+  }
+  
   public function testAttr() {
     $file = './data.xml';
     

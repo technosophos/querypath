@@ -21,6 +21,26 @@ class QPList implements QueryPathExtension {
     $this->qp = $qp;
   }
   
+  public function appendTable($items, $options = array()) {
+    $opts = $options + array(
+      'table class' => 'qptable',
+    );
+    $base = '<?xml version="1.0"?>
+    <table>
+    <tbody>
+      <tr></tr>
+    </tbody>
+    </table>';
+    
+    $qp = qp($base, 'tr');
+    if ($items instanceof TableAble) {
+      // Headers:
+      foreach ($items->getHeaders() as $header) {
+        $qp->append('<th>' . $header . '</th>');
+      }
+    }
+  }
+  
   /**
    * Append a list of items into an HTML DOM using one of the HTML list structures.
    * This takes a one-dimensional array and converts it into an HTML UL or OL list,
@@ -91,3 +111,79 @@ class QPList implements QueryPathExtension {
   }
 }
 QueryPathExtensionRegistry::extend('QPList');
+
+/**
+ * A TableAble object represents tabular data and can be converted to a table.
+ *
+ * The {@link QPList} extension to {@link QueryPath} provides a method for
+ * appending a table to a DOM ({@link QPList::appendTable()}).
+ *
+ * Implementing classes should provide methods for getting headers, rows
+ * of data, and the number of rows in the table ({@link TableAble::size()}).
+ * Implementors may also choose to make classes Iterable or Traversable over
+ * the rows of the table.
+ *
+ * Two very basic implementations of TableAble are provided in this package:
+ *  - {@link QPTableData} provides a generic implementation.
+ *  - {@link QPTableTextData} provides a generic implementation that also escapes
+ *    all data.
+ */
+interface TableAble {
+  public function getHeaders();
+  public function getRows();
+  public function size();
+}
+
+/**
+ * Format data to be inserted into a simple HTML table.
+ *
+ * Data in the headers or rows may contain markup. If you want to 
+ * disallow markup, use a {@see QPTableTextData} object instead.
+ */
+class QPTableData implements TableAble, IteratorAggregator {
+  
+  protected $headers;
+  protected $rows;
+  protected $caption;
+  protected $p = -1;
+  
+  public function setHeaders($array) {$this->headers = $array; return $this;}
+  public function getHeaders() {return $this->headers; }
+  public function setRows($array) {$this->rows = $array; return $this;}
+  public function getRows() {return $this->rows;}
+  public function size() {return count($this->rows);}
+  public function getIterator() {
+    return new ArrayIterator($rows);
+  }
+}
+
+/**
+ * Provides a table where all of the headers and data are treated as text data.
+ * 
+ * This provents marked-up data from being inserted into the DOM as elements. 
+ * Instead, the text is escaped using {@see htmlentities()}.
+ *
+ * @see QPTableData
+ */
+class QPTableTextData extends QPTableData {
+  public function setHeaders($array) {
+    $headers = array();
+    foreach ($array as $header) {
+      $headers[] = htmlentities($header);
+    }
+    parent::setHeaders($headers);
+    return $this;
+  }
+  public function setRows($array) {
+    $count = count($array);
+    for ($i = 0; $i < $count; ++$i) {
+      $cols = array();
+      foreach ($data[$i] as $datum) {
+        $cols[] = htmlentities($datum);
+      }
+      $data[$i] = $cols;
+    }
+    parent::setRows($array);
+    return $this;
+  }
+}

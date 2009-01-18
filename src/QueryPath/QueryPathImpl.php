@@ -93,6 +93,11 @@ final class QueryPathImpl implements QueryPath {
     }
   }
   
+  public function top() {
+    $this->setMatches(array($this->document->documentElement));
+    return $this;
+  }
+  
   public function find($selector) {
     $query = new QueryPathCssEventHandler($this->matches);
     $query->find($selector);

@@ -182,6 +182,25 @@ interface QueryPath {
   public function find($selector);
   
   /**
+   * Select the root element of the document.
+   *
+   * This sets the current match to the document's root element. For 
+   * practical purposes, this is the same as:
+   * <code>
+   * qp($someDoc)->find(':root');
+   * </code>
+   * However, since it doesn't invoke a parser, it has less overhead. It also 
+   * works in cases where the QueryPath has been reduced to zero elements (a
+   * case that is not handled by find(':root') because there is no element
+   * whose root can be found).
+   *
+   * @return QueryPath
+   *  The QueryPath object, wrapping the root element (document element)
+   *  for the current document.
+   */
+  public function top();
+  
+  /**
    * Get the number of elements currently wrapped by this object.
    *
    * @return int
