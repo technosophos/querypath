@@ -32,13 +32,35 @@ class QPList implements QueryPathExtension {
     </tbody>
     </table>';
     
-    $qp = qp($base, 'tr');
+    $qp = qp($base, 'table')->addClass($opts['table class'])->find('tr');
     if ($items instanceof TableAble) {
-      // Headers:
-      foreach ($items->getHeaders() as $header) {
-        $qp->append('<th>' . $header . '</th>');
-      }
+      $headers = $items->getHeaders();
+      $rows = $items->getRows();
     }
+    elseif ($items instanceof Traversable) {
+      $headers = array();
+      $rows = $items;
+    }
+    else {
+      $headers = $items['headers'];
+      $rows = $items['rows'];
+    }
+    
+    // Add Headers:
+    foreach ($headers as $header) {
+      $qp->append('<th>' . $header . '</th>');
+    }
+    $qp->top()->find('tr:last');
+    
+    // Add rows and cells.
+    foreach ($rows as $row) {
+      $qp->after('<tr/>')->next();
+      foreach($row as $cell) $qp->append('<td>' . $cell . '</td>');
+    }
+    
+    $this->qp->append($qp->top());
+    
+    return $this->qp;
   }
   
   /**
@@ -90,7 +112,7 @@ class QPList implements QueryPathExtension {
       if ($li instanceof QueryPath) {
         $q = $this->listImpl($li->get(), $type, $opts, $q);
       }
-      elseif (is_array($li) || $li instanceof Traversable || $li instanceof Iterator) {
+      elseif (is_array($li) || $li instanceof Traversable) {
         $q->append('<li><ul/></li>')->find('li:last > ul');
         $q = $this->listImpl($li, $type, $opts, $q);
         $q->parent();
@@ -140,7 +162,7 @@ interface TableAble {
  * Data in the headers or rows may contain markup. If you want to 
  * disallow markup, use a {@see QPTableTextData} object instead.
  */
-class QPTableData implements TableAble, IteratorAggregator {
+class QPTableData implements TableAble, IteratorAggregate {
   
   protected $headers;
   protected $rows;

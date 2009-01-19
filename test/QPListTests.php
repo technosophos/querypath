@@ -34,4 +34,29 @@ class QPListTests extends PHPUnit_Framework_TestCase {
     $this->assertEquals('aa', $qp->find(':root .qplist>dd:first')->text());
     //$qp->writeXML();
   }
+  
+  public function testAppendTable() {
+    $data = array(
+      'headers' => array('One', 'Two', 'Three'),
+      'rows' => array(
+        array(1, 2, 3),
+        array('Ein', 'Zwei', 'Drei'),
+        array('uno', 'dos', 'tres'),
+        array('uno', 'du'), // See what happens here...
+      ),
+    );
+    $qp = qp(QueryPath::HTML_STUB, 'body')->appendTable($data);
+    $this->assertEquals(3, $qp->top()->find('th')->size());
+    $this->assertEquals(11, $qp->top()->find('td')->size());
+    $this->assertEquals('Zwei', $qp->eq(4)->text());
+    
+    // Test with an object instead...
+    $o = new QPTableData();
+    $o->setHeaders($data['headers']);
+    $o->setRows($data['rows']);
+    $qp = qp(QueryPath::HTML_STUB, 'body')->appendTable($o);
+    $this->assertEquals(3, $qp->top()->find('th')->size());
+    $this->assertEquals(11, $qp->top()->find('td')->size());
+    $this->assertEquals('Zwei', $qp->eq(4)->text());
+  }
 }
