@@ -8,3 +8,4 @@ $phpunit QueryPathTests
 $phpunit QueryPathExtensionTests
 $phpunit QPListTests
 $phpunit QPTPLTests
+$phpunit QPDBTests

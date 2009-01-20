@@ -37,12 +37,12 @@ class QPTPL implements QueryPathExtension {
    *  Either an object or an associative array. 
    *  - In the case where the parameter
    *  is an object, this will introspect the object, looking for getters (a la
-   *  Java bean behavior). It will then search the document for IDs and classes
+   *  Java bean behavior). It will then search the document for CSS classes
    *  that match the method name. The function is then executed and its contents
    *  inserted into the document. (If the function returns NULL, nothing is 
    *  inserted.)
    *  - In the case where the paramter is an associative array, the function will
-   *  look through the template for ids and classes that match the keys of the 
+   *  look through the template for CSS classes that match the keys of the 
    *  array. When an array key is found, the array value is inserted into the 
    *  DOM as a child of the currently matched element(s).
    * @param array $options
@@ -55,6 +55,8 @@ class QPTPL implements QueryPathExtension {
    */
   public function tpl($template, $object, $options = array()) {
     // Handle default options here.
+
+    //$tqp = ($template instanceof QueryPath) ? clone $template: qp($template);
     $tqp = qp($template);
     
     if (is_array($object)) $this->tplArray($tqp, $object, $options);
@@ -93,12 +95,17 @@ class QPTPL implements QueryPathExtension {
   
   protected function tplArray($tqp, $array, $options = array()) {
     foreach ($array as $key => $value) {
+      $first = substr($key,0,1);
+      
+      // We allow classes and IDs if explicit. Otherwise we assume
+      // a class.
+      if ($first != '.' && $first != '#') $key = '.' . $key;
       // Breaking the find into two steps is faster.
-      if ($tqp->find(':root')->find($key)->size() > 0) {
+      if ($tqp->top()->find($key)->size() > 0) {
         $tqp->append($value);
       }
     }
-    return $tqp->find(':root');
+    return $tqp->top();
   }
   
   protected function tplObject($tqp, $object, $options = array()) {
@@ -107,7 +114,7 @@ class QPTPL implements QueryPathExtension {
     foreach ($methods as $method) {
       if (strpos($method->getName(), 'get') === 0) {
         $cssClass = $this->method2class($method->getName());
-        if ($tqp->find(':root')->find($cssClass)->size() > 0) {
+        if ($tqp->top()->find($cssClass)->size() > 0) {
           $tqp->append($method->invoke($object));
         }
         else {
@@ -116,7 +123,7 @@ class QPTPL implements QueryPathExtension {
         }
       }
     }
-    return $tqp->find(':root');
+    return $tqp->top();
   }
   
   protected function method2class($mname) {
