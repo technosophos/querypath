@@ -12,13 +12,13 @@ require_once '../src/QueryPath/QueryPath.php';
 require_once '../src/QueryPath/Extension/QPDB.php';
 require_once '../src/QueryPath/Extension/QPTPL.php';
 
+QPDB::baseDB('sqlite:./db/qpTest.db');
+
 
 class QPDBTests extends PHPUnit_Framework_TestCase {
   private $dsn = 'sqlite:./db/qpTest.db';
   
   public function setUp() {
-    QPDB::baseDB($this->dsn);
-    
     $this->db = QPDB::getBaseDB();
     $this->db->exec('CREATE TABLE IF NOT EXISTS qpdb_test (colOne, colTwo, colThree)');
     
@@ -49,27 +49,27 @@ class QPDBTests extends PHPUnit_Framework_TestCase {
     $qp = qp(QueryPath::HTML_STUB, 'body')->append('<ul/>')->children()->queryInto($sql, $args, $template)->doneWithQuery();
     //$qp->writeHTML();
     $this->assertEquals(5, $qp->top()->find('li')->size());
-    
   }
   
+  /*
   public function xtestExec() {
     $sql = 'INSERT INTO qpdb_test (colOne, colTwo, colThree) VALUES ("o", "t", "tr")';
     $qp = qp()->exec($sql)->doneWithQuery();
     $this->assertEquals(6, $qp->query('SELECT count(*) as c FROM qpdb_test')->getStatement()->fetchObject()->c);
     $qp->doneWithQuery();
   }
+  */
   
   public function testQueryChains() {
-    
     $sql = 'SELECT * FROM qpdb_test';
     $args = array();
-    
     $qp = qp(QueryPath::HTML_STUB, 'body') // Open a stub HTML doc and select <body/>
       ->append('<h1></h1>') // Add <h1/>
       ->children()  // Select the <h1/>
       //->dbInit($this->dsn) // Connect to the database
       ->query($sql, $args) // Execute the SQL query
       ->nextRow()  // Select a row. By default, no row is selected.
+      //->withEachRow()
       ->appendColumn('colOne') // Append Row 1, Col 1 (Title 0)
       ->parent() // Go back to the <body/>
       ->append('<p/>') // Append a <p/> to the body
@@ -99,7 +99,7 @@ class QPDBTests extends PHPUnit_Framework_TestCase {
       ->withEachRow()
       ->appendColumn('colOne', $wrap)
       ->doneWithQuery()
-      ->writeHTML();
+      ;//->writeHTML();
     $this->assertEquals('Title 0Title 1', $qp->top()->find('tbody')->text());
   }
 }

@@ -473,9 +473,11 @@ class QPDB implements QueryPathExtension {
    *  The QueryPath object.
    */
   public function doneWithQuery() {
-    if (isset($this->stmt) && $this->stmt instanceof PDOStatement)
+    if (isset($this->stmt) && $this->stmt instanceof PDOStatement) {
       $this->stmt->closeCursor();
-    $this->stmt = NULL;
+    }
+      
+    unset($this->stmt);
     $this->row = NULL;
     $this->cycleRows = FALSE;
     return $this->qp;
@@ -571,7 +573,7 @@ class QPDB implements QueryPathExtension {
       if ($this->row !== FALSE) {
         foreach ($columns as $col) {
           if (isset($this->row[$col])) {
-            $data = $row[$col];
+            $data = $this->row[$col];
             if ($hasWrap) 
               $data = qp($wrap)->deepest()->append($data)->top();
             $this->qp->$qpFunc($data);
