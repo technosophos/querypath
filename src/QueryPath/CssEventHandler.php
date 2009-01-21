@@ -223,8 +223,9 @@ class QueryPathCssEventHandler implements CssEventHandler {
     $found = array();
     $matches = $this->candidateList();
     foreach ($matches as $item) {
-      if ($item->getAttribute('class') == $name) {
-        $found[] = $item;
+      if ($item->hasAttribute('class')) {
+        $classes = explode(' ', $item->getAttribute('class'));
+        if (in_array($name, $classes)) $found[] = $item;
       }
     }
     

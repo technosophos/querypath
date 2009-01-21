@@ -47,6 +47,17 @@ class QPTPLTests extends PHPUnit_Framework_TestCase {
     $this->assertEquals(1, $qp->find(':root #baz')->size());
     $this->assertEquals(1, $qp->find('#baz')->size());
   }
+  
+  public function testTplMultiClass() {
+    $xml = '<?xml version="1.0"?><root/>';
+    $tpl = '<?xml version="1.0"?><data><item class="classb myclass"/><item id="one"/></data>';
+    $data = array('.myclass' => 'VALUE', '#one' => '<b>OTHER VALUE</b>');
+    $qp = qp($xml, 'root')->tpl($tpl, $data);
+    $this->assertEquals('VALUE', $qp->find(':root .myclass')->text());
+    $this->assertEquals(1, $qp->find(':root b')->size());
+  }
+  
+  
 }
 
 class IntrospectMe {

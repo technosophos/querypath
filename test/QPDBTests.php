@@ -54,8 +54,9 @@ class QPDBTests extends PHPUnit_Framework_TestCase {
   
   public function xtestExec() {
     $sql = 'INSERT INTO qpdb_test (colOne, colTwo, colThree) VALUES ("o", "t", "tr")';
-    $qp = qp()->exec($sql);
-    $this->assertEquals(6, $qp->query('SELECT count(*) as c FROM qpdb')->getStatement()->fetchObject()->c);
+    $qp = qp()->exec($sql)->doneWithQuery();
+    $this->assertEquals(6, $qp->query('SELECT count(*) as c FROM qpdb_test')->getStatement()->fetchObject()->c);
+    $qp->doneWithQuery();
   }
   
   public function testQueryChains() {
@@ -100,7 +101,5 @@ class QPDBTests extends PHPUnit_Framework_TestCase {
       ->doneWithQuery()
       ->writeHTML();
     $this->assertEquals('Title 0Title 1', $qp->top()->find('tbody')->text());
-    /**/
-    
   }
 }
