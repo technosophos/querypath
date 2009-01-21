@@ -85,6 +85,7 @@
 					</dt>
 		<dd class="index-item-body">
 			<div class="index-item-details"><a href="QueryPath/Extension/QPDB.html#methodaddData">QPDB::addData()</a> in QPDB.php</div>
+							<div class="index-item-description">This is the implementation behind the append/prepend and before/after methods.</div>
 					</dd>
 			<dt class="field">
 						<span class="method-title">adjacent</span>
@@ -204,6 +205,7 @@
 					</dt>
 		<dd class="index-item-body">
 			<div class="index-item-details"><a href="QueryPath/Extension/QPDB.html#methodappendColumn">QPDB::appendColumn()</a> in QPDB.php</div>
+							<div class="index-item-description">Append the data in the given column(s) to the QueryPath.</div>
 					</dd>
 			<dt class="field">
 						<span class="method-title">appendList</span>
@@ -305,6 +307,13 @@
 			<div class="index-item-details"><a href="QueryPath/CSSParser/CssParser.html#var$buffer">CssParser::$buffer</a> in CssParser.php</div>
 					</dd>
 			<dt class="field">
+						<span class="method-title">baseDB</span>
+					</dt>
+		<dd class="index-item-body">
+			<div class="index-item-details"><a href="QueryPath/Extension/QPDB.html#methodbaseDB">QPDB::baseDB()</a> in QPDB.php</div>
+							<div class="index-item-description">Create a new database instance for all QueryPath objects to share.</div>
+					</dd>
+			<dt class="field">
 						<span class="method-title">before</span>
 					</dt>
 		<dd class="index-item-body">
@@ -345,6 +354,12 @@
 			<div class="index-item-details"><a href="QueryPath/Extension/QPTableData.html#var$caption">QPTableData::$caption</a> in QPList.php</div>
 					</dd>
 			<dt class="field">
+						<span class="var-title">$con</span>
+					</dt>
+		<dd class="index-item-body">
+			<div class="index-item-details"><a href="QueryPath/Extension/QPDB.html#var$con">QPDB::$con</a> in QPDB.php</div>
+					</dd>
+			<dt class="field">
 						<span class="var-title">$cycleRows</span>
 					</dt>
 		<dd class="index-item-body">
@@ -374,20 +389,14 @@
 						<span class="method-title">children</span>
 					</dt>
 		<dd class="index-item-body">
-			<div class="index-item-details"><a href="QueryPath/QueryPath.html#methodchildren">QueryPath::children()</a> in QueryPath.php</div>
-							<div class="index-item-description">Get the children of the elements in the QueryPath object.</div>
+			<div class="index-item-details"><a href="QueryPath/Internals/QueryPathImpl.html#methodchildren">QueryPathImpl::children()</a> in QueryPathImpl.php</div>
 					</dd>
 			<dt class="field">
 						<span class="method-title">children</span>
 					</dt>
 		<dd class="index-item-body">
-			<div class="index-item-details"><a href="QueryPath/Internals/QueryPathImpl.html#methodchildren">QueryPathImpl::children()</a> in QueryPathImpl.php</div>
-					</dd>
-			<dt class="field">
-						<span class="method-title">cloneAll</span>
-					</dt>
-		<dd class="index-item-body">
-			<div class="index-item-details"><a href="QueryPath/Internals/QueryPathImpl.html#methodcloneAll">QueryPathImpl::cloneAll()</a> in QueryPathImpl.php</div>
+			<div class="index-item-details"><a href="QueryPath/QueryPath.html#methodchildren">QueryPath::children()</a> in QueryPath.php</div>
+							<div class="index-item-description">Get the children of the elements in the QueryPath object.</div>
 					</dd>
 			<dt class="field">
 						<span class="method-title">cloneAll</span>
@@ -395,6 +404,12 @@
 		<dd class="index-item-body">
 			<div class="index-item-details"><a href="QueryPath/QueryPath.html#methodcloneAll">QueryPath::cloneAll()</a> in QueryPath.php</div>
 							<div class="index-item-description">Perform a deep clone of each node in the QueryPath.</div>
+					</dd>
+			<dt class="field">
+						<span class="method-title">cloneAll</span>
+					</dt>
+		<dd class="index-item-body">
+			<div class="index-item-details"><a href="QueryPath/Internals/QueryPathImpl.html#methodcloneAll">QueryPathImpl::cloneAll()</a> in QueryPathImpl.php</div>
 					</dd>
 			<dt class="field">
 						colon
@@ -407,12 +422,14 @@
 					</dt>
 		<dd class="index-item-body">
 			<div class="index-item-details"><a href="QueryPath/Extension/QPDB.html#methodcolumnAfter">QPDB::columnAfter()</a> in QPDB.php</div>
+							<div class="index-item-description">Insert data from the given column(s) after each element in the QueryPath.</div>
 					</dd>
 			<dt class="field">
 						<span class="method-title">columnBefore</span>
 					</dt>
 		<dd class="index-item-body">
 			<div class="index-item-details"><a href="QueryPath/Extension/QPDB.html#methodcolumnBefore">QPDB::columnBefore()</a> in QPDB.php</div>
+							<div class="index-item-description">Insert the data from the given column before each element in the QueryPath.</div>
 					</dd>
 			<dt class="field">
 						comma
@@ -624,6 +641,7 @@
 					</dt>
 		<dd class="index-item-body">
 			<div class="index-item-details"><a href="QueryPath/Extension/QPDB.html#methoddoneWithQuery">QPDB::doneWithQuery()</a> in QPDB.php</div>
+							<div class="index-item-description">Free up resources when a query is no longer used.</div>
 					</dd>
 			<dt class="field">
 						dot
@@ -906,6 +924,13 @@
 							<div class="index-item-description">Given an array of elements, return an array of unique elements.</div>
 					</dd>
 			<dt class="field">
+						<span class="method-title">getBaseDB</span>
+					</dt>
+		<dd class="index-item-body">
+			<div class="index-item-details"><a href="QueryPath/Extension/QPDB.html#methodgetBaseDB">QPDB::getBaseDB()</a> in QPDB.php</div>
+							<div class="index-item-description">This method may be used to share the connection with other,  non-QueryPath objects.</div>
+					</dd>
+			<dt class="field">
 						<span class="method-title">getExtensions</span>
 					</dt>
 		<dd class="index-item-body">
@@ -975,6 +1000,7 @@
 					</dt>
 		<dd class="index-item-body">
 			<div class="index-item-details"><a href="QueryPath/Extension/QPDB.html#methodgetStatement">QPDB::getStatement()</a> in QPDB.php</div>
+							<div class="index-item-description">Get back the raw PDOStatement object after a query().</div>
 					</dd>
 			<dt class="field">
 						<span class="method-title">getStringPlusWhitespace</span>
@@ -1508,6 +1534,7 @@
 					</dt>
 		<dd class="index-item-body">
 			<div class="index-item-details"><a href="QueryPath/Extension/QPDB.html#methodprependColumn">QPDB::prependColumn()</a> in QPDB.php</div>
+							<div class="index-item-description">Prepend the data from the given column into the QueryPath.</div>
 					</dd>
 			<dt class="field">
 						<span class="method-title">prependTo</span>
@@ -2196,6 +2223,7 @@
 					</dt>
 		<dd class="index-item-body">
 			<div class="index-item-details"><a href="QueryPath/Extension/QPDB.html#methodwithEachRow">QPDB::withEachRow()</a> in QPDB.php</div>
+							<div class="index-item-description">Set the object to use each row, instead of only one row.</div>
 					</dd>
 			<dt class="field">
 						<span class="method-title">wrap</span>
@@ -2334,6 +2362,7 @@
 					</dt>
 		<dd class="index-item-body">
 			<div class="index-item-details"><a href="QueryPath/Extension/QPDB.html#method__construct">QPDB::__construct()</a> in QPDB.php</div>
+							<div class="index-item-description">Construct a new QPDB object. This is usually done by QueryPath itself.</div>
 					</dd>
 			<dt class="field">
 						<span class="method-title">__construct</span>

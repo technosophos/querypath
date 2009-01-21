@@ -61,7 +61,7 @@
 <li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-sym">-&gt;</span><a href="../../QueryPath/Extension/QPDB.html#methodnextRow">nextRow</a><span class="src-sym">(</span><span class="src-sym">)&nbsp;</span><span class="src-comm">//&nbsp;Advance&nbsp;to&nbsp;row&nbsp;2</span></div></li>
 <li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-sym">-&gt;</span><a href="../../QueryPath/Extension/QPDB.html#methodprependColumn">prependColumn</a><span class="src-sym">(</span><span class="src-str">'colTwo'</span><span class="src-sym">)&nbsp;</span><span class="src-comm">//&nbsp;Get&nbsp;row&nbsp;2,&nbsp;col&nbsp;2.&nbsp;(Body&nbsp;1)</span></div></li>
 <li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-sym">-&gt;</span><a href="../../QueryPath/Extension/QPDB.html#methodcolumnAfter">columnAfter</a><span class="src-sym">(</span><span class="src-str">'colThree'</span><span class="src-sym">)&nbsp;</span><span class="src-comm">//&nbsp;Get&nbsp;row&nbsp;2&nbsp;col&nbsp;3.&nbsp;(Footer&nbsp;1)</span></div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-sym">-&gt;</span><a href="../../QueryPath/Extension/QPDB.html#methoddoneWithQuery">doneWithQuery</a><span class="src-sym">(</span><span class="src-sym">)&nbsp;</span><span class="src-comm">//&nbsp;Let&nbsp;QueryPath&nbsp;clean&nbsp;up.</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-sym">-&gt;</span><a href="../../QueryPath/Extension/QPDB.html#methoddoneWithQuery">doneWithQuery</a><span class="src-sym">(</span><span class="src-sym">)&nbsp;</span><span class="src-comm">//&nbsp;Let&nbsp;QueryPath&nbsp;clean&nbsp;up.&nbsp;YOU&nbsp;SHOULD&nbsp;ALWAYS&nbsp;DO&nbsp;THIS.</span></div></li>
 <li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-sym">-&gt;</span><span class="src-id">writeHTML</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;&nbsp;</span><span class="src-comm">//&nbsp;Write&nbsp;the&nbsp;output&nbsp;as&nbsp;HTML.</span></div></li>
 <li><div class="src-line">&nbsp;<span class="src-php">?&gt;</span></div></li>
 </ol></div>  With the code above, we step through the document, selectively building elements  as we go, and then populating this elements with data from our initial query.</p><p>When the last command, QueryPath:::writeHTML(), is run, we will get output  like this:  <div class="src-code"><ol><li><div class="src-line">&nbsp;&nbsp;&nbsp;&lt;<span class="src-sym">!</span><span class="src-id">DOCTYPE&nbsp;html&nbsp;</span><span class="src-key">PUBLIC&nbsp;</span><span class="src-str">&quot;-//W3C//DTD&nbsp;XHTML&nbsp;1.0&nbsp;Strict//EN&quot;&nbsp;&quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;</span>&gt;</div></li>
@@ -85,6 +85,7 @@
 <li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-sym">-&gt;</span><a href="../../QueryPath/Extension/QPDB.html#methoddbInit">dbInit</a><span class="src-sym">(</span><span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-id"><a href="../../QueryPath/Extension/QPDB.html#var$dsn">dsn</a></span><span class="src-sym">)&nbsp;</span><span class="src-comm">//&nbsp;Initialize&nbsp;the&nbsp;DB</span></div></li>
 <li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-comm">//&nbsp;BIG&nbsp;LINE:&nbsp;Query&nbsp;the&nbsp;results,&nbsp;run&nbsp;them&nbsp;through&nbsp;the&nbsp;template,&nbsp;and&nbsp;insert&nbsp;them.</span></div></li>
 <li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-sym">-&gt;</span><a href="../../QueryPath/Extension/QPDB.html#methodqueryInto">queryInto</a><span class="src-sym">(</span><span class="src-var">$sql</span><span class="src-sym">,&nbsp;</span><span class="src-var">$args</span><span class="src-sym">,&nbsp;</span><span class="src-var">$template</span><span class="src-sym">)</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-sym">-&gt;</span><a href="../../QueryPath/Extension/QPDB.html#methoddoneWithQuery">doneWithQuery</a><span class="src-sym">(</span><span class="src-sym">)</span></div></li>
 <li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-sym">-&gt;</span><span class="src-id">writeHTML</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;&nbsp;</span><span class="src-comm">//&nbsp;Write&nbsp;the&nbsp;results&nbsp;as&nbsp;HTML.</span></div></li>
 <li><div class="src-line">&nbsp;<span class="src-php">?&gt;</span></div></li>
 </ol></div>  The simple code above puts the first column of the select statement  into an unordered list. The example output looks like this:  <div class="src-code"><ol><li><div class="src-line">&nbsp;&lt;<span class="src-sym">!</span><span class="src-id">DOCTYPE&nbsp;html&nbsp;</span><span class="src-key">PUBLIC&nbsp;</span><span class="src-str">&quot;-//W3C//DTD&nbsp;XHTML&nbsp;1.0&nbsp;Strict//EN&quot;&nbsp;&quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;</span>&gt;</div></li>
@@ -103,9 +104,9 @@
 <li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&lt;/<span class="src-id">ul</span>&gt;</div></li>
 <li><div class="src-line">&nbsp;&nbsp;&nbsp;&lt;/<span class="src-id">body</span>&gt;</div></li>
 <li><div class="src-line">&nbsp;&lt;/<span class="src-id">html</span>&gt;</div></li>
-</ol></div></p></p>
+</ol></div></p><p>Typical starting methods for this class are <a href="../../QueryPath/Extension/QPDB.html#methodbaseDB">QPDB::baseDB()</a>,  <a href="../../QueryPath/Extension/QPDB.html#methodquery">QPDB::query()</a>, and <a href="../../QueryPath/Extension/QPDB.html#methodqueryInto">QPDB::queryInto()</a>.</p></p>
 		<p class="notes">
-			Located in <a class="field" href="_Extension---QPDB.php.html">/Extension/QPDB.php</a> (line <span class="field"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPDB.php.html#a131">131</a></span>)
+			Located in <a class="field" href="_Extension---QPDB.php.html">/Extension/QPDB.php</a> (line <span class="field"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPDB.php.html#a227">227</a></span>)
 		</p>
 		
 				
@@ -128,7 +129,11 @@
 								</div>
 		<div class="info-box-body">
 			<div class="var-summary">
-																																																																								<div class="var-title">
+												<div class="var-title">
+					static <span class="var-type">mixed</span>
+					<a href="#$con" title="details" class="var-name">$con</a>
+				</div>
+																																																																																				<div class="var-title">
 					<span class="var-type">mixed</span>
 					<a href="#$cycleRows" title="details" class="var-name">$cycleRows</a>
 				</div>
@@ -172,7 +177,19 @@
 		</div>
 		<div class="info-box-body">			
 			<div class="method-summary">
-																																																																																																																														
+																																		
+				<div class="method-definition">
+					static 						<span class="method-result">void</span>
+										<a href="#baseDB" title="details" class="method-name">baseDB</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$dsn</span>, [<span class="var-type">array</span>&nbsp;<span class="var-name">$options</span> = <span class="var-default">array()</span>])
+									</div>
+																																																						
+				<div class="method-definition">
+					static 						<span class="method-result">void</span>
+										<a href="#getBaseDB" title="details" class="method-name">getBaseDB</a>
+										()
+									</div>
+																																																																		
 				<div class="method-definition">
 											<span class="method-result">QPDB</span>
 										<a href="#__construct" title="details" class="method-name">__construct</a>
@@ -182,25 +199,25 @@
 				<div class="method-definition">
 											<span class="method-result">void</span>
 										<a href="#addData" title="details" class="method-name">addData</a>
-											(<span class="var-type"></span>&nbsp;<span class="var-name">$columnName</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$qpFunc</span> = <span class="var-default">'append'</span>])
+											(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$columnName</span>, [<span class="var-type">string</span>&nbsp;<span class="var-name">$qpFunc</span> = <span class="var-default">'append'</span>], [<span class="var-type">string</span>&nbsp;<span class="var-name">$wrap</span> = <span class="var-default">NULL</span>])
 									</div>
 														
 				<div class="method-definition">
 											<span class="method-result">void</span>
 										<a href="#appendColumn" title="details" class="method-name">appendColumn</a>
-											(<span class="var-type"></span>&nbsp;<span class="var-name">$columnName</span>)
+											(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$columnName</span>, [<span class="var-type">string</span>&nbsp;<span class="var-name">$wrap</span> = <span class="var-default">NULL</span>])
 									</div>
-														
+																						
 				<div class="method-definition">
 											<span class="method-result">void</span>
 										<a href="#columnAfter" title="details" class="method-name">columnAfter</a>
-											(<span class="var-type"></span>&nbsp;<span class="var-name">$columnName</span>)
+											(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$columnName</span>, [<span class="var-type">string</span>&nbsp;<span class="var-name">$wrap</span> = <span class="var-default">NULL</span>])
 									</div>
 														
 				<div class="method-definition">
 											<span class="method-result">void</span>
 										<a href="#columnBefore" title="details" class="method-name">columnBefore</a>
-											(<span class="var-type"></span>&nbsp;<span class="var-name">$columnName</span>)
+											(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$columnName</span>, [<span class="var-type">string</span>&nbsp;<span class="var-name">$wrap</span> = <span class="var-default">NULL</span>])
 									</div>
 														
 				<div class="method-definition">
@@ -210,7 +227,7 @@
 									</div>
 														
 				<div class="method-definition">
-											<span class="method-result">void</span>
+											<span class="method-result"><a href="../../QueryPath/QueryPath.html">QueryPath</a></span>
 										<a href="#doneWithQuery" title="details" class="method-name">doneWithQuery</a>
 										()
 									</div>
@@ -220,15 +237,15 @@
 										<a href="#exec" title="details" class="method-name">exec</a>
 											(<span class="var-type">string</span>&nbsp;<span class="var-name">$sql</span>)
 									</div>
-														
+																						
 				<div class="method-definition">
-											<span class="method-result">void</span>
+											<span class="method-result">PDOStatement</span>
 										<a href="#getStatement" title="details" class="method-name">getStatement</a>
 										()
 									</div>
 														
 				<div class="method-definition">
-											<span class="method-result">void</span>
+											<span class="method-result"><a href="../../QueryPath/QueryPath.html">QueryPath</a></span>
 										<a href="#nextRow" title="details" class="method-name">nextRow</a>
 										()
 									</div>
@@ -236,7 +253,7 @@
 				<div class="method-definition">
 											<span class="method-result">void</span>
 										<a href="#prependColumn" title="details" class="method-name">prependColumn</a>
-											(<span class="var-type"></span>&nbsp;<span class="var-name">$columnName</span>)
+											(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$columnName</span>, [<span class="var-type">string</span>&nbsp;<span class="var-name">$wrap</span> = <span class="var-default">NULL</span>])
 									</div>
 														
 				<div class="method-definition">
@@ -248,11 +265,11 @@
 				<div class="method-definition">
 											<span class="method-result">void</span>
 										<a href="#queryInto" title="details" class="method-name">queryInto</a>
-											(<span class="var-type"></span>&nbsp;<span class="var-name">$sql</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$args</span> = <span class="var-default">array()</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$template</span> = <span class="var-default">NULL</span>])
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$sql</span>, [<span class="var-type">array</span>&nbsp;<span class="var-name">$args</span> = <span class="var-default">array()</span>], [<span class="var-type">mixed</span>&nbsp;<span class="var-name">$template</span> = <span class="var-default">NULL</span>])
 									</div>
 														
 				<div class="method-definition">
-											<span class="method-result">void</span>
+											<span class="method-result"><a href="../../QueryPath/QueryPath.html">QueryPath</a></span>
 										<a href="#withEachRow" title="details" class="method-name">withEachRow</a>
 										()
 									</div>
@@ -273,15 +290,36 @@
 							
 					</div>
 		<div class="info-box-body">
-			
-<a name="var$cycleRows" id="$cycleRows"><!-- --></A>
+			<a name="var$con" id="$con"><!-- --></A>
 <div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			static <span class="var-type">mixed</span>
+			<span class="var-name">$con</span>
+			 = <span class="var-default"> NULL</span>			(line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPDB.php.html#a235">235</a></span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+
+<a name="var$cycleRows" id="$cycleRows"><!-- --></A>
+<div class="oddrow">
 
 	<div class="var-header">
 		<span class="var-title">
 			<span class="var-type">mixed</span>
 			<span class="var-name">$cycleRows</span>
-			 = <span class="var-default"> FALSE</span>			(line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPDB.php.html#a142">142</a></span>)
+			 = <span class="var-default"> FALSE</span>			(line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPDB.php.html#a299">299</a></span>)
 		</span>
 	</div>
 
@@ -297,13 +335,13 @@
 
 </div>
 <a name="var$db" id="$db"><!-- --></A>
-<div class="oddrow">
+<div class="evenrow">
 
 	<div class="var-header">
 		<span class="var-title">
 			<span class="var-type">mixed</span>
 			<span class="var-name">$db</span>
-						(line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPDB.php.html#a134">134</a></span>)
+						(line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPDB.php.html#a230">230</a></span>)
 		</span>
 	</div>
 
@@ -318,13 +356,13 @@
 
 </div>
 <a name="var$dsn" id="$dsn"><!-- --></A>
-<div class="evenrow">
+<div class="oddrow">
 
 	<div class="var-header">
 		<span class="var-title">
 			<span class="var-type">mixed</span>
 			<span class="var-name">$dsn</span>
-						(line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPDB.php.html#a133">133</a></span>)
+						(line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPDB.php.html#a229">229</a></span>)
 		</span>
 	</div>
 
@@ -339,13 +377,13 @@
 
 </div>
 <a name="var$opts" id="$opts"><!-- --></A>
-<div class="oddrow">
+<div class="evenrow">
 
 	<div class="var-header">
 		<span class="var-title">
 			<span class="var-type">mixed</span>
 			<span class="var-name">$opts</span>
-						(line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPDB.php.html#a135">135</a></span>)
+						(line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPDB.php.html#a231">231</a></span>)
 		</span>
 	</div>
 
@@ -360,13 +398,13 @@
 
 </div>
 <a name="var$qp" id="$qp"><!-- --></A>
-<div class="evenrow">
+<div class="oddrow">
 
 	<div class="var-header">
 		<span class="var-title">
 			<span class="var-type">mixed</span>
 			<span class="var-name">$qp</span>
-						(line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPDB.php.html#a132">132</a></span>)
+						(line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPDB.php.html#a228">228</a></span>)
 		</span>
 	</div>
 
@@ -381,13 +419,13 @@
 
 </div>
 <a name="var$row" id="$row"><!-- --></A>
-<div class="oddrow">
+<div class="evenrow">
 
 	<div class="var-header">
 		<span class="var-title">
 			<span class="var-type">mixed</span>
 			<span class="var-name">$row</span>
-			 = <span class="var-default"> NULL</span>			(line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPDB.php.html#a136">136</a></span>)
+			 = <span class="var-default"> NULL</span>			(line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPDB.php.html#a232">232</a></span>)
 		</span>
 	</div>
 
@@ -402,13 +440,13 @@
 
 </div>
 <a name="var$stmt" id="$stmt"><!-- --></A>
-<div class="evenrow">
+<div class="oddrow">
 
 	<div class="var-header">
 		<span class="var-title">
 			<span class="var-type">mixed</span>
 			<span class="var-name">$stmt</span>
-			 = <span class="var-default"> NULL</span>			(line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPDB.php.html#a137">137</a></span>)
+			 = <span class="var-default"> NULL</span>			(line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPDB.php.html#a233">233</a></span>)
 		</span>
 	</div>
 
@@ -437,14 +475,74 @@
 		</div>
 		<div class="info-box-body">
 			<A NAME='method_detail'></A>
-<a name="method__construct" id="__construct"><!-- --></a>
-<div class="oddrow">
+<a name="methodbaseDB" id="baseDB"><!-- --></a>
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">Constructor __construct</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPDB.php.html#a144">144</a></span>)
+		<span class="method-title">static baseDB</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPDB.php.html#a272">272</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Create a new database instance for all QueryPath objects to share.</p>
+<p class="description"><p>This method need be called only once. From there, other QPDB instances  will (by default) share the same database instance.</p><p>Normally, a DSN should be passed in. Username, password, and db params  are all passed in using the options array.</p><p>On rare occasions, it may be more fitting to pass in an existing database  connection (which must be a PDO object). In such cases, the $dsn  parameter can take a PDO object instead of a DSN string. The standard options  will be ignored, though.</p><p><strong>Warning:</strong> If you pass in a PDO object that is configured to NOT throw  exceptions, you will need to handle error checking differently.</p><p><strong>Remember to always use <a href="../../QueryPath/Extension/QPDB.html#methoddoneWithQuery">QPDB::doneWithQuery()</a> when you are done
+ with a query. It gives PDO a chance to clean up open connections that may
+ prevent other instances from accessing or modifying data.</strong></p></p>
+	<ul class="tags">
+				<li><span class="field">throws:</span> PDOException   An exception may be thrown if the connection cannot be made.</li>
+			</ul>
+	
+	<div class="method-signature">
+		static <span class="method-result">void</span>
+		<span class="method-name">
+			baseDB
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$dsn</span>, [<span class="var-type">array</span>&nbsp;<span class="var-name">$options</span> = <span class="var-default">array()</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$dsn</span><span class="var-description">: The DSN of the database to connect to. You can also pass in a PDO object, which   will set the QPDB object's database to the one passed in.</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$options</span><span class="var-description">: An array of configuration options. The following options are currently supported: <ul><li>username =&gt; (string)</li><li>password =&gt; (string)</li><li>db params =&gt; (array) These will be passed into the new PDO object.
+    See the PDO documentation for a list of options. By default, the
+    only flag set is PDO::ATTR_ERRMODE, which is set to
+    PDO::ERRMODE_EXCEPTION.</li></ul></span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodgetBaseDB" id="getBaseDB"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">static getBaseDB</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPDB.php.html#a294">294</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">This method may be used to share the connection with other,  non-QueryPath objects.</p>
+	
+	<div class="method-signature">
+		static <span class="method-result">void</span>
+		<span class="method-name">
+			getBaseDB
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="method__construct" id="__construct"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">Constructor __construct</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPDB.php.html#a304">304</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Construct a new QPDB object. This is usually done by QueryPath itself.</p>
 	<ul class="tags">
 				<li><span class="field">access:</span> public</li>
 			</ul>
@@ -471,13 +569,14 @@
 			
 	</div>
 <a name="methodaddData" id="addData"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">addData</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPDB.php.html#a269">269</a></span>)
+		<span class="method-title">addData</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPDB.php.html#a553">553</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">This is the implementation behind the append/prepend and before/after methods.</p>
 	<ul class="tags">
 				<li><span class="field">access:</span> protected</li>
 			</ul>
@@ -487,29 +586,36 @@
 		<span class="method-name">
 			addData
 		</span>
-					(<span class="var-type"></span>&nbsp;<span class="var-name">$columnName</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$qpFunc</span> = <span class="var-default">'append'</span>])
+					(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$columnName</span>, [<span class="var-type">string</span>&nbsp;<span class="var-name">$qpFunc</span> = <span class="var-default">'append'</span>], [<span class="var-type">string</span>&nbsp;<span class="var-name">$wrap</span> = <span class="var-default">NULL</span>])
 			</div>
 	
 			<ul class="parameters">
 					<li>
-				<span class="var-type"></span>
-				<span class="var-name">$columnName</span>			</li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$columnName</span><span class="var-description">: The name of the column whose data should be added to the currently selected   elements. This can be either a string or an array of strings.</span>			</li>
 					<li>
-				<span class="var-type"></span>
-				<span class="var-name">$qpFunc</span>			</li>
+				<span class="var-type">string</span>
+				<span class="var-name">$qpFunc</span><span class="var-description">: The name of the QueryPath function that should be executed to insert data   into the object.</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$wrap</span><span class="var-description">: The HTML/XML markup that will be used to wrap around the column data before   the data is inserted into the QueryPath object.</span>			</li>
 				</ul>
 		
 			
 	</div>
 <a name="methodappendColumn" id="appendColumn"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">appendColumn</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPDB.php.html#a295">295</a></span>)
+		<span class="method-title">appendColumn</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPDB.php.html#a612">612</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Append the data in the given column(s) to the QueryPath.</p>
+<p class="description"><p>This appends data to every item in the current QueryPath. The data will  be retrieved from the database result, using $columnName as the key.</p></p>
 	<ul class="tags">
+				<li><span class="field">see:</span> <a href="../../QueryPath/QueryPath.html#methodwrap">QueryPath::wrap()</a></li>
+				<li><span class="field">see:</span> <a href="../../QueryPath/QueryPath.html#methodappend">QueryPath::append()</a></li>
 				<li><span class="field">access:</span> public</li>
 			</ul>
 	
@@ -518,26 +624,34 @@
 		<span class="method-name">
 			appendColumn
 		</span>
-					(<span class="var-type"></span>&nbsp;<span class="var-name">$columnName</span>)
+					(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$columnName</span>, [<span class="var-type">string</span>&nbsp;<span class="var-name">$wrap</span> = <span class="var-default">NULL</span>])
 			</div>
 	
 			<ul class="parameters">
 					<li>
-				<span class="var-type"></span>
-				<span class="var-name">$columnName</span>			</li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$columnName</span><span class="var-description">: Either a string or an array of strings. The value(s) here should match   one or more column headers from the current SQL <a href="../../QueryPath/Extension/QPDB.html#methodquery">query</a>'s results.</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$wrap</span><span class="var-description">: IF this is supplied, then the value or values retrieved from the database   will be wrapped in this HTML/XML before being inserted into the QueryPath.</span>			</li>
 				</ul>
 		
 			
 	</div>
 <a name="methodcolumnAfter" id="columnAfter"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">columnAfter</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPDB.php.html#a301">301</a></span>)
+		<span class="method-title">columnAfter</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPDB.php.html#a670">670</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Insert data from the given column(s) after each element in the QueryPath.</p>
+<p class="description"><p>This inserts data from the given columns after each element in the QueryPath  object. IF HTML/XML is given in the $wrap parameter, then the column data  will be wrapped in that markup before being inserted into the QueryPath.</p></p>
 	<ul class="tags">
+				<li><span class="field">see:</span> <a href="../../QueryPath/Extension/QPDB.html#methodappendColumn">QPDB::appendColumn()</a></li>
+				<li><span class="field">see:</span> <a href="../../QueryPath/QueryPath.html#methodafter">QueryPath::after()</a></li>
+				<li><span class="field">see:</span> <a href="../../QueryPath/QueryPath.html#methodwrap">QueryPath::wrap()</a></li>
 				<li><span class="field">access:</span> public</li>
 			</ul>
 	
@@ -546,26 +660,34 @@
 		<span class="method-name">
 			columnAfter
 		</span>
-					(<span class="var-type"></span>&nbsp;<span class="var-name">$columnName</span>)
+					(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$columnName</span>, [<span class="var-type">string</span>&nbsp;<span class="var-name">$wrap</span> = <span class="var-default">NULL</span>])
 			</div>
 	
 			<ul class="parameters">
 					<li>
-				<span class="var-type"></span>
-				<span class="var-name">$columnName</span>			</li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$columnName</span><span class="var-description">: Either a string or an array of strings. The value(s) here should match   one or more column headers from the current SQL <a href="../../QueryPath/Extension/QPDB.html#methodquery">query</a>'s results.</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$wrap</span><span class="var-description">: IF this is supplied, then the value or values retrieved from the database   will be wrapped in this HTML/XML before being inserted into the QueryPath.</span>			</li>
 				</ul>
 		
 			
 	</div>
 <a name="methodcolumnBefore" id="columnBefore"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">columnBefore</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPDB.php.html#a299">299</a></span>)
+		<span class="method-title">columnBefore</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPDB.php.html#a649">649</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Insert the data from the given column before each element in the QueryPath.</p>
+<p class="description"><p>This inserts the data before each element in the currently matched QueryPath.</p></p>
 	<ul class="tags">
+				<li><span class="field">see:</span> <a href="../../QueryPath/Extension/QPDB.html#methodprependColumn">QPDB::prependColumn()</a></li>
+				<li><span class="field">see:</span> <a href="../../QueryPath/QueryPath.html#methodbefore">QueryPath::before()</a></li>
+				<li><span class="field">see:</span> <a href="../../QueryPath/QueryPath.html#methodwrap">QueryPath::wrap()</a></li>
 				<li><span class="field">access:</span> public</li>
 			</ul>
 	
@@ -574,26 +696,34 @@
 		<span class="method-name">
 			columnBefore
 		</span>
-					(<span class="var-type"></span>&nbsp;<span class="var-name">$columnName</span>)
+					(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$columnName</span>, [<span class="var-type">string</span>&nbsp;<span class="var-name">$wrap</span> = <span class="var-default">NULL</span>])
 			</div>
 	
 			<ul class="parameters">
 					<li>
-				<span class="var-type"></span>
-				<span class="var-name">$columnName</span>			</li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$columnName</span><span class="var-description">: Either a string or an array of strings. The value(s) here should match   one or more column headers from the current SQL <a href="../../QueryPath/Extension/QPDB.html#methodquery">query</a>'s results.</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$wrap</span><span class="var-description">: IF this is supplied, then the value or values retrieved from the database   will be wrapped in this HTML/XML before being inserted into the QueryPath.</span>			</li>
 				</ul>
 		
 			
 	</div>
 <a name="methoddbInit" id="dbInit"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">dbInit</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPDB.php.html#a168">168</a></span>)
+		<span class="method-title">dbInit</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPDB.php.html#a343">343</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
 <p class="short-description">Create a new connection to the database. Use the PDO DSN syntax for a  connection string.</p>
+<p class="description"><p>This creates a database connection that will last for the duration of  the QueryPath object. This method ought to be used only in two cases: <ul><li>When you will only run a couple of queries during the life of the
+   process.</li><li>When you need to connect to a database that will only be used for
+   a few things.</li></ul> Otherwise, you should use QPDB::baseDB to configure a single  database connection that all of <a href="../../QueryPath/QueryPath.html">QueryPath</a> can share.</p><p><strong>Remember to always use <a href="../../QueryPath/Extension/QPDB.html#methoddoneWithQuery">QPDB::doneWithQuery()</a> when you are done
+ with a query. It gives PDO a chance to clean up open connections that may
+ prevent other instances from accessing or modifying data.</strong></p></p>
 	<ul class="tags">
 				<li><span class="field">return:</span> The QueryPath object.</li>
 				<li><span class="field">throws:</span> PDOException   The PDO library is configured to throw exceptions, so any of the   database functions may throw a PDOException.</li>
@@ -623,19 +753,22 @@
 			
 	</div>
 <a name="methoddoneWithQuery" id="doneWithQuery"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">doneWithQuery</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPDB.php.html#a231">231</a></span>)
+		<span class="method-title">doneWithQuery</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPDB.php.html#a475">475</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Free up resources when a query is no longer used.</p>
+<p class="description"><p>This function should <em>always</em> be called when the database  results for a query are no longer needed. This frees up the  database cursor, discards the data, and resets resources for future  use.</p><p>If this method is not called, some PDO database drivers will not allow  subsequent queries, while others will keep tables in a locked state where  writes will not be allowed.</p></p>
 	<ul class="tags">
+				<li><span class="field">return:</span> The QueryPath object.</li>
 				<li><span class="field">access:</span> public</li>
 			</ul>
 	
 	<div class="method-signature">
-		<span class="method-result">void</span>
+		<span class="method-result"><a href="../../QueryPath/QueryPath.html">QueryPath</a></span>
 		<span class="method-name">
 			doneWithQuery
 		</span>
@@ -646,10 +779,10 @@
 			
 	</div>
 <a name="methodexec" id="exec"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">exec</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPDB.php.html#a251">251</a></span>)
+		<span class="method-title">exec</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPDB.php.html#a496">496</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -677,19 +810,21 @@
 			
 	</div>
 <a name="methodgetStatement" id="getStatement"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">getStatement</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPDB.php.html#a291">291</a></span>)
+		<span class="method-title">getStatement</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPDB.php.html#a593">593</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Get back the raw PDOStatement object after a query().</p>
 	<ul class="tags">
+				<li><span class="field">return:</span> Return the PDO statement object. If this is called and no statement   has been executed (or the statement has already been cleaned up),   this will return NULL.</li>
 				<li><span class="field">access:</span> public</li>
 			</ul>
 	
 	<div class="method-signature">
-		<span class="method-result">void</span>
+		<span class="method-result">PDOStatement</span>
 		<span class="method-name">
 			getStatement
 		</span>
@@ -700,20 +835,22 @@
 			
 	</div>
 <a name="methodnextRow" id="nextRow"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">nextRow</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPDB.php.html#a259">259</a></span>)
+		<span class="method-title">nextRow</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPDB.php.html#a517">517</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
 <p class="short-description">Advance the query results row cursor.</p>
+<p class="description"><p>In a result set where more than one row was returned, this will  move the pointer to the next row in the set.</p><p>The PDO library does not have a consistent way of determining how many  rows a result set has. The suggested technique is to first execute a  COUNT() SQL query and get the data from that.</p><p>The <a href="../../QueryPath/Extension/QPDB.html#methodwithEachRow">withEachRow()</a> method will begin at the next row after the  currently selected one.</p></p>
 	<ul class="tags">
+				<li><span class="field">return:</span> The QueryPath object.</li>
 				<li><span class="field">access:</span> public</li>
 			</ul>
 	
 	<div class="method-signature">
-		<span class="method-result">void</span>
+		<span class="method-result"><a href="../../QueryPath/QueryPath.html">QueryPath</a></span>
 		<span class="method-name">
 			nextRow
 		</span>
@@ -724,14 +861,18 @@
 			
 	</div>
 <a name="methodprependColumn" id="prependColumn"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">prependColumn</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPDB.php.html#a297">297</a></span>)
+		<span class="method-title">prependColumn</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPDB.php.html#a630">630</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Prepend the data from the given column into the QueryPath.</p>
+<p class="description"><p>This takes the data from the given column(s) and inserts it into each  element currently found in the QueryPath.</p></p>
 	<ul class="tags">
+				<li><span class="field">see:</span> <a href="../../QueryPath/QueryPath.html#methodwrap">QueryPath::wrap()</a></li>
+				<li><span class="field">see:</span> <a href="../../QueryPath/QueryPath.html#methodprepend">QueryPath::prepend()</a></li>
 				<li><span class="field">access:</span> public</li>
 			</ul>
 	
@@ -740,31 +881,36 @@
 		<span class="method-name">
 			prependColumn
 		</span>
-					(<span class="var-type"></span>&nbsp;<span class="var-name">$columnName</span>)
+					(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$columnName</span>, [<span class="var-type">string</span>&nbsp;<span class="var-name">$wrap</span> = <span class="var-default">NULL</span>])
 			</div>
 	
 			<ul class="parameters">
 					<li>
-				<span class="var-type"></span>
-				<span class="var-name">$columnName</span>			</li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$columnName</span><span class="var-description">: Either a string or an array of strings. The value(s) here should match   one or more column headers from the current SQL <a href="../../QueryPath/Extension/QPDB.html#methodquery">query</a>'s results.</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$wrap</span><span class="var-description">: IF this is supplied, then the value or values retrieved from the database   will be wrapped in this HTML/XML before being inserted into the QueryPath.</span>			</li>
 				</ul>
 		
 			
 	</div>
 <a name="methodquery" id="query"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">query</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPDB.php.html#a202">202</a></span>)
+		<span class="method-title">query</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPDB.php.html#a403">403</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
 <p class="short-description">Execute a SQL query, and store the results.</p>
-<p class="description"><p>Use this when you need to access the results.</p><p>Example:  <div class="src-code"><ol><li><div class="src-line">&nbsp;<span class="src-php">&lt;?php</span></div></li>
+<p class="description"><p>This will execute a SQL query (as a prepared statement), and then store  the results internally for later use. The data can be iterated using  <a href="../../QueryPath/Extension/QPDB.html#methodnextRow">nextRow()</a>. QueryPath can also be instructed to do internal iteration  using the <a href="../../QueryPath/Extension/QPDB.html#methodwithEachRow">withEachRow()</a> method. Finally, on the occasion that the  statement itself is needed, <a href="../../QueryPath/Extension/QPDB.html#methodgetStatement">getStatement()</a> can be used.</p><p>Use this when you need to access the results of a query, or when the  parameter to a query should be escaped. If the query takes no external  parameters and does not return results, you may wish to use the  (ever so slightly faster) <a href="../../QueryPath/Extension/QPDB.html#methodexec">exec()</a> function instead.</p><p>Make sure you use <a href="../../QueryPath/Extension/QPDB.html#methoddoneWithQuery">doneWithQuery()</a> after finishing with the database  results returned by this method.</p><p><strong>Usage</strong></p><p>Here is a simple example:  <div class="src-code"><ol><li><div class="src-line">&nbsp;<span class="src-php">&lt;?php</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-id">QPQDB</span><span class="src-sym">::</span><span class="src-id">baseDB</span><span class="src-sym">(</span><span class="src-var">$someDSN</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
 <li><div class="src-line">&nbsp;<span class="src-var">$args&nbsp;</span>=&nbsp;<span class="src-key">array</span><span class="src-sym">(</span><span class="src-str">':something'&nbsp;</span>=&gt;&nbsp;<span class="src-str">'myColumn'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
-<li><div class="src-line">&nbsp;<a href="../../QueryPath/_QueryPath.php.html#functionqp">qp</a><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">-&gt;</span><span class="src-id"><a href="../../QueryPath/Extension/QPDB.html">QPDB</a></span><span class="src-sym">(</span><span class="src-var">$dsn</span><span class="src-sym">)</span><span class="src-sym">-&gt;</span><a href="../../QueryPath/Extension/QPDB.html#methodquery">query</a><span class="src-sym">(</span><span class="src-str">'SELECT&nbsp;:something&nbsp;FROM&nbsp;foo'</span><span class="src-sym">,&nbsp;</span><span class="src-var">$args</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;<a href="../../QueryPath/_QueryPath.php.html#functionqp">qp</a><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">-&gt;</span><a href="../../QueryPath/Extension/QPDB.html#methodquery">query</a><span class="src-sym">(</span><span class="src-str">'SELECT&nbsp;:something&nbsp;FROM&nbsp;foo'</span><span class="src-sym">,&nbsp;</span><span class="src-var">$args</span><span class="src-sym">)</span><span class="src-sym">-&gt;</span><a href="../../QueryPath/Extension/QPDB.html#methoddoneWithQuery">doneWithQuery</a><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
 <li><div class="src-line">&nbsp;<span class="src-php">?&gt;</span></div></li>
-</ol></div></p></p>
+</ol></div></p><p>The above would execute the given query, substituting myColumn in place of  :something before executing the query The <a href="../../QueryPath/Extension/QPDB.html#methoddoneWithQuery">doneWithQuery()</a> method  indicates that we are not going to use the results for anything. This method  discards the results.</p><p>A more typical use of the query() function would involve inserting data  using <a href="../../QueryPath/Extension/QPDB.html#methodappendColumn">appendColumn()</a>, <a href="../../QueryPath/Extension/QPDB.html#methodprependColumn">prependColumn()</a>, <a href="../../QueryPath/Extension/QPDB.html#methodcolumnBefore">columnBefore()</a>,  or <a href="../../QueryPath/Extension/QPDB.html#methodcolumnAfter">columnAfter()</a>. See the main documentation for <a href="../../QueryPath/Extension/QPDB.html">QPDB</a> to view  a more realistic example.</p></p>
 	<ul class="tags">
 				<li><span class="field">throws:</span> PDOException   Throws an exception if the query cannot be executed.</li>
 				<li><span class="field">access:</span> public</li>
@@ -790,16 +936,19 @@
 			
 	</div>
 <a name="methodqueryInto" id="queryInto"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">queryInto</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPDB.php.html#a213">213</a></span>)
+		<span class="method-title">queryInto</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPDB.php.html#a442">442</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
 <p class="short-description">Query and append the results.</p>
-<p class="description"><p>Run a query and inject the results directly into the  elements in the QueryPath object.</p></p>
+<p class="description"><p>Run a query and inject the results directly into the  elements in the QueryPath object.</p><p>If the third argument is empty, the data will be inserted directly into  the QueryPath elements unaltered. However, if a template is provided in  the third parameter, the query data will be merged into that template  and then be added to each QueryPath element.</p><p>The template will be merged once for each row, even if no row data is  appended into the template.</p><p>A template is simply a piece of markup labeled for insertion of  data. See <a href="../../QueryPath/Extension/QPTPL.html">QPTPL</a> and <a href="../../QueryPath/Extension/_Extension---QPTPL.php.html">QPTPL.php</a> for more information.</p><p>Since this does not use a stanard <a href="../../QueryPath/Extension/QPDB.html#methodquery">query()</a>, there is no need  to call <a href="../../QueryPath/Extension/QPDB.html#methoddoneWithQuery">doneWithQuery()</a> after this method.</p></p>
 	<ul class="tags">
+				<li><span class="field">see:</span> <a href="../../QueryPath/Extension/QPDB.html#methodquery">QPDB::query()</a></li>
+				<li><span class="field">see:</span> <a href="../../QueryPath/Extension/QPTPL.html#methodtpl">QPTPL::tpl()</a></li>
+				<li><span class="field">see:</span> <a href="../../QueryPath/Extension/_Extension---QPTPL.php.html">QPTPL.php</a></li>
 				<li><span class="field">access:</span> public</li>
 			</ul>
 	
@@ -808,37 +957,44 @@
 		<span class="method-name">
 			queryInto
 		</span>
-					(<span class="var-type"></span>&nbsp;<span class="var-name">$sql</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$args</span> = <span class="var-default">array()</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$template</span> = <span class="var-default">NULL</span>])
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$sql</span>, [<span class="var-type">array</span>&nbsp;<span class="var-name">$args</span> = <span class="var-default">array()</span>], [<span class="var-type">mixed</span>&nbsp;<span class="var-name">$template</span> = <span class="var-default">NULL</span>])
 			</div>
 	
 			<ul class="parameters">
 					<li>
-				<span class="var-type"></span>
-				<span class="var-name">$sql</span>			</li>
+				<span class="var-type">string</span>
+				<span class="var-name">$sql</span><span class="var-description">: The SQL query to execute. In this context, the query is typically a   SELECT statement.</span>			</li>
 					<li>
-				<span class="var-type"></span>
-				<span class="var-name">$args</span>			</li>
+				<span class="var-type">array</span>
+				<span class="var-name">$args</span><span class="var-description">: An array of arguments to be substituted into the query. See <a href="../../QueryPath/Extension/QPDB.html#methodquery">query()</a>   for details.</span>			</li>
 					<li>
-				<span class="var-type"></span>
-				<span class="var-name">$template</span>			</li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$template</span><span class="var-description">: A template into which query results will be merged prior to being appended   into the QueryPath. For details on the template, see <a href="../../QueryPath/Extension/QPTPL.html#methodtpl">QPTPL::tpl()</a>.</span>			</li>
 				</ul>
 		
 			
 	</div>
 <a name="methodwithEachRow" id="withEachRow"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">withEachRow</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPDB.php.html#a264">264</a></span>)
+		<span class="method-title">withEachRow</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPDB.php.html#a535">535</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Set the object to use each row, instead of only one row.</p>
+<p class="description"><p>This is used primarily to instruct QPDB to iterate through all of the  rows when appending, prepending, inserting before, or inserting after.</p></p>
 	<ul class="tags">
+				<li><span class="field">return:</span> The QueryPath object.</li>
+				<li><span class="field">see:</span> <a href="../../QueryPath/Extension/QPDB.html#methodcolumnAfter">QPDB::columnAfter()</a></li>
+				<li><span class="field">see:</span> <a href="../../QueryPath/Extension/QPDB.html#methodappendColumn">QPDB::appendColumn()</a></li>
+				<li><span class="field">see:</span> <a href="../../QueryPath/Extension/QPDB.html#methodcolumnBefore">QPDB::columnBefore()</a></li>
+				<li><span class="field">see:</span> <a href="../../QueryPath/Extension/QPDB.html#methodprependColumn">QPDB::prependColumn()</a></li>
 				<li><span class="field">access:</span> public</li>
 			</ul>
 	
 	<div class="method-signature">
-		<span class="method-result">void</span>
+		<span class="method-result"><a href="../../QueryPath/QueryPath.html">QueryPath</a></span>
 		<span class="method-name">
 			withEachRow
 		</span>
@@ -854,7 +1010,7 @@
 
 
 	<p class="notes" id="credit">
-		Documentation generated on Tue, 20 Jan 2009 00:27:15 -0600 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.2</a>
+		Documentation generated on Wed, 21 Jan 2009 00:51:49 -0600 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.2</a>
 	</p>
 	</div></body>
 </html>
