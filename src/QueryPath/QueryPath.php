@@ -143,6 +143,11 @@ function qp($document = NULL, $string = NULL, $options = array()) {
  * If you are new to these documents, start at the {@link QueryPath.php} page.
  * There you will find a quick guide to the tools contained in this project.
  *
+ * A note on serialization: QueryPath uses DOM classes internally, and those
+ * do not serialize well at all. In addition, QueryPath may contain many
+ * extensions, and there is no guarantee that extensions can serialize. The
+ * moral of the story: Don't serialize QueryPath.
+ *
  * @see qp()
  * @see QueryPath.php
  */

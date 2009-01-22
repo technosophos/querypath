@@ -88,9 +88,11 @@ final class QueryPathImpl implements QueryPath {
     }
     
     // Do extensions loading.
+    /* Defer this until an extension method is actually called.
     if (QueryPathExtensionRegistry::$useRegistry) {
       $this->ext = QueryPathExtensionRegistry::getExtensions($this);
     }
+    */
   }
   
   public function top() {
@@ -1043,6 +1045,26 @@ final class QueryPathImpl implements QueryPath {
    *  An expcetion is thrown if a non-existent method is called.
    */
   public function __call($name, $arguments) {
+    
+    if (!QueryPathExtensionRegistry::$useRegistry) {
+      throw new QueryPathException("No method named $name found (Extensions disabled).");      
+    }
+    
+    // Loading of extensions is deferred until the first time a
+    // non-core method is called. This makes constructing faster, but it
+    // may make the first invocation of __call() slower (if there are 
+    // enough extensions.)
+    //
+    // The main reason for moving this out of the constructor is that most
+    // new QueryPath instances do not use extensions. Charging qp() calls
+    // with the additional hit is not a good idea.
+    //
+    // Also, this will at least limit the number of circular references.
+    if (empty($this->ext)) {
+      // Load the registry
+      $this->ext = QueryPathExtensionRegistry::getExtensions($this);
+    }
+    
     // Note that an empty ext registry indicates that extensions are disabled.
     if (!empty($this->ext) && QueryPathExtensionRegistry::hasMethod($name)) {
       $owner = QueryPathExtensionRegistry::getMethodClass($name);

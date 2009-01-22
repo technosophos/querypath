@@ -50,7 +50,7 @@ class QPTPLTests extends PHPUnit_Framework_TestCase {
   
   public function testTplMultiClass() {
     $xml = '<?xml version="1.0"?><root/>';
-    $tpl = '<?xml version="1.0"?><data><item class="classb myclass"/><item id="one"/></data>';
+    $tpl = '<?xml version="1.0"?><data><item class="classb myclass classc"/><item id="one"/></data>';
     $data = array('.myclass' => 'VALUE', '#one' => '<b>OTHER VALUE</b>');
     $qp = qp($xml, 'root')->tpl($tpl, $data);
     $this->assertEquals('VALUE', $qp->find(':root .myclass')->text());
