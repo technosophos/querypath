@@ -49,6 +49,17 @@ class QPDBTests extends PHPUnit_Framework_TestCase {
     $qp = qp(QueryPath::HTML_STUB, 'body')->append('<ul/>')->children()->queryInto($sql, $args, $template)->doneWithQuery();
     //$qp->writeHTML();
     $this->assertEquals(5, $qp->top()->find('li')->size());
+    
+    $template = '<?xml version="1.0"?><tr><td class="colOne"/><td class="colTwo"/><td class="colThree"/></tr>';
+    $sql = 'SELECT * FROM qpdb_test';
+    $args = array();
+    $qp = qp(QueryPath::HTML_STUB, 'body')
+      ->append('<table><tbody><tr><th>Title</th><th>Body</th><th>Foot</th></tr></tbody></table>')
+      ->find('tbody')
+      ->queryInto($sql, $args, $template)
+      ->doneWithQuery()
+      ;//->writeHTML();
+    $this->assertEquals('Footer 4', $qp->top()->find('td:last')->text());
   }
   
   /*
@@ -100,6 +111,6 @@ class QPDBTests extends PHPUnit_Framework_TestCase {
       ->appendColumn('colOne', $wrap)
       ->doneWithQuery()
       ;//->writeHTML();
-    $this->assertEquals('Title 0Title 1', $qp->top()->find('tbody')->text());
+    $this->assertEquals('Title 0', $qp->top()->find('td:first')->text());
   }
 }
