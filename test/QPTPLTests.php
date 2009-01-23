@@ -17,7 +17,7 @@ class QPTPLTests extends PHPUnit_Framework_TestCase {
     $xml = '<?xml version="1.0"?><root/>';
     $tpl = '<?xml version="1.0"?><data><item class="myclass"/><item id="one"/></data>';
     $data = array('.myclass' => 'VALUE', '#one' => '<b>OTHER VALUE</b>');
-    $qp = qp($xml, 'root')->tpl($tpl, $data);
+    $qp = qp($xml, 'root')->tpl($tpl, $data)->writeHTML();
     $this->assertEquals('VALUE', $qp->find(':root .myclass')->text());
     $this->assertEquals(1, $qp->find(':root b')->size());
   }
