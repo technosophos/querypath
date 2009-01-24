@@ -101,6 +101,21 @@ final class QueryPathImpl implements QueryPath {
   }
   
   public function find($selector) {
+    
+    // Optimize for doc-wide ID search:
+    $ids = array();
+    if (preg_match('|#([\w-]+)|', $selector, $ids) === 1) {
+      $xpath = new DOMXPath($this->document);
+      foreach ($this->matches as $item) {
+        $nl = $xpath->query("//*[@id='{$ids[1]}']", $item);
+        if ($nl->length > 0) {
+          $this->setMatches(array($nl->item(0)));
+          break;
+        }
+      }
+      return $this;
+    }
+    
     $query = new QueryPathCssEventHandler($this->matches);
     $query->find($selector);
     //$this->matches = $query->getMatches();

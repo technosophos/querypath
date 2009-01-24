@@ -505,6 +505,7 @@ class QueryPathTests extends PHPUnit_Framework_TestCase {
   
   public function test__clone() {
     $file = './data.xml';
+    
     $qp = qp($file, 'inner:first');
     $qp2 = clone $qp;
     $this->assertFalse($qp === $qp2);
