@@ -123,6 +123,19 @@ final class QueryPathImpl implements QueryPath {
     return $this;
   }
   
+  public function xpath($query) {
+    $xpath = new DOMXPath($this->document);
+    $found = array();
+    foreach ($this->matches as $item) {
+      $nl = $xpath->query($query, $item);
+      if ($nl->length > 0) {
+        for ($i = 0; $i < $nl->length; ++$i) $found[] = $nl->item($i);
+      }
+    }
+    $this->setMatches($found);
+    return $this;
+  }
+  
   public function size() {
     return count($this->matches);
   }

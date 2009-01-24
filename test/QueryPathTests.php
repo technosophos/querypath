@@ -503,6 +503,12 @@ class QueryPathTests extends PHPUnit_Framework_TestCase {
     $this->assertEquals('li', $two->tagName);
   }
   
+  public function testXpath() {
+    $file = './data.xml';
+    
+    $this->assertEquals('head', qp($file)->xpath("//*[@id='head']")->tag());
+  }
+  
   public function test__clone() {
     $file = './data.xml';
     

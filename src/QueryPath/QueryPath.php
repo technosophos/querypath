@@ -187,6 +187,26 @@ interface QueryPath {
   public function find($selector);
   
   /**
+   * Execute an XPath query and store the results in the QueryPath.
+   *
+   * Most methods in this class support CSS 3 Selectors. Sometimes, though,
+   * XPath provides a finer-grained query language. Use this to execute
+   * XPath queries.
+   *
+   * Beware, though. QueryPath works best on DOM Elements, but an XPath 
+   * query can return other nodes, strings, and values. These may not work with
+   * other QueryPath functions (though you will be able to access the
+   * values with {@link get()}).
+   *
+   * @param string $query
+   *  An XPath query.
+   * @return QueryPath 
+   *  A QueryPath object wrapping the results of the query.
+   * @see find()
+   */
+  public function xpath($query);
+  
+  /**
    * Select the root element of the document.
    *
    * This sets the current match to the document's root element. For 
