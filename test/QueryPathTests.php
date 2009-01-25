@@ -70,6 +70,8 @@ class QueryPathTests extends PHPUnit_Framework_TestCase {
     $qp = qp($file)->find('#head');
     $this->assertEquals(1, count($qp->get()));
     $this->assertEquals($qp->get(0)->tagName, 'head');
+    
+    $this->assertEquals('inner', qp($file)->find('.innerClass')->tag());
   }
   
   public function testTop() {
@@ -508,7 +510,7 @@ class QueryPathTests extends PHPUnit_Framework_TestCase {
     
     $this->assertEquals('head', qp($file)->xpath("//*[@id='head']")->tag());
   }
-  
+    
   public function test__clone() {
     $file = './data.xml';
     

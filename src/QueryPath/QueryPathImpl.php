@@ -102,17 +102,38 @@ final class QueryPathImpl implements QueryPath {
   
   public function find($selector) {
     
-    // Optimize for doc-wide ID search:
+    // Optimize for ID/Class searches:
     $ids = array();
-    if (preg_match('|#([\w-]+)|', $selector, $ids) === 1) {
-      $xpath = new DOMXPath($this->document);
-      foreach ($this->matches as $item) {
-        $nl = $xpath->query("//*[@id='{$ids[1]}']", $item);
-        if ($nl->length > 0) {
-          $this->setMatches(array($nl->item(0)));
-          break;
+    $regex = '/^#([\w-]+)$|^\.([\w-]+)$/'; // $1 is ID, $2 is class.
+    //$regex = '/^#([\w-]+)$/';
+    if (preg_match($regex, $selector, $ids) === 1) {
+      // If $1 is a match, we have an ID.
+      if (!empty($ids[1])) {
+        $xpath = new DOMXPath($this->document);
+        foreach ($this->matches as $item) {
+          $nl = $xpath->query("//*[@id='{$ids[1]}']", $item);
+          if ($nl->length > 0) {
+            $this->setMatches(array($nl->item(0)));
+            break;
+          }
         }
       }
+      // Quick search for class values. While the XPath can't do it
+      // all, it is faster than doing a recusive node search.
+      else {
+        //$this->xpath("//*[@class='{$ids[2]}']");
+        $xpath = new DOMXPath($this->document);
+        $found = array();
+        foreach ($this->matches as $item) {
+          $nl = $xpath->query("//*[@class]", $item);
+          for ($i = 0; $i < $nl->length; ++$i) {
+            $vals = explode(' ', $nl->item($i)->getAttribute('class'));
+            if (in_array($ids[2], $vals)) $found[] = $nl->item($i);
+          }
+        }
+        $this->setMatches($found);
+      }
+      
       return $this;
     }
     
