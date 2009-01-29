@@ -126,6 +126,12 @@ class QPTPLTests extends PHPUnit_Framework_TestCase {
     $qp = qp(QueryPath::HTML_STUB, 'body')->tpl($tpl, $data);
   }
   
+  public function testTplTraversable() {
+    $a = ArrayObject();
+    $a->add('A');
+    
+  }
+  
 }
 
 class IntrospectMe {

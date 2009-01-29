@@ -74,8 +74,10 @@ class QPTPL implements QueryPathExtension {
     //$tqp = ($template instanceof QueryPath) ? clone $template: qp($template);
     $tqp = qp($template);
     
-    if (is_array($object)) $this->tplArrayR($tqp, $object, $options);
-    elseif (is_object($object)) $this->tplObject($tqp, $object, $options);
+    if (is_array($object) || $object instanceof Traversable) 
+      $this->tplArrayR($tqp, $object, $options);
+    elseif (is_object($object)) 
+      $this->tplObject($tqp, $object, $options);
     
     return $this->qp->append($tqp->top());
   }
@@ -185,7 +187,7 @@ class QPTPL implements QueryPathExtension {
    * Recursively merge array data into a template.
    */
   public function tplArrayR($qp, $array, $options = NULL) {
-    if (!is_array($array)) {
+    if (!is_array($array) && !($array instanceof Traversable)) {
       $qp->append($array);
     }
     elseif ($this->isAssoc($array)) {

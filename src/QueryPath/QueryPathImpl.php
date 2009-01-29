@@ -445,10 +445,11 @@ final class QueryPathImpl implements QueryPath {
     $data = $this->prepareInsert($data);
     if (isset($data)) {
       foreach ($this->matches as $m) {
+        $ins = $data->cloneNode(TRUE);
         if ($m->hasChildNodes())
-          $m->insertBefore($data, $m->childNodes->item(0));
+          $m->insertBefore($ins, $m->childNodes->item(0));
         else
-          $m->appendChild($data);
+          $m->appendChild($ins);
       }
     }
     return $this;
@@ -462,7 +463,10 @@ final class QueryPathImpl implements QueryPath {
   
   public function before($data) {
     $data = $this->prepareInsert($data);
-    foreach ($this->matches as $m) $m->parentNode->insertBefore($data, $m);
+    foreach ($this->matches as $m) {
+      $ins = $data->cloneNode(TRUE);
+      $m->parentNode->insertBefore($ins, $m);
+    }
     
     return $this;
   }
@@ -479,10 +483,11 @@ final class QueryPathImpl implements QueryPath {
   public function after($data) {
     $data = $this->prepareInsert($data);
     foreach ($this->matches as $m) {
+      $ins = $data->cloneNode(TRUE);
       if (isset($m->nextSibling)) 
-        $m->parentNode->insertBefore($data, $m->nextSibling);
+        $m->parentNode->insertBefore($ins, $m->nextSibling);
       else
-        $m->parentNode->appendChild($data);
+        $m->parentNode->appendChild($ins);
     }
     return $this;
   }
