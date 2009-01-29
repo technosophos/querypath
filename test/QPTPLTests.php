@@ -13,11 +13,31 @@ require_once '../src/QueryPath/Extension/QPTPL.php';
 
 class QPTPLTests extends PHPUnit_Framework_TestCase {
   
+  public function testIsAssoc() {
+    $t = new QPTPL(qp());
+    $this->assertTrue($t->isAssoc(array('one' => '0', 'two' => '1')));
+    $this->assertTrue($t->isAssoc(array('0' => '0', 'two' => '1')));
+    $this->assertFalse($t->isAssoc(array(0,1,2)));
+    // Test manual key assignment:
+    $this->assertFalse($t->isAssoc(array(0 => 1, 1 => 2, 2 => 3)));
+    // Index not in order:
+    $this->assertTrue($t->isAssoc(array(0 => 0,3 => 1,2 => 2)));
+  }
+  
   public function testTplArray() {
     $xml = '<?xml version="1.0"?><root/>';
     $tpl = '<?xml version="1.0"?><data><item class="myclass"/><item id="one"/></data>';
     $data = array('.myclass' => 'VALUE', '#one' => '<b>OTHER VALUE</b>');
-    $qp = qp($xml, 'root')->tpl($tpl, $data)->writeHTML();
+    $qp = qp($xml, 'root')->tpl($tpl, $data);
+    $this->assertEquals('VALUE', $qp->find(':root .myclass')->text());
+    $this->assertEquals(1, $qp->find(':root b')->size());
+  }
+  
+  public function testTplUnmarkedArray() {
+    $xml = '<?xml version="1.0"?><root/>';
+    $tpl = '<?xml version="1.0"?><data><item class="myclass"/><item class="other"/></data>';
+    $data = array('myclass' => 'VALUE', 'other' => '<b>OTHER VALUE</b>');
+    $qp = qp($xml, 'root')->tpl($tpl, $data);
     $this->assertEquals('VALUE', $qp->find(':root .myclass')->text());
     $this->assertEquals(1, $qp->find(':root b')->size());
   }
@@ -57,6 +77,54 @@ class QPTPLTests extends PHPUnit_Framework_TestCase {
     $this->assertEquals(1, $qp->find(':root b')->size());
   }
   
+  public function testTplRecursion() {
+
+    $tpl = '<?xml version="1.0"?><table>
+    <tbody>
+      <tr class="header-row">
+        <th class="header1"/>
+        <th class="header2"/>
+      </tr>
+      <tr class="table-row">
+        <td class="cell1"></td>
+        <td class="cell2"></td>
+      </tr>
+    </tbody>
+    </table>';
+    
+    $data['.header1'][] = 'Header One';
+    $data['.header2'][] = 'Header Two';
+    $data['.table-row'][] = array(
+      '.cell1' => 'Cell One',
+      '.cell2' => 'Cell Two',
+    );
+    $data['.table-row'][] = array(
+      '.cell1' => 'Cell Three',
+      '.cell2' => 'Cell Four',
+    );
+    $data['.table-row'][] = array(
+      '.cell1' => 'Cell Five',
+      '.cell2' => 'Cell Six',
+    );
+    $qp = qp(QueryPath::HTML_STUB, 'body')->tpl($tpl, $data);
+    $this->assertEquals('Cell Six', $qp->top()->find('.table-row:last .cell2')->text());
+    $this->assertEquals(6, $qp->top()->find('td')->size());
+    
+    $tpl = '<?xml version="1.0"?>
+    <div>
+    <ul class="list">
+      <li class="item"/>
+    </ul>
+    </div>';
+    
+    $data = array();
+    $data['.item'][] = 'One';
+    $data['.item'][] = 'Two';
+    $data['.item'][] = 'Three';
+    $data['.item'][] = 'Four';
+    
+    $qp = qp(QueryPath::HTML_STUB, 'body')->tpl($tpl, $data);
+  }
   
 }
 

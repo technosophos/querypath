@@ -243,6 +243,9 @@ class QueryPathTests extends PHPUnit_Framework_TestCase {
     $qp = qp($file,'#inner-one')->append('<li id="appended"/>');
     $this->assertEquals(1, $qp->find('#appended')->size());
     $this->assertNull($qp->get(0)->nextSibling);
+    
+    $this->assertEquals(2, qp($file, 'inner')->append('<test/>')->top()->find('test')->size());
+    $this->assertEquals(2, qp($file, 'inner')->append(qp('<?xml version="1.0"?><test/>'))->top()->find('test')->size());
   }
   
   public function testAppendTo() {
@@ -503,6 +506,15 @@ class QueryPathTests extends PHPUnit_Framework_TestCase {
     $two = $qp->find(':root inner')->cloneAll()->find('li')->get(0);
     $this->assertTrue($one !== $two);
     $this->assertEquals('li', $two->tagName);
+  }
+  
+  public function testBranch() {
+    $qp = qp(QueryPath::HTML_STUB);
+    $branch = $qp->branch();
+    $branch->find('title')->text('Title');
+    $qp->find('body')->text('This is the body');
+    
+    $this->assertEquals($qp->top()->find('title')->text(), $branch->top()->find('title')->text());
   }
   
   public function testXpath() {

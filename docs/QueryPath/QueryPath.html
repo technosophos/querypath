@@ -81,7 +81,7 @@
 		</div>
 		<div class="info-box-body">			
 			<div class="method-summary">
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																						
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																						
 				<div class="method-definition">
 											<span class="method-result"><a href="../QueryPath/QueryPath.html">QueryPath</a></span>
 										<a href="#add" title="details" class="method-name">add</a>
@@ -109,7 +109,7 @@
 				<div class="method-definition">
 											<span class="method-result"><a href="../QueryPath/QueryPath.html">QueryPath</a></span>
 										<a href="#append" title="details" class="method-name">append</a>
-											(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$apendage</span>)
+											(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$data</span>)
 									</div>
 														
 				<div class="method-definition">
@@ -128,6 +128,12 @@
 											<span class="method-result"><a href="../QueryPath/QueryPath.html">QueryPath</a></span>
 										<a href="#before" title="details" class="method-name">before</a>
 											(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$data</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result"><a href="../QueryPath/QueryPath.html">QueryPath</a></span>
+										<a href="#branch" title="details" class="method-name">branch</a>
+										()
 									</div>
 														
 				<div class="method-definition">
@@ -423,6 +429,12 @@
 										<a href="#xml" title="details" class="method-name">xml</a>
 											([<span class="var-type">string</span>&nbsp;<span class="var-name">$markup</span> = <span class="var-default">NULL</span>])
 									</div>
+														
+				<div class="method-definition">
+											<span class="method-result"><a href="../QueryPath/QueryPath.html">QueryPath</a></span>
+										<a href="#xpath" title="details" class="method-name">xpath</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$query</span>)
+									</div>
 											</div>
 		</div>
 	</div>		
@@ -441,10 +453,10 @@
 		<div class="info-box-body">
 			<A NAME='method_detail'></A>
 <a name="methodadd" id="add"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">add</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a744">744</a></span>)
+		<span class="method-title">add</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a776">776</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -476,10 +488,10 @@
 			
 	</div>
 <a name="methodaddClass" id="addClass"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">addClass</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a1128">1128</a></span>)
+		<span class="method-title">addClass</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a1160">1160</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -511,10 +523,10 @@
 			
 	</div>
 <a name="methodafter" id="after"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">after</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a526">526</a></span>)
+		<span class="method-title">after</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a555">555</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -544,10 +556,10 @@
 			
 	</div>
 <a name="methodandSelf" id="andSelf"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">andSelf</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a796">796</a></span>)
+		<span class="method-title">andSelf</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a828">828</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -574,15 +586,15 @@
 			
 	</div>
 <a name="methodappend" id="append"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">append</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a478">478</a></span>)
+		<span class="method-title">append</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a507">507</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
 <p class="short-description">Insert the given markup as the last child.</p>
-<p class="description"><p>The markup will be inserted into each match in the set.</p></p>
+<p class="description"><p>The markup will be inserted into each match in the set.</p><p>The same element cannot be inserted multiple times into a document. DOM  documents do not allow a single object to be inserted multiple times  into the DOM. To insert the same XML repeatedly, we must first clone  the object. This has one practical implication: Once you have inserted  an element into the object, you cannot further manipulate the original  element and expect the changes to be replciated in the appended object.  (They are not the same -- there is no shared reference.) Instead, you  will need to retrieve the appended object and operate on that.</p></p>
 	<ul class="tags">
 				<li><span class="field">return:</span> The QueryPath object.</li>
 				<li><span class="field">see:</span> <a href="../QueryPath/QueryPath.html#methodappendTo">QueryPath::appendTo()</a></li>
@@ -595,22 +607,22 @@
 		<span class="method-name">
 			append
 		</span>
-					(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$apendage</span>)
+					(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$data</span>)
 			</div>
 	
 			<ul class="parameters">
 					<li>
 				<span class="var-type">mixed</span>
-				<span class="var-name">$apendage</span><span class="var-description">: This can be either a string (the usual case), or a DOM Element.</span>			</li>
+				<span class="var-name">$data</span><span class="var-description">: This can be either a string (the usual case), or a DOM Element.</span>			</li>
 				</ul>
 		
 			
 	</div>
 <a name="methodappendTo" id="appendTo"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">appendTo</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a496">496</a></span>)
+		<span class="method-title">appendTo</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a525">525</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -640,10 +652,10 @@
 			
 	</div>
 <a name="methodattr" id="attr"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">attr</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a260">260</a></span>)
+		<span class="method-title">attr</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a280">280</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -678,10 +690,10 @@
 			
 	</div>
 <a name="methodbefore" id="before"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">before</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a556">556</a></span>)
+		<span class="method-title">before</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a585">585</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -711,11 +723,53 @@
 		
 			
 	</div>
+<a name="methodbranch" id="branch"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">branch</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a1280">1280</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Branch the base QueryPath into another one with the same matches.</p>
+<p class="description"><p>This function makes a copy of the QueryPath object, but keeps the new copy  (initially) pointed at the same matches. This object can then be queried without  changing the original QueryPath. However, changes to the elements inside of this  QueryPath will show up in the QueryPath from which it is branched.</p><p>Compare this operation with <a href="../QueryPath/QueryPath.html#methodcloneAll">cloneAll()</a>. The cloneAll() call takes  the current QueryPath object and makes a copy of all of its matches. You continue  to operate on the same QueryPath object, but the elements inside of the QueryPath  are copies of those before the call to cloneAll().</p><p>This, on the other hand, copies <em>the QueryPath</em>, but keeps valid  references to the document and the wrapped elements. A new query branch is  created, but any changes will be written back to the same document.</p><p>In practice, this comes in handy when you want to do multiple queries on a part  of the document, but then return to a previous set of matches. (see <a href="../QueryPath/Extension/QPTPL.html">QPTPL</a>  for examples of this in practice).</p><p>Example:  <div class="src-code"><ol><li><div class="src-line">&nbsp;<span class="src-php">&lt;?php</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$qp&nbsp;</span>=&nbsp;<a href="../QueryPath/_QueryPath.php.html#functionqp">qp</a><span class="src-sym">(</span><span class="src-id"><a href="../QueryPath/QueryPath.html">QueryPath</a></span><span class="src-sym">::</span><span class="src-id">HTML_STUB</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$branch&nbsp;</span>=&nbsp;<span class="src-var">$qp</span><span class="src-sym">-&gt;</span><a href="../QueryPath/QueryPath.html#methodbranch">branch</a><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$branch</span><span class="src-sym">-&gt;</span><a href="../QueryPath/QueryPath.html#methodfind">find</a><span class="src-sym">(</span><span class="src-str">'title'</span><span class="src-sym">)</span><span class="src-sym">-&gt;</span><a href="../QueryPath/QueryPath.html#methodtext">text</a><span class="src-sym">(</span><span class="src-str">'Title'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$qp</span><span class="src-sym">-&gt;</span><a href="../QueryPath/QueryPath.html#methodfind">find</a><span class="src-sym">(</span><span class="src-str">'body'</span><span class="src-sym">)</span><span class="src-sym">-&gt;</span><a href="../QueryPath/QueryPath.html#methodtext">text</a><span class="src-sym">(</span><span class="src-str">'This&nbsp;is&nbsp;the&nbsp;body'</span><span class="src-sym">)</span><span class="src-sym">-&gt;</span><a href="../QueryPath/QueryPath.html#methodwriteHTML">writeHTML</a><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-php">?&gt;</span></div></li>
+</ol></div>  Notice that in the code, each of the QueryPath objects is doing its own  query. However, both are modifying the same document. The result of the above  would look something like this:  <div class="src-code"><ol><li><div class="src-line">&nbsp;&lt;<span class="src-sym">!</span><span class="src-id">DOCTYPE&nbsp;</span><a href="../QueryPath/QueryPath.html#methodhtml">html</a>&nbsp;<span class="src-key">PUBLIC&nbsp;</span><span class="src-str">&quot;-//W3C//DTD&nbsp;XHTML&nbsp;1.0&nbsp;Strict//EN&quot;&nbsp;&quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;</span>&gt;</div></li>
+<li><div class="src-line">&nbsp;&lt;<a href="../QueryPath/QueryPath.html#methodhtml">html</a>&nbsp;<span class="src-id">xmlns</span>=<span class="src-str">&quot;http://www.w3.org/1999/xhtml&quot;</span>&gt;</div></li>
+<li><div class="src-line">&nbsp;&lt;<span class="src-id">head</span>&gt;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="src-id">meta&nbsp;http</span>-<span class="src-id">equiv</span>=<span class="src-str">&quot;Content-Type&quot;&nbsp;</span><span class="src-id">content</span>=<span class="src-str">&quot;text/html;&nbsp;charset=utf-8&quot;</span>&gt;&lt;/<span class="src-id">meta</span>&gt;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="src-id">title</span>&gt;<span class="src-id">Title</span>&lt;/<span class="src-id">title</span>&gt;</div></li>
+<li><div class="src-line">&nbsp;&lt;/<span class="src-id">head</span>&gt;</div></li>
+<li><div class="src-line">&nbsp;&lt;<span class="src-id">body</span>&gt;<span class="src-id">This&nbsp;</span><a href="../QueryPath/QueryPath.html#methodis">is</a>&nbsp;<span class="src-id">the&nbsp;body</span>&lt;/<span class="src-id">body</span>&gt;</div></li>
+<li><div class="src-line">&nbsp;&lt;/<a href="../QueryPath/QueryPath.html#methodhtml">html</a>&gt;</div></li>
+</ol></div></p><p>Notice that while $qp and $banch were performing separate queries, they  both modified the same document.</p><p>In jQuery or a browser-based solution, you generally do not need a branching  function because there is (implicitly) only one document. In QueryPath, there  is no implicit document. Every document must be explicitly specified (and,  in most cases, parsed -- which is costly). Branching makes it possible to  work on one document with multiple QueryPath objects.</p></p>
+	<ul class="tags">
+				<li><span class="field">return:</span> A copy of the QueryPath object that points to the same set of elements that   the original QueryPath was pointing to.</li>
+				<li><span class="field">see:</span> <a href="../QueryPath/QueryPath.html#methodcloneAll">QueryPath::cloneAll()</a></li>
+				<li><span class="field">since:</span> 1.1</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result"><a href="../QueryPath/QueryPath.html">QueryPath</a></span>
+		<span class="method-name">
+			branch
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
 <a name="methodchildren" id="children"><!-- --></a>
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">children</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a828">828</a></span>)
+		<span class="method-title">children</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a860">860</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -751,7 +805,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">cloneAll</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a1187">1187</a></span>)
+		<span class="method-title">cloneAll</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a1219">1219</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -777,7 +831,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">contents</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a846">846</a></span>)
+		<span class="method-title">contents</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a878">878</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -807,7 +861,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">css</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a1110">1110</a></span>)
+		<span class="method-title">css</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a1142">1142</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -848,7 +902,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">deepest</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a606">606</a></span>)
+		<span class="method-title">deepest</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a635">635</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -874,7 +928,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">each</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a450">450</a></span>)
+		<span class="method-title">each</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a470">470</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -909,7 +963,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">eachLambda</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a464">464</a></span>)
+		<span class="method-title">eachLambda</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a484">484</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -943,7 +997,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">end</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a778">778</a></span>)
+		<span class="method-title">end</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a810">810</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -977,7 +1031,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">eq</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a237">237</a></span>)
+		<span class="method-title">eq</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a257">257</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1008,7 +1062,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">filter</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a302">302</a></span>)
+		<span class="method-title">filter</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a322">322</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1044,7 +1098,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">filterCallback</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a355">355</a></span>)
+		<span class="method-title">filterCallback</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a375">375</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1080,7 +1134,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">filterLambda</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a329">329</a></span>)
+		<span class="method-title">filterLambda</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a349">349</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1147,7 +1201,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">get</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a227">227</a></span>)
+		<span class="method-title">get</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a247">247</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1178,7 +1232,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">hasClass</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a1172">1172</a></span>)
+		<span class="method-title">hasClass</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a1204">1204</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1210,7 +1264,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">html</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a871">871</a></span>)
+		<span class="method-title">html</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a903">903</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1245,7 +1299,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">index</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a384">384</a></span>)
+		<span class="method-title">index</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a404">404</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1278,7 +1332,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">insertAfter</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a510">510</a></span>)
+		<span class="method-title">insertAfter</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a539">539</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1311,7 +1365,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">insertBefore</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a541">541</a></span>)
+		<span class="method-title">insertBefore</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a570">570</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1345,7 +1399,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">is</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a285">285</a></span>)
+		<span class="method-title">is</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a305">305</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1378,7 +1432,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">map</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a414">414</a></span>)
+		<span class="method-title">map</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a434">434</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1414,7 +1468,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">next</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a989">989</a></span>)
+		<span class="method-title">next</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a1021">1021</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1451,7 +1505,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">nextAll</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a1008">1008</a></span>)
+		<span class="method-title">nextAll</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a1040">1040</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1486,7 +1540,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">not</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a367">367</a></span>)
+		<span class="method-title">not</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a387">387</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1517,7 +1571,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">parent</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a1061">1061</a></span>)
+		<span class="method-title">parent</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a1093">1093</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1551,7 +1605,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">parents</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a1075">1075</a></span>)
+		<span class="method-title">parents</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a1107">1107</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1585,7 +1639,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">prepend</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a570">570</a></span>)
+		<span class="method-title">prepend</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a599">599</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1619,7 +1673,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">prependTo</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a589">589</a></span>)
+		<span class="method-title">prependTo</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a618">618</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1654,7 +1708,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">prev</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a1027">1027</a></span>)
+		<span class="method-title">prev</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a1059">1059</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1689,7 +1743,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">prevAll</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a1045">1045</a></span>)
+		<span class="method-title">prevAll</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a1077">1077</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1725,12 +1779,12 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">remove</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a700">700</a></span>)
+		<span class="method-title">remove</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a732">732</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
 <p class="short-description">Remove any items from the list if they match the selector.</p>
-<p class="description"><p>In other words, each item that matches the selector will be remove  from the DOM document. The returned QueryPath wraps the list of  removed elements.</p></p>
+<p class="description"><p>In other words, each item that matches the selector will be remove  from the DOM document. The returned QueryPath wraps the list of  removed elements.</p><p>If no selector is specified, this will remove all current matches from  the document.</p></p>
 	<ul class="tags">
 				<li><span class="field">return:</span> The Query path wrapping a list of removed items.</li>
 				<li><span class="field">see:</span> <a href="../QueryPath/QueryPath.html#methodremoveChildren">QueryPath::removeChildren()</a></li>
@@ -1759,7 +1813,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">removeAttr</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a271">271</a></span>)
+		<span class="method-title">removeAttr</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a291">291</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1790,7 +1844,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">removeChildren</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a810">810</a></span>)
+		<span class="method-title">removeChildren</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a842">842</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1819,7 +1873,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">removeClass</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a1161">1161</a></span>)
+		<span class="method-title">removeClass</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a1193">1193</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1856,7 +1910,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">replaceAll</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a726">726</a></span>)
+		<span class="method-title">replaceAll</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a758">758</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1893,7 +1947,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">replaceWith</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a683">683</a></span>)
+		<span class="method-title">replaceWith</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a712">712</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1929,7 +1983,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">siblings</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a971">971</a></span>)
+		<span class="method-title">siblings</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a1003">1003</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1964,7 +2018,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">size</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a214">214</a></span>)
+		<span class="method-title">size</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a234">234</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1989,7 +2043,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">slice</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a427">427</a></span>)
+		<span class="method-title">slice</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a447">447</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -2025,7 +2079,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">tag</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a665">665</a></span>)
+		<span class="method-title">tag</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a694">694</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -2050,7 +2104,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">text</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a879">879</a></span>)
+		<span class="method-title">text</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a911">911</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -2082,7 +2136,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">top</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a206">206</a></span>)
+		<span class="method-title">top</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a226">226</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -2109,7 +2163,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">val</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a947">947</a></span>)
+		<span class="method-title">val</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a979">979</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -2142,7 +2196,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">wrap</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a622">622</a></span>)
+		<span class="method-title">wrap</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a651">651</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -2175,7 +2229,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">wrapAll</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a643">643</a></span>)
+		<span class="method-title">wrapAll</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a672">672</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -2208,7 +2262,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">wrapInner</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a658">658</a></span>)
+		<span class="method-title">wrapInner</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a687">687</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -2244,7 +2298,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">writeHTML</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a926">926</a></span>)
+		<span class="method-title">writeHTML</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a958">958</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -2271,7 +2325,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">writeXML</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a916">916</a></span>)
+		<span class="method-title">writeXML</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a948">948</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -2298,7 +2352,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">xml</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a903">903</a></span>)
+		<span class="method-title">xml</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a935">935</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -2328,6 +2382,38 @@
 		
 			
 	</div>
+<a name="methodxpath" id="xpath"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">xpath</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__QueryPath.php.html#a207">207</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Execute an XPath query and store the results in the QueryPath.</p>
+<p class="description"><p>Most methods in this class support CSS 3 Selectors. Sometimes, though,  XPath provides a finer-grained query language. Use this to execute  XPath queries.</p><p>Beware, though. QueryPath works best on DOM Elements, but an XPath  query can return other nodes, strings, and values. These may not work with  other QueryPath functions (though you will be able to access the  values with <a href="../QueryPath/QueryPath.html#methodget">get()</a>).</p></p>
+	<ul class="tags">
+				<li><span class="field">return:</span> A QueryPath object wrapping the results of the query.</li>
+				<li><span class="field">see:</span> <a href="../QueryPath/QueryPath.html#methodfind">QueryPath::find()</a></li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result"><a href="../QueryPath/QueryPath.html">QueryPath</a></span>
+		<span class="method-name">
+			xpath
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$query</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$query</span><span class="var-description">: An XPath query.</span>			</li>
+				</ul>
+		
+			
+	</div>
 						
 		</div>
 	</div>
@@ -2346,7 +2432,7 @@
 					</div>
 		<div class="info-box-body">
 			<a name="constHTML_STUB" id="HTML_STUB"><!-- --></A>
-<div class="evenrow">
+<div class="oddrow">
 
 	<div class="const-header">
 		<img src="../media/images/Variable.png" />
@@ -2368,7 +2454,7 @@
 	</div>
 
 	<p class="notes" id="credit">
-		Documentation generated on Fri, 23 Jan 2009 00:17:12 -0600 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.2</a>
+		Documentation generated on Thu, 29 Jan 2009 00:29:49 -0600 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.2</a>
 	</p>
 	</div></body>
 </html>

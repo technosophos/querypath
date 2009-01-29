@@ -5,12 +5,27 @@
  * The QPTPL extension provides template tools that can be used in 
  * conjunction with QueryPath.
  *
+ * There are two basic modes in which this tool operates. Both merge data into
+ * a pure HTML template. Both base their insertions on classes and IDs in the
+ * HTML data. Where they differ is in the kind of data merged into the template.
+ *
+ * One mode takes array data and does a deep (recursive) merge into the template.
+ * It can be used for simple substitutions, but it can also be used to loop through
+ * "rows" of data and create tables.
+ *
+ * The second mode takes a classed object and introspects that object to find out
+ * what CSS classes it is capable of filling. This is one way of bridging an object
+ * model and QueryPath data.
+ *
+ * The unit tests are a good place for documentation, as is the QueryPath webste.
+ *
  * @package QueryPath
  * @subpackage Extension
  * @author M Butcher <matt@aleph-null.tv>
  * @license LGPL or MIT-like license.
  * @see QueryPathExtension
  * @see QueryPathExtensionRegistry::extend()
+ * @see https://fedorahosted.org/querypath/wiki/QueryPathTemplate
  */
 
 class QPTPL implements QueryPathExtension {
@@ -59,10 +74,10 @@ class QPTPL implements QueryPathExtension {
     //$tqp = ($template instanceof QueryPath) ? clone $template: qp($template);
     $tqp = qp($template);
     
-    if (is_array($object)) $this->tplArray($tqp, $object, $options);
+    if (is_array($object)) $this->tplArrayR($tqp, $object, $options);
     elseif (is_object($object)) $this->tplObject($tqp, $object, $options);
     
-    return $this->qp->append($tqp);
+    return $this->qp->append($tqp->top());
   }
   
   /**
@@ -86,28 +101,67 @@ class QPTPL implements QueryPathExtension {
     $tqp = qp($template, ':root');
     foreach ($objects as $object) {
       if (is_array($object)) 
-        $tqp = $this->tplArray($tqp, $object, $options);
+        $tqp = $this->tplArrayR($tqp, $object, $options);
       elseif (is_object($object)) 
         $tqp = $this->tplObject($tqp, $object, $options);
     }
-    return $this->qp->append($tqp);
+    return $this->qp->append($tqp->top());
   }
   
+  /*
   protected function tplArray($tqp, $array, $options = array()) {
-    foreach ($array as $key => $value) {
-      $first = substr($key,0,1);
-      
-      // We allow classes and IDs if explicit. Otherwise we assume
-      // a class.
-      if ($first != '.' && $first != '#') $key = '.' . $key;
-      // Breaking the find into two steps is faster.
-      if ($tqp->top()->find($key)->size() > 0) {
-        $tqp->append($value);
+    
+    // If we find something that's not an array, we try to handle it.
+    if (!is_array($array)) {
+     is_object($array) ? $this->tplObject($tqp, $array, $options) : $tqp->append($array);
+    }
+    // An assoc array means we have mappings of classes to content.
+    elseif ($this->isAssoc($array)) {
+      print 'Assoc array found.' . PHP_EOL;
+      foreach ($array as $key => $value) {
+        $first = substr($key,0,1);
+
+        // We allow classes and IDs if explicit. Otherwise we assume
+        // a class.
+        if ($first != '.' && $first != '#') $key = '.' . $key;
+        
+        if ($tqp->top()->find($key)->size() > 0) {
+          print "Value: " . $value . PHP_EOL;
+          if (is_array($value)) {
+            //$newqp = qp($tqp)->cloneAll();
+            print $tqp->xml();
+            $this->tplArray($tqp, $value, $options);
+            print "Finished recursion\n";
+          }
+          else {
+            print 'QP is ' . $tqp->size() . " inserting value: " . $value . PHP_EOL;
+            
+            $tqp->append($value);
+          }
+        }
       }
     }
-    return $tqp->top();
+    // An indexed array means we have multiple instances of class->content matches.
+    // We copy the portion of the template and then call repeatedly.
+    else {
+      print "Array of arrays found..\n";
+      foreach ($array as $array2) {
+        $clone = qp($tqp->xml());
+        $this->tplArray($clone, $array2, $options);
+        print "Now appending clone.\n" . $clone->xml();
+        $tqp->append($clone->parent());
+      }
+    }
+    
+    
+    //return $tqp->top();
+    return $tqp;
   }
+  */
   
+  /**
+   * Introspect objects to map their functions to CSS classes in a template.
+   */
   protected function tplObject($tqp, $object, $options = array()) {
     $ref = new ReflectionObject($object);
     $methods = $ref->getMethods();
@@ -123,9 +177,76 @@ class QPTPL implements QueryPathExtension {
         }
       }
     }
-    return $tqp->top();
+    //return $tqp->top();
+    return $tqp;
   }
   
+  /**
+   * Recursively merge array data into a template.
+   */
+  public function tplArrayR($qp, $array, $options = NULL) {
+    if (!is_array($array)) {
+      $qp->append($array);
+    }
+    elseif ($this->isAssoc($array)) {
+      // Do key/value substitutions
+      foreach ($array as $k => $v) {
+        
+        // If no dot or hash, assume class.
+        $first = substr($k,0,1);
+        if ($first != '.' && $first != '#') $k = '.' . $k;
+        
+        // If value is an array, recurse.
+        if (is_array($v))
+          $this->tplArrayR($qp->find($k), $v, $options);
+        else 
+          // Otherwise, try to append value.
+          $qp->branch()->children($k)->append($v);
+      }
+    }
+    else {
+      // Get a copy of the current template and then recurse.
+      foreach ($array as $entry) {
+        $eles = $qp->get();
+        $template = array();
+        
+        // We manually deep clone the template.
+        foreach ($eles as $ele) {
+          $template = $ele->cloneNode(TRUE);
+        }
+        $tpl = qp($template);
+        $tpl = $this->tplArrayR($tpl, $entry, $options);
+        $qp->before($tpl);
+      }
+      $qp->remove(); // Remove the original template.
+    }
+    return $qp;
+  }
+  
+  /**
+   * Check whether an array is associative.
+   * If the keys of the array are not consecutive integers starting with 0,
+   * this will return false.
+   *
+   * @param array $array
+   *  The array to test.
+   * @return Boolean
+   *  TRUE if this is an associative array, FALSE otherwise.
+   */
+  public function isAssoc($array) {
+    $i = 0;
+    foreach ($array as $k => $v) if ($k !== $i++) return TRUE;
+    // If we get here, all keys passed.
+    return FALSE;
+  }
+
+  /**
+   * Convert a function name to a CSS class selector (e.g. myFunc becomes '.myFunc').
+   * @param string $mname
+   *  Method name.
+   * @return string
+   *  CSS 3 Class Selector.
+   */
   protected function method2class($mname) {
     return '.' . substr($mname, 3);
   }

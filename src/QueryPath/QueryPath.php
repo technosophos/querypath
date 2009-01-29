@@ -488,14 +488,23 @@ interface QueryPath {
    *
    * The markup will be inserted into each match in the set.
    *
-   * @param mixed $apendage
+   * The same element cannot be inserted multiple times into a document. DOM
+   * documents do not allow a single object to be inserted multiple times 
+   * into the DOM. To insert the same XML repeatedly, we must first clone
+   * the object. This has one practical implication: Once you have inserted
+   * an element into the object, you cannot further manipulate the original 
+   * element and expect the changes to be replciated in the appended object.
+   * (They are not the same -- there is no shared reference.) Instead, you
+   * will need to retrieve the appended object and operate on that.
+   *
+   * @param mixed $data
    *  This can be either a string (the usual case), or a DOM Element.
    * @return QueryPath
    *  The QueryPath object.
    * @see appendTo()
    * @see prepend()
    */
-  public function append($apendage);
+  public function append($data);
   
   /**
    * Append the current elements to the destination passed into the function.
@@ -708,6 +717,9 @@ interface QueryPath {
    * In other words, each item that matches the selector will be remove 
    * from the DOM document. The returned QueryPath wraps the list of 
    * removed elements.
+   *
+   * If no selector is specified, this will remove all current matches from
+   * the document.
    *
    * @param string $selector
    *  A CSS Selector.
@@ -1205,6 +1217,67 @@ interface QueryPath {
    * @see qp()
    */
   public function cloneAll();
+  
+  /**
+   * Branch the base QueryPath into another one with the same matches.
+   *
+   * This function makes a copy of the QueryPath object, but keeps the new copy 
+   * (initially) pointed at the same matches. This object can then be queried without
+   * changing the original QueryPath. However, changes to the elements inside of this
+   * QueryPath will show up in the QueryPath from which it is branched.
+   * 
+   * Compare this operation with {@link cloneAll()}. The cloneAll() call takes
+   * the current QueryPath object and makes a copy of all of its matches. You continue
+   * to operate on the same QueryPath object, but the elements inside of the QueryPath
+   * are copies of those before the call to cloneAll().
+   *
+   * This, on the other hand, copies <i>the QueryPath</i>, but keeps valid 
+   * references to the document and the wrapped elements. A new query branch is 
+   * created, but any changes will be written back to the same document.
+   *
+   * In practice, this comes in handy when you want to do multiple queries on a part
+   * of the document, but then return to a previous set of matches. (see {@link QPTPL}
+   * for examples of this in practice).
+   *
+   * Example:
+   * <code>
+   * <?php
+   * $qp = qp(QueryPath::HTML_STUB);
+   * $branch = $qp->branch();
+   * $branch->find('title')->text('Title');
+   * $qp->find('body')->text('This is the body')->writeHTML;
+   * ?>
+   * </code>
+   * Notice that in the code, each of the QueryPath objects is doing its own 
+   * query. However, both are modifying the same document. The result of the above 
+   * would look something like this:
+   * <code>
+   * <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+   * <html xmlns="http://www.w3.org/1999/xhtml">
+   * <head>
+   *    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"></meta>
+   *    <title>Title</title>
+   * </head>
+   * <body>This is the body</body>
+   * </html>
+   * </code>
+   *
+   * Notice that while $qp and $banch were performing separate queries, they 
+   * both modified the same document.
+   *
+   * In jQuery or a browser-based solution, you generally do not need a branching
+   * function because there is (implicitly) only one document. In QueryPath, there
+   * is no implicit document. Every document must be explicitly specified (and,
+   * in most cases, parsed -- which is costly). Branching makes it possible to 
+   * work on one document with multiple QueryPath objects.
+   *
+   * @return QueryPath
+   *  A copy of the QueryPath object that points to the same set of elements that
+   *  the original QueryPath was pointing to.
+   * @since 1.1
+   * @see cloneAll()
+   */
+  public function branch();
 }
 
 /**

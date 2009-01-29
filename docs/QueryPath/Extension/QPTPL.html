@@ -28,15 +28,16 @@
         </p>
         		<!-- ========== Info from phpDoc block ========= -->
 <p class="short-description">QPTPL is a template library for QueryPath.</p>
-<p class="description"><p>The QPTPL extension provides template tools that can be used in  conjunction with QueryPath.</p></p>
+<p class="description"><p>The QPTPL extension provides template tools that can be used in  conjunction with QueryPath.</p><p>There are two basic modes in which this tool operates. Both merge data into  a pure HTML template. Both base their insertions on classes and IDs in the  HTML data. Where they differ is in the kind of data merged into the template.</p><p>One mode takes array data and does a deep (recursive) merge into the template.  It can be used for simple substitutions, but it can also be used to loop through  &quot;rows&quot; of data and create tables.</p><p>The second mode takes a classed object and introspects that object to find out  what CSS classes it is capable of filling. This is one way of bridging an object  model and QueryPath data.</p><p>The unit tests are a good place for documentation, as is the QueryPath webste.</p></p>
 	<ul class="tags">
 				<li><span class="field">author:</span> M Butcher &lt;<a href="mailto:matt@aleph-null.tv">matt@aleph-null.tv</a>&gt;</li>
-				<li><span class="field">see:</span> <a href="../../QueryPath/QueryPathExtension.html">QueryPathExtension</a></li>
+				<li><span class="field">see:</span> <a href="https://fedorahosted.org/querypath/wiki/QueryPathTemplate">https://fedorahosted.org/querypath/wiki/QueryPathTemplate</a></li>
 				<li><span class="field">see:</span> <a href="../../QueryPath/QueryPathExtensionRegistry.html#methodextend">QueryPathExtensionRegistry::extend()</a></li>
+				<li><span class="field">see:</span> <a href="../../QueryPath/QueryPathExtension.html">QueryPathExtension</a></li>
 				<li><span class="field">license:</span> LGPL</li>
 			</ul>
 		<p class="notes">
-			Located in <a class="field" href="_Extension---QPTPL.php.html">/Extension/QPTPL.php</a> (line <span class="field"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPTPL.php.html#a16">16</a></span>)
+			Located in <a class="field" href="_Extension---QPTPL.php.html">/Extension/QPTPL.php</a> (line <span class="field"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPTPL.php.html#a31">31</a></span>)
 		</p>
 		
 				
@@ -79,7 +80,7 @@
 		</div>
 		<div class="info-box-body">			
 			<div class="method-summary">
-																																																														
+																																																																						
 				<div class="method-definition">
 											<span class="method-result">QPTPL</span>
 										<a href="#__construct" title="details" class="method-name">__construct</a>
@@ -87,9 +88,15 @@
 									</div>
 														
 				<div class="method-definition">
-											<span class="method-result">void</span>
+											<span class="method-result">Boolean</span>
+										<a href="#isAssoc" title="details" class="method-name">isAssoc</a>
+											(<span class="var-type">array</span>&nbsp;<span class="var-name">$array</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">string</span>
 										<a href="#method2class" title="details" class="method-name">method2class</a>
-											(<span class="var-type"></span>&nbsp;<span class="var-name">$mname</span>)
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$mname</span>)
 									</div>
 														
 				<div class="method-definition">
@@ -106,8 +113,8 @@
 														
 				<div class="method-definition">
 											<span class="method-result">void</span>
-										<a href="#tplArray" title="details" class="method-name">tplArray</a>
-											(<span class="var-type"></span>&nbsp;<span class="var-name">$tqp</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$array</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$options</span> = <span class="var-default">array()</span>])
+										<a href="#tplArrayR" title="details" class="method-name">tplArrayR</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$qp</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$array</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$options</span> = <span class="var-default">NULL</span>])
 									</div>
 														
 				<div class="method-definition">
@@ -140,7 +147,7 @@
 		<span class="var-title">
 			<span class="var-type">mixed</span>
 			<span class="var-name">$qp</span>
-						(line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPTPL.php.html#a17">17</a></span>)
+						(line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPTPL.php.html#a32">32</a></span>)
 		</span>
 	</div>
 
@@ -173,7 +180,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">Constructor __construct</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPTPL.php.html#a18">18</a></span>)
+		<span class="method-title">Constructor __construct</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPTPL.php.html#a33">33</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -202,39 +209,72 @@
 					</dl>
 			
 	</div>
-<a name="methodmethod2class" id="method2class"><!-- --></a>
+<a name="methodisAssoc" id="isAssoc"><!-- --></a>
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">method2class</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPTPL.php.html#a129">129</a></span>)
+		<span class="method-title">isAssoc</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPTPL.php.html#a236">236</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Check whether an array is associative.</p>
+<p class="description"><p>If the keys of the array are not consecutive integers starting with 0,  this will return false.</p></p>
 	<ul class="tags">
-				<li><span class="field">access:</span> protected</li>
+				<li><span class="field">return:</span> TRUE if this is an associative array, FALSE otherwise.</li>
+				<li><span class="field">access:</span> public</li>
 			</ul>
 	
 	<div class="method-signature">
-		<span class="method-result">void</span>
+		<span class="method-result">Boolean</span>
 		<span class="method-name">
-			method2class
+			isAssoc
 		</span>
-					(<span class="var-type"></span>&nbsp;<span class="var-name">$mname</span>)
+					(<span class="var-type">array</span>&nbsp;<span class="var-name">$array</span>)
 			</div>
 	
 			<ul class="parameters">
 					<li>
-				<span class="var-type"></span>
-				<span class="var-name">$mname</span>			</li>
+				<span class="var-type">array</span>
+				<span class="var-name">$array</span><span class="var-description">: The array to test.</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodmethod2class" id="method2class"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">method2class</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPTPL.php.html#a250">250</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Convert a function name to a CSS class selector (e.g. myFunc becomes '.myFunc').</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> CSS 3 Class Selector.</li>
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">string</span>
+		<span class="method-name">
+			method2class
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$mname</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$mname</span><span class="var-description">: Method name.</span>			</li>
 				</ul>
 		
 			
 	</div>
 <a name="methodtpl" id="tpl"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">tpl</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPTPL.php.html#a56">56</a></span>)
+		<span class="method-title">tpl</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPTPL.php.html#a71">71</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -269,10 +309,10 @@
 			
 	</div>
 <a name="methodtplAll" id="tplAll"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">tplAll</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPTPL.php.html#a85">85</a></span>)
+		<span class="method-title">tplAll</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPTPL.php.html#a100">100</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -306,30 +346,31 @@
 		
 			
 	</div>
-<a name="methodtplArray" id="tplArray"><!-- --></a>
-<div class="oddrow">
+<a name="methodtplArrayR" id="tplArrayR"><!-- --></a>
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">tplArray</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPTPL.php.html#a96">96</a></span>)
+		<span class="method-title">tplArrayR</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPTPL.php.html#a187">187</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Recursively merge array data into a template.</p>
 	<ul class="tags">
-				<li><span class="field">access:</span> protected</li>
+				<li><span class="field">access:</span> public</li>
 			</ul>
 	
 	<div class="method-signature">
 		<span class="method-result">void</span>
 		<span class="method-name">
-			tplArray
+			tplArrayR
 		</span>
-					(<span class="var-type"></span>&nbsp;<span class="var-name">$tqp</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$array</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$options</span> = <span class="var-default">array()</span>])
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$qp</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$array</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$options</span> = <span class="var-default">NULL</span>])
 			</div>
 	
 			<ul class="parameters">
 					<li>
 				<span class="var-type"></span>
-				<span class="var-name">$tqp</span>			</li>
+				<span class="var-name">$qp</span>			</li>
 					<li>
 				<span class="var-type"></span>
 				<span class="var-name">$array</span>			</li>
@@ -341,13 +382,14 @@
 			
 	</div>
 <a name="methodtplObject" id="tplObject"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">tplObject</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPTPL.php.html#a111">111</a></span>)
+		<span class="method-title">tplObject</span> (line <span class="line-number"><a href="../../__filesource/fsource_QueryPath_Extension_ExtensionQPTPL.php.html#a165">165</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Introspect objects to map their functions to CSS classes in a template.</p>
 	<ul class="tags">
 				<li><span class="field">access:</span> protected</li>
 			</ul>
@@ -380,7 +422,7 @@
 
 
 	<p class="notes" id="credit">
-		Documentation generated on Fri, 23 Jan 2009 00:17:12 -0600 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.2</a>
+		Documentation generated on Thu, 29 Jan 2009 00:29:48 -0600 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.2</a>
 	</p>
 	</div></body>
 </html>

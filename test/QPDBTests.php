@@ -89,7 +89,7 @@ class QPDBTests extends PHPUnit_Framework_TestCase {
       ->prependColumn('colTwo') // Get row 2, col 2. (Body 1)
       ->columnAfter('colThree') // Get row 2 col 3. (Footer 1)
       ->doneWithQuery() // Let QueryPath clean up.
-      ->writeHTML(); // Write the output as HTML.
+      ;//->writeHTML(); // Write the output as HTML.
     $this->assertEquals('Title 0', $qp->top()->find('h1')->text());
     $this->assertEquals('Body 1', $qp->top()->find('p')->text());
     

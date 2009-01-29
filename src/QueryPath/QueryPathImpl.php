@@ -406,8 +406,6 @@ final class QueryPathImpl implements QueryPath {
   }
   
   public function append($data) {
-    //print "Append " . strval($data) . PHP_EOL;
-    //var_dump($data);
     $data = $this->prepareInsert($data);
     if (isset($data)) {
       //print empty($this->document->documentElement) ? 'empty' : 'ne';
@@ -416,8 +414,24 @@ final class QueryPathImpl implements QueryPath {
         $this->document->appendChild($data);
         $this->matches = array($this->document->documentElement);
       }
-      else
-        foreach ($this->matches as $m) $m->appendChild($data);
+      else {
+        // You can only append in item once. So in cases where we
+        // need to append multiple times, we have to clone the node.
+        foreach ($this->matches as $m) { 
+          // DOMDocumentFragments are even more troublesome, as they don't
+          // always clone correctly. So we have to clone their children.
+          if ($data instanceof DOMDocumentFragment) {
+            foreach ($data->childNodes as $n)
+              $m->appendChild($n->cloneNode(TRUE));
+          }
+          else {
+            // Otherwise a standard clone will do.
+            $m->appendChild($data->cloneNode(TRUE));
+          }
+          
+        }
+      }
+        
     }
     return $this;
   }
@@ -995,6 +1009,11 @@ final class QueryPathImpl implements QueryPath {
       }
     }
     return FALSE;
+  }
+
+
+  public function branch() {
+    return qp($this->matches);
   }
   
   public function cloneAll() {
