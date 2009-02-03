@@ -6,7 +6,7 @@
  * @package QueryPath
  * @subpackage Internals
  * @author M Butcher <matt@aleph-null.tv>
- * @license LGPL (The GNU Lesser GPL) or an MIT-like license.
+ * @license http://opensource.org/licenses/lgpl-2.1.php LGPL (The GNU Lesser GPL) or an MIT-like license.
  */
 
 /**
@@ -15,7 +15,7 @@
  * It provides core services for the Query Path. The class is final.
  * @see QueryPath
  */
-final class QueryPathImpl implements QueryPath {
+final class QueryPathImpl implements QueryPath, IteratorAggregate {
   private $document = NULL;
   private $options = array();
   private $matches = array();
@@ -1145,5 +1145,28 @@ final class QueryPathImpl implements QueryPath {
       return $method->invokeArgs($this->ext[$owner], $arguments);
     }
     throw new QueryPathException("No method named $name found.");
+  }
+  
+  public function getIterator() {
+    return new QueryPathIterator($this->matches);
+  }
+}
+
+/**
+ * An iterator for QueryPath.
+ *
+ * This provides iterator support for QueryPath. You do not need to construct
+ * a QueryPathIterator. QueryPath does this when its {@link QueryPath::getIterator()}
+ * method is called.
+ */
+class QueryPathIterator extends ArrayIterator {
+  protected $a;
+  public function __construct($array) {
+    $this->a = $array;
+    parent::__construct($array);
+  }
+  
+  public function current() {
+    return qp(parent::current($this->key()));
   }
 }

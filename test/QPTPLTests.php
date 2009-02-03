@@ -1,8 +1,7 @@
 <?php
 /**
  * Tests for the QueryPath library.
- * @package QueryPath
- * @subpackage Tests
+ * @package Tests
  * @author M Butcher <matt@aleph-null.tv>
  * @license The GNU Lesser GPL (LGPL) or an MIT-like license.
  */
@@ -127,9 +126,11 @@ class QPTPLTests extends PHPUnit_Framework_TestCase {
   }
   
   public function testTplTraversable() {
-    $a = ArrayObject();
-    $a->add('A');
-    
+    // Test that a Traversable will work.
+    $tpl = '<?xml version="1.0"?><data><item class="classb myclass classc"/><item id="one"/></data>';
+    $data = new ArrayIterator(array('.myclass' => 'VALUE', '#one' => '<b>OTHER VALUE</b>'));
+    $qp = qp(QueryPath::HTML_STUB, 'body')->tpl($tpl, $data);
+    $this->assertEquals('VALUE', $qp->top()->find('.myclass')->text());
   }
   
 }

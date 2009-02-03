@@ -50,12 +50,19 @@
  * All of the code in QueryPath is licensed under either the LGPL or an MIT-like
  * license (you may choose which you prefer). All of the code is Copyright, 2009
  * by Matt Butcher.
+ * @example examples/simple_example.php Basic Example
+ * @example examples/html.php Generating HTML
+ * @example examples/xml.php Using XML
+ * @example examples/rss.php Generating RSS (Really Simple Syndication)
+ * @example examples/svg.php Working with SVG (Scalable Vector Graphics)
+ * @example examples/techniques.php Looping/Iteration techniques
  *
  * @package QueryPath
  * @author M Butcher <matt @aleph-null.tv>
- * @license The GNU Lesser GPL (LGPL) or an MIT-like license.
+ * @license http://opensource.org/licenses/lgpl-2.1.php The GNU Lesser GPL (LGPL) or an MIT-like license.
  * @see QueryPath
  * @see qp()
+ * @copyright Copyright (c) 2009, Matt Butcher.
  */
  
 //define('QUICK_EXP', '/^[^<]*(<(.|\s)+>)[^>]*$|^#([\w-]+)$/');
@@ -121,6 +128,13 @@ require_once 'QueryPathExtension.php';
  * @param array $options
  *  An associative array of options. Currently supported options are:
  *  - <none> (Coming soon: DOM parser settings.)
+ *
+ * @example examples/simple_example.php Basic Example
+ * @example examples/html.php Generating HTML
+ * @example examples/xml.php Using XML
+ * @example examples/rss.php Generating RSS (Really Simple Syndication)
+ * @example examples/svg.php Working with SVG (Scalable Vector Graphics)
+ * @example examples/techniques.php Looping/Iteration techniques
  */
 function qp($document = NULL, $string = NULL, $options = array()) {
   $qp = new QueryPathImpl($document, $string, $options);
@@ -247,10 +261,56 @@ interface QueryPath {
   public function get($index = NULL);
   
   /**
+   * Get an iterator for items in this QueryPath.
+   *
+   * While you don't need to call this, it makes it possible to do this:
+   *
+   * <code>
+   * <?php
+   * $qp = qp($someXML, 'li');
+   * foreach ($qp as $li) {
+   *   // $li is a QueryPath pointing to only one element.
+   *   print $i->text();
+   * }
+   * ?>
+   * </code>
+   *
+   * You will not typically have to call this function directly. It is called 
+   * implicitly by functions and control structures.
+   *
+   * QueryPath is capable of delivering two different iterable objects. The first
+   * is the array (okay, technically not an object) of DOMNodes that QueryPath 
+   * wraps. This is done using {@link get()}. The second is an 
+   * {@link IteratorAgregator} that provides each item wrapped as a QueryPath.
+   * This function provides the latter functionality.
+   * 
+   * To illustrate the different:
+   * <code>
+   * <?php
+   * $qp = qp($someXML, 'li');
+   * foreach ($qp->get() as $node) {
+   *   // $node is a DOMNode, usually a DOMElement
+   *   print $node->tagName;
+   * }
+   *
+   * foreach ($qp as $item) {
+   *   // $item is a QueryPath pointing to just one <li> element at a time.
+   *   print $node->tag()
+   * }
+   * ?>
+   * </code>
+   * 
+   * @returns QueryPathIterator
+   *  An iterator with all of the features of an ArrayIterator.
+   */
+  //public function getIterator();
+  
+  /**
    * Reduce the matched set to just one.
    * @param $index
    *  The index of the element to keep. The rest will be 
    *  discarded.
+   * @return QueryPath
    * @see get()
    * @see is()
    */
@@ -341,6 +401,7 @@ interface QueryPath {
    *
    * @param string $function
    *  Inline lambda function in a string.
+   * @return QueryPath
    * @see filter()
    * @see map()
    * @see mapLambda()
@@ -442,6 +503,7 @@ interface QueryPath {
    *  The number of items to include in the slice. If nothing is specified, the 
    *  all remaining matches (from $start onward) will be included in the sliced
    *  list.
+   * @return QueryPath
    * @see array_slice()
    */
   public function slice($start, $end = NULL);
@@ -474,7 +536,7 @@ interface QueryPath {
    * 
    * @param string $lambda
    *  The lambda function. This will be passed ($index, &$item).
-   * @return QueryPath.
+   * @return QueryPath
    *  The QueryPath object.
    * @see each()
    * @see filterLambda()
@@ -591,6 +653,7 @@ interface QueryPath {
    *
    * @param mixed $prependage
    *  This can be either a string (the usual case), or a DOM Element.
+   * @return QueryPath
    * @see append()
    * @see before()
    * @see after()
@@ -849,8 +912,8 @@ interface QueryPath {
    *
    * @param string $selector
    *  A valid selector.
-   * @return QueryNode
-   *  A QueryNode wrapping all of the children.
+   * @return QueryPath
+   *  A QueryPath wrapping all of the children.
    * @see removeChildren()
    * @see parent()
    * @see parents()
@@ -904,6 +967,12 @@ interface QueryPath {
   
   /**
    * Get or set the text contents of a node.
+   * @param string $text
+   *  If this is not NULL, this value will be set as the text of the node. It
+   *  will replace any existing content.
+   * @return mixed 
+   *  A QueryPath if $text is set, or the text content if no text
+   *  is passed in as a pram.
    * @see html()
    * @see xml()
    * @see contents()
@@ -1138,6 +1207,7 @@ interface QueryPath {
    *  If this is a string, it will be used as a CSS name. If it is an array,
    *  this will assume it is an array of name/value pairs of CSS rules. It will
    *  apply all rules to all elements in the set.
+   * @return QueryPath
    */
   public function css($name = NULL, $value = '');
   /**
@@ -1215,6 +1285,7 @@ interface QueryPath {
    * This is a destructive operation, which means that end() will revert
    * the list back to the clone's original.
    * @see qp()
+   * @return QueryPath
    */
   public function cloneAll();
   

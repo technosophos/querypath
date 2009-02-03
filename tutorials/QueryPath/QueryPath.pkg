@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<refentry id="{@id}">
+ <refnamediv>
+  <refname>Using QueryPath</refname>
+  <refpurpose>How to make the most of the QueryPath library.</refpurpose>
+ </refnamediv>
+ <refsynopsisdiv>
+  <author>
+   Matt Butcher
+   <authorblurb>
+    {@link http://querypath.org Project Founder}
+   </authorblurb>
+  </author>
+ </refsynopsisdiv>
+ {@toc}
+ <refsect1 id="{@id intro}">
+  <title>About QueryPath</title>
+  <para>
+    QueryPath is a library designed to help you quickly and efficiently search,
+    modify, and traverse XML and HTML documents. It is built on an interface with
+    functions similar to what is found in {@link http://jquery.com jQuery}. However,
+    it is optimized for server-side work.
+  </para>
+  <para>
+   The user guide for QueryPath is located in the 
+   {@link http://fedorahosted.org/querypath official wiki}. 
+   It is kept updated with all of the latest information.
+  </para>
+  <para>
+    Ready to get going? Start with the {@link qp()} function. Along with the 
+    basic documentation, there are several examples linked from that function.
+  </para>
+ </refsect1>
+ <refsect1 id="{@id example}">
+   <title>The Tutorial</title>
+   <para>If you are looking to get started quickly, read the official
+     {@link https://fedorahosted.org/querypath/wiki/QueryPathTutorial Tutorial}.
+     There you will find a few simple examples, and lots of links to more 
+     sophisticated examples.
+   </para>
+ </refsect1>
+ <refsect1 id="{@id resources}">
+   <title>Resources</title>
+   <para>
+     The guide here contains detailed documentation of each method in the 
+     QueryPath library. But there are other sources of documentation.
+   </para>
+   <para>
+     The {@link http://querypath.org QueryPath.org} website is a hub of 
+     information about QueryPath.
+   </para>
+   <para>
+     The {@link https://fedorahosted.org/querypath Trac} website, generously
+     hosted by Fedora Hosted, is the home of the official Wiki, and also of the 
+     official issue tracking system.
+   </para>
+   <para>
+     There are two mailing lists for QueryPath: One for 
+     {@link http://groups.google.com/group/support-querypath support} and one for
+     {@link http://groups.google.com/group/devel-querypath developers}.
+   </para>
+   <para>
+     On occasion, Matt Butcher posts articles about QueryPath on his 
+     {@link http://aleph-null.tv Aleph-Null} website.
+   </para>
+ </refsect1>
+</refentry>

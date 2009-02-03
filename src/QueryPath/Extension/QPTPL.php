@@ -22,7 +22,7 @@
  * @package QueryPath
  * @subpackage Extension
  * @author M Butcher <matt@aleph-null.tv>
- * @license LGPL or MIT-like license.
+ * @license http://opensource.org/licenses/lgpl-2.1.php LGPL or MIT-like license.
  * @see QueryPathExtension
  * @see QueryPathExtensionRegistry::extend()
  * @see https://fedorahosted.org/querypath/wiki/QueryPathTemplate

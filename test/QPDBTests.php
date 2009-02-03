@@ -1,8 +1,7 @@
 <?php
 /**
  * Tests for the QueryPath library.
- * @package QueryPath
- * @subpackage Tests
+ * @package Tests
  * @author M Butcher <matt@aleph-null.tv>
  * @license The GNU Lesser GPL (LGPL) or an MIT-like license.
  */

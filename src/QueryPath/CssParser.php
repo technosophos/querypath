@@ -12,7 +12,7 @@
  * @package QueryPath
  * @subpackage CSSParser
  * @author M Butcher <matt@aleph-null.tv>
- * @license The GNU Lesser GPL (LGPL) or an MIT-like license. 
+ * @license http://opensource.org/licenses/lgpl-2.1.php The GNU Lesser GPL (LGPL) or an MIT-like license. 
  */
 
 require_once 'CssEventHandler.php';

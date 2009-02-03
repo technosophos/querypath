@@ -1,8 +1,7 @@
 <?php
 /**
  * Tests for the QueryPath library.
- * @package QueryPath
- * @subpackage Tests
+ * @package Tests
  * @author M Butcher <matt@aleph-null.tv>
  * @license The GNU Lesser GPL (LGPL) or an MIT-like license.
  */
@@ -545,5 +544,17 @@ class QueryPathTests extends PHPUnit_Framework_TestCase {
   
   public function testStub() {
     $this->assertEquals(1, qp(QueryPath::HTML_STUB)->find('title')->size());
+  }
+  
+  public function testIterator() {
+    
+    $qp = qp(QueryPath::HTML_STUB, 'body')->append('<li/><li/><li/><li/>');
+    $i = 0;
+    foreach ($qp->find('li') as $li) {
+      ++$i;
+      $li->text('foo');
+    }
+    $this->assertEquals(4, $i);
+    $this->assertEquals('foofoofoofoo', $qp->top()->find('li')->text());
   }
 }

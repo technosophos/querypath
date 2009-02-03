@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs for page QueryPath.php</title>
+			<link rel="stylesheet" href="../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="file-name"><img src="../media/images/Page_logo.png" alt="File" style="vertical-align: middle">/src/QueryPath/QueryPath.php</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+							<a href="#sec-classes">Classes</a>
+			|							<a href="#sec-includes">Includes</a>
+			|							<a href="#sec-constants">Constants</a>
+			|									<a href="#sec-functions">Functions</a>
+			</div>
+	<div class="info-box-body">	
+		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">The Query Path package provides tools for manipulating a Document Object Model.</p>
+<p class="description"><p>The two major DOMs are the XML DOM and the HTML DOM. Using Query Path, you can  build, parse, search, and modify DOM documents.</p><p>To use Query Path, this is the only file you should need to import.</p><p>Standard usage:  <div class="src-code"><ol><li><div class="src-line">&nbsp;<span class="src-php">&lt;?php</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$qp&nbsp;</span>=&nbsp;<a href="../QueryPath/_src---QueryPath---QueryPath.php.html#functionqp">qp</a><span class="src-sym">(</span><span class="src-str">'#myID'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'&lt;?xml&nbsp;version=&quot;1.0&quot;?&gt;&lt;test&gt;&lt;foo&nbsp;id=&quot;myID&quot;/&gt;&lt;/test&gt;'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$qp</span><span class="src-sym">-&gt;</span><span class="src-id">append</span><span class="src-sym">(</span><span class="src-str">'&lt;new&gt;&lt;elements/&gt;&lt;/new&gt;'</span><span class="src-sym">)</span><span class="src-sym">-&gt;</span><span class="src-id">writeHTML</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-php">?&gt;</span></div></li>
+</ol></div></p><p>The above would print (formatted for readability):  <div class="src-code"><ol><li><div class="src-line">&nbsp;<span class="src-php">&lt;?</span><span class="src-id">xml&nbsp;version</span>=<span class="src-str">&quot;1.0&quot;</span><span class="src-php">?&gt;</span></div></li>
+<li><div class="src-line">&nbsp;&lt;test&gt;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&lt;foo&nbsp;id=&quot;myID&quot;&gt;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&lt;new&gt;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;element/&gt;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&lt;/new&gt;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&lt;/foo&gt;</div></li>
+<li><div class="src-line">&nbsp;&lt;/test&gt;</div></li>
+</ol></div></p><p>To learn about the functions available to a Query Path object,  see <a href="../QueryPath/QueryPath.html">QueryPath</a>. The <a href="../QueryPath/_src---QueryPath---QueryPath.php.html#functionqp">qp()</a> function is used to build  new QueryPath objects. The documentation for that function explains the  wealth of arguments that the function can take.</p><p>Included with the source code for QueryPath is a complete set of unit tests  as well as some example files. THose are good resources for learning about  how to apply QueryPath's tools.</p><p>If you are interested in building extensions for QueryParser, see the  QueryPathExtender class. There, you will find information on adding  your own tools to QueryPath.</p><p>QueryPath also comes with a full CSS 3 selector parser implementation. If  you are interested in reusing that in other code, you will want to start  with <a href="../QueryPath/CSSParser/_src---QueryPath---CssEventHandler.php.html">CssEventHandler.php</a>, which is the event interface for the parser.</p><p>If you want to learn the nitty gritty details of QueryPath, you can take a  look at the implementation in <a href="../QueryPath/Internals/_src---QueryPath---QueryPathImpl.php.html">QueryPathImpl.php</a>. There you will find  the &quot;real&quot; code.</p><p>All of the code in QueryPath is licensed under either the LGPL or an MIT-like  license (you may choose which you prefer). All of the code is Copyright, 2009  by Matt Butcher.</p></p>
+	<ul class="tags">
+				<li><span class="field">author:</span> M Butcher &lt;<a href="mailto:matt">@aleph-null.tv matt @aleph-null.tv</a>&gt;</li>
+				<li><span class="field">copyright:</span> Copyright (c) 2009, Matt Butcher.</li>
+				<li><span class="field">see:</span> <a href="../QueryPath/QueryPath.html">QueryPath</a></li>
+				<li><span class="field">see:</span> <a href="../QueryPath/_src---QueryPath---QueryPath.php.html#functionqp">qp()</a></li>
+				<li><span class="field">license:</span> <a href="http://opensource.org/licenses/lgpl-2.1.php">The GNU Lesser GPL (LGPL) or an MIT-like license.</a></li>
+				<li><span class="field">filesource:</span> <a href="../__filesource/fsource_QueryPath__srcQueryPathQueryPath.php.html">Source Code for this file</a></li>
+				<li><span class="field">example:</span> <a href="../__examplesource/exsource_rs_mbutcher_Code_QueryPath_examples_techniques.php_d7e72f5edc3a42cb3df54be6fd6e12ca.html">Looping/Iteration techniques</a></li>
+				<li><span class="field">example:</span> <a href="../__examplesource/exsource__c3350c0cb55bd943132eefb196053f52.html">Generating HTML</a></li>
+				<li><span class="field">example:</span> <a href="../__examplesource/exsource__70b00e3236c69999d2e5858f82061a4d.html">Using XML</a></li>
+				<li><span class="field">example:</span> <a href="../__examplesource/exsource__30498b91867a8993e7aaaaec733e501a.html">Generating RSS (Really Simple Syndication)</a></li>
+				<li><span class="field">example:</span> <a href="../__examplesource/exsource__f91bd002544aba84f7e4587f09b7cf44.html">Working with SVG (Scalable Vector Graphics)</a></li>
+				<li><span class="field">example:</span> <a href="../__examplesource/exsource_butcher_Code_QueryPath_examples_simple_example.php_ed79ae33fde60cb1be09e86e08331121.html">Basic Example</a></li>
+			</ul>
+		
+			</div>
+</div>
+		
+	<a name="sec-classes"></a>	
+	<div class="info-box">
+		<div class="info-box-title">Classes</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+			<span class="disabled">Classes</span>
+			|							<a href="#sec-includes">Includes</a>
+				|										<a href="#sec-constants">Constants</a>
+				|													<a href="#sec-functions">Functions</a>
+					</div>
+		<div class="info-box-body">	
+			<table cellpadding="2" cellspacing="0" class="class-table">
+				<tr>
+					<th class="class-table-header">Class</th>
+					<th class="class-table-header">Description</th>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em; vertical-align: top; white-space: nowrap">
+						<img src="../media/images/Class.png"
+								 alt=" class"
+								 title=" class"/>
+						<a href="../QueryPath/QueryPath.html">QueryPath</a>
+					</td>
+					<td>
+											The Query Path object is the primary tool in this library.
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em; vertical-align: top; white-space: nowrap">
+						<img src="../media/images/Class.png"
+								 alt=" class"
+								 title=" class"/>
+						<a href="../QueryPath/QueryPathException.html">QueryPathException</a>
+					</td>
+					<td>
+											Exception indicating that a problem has occured inside of a QueryPath object.
+										</td>
+				</tr>
+							</table>
+		</div>
+	</div>
+
+	<a name="sec-includes"></a>	
+	<div class="info-box">
+		<div class="info-box-title">Includes</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+							<a href="#sec-classes">Classes</a>
+				|						<span class="disabled">Includes</span>
+			|							<a href="#sec-constants">Constants</a>
+				|													<a href="#sec-functions">Functions</a>
+					</div>
+		<div class="info-box-body">	
+			<a name="_QueryPathImpl_php"><!-- --></a>
+<div class="evenrow">
+	
+	<div>
+		<img src="../media/images/Page.png" alt=" " />
+		<span class="include-title">
+			<span class="include-type">require_once</span>
+			(<span class="include-name"><a href="../QueryPath/Internals/_src---QueryPath---QueryPathImpl.php.html">'QueryPathImpl.php'</a></span>)
+			(line <span class="line-number"><a href="../__filesource/fsource_QueryPath__srcQueryPathQueryPath.php.html#a77">77</a></span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">The main implementation of Query Path is stored in the QueryPathImple.php file.</p>
+	
+</div>
+<a name="_QueryPathExtension_php"><!-- --></a>
+<div class="oddrow">
+	
+	<div>
+		<img src="../media/images/Page.png" alt=" " />
+		<span class="include-title">
+			<span class="include-type">require_once</span>
+			(<span class="include-name"><a href="../QueryPath/_src---QueryPath---QueryPathExtension.php.html">'QueryPathExtension.php'</a></span>)
+			(line <span class="line-number"><a href="../__filesource/fsource_QueryPath__srcQueryPathQueryPath.php.html#a85">85</a></span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">The extender is used to provide support for extensions.</p>
+	
+</div>
+<a name="_CssEventHandler_php"><!-- --></a>
+<div class="evenrow">
+	
+	<div>
+		<img src="../media/images/Page.png" alt=" " />
+		<span class="include-title">
+			<span class="include-type">require_once</span>
+			(<span class="include-name"><a href="../QueryPath/CSSParser/_src---QueryPath---CssEventHandler.php.html">'CssEventHandler.php'</a></span>)
+			(line <span class="line-number"><a href="../__filesource/fsource_QueryPath__srcQueryPathQueryPath.php.html#a81">81</a></span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">The CssEventHandler interfaces with the CSS parser.</p>
+	
+</div>
+		</div>
+	</div>
+	
+	<a name="sec-constants"></a>	
+	<div class="info-box">
+		<div class="info-box-title">Constants</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+							<a href="#sec-classes">Classes</a>
+				|										<a href="#sec-includes">Includes</a>
+				|						<span class="disabled">Constants</span>
+			|										<a href="#sec-functions">Functions</a>
+					</div>
+		<div class="info-box-body">	
+			<a name="defineML_EXP"><!-- --></a>
+<div class="oddrow">
+	
+	<div>
+		<img src="../media/images/Constant.png" />
+		<span class="const-title">
+			<span class="const-name">ML_EXP</span> = '/^[^&lt;]*(&lt;(.|\s)+&gt;)[^&gt;]*$/'
+			(line <span class="line-number"><a href="../__filesource/fsource_QueryPath__srcQueryPathQueryPath.php.html#a72">72</a></span>)
+		</span>
+	</div>
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Regular expression for checking whether a string looks like XML.</p>
+	
+		
+</div>
+		</div>
+	</div>
+	
+	
+	<a name="sec-functions"></a>	
+	<div class="info-box">
+		<div class="info-box-title">Functions</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+							<a href="#sec-classes">Classes</a>
+				|										<a href="#sec-includes">Includes</a>
+				|										<a href="#sec-constants">Constants</a>
+				|									<span class="disabled">Functions</span>
+		</div>
+		<div class="info-box-body">	
+			<a name="functionqp" id="functionqp"><!-- --></a>
+<div class="evenrow">
+	
+	<div>
+		<img src="../media/images/Function.png" />
+		<span class="method-title">qp</span> (line <span class="line-number"><a href="../__filesource/fsource_QueryPath__srcQueryPathQueryPath.php.html#a139">139</a></span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Build a new Query Path.</p>
+<p class="description"><p>This builds a new Query Path object. The new object can be used for  reading, search, and modifying a document.</p><p>While it is permissible to directly create new instances of a QueryPath  implementation, it is not advised. Instead, you should use this function  as a factory.</p><p>Example:  <div class="src-code"><ol><li><div class="src-line">&nbsp;<span class="src-php">&lt;?php</span></div></li>
+<li><div class="src-line">&nbsp;<a href="../QueryPath/_src---QueryPath---QueryPath.php.html#functionqp">qp</a><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;&nbsp;</span><span class="src-comm">//&nbsp;New&nbsp;empty&nbsp;QueryPath</span></div></li>
+<li><div class="src-line">&nbsp;<a href="../QueryPath/_src---QueryPath---QueryPath.php.html#functionqp">qp</a><span class="src-sym">(</span><span class="src-str">'path/to/file.xml'</span><span class="src-sym">)</span><span class="src-sym">;&nbsp;</span><span class="src-comm">//&nbsp;From&nbsp;a&nbsp;file</span></div></li>
+<li><div class="src-line">&nbsp;<a href="../QueryPath/_src---QueryPath---QueryPath.php.html#functionqp">qp</a><span class="src-sym">(</span><span class="src-str">'&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;/body&gt;&lt;/html&gt;'</span><span class="src-sym">)</span><span class="src-sym">;&nbsp;</span><span class="src-comm">//&nbsp;From&nbsp;HTML&nbsp;or&nbsp;XML</span></div></li>
+<li><div class="src-line">&nbsp;<a href="../QueryPath/_src---QueryPath---QueryPath.php.html#functionqp">qp</a><span class="src-sym">(</span><span class="src-id">HTML_STUB</span><span class="src-sym">)</span><span class="src-sym">;&nbsp;</span><span class="src-comm">//&nbsp;From&nbsp;a&nbsp;basic&nbsp;HTML&nbsp;document.</span></div></li>
+<li><div class="src-line">&nbsp;<a href="../QueryPath/_src---QueryPath---QueryPath.php.html#functionqp">qp</a><span class="src-sym">(</span><span class="src-id">HTML_STUB</span><span class="src-sym">,&nbsp;</span><span class="src-str">'title'</span><span class="src-sym">)</span><span class="src-sym">;&nbsp;</span><span class="src-comm">//&nbsp;Create&nbsp;one&nbsp;from&nbsp;a&nbsp;basic&nbsp;HTML&nbsp;doc&nbsp;and&nbsp;position&nbsp;it&nbsp;at&nbsp;the&nbsp;title&nbsp;element.</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">//&nbsp;Most&nbsp;of&nbsp;the&nbsp;time,&nbsp;methods&nbsp;are&nbsp;chained&nbsp;directly&nbsp;off&nbsp;of&nbsp;this&nbsp;call.</span></div></li>
+<li><div class="src-line">&nbsp;<a href="../QueryPath/_src---QueryPath---QueryPath.php.html#functionqp">qp</a><span class="src-sym">(</span><span class="src-id">HTML_STUB</span><span class="src-sym">,&nbsp;</span><span class="src-str">'body'</span><span class="src-sym">)</span><span class="src-sym">-&gt;</span><span class="src-id">append</span><span class="src-sym">(</span><span class="src-str">'&lt;h1&gt;Title&lt;/h1&gt;'</span><span class="src-sym">)</span><span class="src-sym">-&gt;</span><span class="src-id">addClass</span><span class="src-sym">(</span><span class="src-str">'body-class'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-php">?&gt;</span></div></li>
+</ol></div></p><p>This function is used internally by QueryPath. Anything that modifies the  behavior of this function may also modify the behavior of common QueryPath  methods.</p></p>
+	<ul class="tags">
+				<li><span class="field">example:</span> <a href="../__examplesource/exsource__f91bd002544aba84f7e4587f09b7cf44.html">Working with SVG (Scalable Vector Graphics)</a></li>
+				<li><span class="field">example:</span> <a href="../__examplesource/exsource_rs_mbutcher_Code_QueryPath_examples_techniques.php_d7e72f5edc3a42cb3df54be6fd6e12ca.html">Looping/Iteration techniques</a></li>
+				<li><span class="field">example:</span> <a href="../__examplesource/exsource__30498b91867a8993e7aaaaec733e501a.html">Generating RSS (Really Simple Syndication)</a></li>
+				<li><span class="field">example:</span> <a href="../__examplesource/exsource__70b00e3236c69999d2e5858f82061a4d.html">Using XML</a></li>
+				<li><span class="field">example:</span> <a href="../__examplesource/exsource__c3350c0cb55bd943132eefb196053f52.html">Generating HTML</a></li>
+				<li><span class="field">example:</span> <a href="../__examplesource/exsource_butcher_Code_QueryPath_examples_simple_example.php_ed79ae33fde60cb1be09e86e08331121.html">Basic Example</a></li>
+			</ul>
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			qp
+		</span>
+					([<span class="var-type">mixed</span>&nbsp;<span class="var-name">$document</span> = <span class="var-default">NULL</span>], [<span class="var-type">string</span>&nbsp;<span class="var-name">$string</span> = <span class="var-default">NULL</span>], [<span class="var-type">array</span>&nbsp;<span class="var-name">$options</span> = <span class="var-default">array()</span>])
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$document</span><span class="var-description">: A document in one of the following forms: <ul><li>A string of XML or HTML (See HTML_STUB)</li><li>A path on the file system</li><li>A DOMDocument object</li><li>A SimpleXMLElement object.</li><li>A DOMNode object.</li><li>An array of DOMNode objects (generally DOMElement nodes).</li><li>Another <a href="../QueryPath/QueryPath.html">QueryPath</a> object.</li></ul>  Keep in mind that most features of QueryPath operate on elements. Other  sorts of DOMNodes might not work with all features.</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$string</span><span class="var-description">: A CSS 3 selector.</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$options</span><span class="var-description">: An associative array of options. Currently supported options are: <ul><li>&lt;none&gt; (Coming soon: DOM parser settings.)</li></ul></span>			</li>
+				</ul>
+		
+	
+</div>
+		</div>
+	</div>
+	
+	<p class="notes" id="credit">
+		Documentation generated on Mon, 02 Feb 2009 23:35:21 -0600 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.2</a>
+	</p>
+	</div></body>
+</html>

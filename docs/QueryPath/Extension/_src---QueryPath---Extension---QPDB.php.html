@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs for page QPDB.php</title>
+			<link rel="stylesheet" href="../../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="file-name"><img src="../../media/images/Page_logo.png" alt="File" style="vertical-align: middle">/src/QueryPath/Extension/QPDB.php</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+							<a href="#sec-classes">Classes</a>
+														</div>
+	<div class="info-box-body">	
+		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">This package contains classes for handling database transactions from  within QueryPath.</p>
+<p class="description"><p>The tools here use the PDO (PHP Data Objects) library to execute database  functions.</p><p>Using tools in this package, you can write QueryPath database queries  that query an RDBMS and then insert the results into the document.</p><p>Example:  <div class="src-code"><ol><li><div class="src-line">&nbsp;<span class="src-php">&lt;?php</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$template&nbsp;</span>=&nbsp;<span class="src-str">'&lt;?xml&nbsp;version=&quot;1.0&quot;?&gt;&lt;tr&gt;&lt;td&nbsp;class=&quot;colOne&quot;/&gt;&lt;td&nbsp;class=&quot;colTwo&quot;/&gt;&lt;td&nbsp;class=&quot;colThree&quot;/&gt;&lt;/tr&gt;'</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$qp&nbsp;</span>=&nbsp;<a href="../../QueryPath/_src---QueryPath---QueryPath.php.html#functionqp">qp</a><span class="src-sym">(</span><span class="src-id"><a href="../../QueryPath/QueryPath.html">QueryPath</a></span><span class="src-sym">::</span><span class="src-id">HTML_STUB</span><span class="src-sym">,&nbsp;</span><span class="src-str">'body'</span><span class="src-sym">)&nbsp;</span><span class="src-comm">//&nbsp;Open&nbsp;a&nbsp;stub&nbsp;HTML&nbsp;doc&nbsp;and&nbsp;select&nbsp;&lt;body/&gt;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;<span class="src-sym">-&gt;</span><span class="src-id">append</span><span class="src-sym">(</span><span class="src-str">'&lt;table&gt;&lt;tbody/&gt;&lt;/table&gt;'</span><span class="src-sym">)</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;<span class="src-sym">-&gt;</span><span class="src-id">dbInit</span><span class="src-sym">(</span><span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-id">dsn</span><span class="src-sym">)</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;<span class="src-sym">-&gt;</span><span class="src-id">queryInto</span><span class="src-sym">(</span><span class="src-str">'SELECT&nbsp;*&nbsp;FROM&nbsp;qpdb_test&nbsp;WHERE&nbsp;1'</span><span class="src-sym">,&nbsp;</span><span class="src-key">array</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">,&nbsp;</span><span class="src-var">$template</span><span class="src-sym">)</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;<span class="src-sym">-&gt;</span><span class="src-id">doneWithQuery</span><span class="src-sym">(</span><span class="src-sym">)</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;<span class="src-sym">-&gt;</span><span class="src-id">writeHTML</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-php">?&gt;</span></div></li>
+</ol></div></p><p>The code above will take the results of a SQL query and insert them into a n  HTML table.</p><p>If you are doing many database operations across multiple QueryPath objects,  it is better to avoid using <a href="../../QueryPath/Extension/QPDB.html#methoddbInit">QPDB::dbInit()</a>. Instead, you should  call the static <a href="../../QueryPath/Extension/QPDB.html#methodbaseDB">QPDB::baseDB()</a> method to configure a single database  connection that can be shared by all <a href="../../QueryPath/QueryPath.html">QueryPath</a> instances.</p><p>Thus, we could rewrite the above to look like this:  <div class="src-code"><ol><li><div class="src-line">&nbsp;<span class="src-php">&lt;?php</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-id"><a href="../../QueryPath/Extension/QPDB.html">QPDB</a></span><span class="src-sym">::</span><a href="../../QueryPath/Extension/QPDB.html#methodbaseDB">baseDB</a><span class="src-sym">(</span><span class="src-var">$someDN</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$template&nbsp;</span>=&nbsp;<span class="src-str">'&lt;?xml&nbsp;version=&quot;1.0&quot;?&gt;&lt;tr&gt;&lt;td&nbsp;class=&quot;colOne&quot;/&gt;&lt;td&nbsp;class=&quot;colTwo&quot;/&gt;&lt;td&nbsp;class=&quot;colThree&quot;/&gt;&lt;/tr&gt;'</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$qp&nbsp;</span>=&nbsp;<a href="../../QueryPath/_src---QueryPath---QueryPath.php.html#functionqp">qp</a><span class="src-sym">(</span><span class="src-id"><a href="../../QueryPath/QueryPath.html">QueryPath</a></span><span class="src-sym">::</span><span class="src-id">HTML_STUB</span><span class="src-sym">,&nbsp;</span><span class="src-str">'body'</span><span class="src-sym">)&nbsp;</span><span class="src-comm">//&nbsp;Open&nbsp;a&nbsp;stub&nbsp;HTML&nbsp;doc&nbsp;and&nbsp;select&nbsp;&lt;body/&gt;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;<span class="src-sym">-&gt;</span><span class="src-id">append</span><span class="src-sym">(</span><span class="src-str">'&lt;table&gt;&lt;tbody/&gt;&lt;/table&gt;'</span><span class="src-sym">)</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;<span class="src-sym">-&gt;</span><span class="src-id">queryInto</span><span class="src-sym">(</span><span class="src-str">'SELECT&nbsp;*&nbsp;FROM&nbsp;qpdb_test&nbsp;WHERE&nbsp;1'</span><span class="src-sym">,&nbsp;</span><span class="src-key">array</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">,&nbsp;</span><span class="src-var">$template</span><span class="src-sym">)</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;<span class="src-sym">-&gt;</span><span class="src-id">doneWithQuery</span><span class="src-sym">(</span><span class="src-sym">)</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;<span class="src-sym">-&gt;</span><span class="src-id">writeHTML</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-php">?&gt;</span></div></li>
+</ol></div>  Note that in this case, the QueryPath object doesn't need to call a method to  activate the database. There is no call to dbInit(). Instead, it checks  the base class to find the shared database.</p><p>(Note that if you were to add a dbInit() call to the above, it would create  a new database connection.)</p><p>The result of both of these examples will be identical.  The output looks something like this:</p><p><div class="src-code"><ol><li><div class="src-line">&nbsp;&lt;<span class="src-sym">!</span><span class="src-id">DOCTYPE&nbsp;html&nbsp;</span><span class="src-key">PUBLIC&nbsp;</span><span class="src-str">&quot;-//W3C//DTD&nbsp;XHTML&nbsp;1.0&nbsp;Strict//EN&quot;&nbsp;&quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;</span>&gt;</div></li>
+<li><div class="src-line">&nbsp;&lt;<span class="src-id">html&nbsp;xmlns</span>=<span class="src-str">&quot;http://www.w3.org/1999/xhtml&quot;</span>&gt;</div></li>
+<li><div class="src-line">&nbsp;&lt;<span class="src-id">head</span>&gt;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&lt;<span class="src-id">meta&nbsp;http</span>-<span class="src-id">equiv</span>=<span class="src-str">&quot;Content-Type&quot;&nbsp;</span><span class="src-id">content</span>=<span class="src-str">&quot;text/html;&nbsp;charset=utf-8&quot;</span>&gt;&lt;/<span class="src-id">meta</span>&gt;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="src-id">title</span>&gt;<span class="src-id">Untitled</span>&lt;/<span class="src-id">title</span>&gt;</div></li>
+<li><div class="src-line">&nbsp;&lt;/<span class="src-id">head</span>&gt;</div></li>
+<li><div class="src-line">&lt;<span class="src-id">body</span>&gt;</div></li>
+<li><div class="src-line">&lt;<span class="src-id">table</span>&gt;</div></li>
+<li><div class="src-line">&nbsp;&lt;<span class="src-id">tbody</span>&gt;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&lt;<span class="src-id">tr</span>&gt;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&lt;<span class="src-id">td&nbsp;</span><span class="src-key">class</span>=<span class="src-str">&quot;colOne&quot;</span>&gt;<span class="src-id">Title&nbsp;</span><span class="src-num">0</span>&lt;/<span class="src-id">td</span>&gt;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&lt;<span class="src-id">td&nbsp;</span><span class="src-key">class</span>=<span class="src-str">&quot;colTwo&quot;</span>&gt;<span class="src-id">Body&nbsp;</span><span class="src-num">0</span>&lt;/<span class="src-id">td</span>&gt;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&lt;<span class="src-id">td&nbsp;</span><span class="src-key">class</span>=<span class="src-str">&quot;colThree&quot;</span>&gt;<span class="src-id">Footer&nbsp;</span><span class="src-num">0</span>&lt;/<span class="src-id">td</span>&gt;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&lt;/<span class="src-id">tr</span>&gt;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&lt;<span class="src-id">tr</span>&gt;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&lt;<span class="src-id">td&nbsp;</span><span class="src-key">class</span>=<span class="src-str">&quot;colOne&quot;</span>&gt;<span class="src-id">Title&nbsp;</span><span class="src-num">1</span>&lt;/<span class="src-id">td</span>&gt;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&lt;<span class="src-id">td&nbsp;</span><span class="src-key">class</span>=<span class="src-str">&quot;colTwo&quot;</span>&gt;<span class="src-id">Body&nbsp;</span><span class="src-num">1</span>&lt;/<span class="src-id">td</span>&gt;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&lt;<span class="src-id">td&nbsp;</span><span class="src-key">class</span>=<span class="src-str">&quot;colThree&quot;</span>&gt;<span class="src-id">Footer&nbsp;</span><span class="src-num">1</span>&lt;/<span class="src-id">td</span>&gt;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&lt;/<span class="src-id">tr</span>&gt;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&lt;<span class="src-id">tr</span>&gt;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&lt;<span class="src-id">td&nbsp;</span><span class="src-key">class</span>=<span class="src-str">&quot;colOne&quot;</span>&gt;<span class="src-id">Title&nbsp;</span><span class="src-num">2</span>&lt;/<span class="src-id">td</span>&gt;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&lt;<span class="src-id">td&nbsp;</span><span class="src-key">class</span>=<span class="src-str">&quot;colTwo&quot;</span>&gt;<span class="src-id">Body&nbsp;</span><span class="src-num">2</span>&lt;/<span class="src-id">td</span>&gt;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&lt;<span class="src-id">td&nbsp;</span><span class="src-key">class</span>=<span class="src-str">&quot;colThree&quot;</span>&gt;<span class="src-id">Footer&nbsp;</span><span class="src-num">2</span>&lt;/<span class="src-id">td</span>&gt;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&lt;/<span class="src-id">tr</span>&gt;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&lt;<span class="src-id">tr</span>&gt;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&lt;<span class="src-id">td&nbsp;</span><span class="src-key">class</span>=<span class="src-str">&quot;colOne&quot;</span>&gt;<span class="src-id">Title&nbsp;</span><span class="src-num">3</span>&lt;/<span class="src-id">td</span>&gt;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&lt;<span class="src-id">td&nbsp;</span><span class="src-key">class</span>=<span class="src-str">&quot;colTwo&quot;</span>&gt;<span class="src-id">Body&nbsp;</span><span class="src-num">3</span>&lt;/<span class="src-id">td</span>&gt;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&lt;<span class="src-id">td&nbsp;</span><span class="src-key">class</span>=<span class="src-str">&quot;colThree&quot;</span>&gt;<span class="src-id">Footer&nbsp;</span><span class="src-num">3</span>&lt;/<span class="src-id">td</span>&gt;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&lt;/<span class="src-id">tr</span>&gt;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&lt;<span class="src-id">tr</span>&gt;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&lt;<span class="src-id">td&nbsp;</span><span class="src-key">class</span>=<span class="src-str">&quot;colOne&quot;</span>&gt;<span class="src-id">Title&nbsp;</span><span class="src-num">4</span>&lt;/<span class="src-id">td</span>&gt;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&lt;<span class="src-id">td&nbsp;</span><span class="src-key">class</span>=<span class="src-str">&quot;colTwo&quot;</span>&gt;<span class="src-id">Body&nbsp;</span><span class="src-num">4</span>&lt;/<span class="src-id">td</span>&gt;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&lt;<span class="src-id">td&nbsp;</span><span class="src-key">class</span>=<span class="src-str">&quot;colThree&quot;</span>&gt;<span class="src-id">Footer&nbsp;</span><span class="src-num">4</span>&lt;/<span class="src-id">td</span>&gt;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&lt;/<span class="src-id">tr</span>&gt;</div></li>
+<li><div class="src-line">&nbsp;&lt;/<span class="src-id">tbody</span>&gt;</div></li>
+<li><div class="src-line">&lt;/<span class="src-id">table</span>&gt;</div></li>
+<li><div class="src-line">&lt;/<span class="src-id">body</span>&gt;</div></li>
+<li><div class="src-line">&lt;/<span class="src-id">html</span>&gt;</div></li>
+</ol></div></p><p>Note how the CSS classes are used to correlate DB table names to template  locations.</p></p>
+	<ul class="tags">
+				<li><span class="field">author:</span> M Butcher &lt;<a href="mailto:matt@aleph-null.tv">matt@aleph-null.tv</a>&gt;</li>
+				<li><span class="field">see:</span> <a href="../../QueryPath/Extension/QPDB.html">QPDB</a></li>
+				<li><span class="field">see:</span> <a href="../../QueryPath/QueryPathExtensionRegistry.html#methodextend">QueryPathExtensionRegistry::extend()</a></li>
+				<li><span class="field">see:</span> <a href="../../QueryPath/QueryPathExtension.html">QueryPathExtension</a></li>
+				<li><span class="field">filesource:</span> <a href="../../__filesource/fsource_QueryPath_Extension_srcQueryPathExtensionQPDB.php.html">Source Code for this file</a></li>
+				<li><span class="field">license:</span> <a href="http://opensource.org/licenses/lgpl-2.1.php">LGPL or MIT-like license.</a></li>
+			</ul>
+		
+			</div>
+</div>
+		
+	<a name="sec-classes"></a>	
+	<div class="info-box">
+		<div class="info-box-title">Classes</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+			<span class="disabled">Classes</span>
+																	</div>
+		<div class="info-box-body">	
+			<table cellpadding="2" cellspacing="0" class="class-table">
+				<tr>
+					<th class="class-table-header">Class</th>
+					<th class="class-table-header">Description</th>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em; vertical-align: top; white-space: nowrap">
+						<img src="../../media/images/Class.png"
+								 alt=" class"
+								 title=" class"/>
+						<a href="../../QueryPath/Extension/QPDB.html">QPDB</a>
+					</td>
+					<td>
+											Provide DB access to a QueryPath object.
+										</td>
+				</tr>
+							</table>
+		</div>
+	</div>
+
+	
+	
+	
+	
+	<p class="notes" id="credit">
+		Documentation generated on Mon, 02 Feb 2009 23:35:19 -0600 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.2</a>
+	</p>
+	</div></body>
+</html>

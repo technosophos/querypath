@@ -1,4 +1,8 @@
 <?php
+/**
+ * @package Tests
+ */
+ 
 require_once 'PHPUnit/Framework.php';
 require_once '../src/QueryPath/CssEventHandler.php';
 
