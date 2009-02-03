@@ -1,0 +1,8 @@
+To install QueryPath:
+
+- Extract the contents of the archive.
+- Copy the src/QueryPath directory to the desired location.
+- Include QueryPath/QueryPath.php in your PHP scripts
+
+For more information, visit https://fedorahosted.org/querypath and 
+http://querypath.org.
