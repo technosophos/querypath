@@ -9,6 +9,7 @@
    Matt Butcher
    <authorblurb>
     {@link http://querypath.org Project Founder}
+    {@link http://queryPath.org}
    </authorblurb>
   </author>
  </refsynopsisdiv>
@@ -27,7 +28,7 @@
    It is kept updated with all of the latest information.
   </para>
   <para>
-    Ready to get going? Start with the {@link qp()} function. Along with the 
+    Ready to get going? Start with the <emphasis>{@link qp()}</emphasis> function. Along with the 
     basic documentation, there are several examples linked from that function.
   </para>
  </refsect1>

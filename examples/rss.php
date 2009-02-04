@@ -4,6 +4,15 @@
  *
  * This file contains an example of how QueryPath can be used
  * to generate an RSS feed.
+ *
+ * It uses two stubs -- one for the main RSS file, and one for an RSS entry --
+ * and it merges data into the stubs.
+ *
+ * The method exhibited here is one of the more primitive ways of templating 
+ * information. See the {@link techniques.php techniques} example for multiple
+ * methods of looping. An even more advanced method would be to use the 
+ * {@link QPTPL} library. 
+ *
  * @package Examples
  * @author M Butcher <matt@aleph-null.tv>
  * @license LGPL The GNU Lesser GPL (LGPL) or an MIT-like license.

@@ -1,52 +1,121 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
   <html xmlns="http://www.w3.org/1999/xhtml">
-		<head>
-			<!-- template designed by Marco Von Ballmoos -->
-			<title>Docs for page CssEventTests.php</title>
-			<link rel="stylesheet" href="../media/stylesheet.css" />
-			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
-		</head>
-		<body>
-			<div class="page-body">			
-<h2 class="file-name"><img src="../media/images/Page_logo.png" alt="File" style="vertical-align: middle">/test/CssEventTests.php</h2>
+<head>
+	<title>Docs for page CssEventTests.php</title>
+	<link rel="stylesheet" type="text/css" href="../media/style.css">
+	<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+	<script src="media/a.js"></script>
+</head>
+<body>
+
+<table border="0" cellspacing="0" cellpadding="0" height="48" width="100%">
+  <tr>
+	<td class="header-top-left"><img src="../media/logo.png" border="0" alt="phpDocumentor " /></td>
+    <td class="header-top-right">Tests<br /><div class="header-top-right-subpackage"></div></td>
+  </tr>
+  <tr><td colspan="2" class="header-line"><img src="../media/empty.png" width="1" height="1" border="0" alt=""  /></td></tr>
+  <tr>
+    <td colspan="2" class="header-menu">
+      
+                                                    
+                      		[ <a href="../classtrees_Tests.html" class="menu">class tree: Tests</a> ]
+		[ <a href="../elementindex_Tests.html" class="menu">index: Tests</a> ]
+            [ <a href="../elementindex.html" class="menu">all elements</a> ]
+    </td>
+  </tr>
+  <tr><td colspan="2" class="header-line"><img src="../media/empty.png" width="1" height="1" border="0" alt=""  /></td></tr>
+</table>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="195" class="menu">
+		<div class="package-title">Tests</div>
+  <div class="package">
+	<div id="todolist">
+			<p><a href="../todolist.html">Todo List</a></p>
+	</div>
+	</div>
+      <b>Packages:</b><br />
+  <div class="package">
+              <a href="../li_QueryPath.html">QueryPath</a><br />
+              <a href="../li_Examples.html">Examples</a><br />
+              <a href="../li_Tests.html">Tests</a><br />
+      	</div>
+      <br />
+		<b>Tutorials/Manuals:</b><br />
+  <div class="package">
+					<strong>Package-level:</strong>
+							<ul>
+	<li type="square"><a href="../Tests/tutorial_Tests.pkg.html">Testing QueryPath</a>
+</ul>
+
+									                        <b>Files:</b><br />
+        <div class="package">
+				<span style="padding-left: 1em;"><a href="../Tests/_test---CssEventTests.php.html">CssEventTests.php</a></span><br />
+			<span style="padding-left: 1em;"><a href="../Tests/_test---QPDBTests.php.html">QPDBTests.php</a></span><br />
+			<span style="padding-left: 1em;"><a href="../Tests/_test---QPListTests.php.html">QPListTests.php</a></span><br />
+			<span style="padding-left: 1em;"><a href="../Tests/_test---QPTPLTests.php.html">QPTPLTests.php</a></span><br />
+			<span style="padding-left: 1em;"><a href="../Tests/_test---QueryPathExtensionTests.php.html">QueryPathExtensionTests.php</a></span><br />
+			<span style="padding-left: 1em;"><a href="../Tests/_test---QueryPathTests.php.html">QueryPathTests.php</a></span><br />
+	  </div>
+            <br />
+                  <b>Classes:</b><br />
+        <div class="package">
+		    		<a href="../Tests/CssEventParserTests.html">CssEventParserTests</a>    	 <br />
+	    		<a href="../Tests/FixtureOne.html">FixtureOne</a>    	 <br />
+	    		<a href="../Tests/FixtureTwo.html">FixtureTwo</a>    	 <br />
+	    		<a href="../Tests/IntrospectMe.html">IntrospectMe</a>    	 <br />
+	    		<a href="../Tests/QPDBTests.html">QPDBTests</a>    	 <br />
+	    		<a href="../Tests/QPListTests.html">QPListTests</a>    	 <br />
+	    		<a href="../Tests/QPTPLTests.html">QPTPLTests</a>    	 <br />
+	    		<a href="../Tests/QueryPathCssEventHandlerTests.html">QueryPathCssEventHandlerTests</a>    	 <br />
+	    		<a href="../Tests/QueryPathExtensionTests.html">QueryPathExtensionTests</a>    	 <br />
+	    		<a href="../Tests/QueryPathTests.html">QueryPathTests</a>    	 <br />
+	    		<a href="../Tests/StubExtensionOne.html">StubExtensionOne</a>    	 <br />
+	    		<a href="../Tests/StubExtensionTwo.html">StubExtensionTwo</a>    	 <br />
+	    		<a href="../Tests/TestCssEventHandler.html">TestCssEventHandler</a>    	 <br />
+	    		<a href="../Tests/TestEvent.html">TestEvent</a>    	 <br />
+	  </div>
+                </td>
+    <td>
+      <table cellpadding="10" cellspacing="0" width="100%" border="0"><tr><td valign="top">
+
+<h1>Procedural File: CssEventTests.php</h1>
+Source Location: /test/CssEventTests.php<br /><br />
 
 <a name="sec-description"></a>
 <div class="info-box">
-	<div class="info-box-title">Description</div>
+	<div class="info-box-title">Page Details</div>
 	<div class="nav-bar">
-					<span class="disabled">Description</span> |
+					<span class="disabled">Page Details</span> |
 							<a href="#sec-classes">Classes</a>
 			|							<a href="#sec-includes">Includes</a>
 												</div>
-	<div class="info-box-body">	
-		<!-- ========== Info from phpDoc block ========= -->
-	<ul class="tags">
-				<li><span class="field">filesource:</span> <a href="../__filesource/fsource_Tests__testCssEventTests.php.html">Source Code for this file</a></li>
-			</ul>
-		
+	<div class="info-box-body">
+				<table border="0" cellspacing="0" cellpadding="0">
+			<tr><td><strong>Filesource:</strong>&nbsp;&nbsp;</td><td><a href="../__filesource/fsource_Tests__testCssEventTests.php.html">Source Code for this file</a></td></tr>
+	</table>
+
 			</div>
 </div>
-		
-	<a name="sec-classes"></a>	
+
+	<a name="sec-classes"></a>
 	<div class="info-box">
 		<div class="info-box-title">Classes</div>
 		<div class="nav-bar">
-			<a href="#sec-description">Description</a> |
+			<a href="#sec-description">Page Details</a> |
 			<span class="disabled">Classes</span>
 			|							<a href="#sec-includes">Includes</a>
 																		</div>
-		<div class="info-box-body">	
+		<div class="info-box-body">
 			<table cellpadding="2" cellspacing="0" class="class-table">
 				<tr>
 					<th class="class-table-header">Class</th>
 					<th class="class-table-header">Description</th>
 				</tr>
 								<tr>
-					<td style="padding-right: 2em; vertical-align: top; white-space: nowrap">
-						<img src="../media/images/Class.png"
-								 alt=" class"
-								 title=" class"/>
+					<td style="padding-right: 2em; vertical-align: top">
 						<a href="../Tests/QueryPathCssEventHandlerTests.html">QueryPathCssEventHandlerTests</a>
 					</td>
 					<td>
@@ -54,10 +123,7 @@
 										</td>
 				</tr>
 								<tr>
-					<td style="padding-right: 2em; vertical-align: top; white-space: nowrap">
-						<img src="../media/images/Class.png"
-								 alt=" class"
-								 title=" class"/>
+					<td style="padding-right: 2em; vertical-align: top">
 						<a href="../Tests/CssEventParserTests.html">CssEventParserTests</a>
 					</td>
 					<td>
@@ -65,10 +131,7 @@
 										</td>
 				</tr>
 								<tr>
-					<td style="padding-right: 2em; vertical-align: top; white-space: nowrap">
-						<img src="../media/images/Class.png"
-								 alt=" class"
-								 title=" class"/>
+					<td style="padding-right: 2em; vertical-align: top">
 						<a href="../Tests/TestCssEventHandler.html">TestCssEventHandler</a>
 					</td>
 					<td>
@@ -76,10 +139,7 @@
 										</td>
 				</tr>
 								<tr>
-					<td style="padding-right: 2em; vertical-align: top; white-space: nowrap">
-						<img src="../media/images/Class.png"
-								 alt=" class"
-								 title=" class"/>
+					<td style="padding-right: 2em; vertical-align: top">
 						<a href="../Tests/TestEvent.html">TestEvent</a>
 					</td>
 					<td>
@@ -90,53 +150,59 @@
 		</div>
 	</div>
 
-	<a name="sec-includes"></a>	
+	<a name="sec-includes"></a>
 	<div class="info-box">
 		<div class="info-box-title">Includes</div>
 		<div class="nav-bar">
-			<a href="#sec-description">Description</a> |
+			<a href="#sec-description">Page Details</a> |
 							<a href="#sec-classes">Classes</a>
 				|						<span class="disabled">Includes</span>
 														</div>
-		<div class="info-box-body">	
+		<div class="info-box-body">
 			<a name="_PHPUnit/Framework_php"><!-- --></a>
 <div class="evenrow">
-	
+
 	<div>
-		<img src="../media/images/Page.png" alt=" " />
 		<span class="include-title">
 			<span class="include-type">require_once</span>
 			(<span class="include-name">'PHPUnit/Framework.php'</span>)
-			(line <span class="line-number"><a href="../__filesource/fsource_Tests__testCssEventTests.php.html#a6">6</a></span>)
+			<span class="smalllinenumber">[line <a href="../__filesource/fsource_Tests__testCssEventTests.php.html#a6">6</a>]</span>
 		</span>
 	</div>
 
-	<!-- ========== Info from phpDoc block ========= -->
-	
+		
+		<div class="top">[ <a href="#top">Top</a> ]</div>
+		<br />
 </div>
 <a name="___/src/QueryPath/CssEventHandler_php"><!-- --></a>
 <div class="oddrow">
-	
+
 	<div>
-		<img src="../media/images/Page.png" alt=" " />
 		<span class="include-title">
 			<span class="include-type">require_once</span>
 			(<span class="include-name"><a href="../QueryPath/CSSParser/_src---QueryPath---CssEventHandler.php.html">'../src/QueryPath/CssEventHandler.php'</a></span>)
-			(line <span class="line-number"><a href="../__filesource/fsource_Tests__testCssEventTests.php.html#a7">7</a></span>)
+			<span class="smalllinenumber">[line <a href="../__filesource/fsource_Tests__testCssEventTests.php.html#a7">7</a>]</span>
 		</span>
 	</div>
 
-	<!-- ========== Info from phpDoc block ========= -->
-	
+		
+		<div class="top">[ <a href="#top">Top</a> ]</div>
+		<br />
 </div>
 		</div>
-	</div>
-	
-	
-	
-	
-	<p class="notes" id="credit">
-		Documentation generated on Mon, 02 Feb 2009 23:35:13 -0600 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.2</a>
-	</p>
-	</div></body>
+	</div><br />
+
+
+
+
+        <div class="credit">
+		    <hr class="separator" />
+		    Documentation generated on Tue, 03 Feb 2009 23:36:10 -0600 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.2</a>
+	      </div>
+      </td></tr></table>
+    </td>
+  </tr>
+</table>
+
+</body>
 </html>

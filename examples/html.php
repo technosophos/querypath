@@ -3,7 +3,15 @@
  * Using QueryPath.
  *
  * This file contains an example of how QueryPath can be used
- * to generate web pages.
+ * to generate web pages. Part of the design of this example is to exhibit many
+ * different QueryPath functions in one long chain. All of the methods shown 
+ * here are fully documented in {@link QueryPath}.
+ *
+ * The method used in this example is a typical example of how QueryPath can 
+ * gradually build up content. Other methods include using {@link QPTPL} for 
+ * templates, injecting database information with {@link QPDB}, and merging
+ * data from one QueryPath to another.
+ *
  * @package Examples
  * @author M Butcher <matt@aleph-null.tv>
  * @license LGPL The GNU Lesser GPL (LGPL) or an MIT-like license.

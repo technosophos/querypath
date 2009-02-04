@@ -4,6 +4,16 @@
  *
  * This file contains an example of how QueryPath can be used
  * to generate XML.
+ *
+ * QueryPath's ability to handle arbitrary XML comes in handy. Fragments of HTML
+ * can be composed as external XML documents, and then inserted selectively into
+ * an HTML document as needed. Just remember: Ever XML document -- even just a 
+ * string -- needs to begin with the XML declaration:
+ * <code>
+ * <? xml version="1.0"?>
+ * </code>
+ * (A space was inserted above to prevent the documentation renderer from 
+ * misinterpreting it.)
  * @package Examples
  * @author M Butcher <matt@aleph-null.tv>
  * @license LGPL The GNU Lesser GPL (LGPL) or an MIT-like license.

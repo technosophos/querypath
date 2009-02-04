@@ -1,21 +1,71 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
   <html xmlns="http://www.w3.org/1999/xhtml">
-		<head>
-			<!-- template designed by Marco Von Ballmoos -->
-			<title>Using XML</title>
-			<link rel="stylesheet" href="../media/stylesheet.css" />
-			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
-		</head>
-		<body>
-						<h1>Using XML</h1>
-<div class="listing">
-<div class="src-code"><ol><li><div class="src-line"><span class="src-php">&lt;?php</span></div></li>
+<head>
+	<title>Using XML</title>
+	<link rel="stylesheet" type="text/css" href="../media/style.css">
+	<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+	<script src="media/a.js"></script>
+</head>
+<body>
+
+<table border="0" cellspacing="0" cellpadding="0" height="48" width="100%">
+  <tr>
+	<td class="header-top-left"><img src="../media/logo.png" border="0" alt="phpDocumentor " /></td>
+    <td class="header-top-right">QueryPath<br /><div class="header-top-right-subpackage"></div></td>
+  </tr>
+  <tr><td colspan="2" class="header-line"><img src="../media/empty.png" width="1" height="1" border="0" alt=""  /></td></tr>
+  <tr>
+    <td colspan="2" class="header-menu">
+      
+                        
+                                                  		[ <a href="../classtrees_QueryPath.html" class="menu">class tree: QueryPath</a> ]
+		[ <a href="../elementindex_QueryPath.html" class="menu">index: QueryPath</a> ]
+            [ <a href="../elementindex.html" class="menu">all elements</a> ]
+    </td>
+  </tr>
+  <tr><td colspan="2" class="header-line"><img src="../media/empty.png" width="1" height="1" border="0" alt=""  /></td></tr>
+</table>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="195" class="menu">
+		<div class="package-title">QueryPath</div>
+  <div class="package">
+	<div id="todolist">
+			<p><a href="../todolist.html">Todo List</a></p>
+	</div>
+	</div>
+      <b>Packages:</b><br />
+  <div class="package">
+              <a href="../li_QueryPath.html">QueryPath</a><br />
+              <a href="../li_Examples.html">Examples</a><br />
+              <a href="../li_Tests.html">Tests</a><br />
+      	</div>
+      <br />
+                        <br />
+                      </td>
+    <td>
+      <table cellpadding="10" cellspacing="0" width="100%" border="0"><tr><td valign="top">
+
+<h1 align="center">Using XML</h1>
+<div class="src-code"><span class="php">
+<ol><li><div class="src-line"><span class="src-php">&lt;?php</span></div></li>
 <li><div class="src-line"><span class="src-doc">/**</span></div></li>
 <li><div class="src-line"><span class="src-doc">&nbsp;*&nbsp;Using&nbsp;QueryPath.</span></div></li>
 <li><div class="src-line"><span class="src-doc">&nbsp;*</span></div></li>
 <li><div class="src-line"><span class="src-doc">&nbsp;*&nbsp;This&nbsp;file&nbsp;contains&nbsp;an&nbsp;example&nbsp;of&nbsp;how&nbsp;QueryPath&nbsp;can&nbsp;be&nbsp;used</span></div></li>
 <li><div class="src-line"><span class="src-doc">&nbsp;*&nbsp;to&nbsp;generate&nbsp;XML.</span></div></li>
+<li><div class="src-line"><span class="src-doc">&nbsp;*</span></div></li>
+<li><div class="src-line"><span class="src-doc">&nbsp;*&nbsp;QueryPath's&nbsp;ability&nbsp;to&nbsp;handle&nbsp;arbitrary&nbsp;XML&nbsp;comes&nbsp;in&nbsp;handy.&nbsp;Fragments&nbsp;of&nbsp;HTML</span></div></li>
+<li><div class="src-line"><span class="src-doc">&nbsp;*&nbsp;can&nbsp;be&nbsp;composed&nbsp;as&nbsp;external&nbsp;XML&nbsp;documents,&nbsp;and&nbsp;then&nbsp;inserted&nbsp;selectively&nbsp;into</span></div></li>
+<li><div class="src-line"><span class="src-doc">&nbsp;*&nbsp;an&nbsp;HTML&nbsp;document&nbsp;as&nbsp;needed.&nbsp;Just&nbsp;remember:&nbsp;Ever&nbsp;XML&nbsp;document&nbsp;--&nbsp;even&nbsp;just&nbsp;a</span></div></li>
+<li><div class="src-line"><span class="src-doc">&nbsp;*&nbsp;string&nbsp;--&nbsp;needs&nbsp;to&nbsp;begin&nbsp;with&nbsp;the&nbsp;XML&nbsp;declaration:</span></div></li>
+<li><div class="src-line"><span class="src-doc">&nbsp;*&nbsp;&lt;code&gt;</span></div></li>
+<li><div class="src-line"><span class="src-doc">&nbsp;*&nbsp;&lt;?&nbsp;xml&nbsp;version=&quot;1.0&quot;?&gt;</span></div></li>
+<li><div class="src-line"><span class="src-doc">&nbsp;*&nbsp;&lt;/code&gt;</span></div></li>
+<li><div class="src-line"><span class="src-doc">&nbsp;*&nbsp;(A&nbsp;space&nbsp;was&nbsp;inserted&nbsp;above&nbsp;to&nbsp;prevent&nbsp;the&nbsp;documentation&nbsp;renderer&nbsp;from</span></div></li>
+<li><div class="src-line"><span class="src-doc">&nbsp;*&nbsp;misinterpreting&nbsp;it.)</span></div></li>
 <li><div class="src-line"><span class="src-doc">&nbsp;*&nbsp;</span><span class="src-doc-coretag">@package</span><span class="src-doc">&nbsp;Examples</span></div></li>
 <li><div class="src-line"><span class="src-doc">&nbsp;*&nbsp;</span><span class="src-doc-coretag">@author</span><span class="src-doc">&nbsp;M&nbsp;Butcher&nbsp;&lt;matt@aleph-null.tv&gt;</span></div></li>
 <li><div class="src-line"><span class="src-doc">&nbsp;*&nbsp;</span><span class="src-doc-coretag">@license</span><span class="src-doc">&nbsp;LGPL&nbsp;The&nbsp;GNU&nbsp;Lesser&nbsp;GPL&nbsp;(LGPL)&nbsp;or&nbsp;an&nbsp;MIT-like&nbsp;license.</span></div></li>
@@ -55,10 +105,16 @@
 <li><div class="src-line">&nbsp;</div></li>
 <li><div class="src-line"><span class="src-comm">//&nbsp;Print&nbsp;our&nbsp;results.</span></div></li>
 <li><div class="src-line">print&nbsp;<span class="src-var">$record</span><span class="src-sym">;</span></div></li>
-</ol></div>
-</div>
-	<p class="notes" id="credit">
-		Documentation generated on Mon, 02 Feb 2009 23:35:23 -0600 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.2</a>
-	</p>
-	</body>
+</ol>
+</span></div>
+        <div class="credit">
+		    <hr class="separator" />
+		    Documentation generated on Tue, 03 Feb 2009 23:36:20 -0600 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.2</a>
+	      </div>
+      </td></tr></table>
+    </td>
+  </tr>
+</table>
+
+</body>
 </html>

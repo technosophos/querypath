@@ -102,7 +102,8 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
   
   public function find($selector) {
     
-    // Optimize for ID/Class searches:
+    // Optimize for ID/Class searches. These two take a long time
+    // when a rdp is used. Using an XPath pushes work to C code.
     $ids = array();
     $regex = '/^#([\w-]+)$|^\.([\w-]+)$/'; // $1 is ID, $2 is class.
     //$regex = '/^#([\w-]+)$/';

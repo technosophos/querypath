@@ -3,7 +3,14 @@
  * Using QueryPath to Generate a Scalable Vector Graphic (SVG).
  *
  * This file contains an example of how QueryPath can be used
- * to generate an SVG image.
+ * to generate an SVG image. SVG (Scalable Vector Graphics) is a W3C standard 
+ * XML format for creating graphics. You can find out more about it 
+ * here: {@link http://www.w3.org/TR/SVG11/}.
+ *
+ * If you would like to view the SVG file that is created, the file is available
+ * at {@link http://querypath.org/svg.php}. (That URL actually runs the script displayed
+ * here.)
+ *
  * @package Examples
  * @author M Butcher <matt@aleph-null.tv>
  * @license LGPL The GNU Lesser GPL (LGPL) or an MIT-like license.

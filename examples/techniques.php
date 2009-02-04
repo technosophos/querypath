@@ -3,6 +3,16 @@
  * This file shows five different ways to iterate through the contents of a
  * QueryPath.
  *
+ * QueryPath wraps zero or more elements (or, more generally, just objects).
+ * Most of the operations available in QueryPath will operate on the entire 
+ * set of objects. Sometimes, though, it is desirable to go through the results
+ * one at a time. These examples exhibit five ways of accomplishing this.
+ *
+ * Keep in mind that PHP passes objects (more or less) by reference, which means 
+ * that a change to an item inside of a loop will be reflected in the main QueryPath.
+ * In other words, there is no need to put data back into the QueryPath if it is
+ * altered during a loop.
+ *
  * @see QueryPath
  * @package Examples
  * @author M Butcher <matt@aleph-null.tv>
