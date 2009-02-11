@@ -23,7 +23,8 @@
 <?php
 require '../src/QueryPath/QueryPath.php';
 
-print qp('./parse_php.php', 'title')->text();
+// Parse this file with QueryPath.
+print qp(__FILE__, 'title')->text();
 ?>
 </body>
 </html>
