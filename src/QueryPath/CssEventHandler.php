@@ -65,10 +65,10 @@ require_once 'CssParser.php';
  * $matches will be an array of zero or more DOMElement objects.
  */
 class QueryPathCssEventHandler implements CssEventHandler {
-  var $dom = NULL; // Always points to the top level.
-  var $matches = NULL; // The matches
-  var $alreadyMatched = array(); // Matches found before current selector.
-  var $findAnyElement = TRUE;
+  protected $dom = NULL; // Always points to the top level.
+  protected $matches = NULL; // The matches
+  protected $alreadyMatched = array(); // Matches found before current selector.
+  protected $findAnyElement = TRUE;
   
   
   /**
