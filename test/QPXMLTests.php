@@ -1,0 +1,32 @@
+<?php
+/**
+ * Tests for the QueryPath library.
+ * @package Tests
+ * @author M Butcher <matt@aleph-null.tv>
+ * @license The GNU Lesser GPL (LGPL) or an MIT-like license.
+ */
+
+require_once 'PHPUnit/Framework.php';
+require_once '../src/QueryPath/QueryPath.php';
+require_once '../src/QueryPath/Extension/QPXML.php';
+
+class QPXMLTests extends PHPUnit_Framework_TestCase {
+  
+  protected $file = './advanced.xml';
+  
+  public function testCDATA() {
+    $this->assertEquals('This is a CDATA section.', qp($this->file, 'first')->cdata());
+  }
+  
+  public function testComment(){
+    $this->assertEquals('This is a comment.', trim(qp($this->file, 'root')->comment()));
+    $msg = "Message";
+    $this->assertEquals($msg, qp($this->file, 'second')->comment($msg)->top()->find('second')->writeXML()->comment());
+  }
+  
+  public function testProcessingInstruction() {
+    $this->assertEquals('This is a processing instruction.', trim(qp($this->file, 'third')->pi()));
+    $msg = "Message";
+    $this->assertEquals($msg, qp($this->file, 'second')->pi('qp', $msg)->top()->find('third')->writeXML()->comment());
+  }
+}
