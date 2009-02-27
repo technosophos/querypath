@@ -1098,12 +1098,18 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
   private function parseXMLFile($filename) {
     $document = new DOMDocument();
     $lastDot = strrpos($filename, '.');
+    // FIXME: @ should be replaced with better error handling. 
+    // We lose the real error.
     if ($lastDot !== FALSE && strtolower(substr($filename, $lastDot)) == '.html') {
       // Try parsing it as HTML.
-      $document->loadHTMLFile($filename);
+      $r = @$document->loadHTMLFile($filename);
     }
     else {
-      $document->load($filename);
+      $r = @$document->load($filename);
+    }
+    if ($r == FALSE) {
+      // FIXME: Need more info.
+      throw new QueryPathException('Failed to load and parse file ' . $filename);
     }
     return $document;
   }
