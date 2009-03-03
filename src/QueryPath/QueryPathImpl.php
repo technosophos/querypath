@@ -1061,6 +1061,7 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
     $document = new DOMDocument();
     $lead = strtolower(substr($string, 0, 5)); // <?xml
     if ($lead == '<?xml') {
+      //print htmlentities($string);
       $document->loadXML($string);
     }
     else {
@@ -1109,7 +1110,7 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
     }
     if ($r == FALSE) {
       // FIXME: Need more info.
-      throw new QueryPathException('Failed to load and parse file ' . $filename);
+      throw new QueryPathException('Failed to load file ' . $filename);
     }
     return $document;
   }
