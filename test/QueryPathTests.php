@@ -24,6 +24,12 @@ class QueryPathTests extends PHPUnit_Framework_TestCase {
     $this->assertEquals(1, count($qp->get()));
     $this->assertTrue($qp->get(0) instanceof DOMNode);
     
+    // From XML file with context
+    $cxt = stream_context_create();
+    $qp = qp($file, NULL, array('context' => $cxt));
+    $this->assertEquals(1, count($qp->get()));
+    $this->assertTrue($qp->get(0) instanceof DOMNode);
+    
     // From XML string
     $str = '<?xml version="1.0" ?><root><inner/></root>';
     $qp = qp($str);

@@ -127,7 +127,10 @@ require_once 'QueryPathExtension.php';
  *  A CSS 3 selector.
  * @param array $options
  *  An associative array of options. Currently supported options are:
- *  - <none> (Coming soon: DOM parser settings.)
+ *  - context: A stream context object. This is used to pass context info
+ *    to the underlying file IO subsystem.
+ *  - parser_flags: An OR-combined set of parser flags. The flags supported
+ *    by the DOMDocument PHP class are all supported here.
  *
  * @example examples/simple_example.php Basic Example
  * @example examples/html.php Generating HTML
@@ -137,6 +140,7 @@ require_once 'QueryPathExtension.php';
  * @example examples/techniques.php Looping/Iteration techniques
  */
 function qp($document = NULL, $string = NULL, $options = array()) {
+  // Todo: Make this an abstract factory.
   $qp = new QueryPathImpl($document, $string, $options);
   // Do wrapping here...
   /*

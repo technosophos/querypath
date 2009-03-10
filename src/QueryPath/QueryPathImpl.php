@@ -16,6 +16,9 @@
  * @see QueryPath
  */
 final class QueryPathImpl implements QueryPath, IteratorAggregate {
+  
+  const DEFAULT_PARSER_FLAGS = NULL;
+  
   private $document = NULL;
   private $options = array();
   private $matches = array();
@@ -34,6 +37,8 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
   public function __construct($document = NULL, $string = NULL, $options = array()) {
     $string = trim($string);
     $this->options = $options;
+    
+    $parser_flags = isset($options['parser_flags']) ? $options['parser_flags'] : self::DEFAULT_PARSER_FLAGS;
     
     // Empty: Just create an empty QP.
     if (empty($document)) {
@@ -78,7 +83,8 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
     }
     else {
       // $document is a filename
-      $this->document = $this->parseXMLFile($document);
+      $context = empty($options['context']) ? NULL : $options['context'];
+      $this->document = $this->parseXMLFile($document, $parser_flags, $context);
       $this->matches = array($this->document->documentElement);
     }
     
@@ -1057,12 +1063,12 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
     return preg_match(ML_EXP, $string) > 0;
   }
   
-  private function parseXMLString($string) {
+  private function parseXMLString($string, $flags = NULL) {
     $document = new DOMDocument();
     $lead = strtolower(substr($string, 0, 5)); // <?xml
     if ($lead == '<?xml') {
       //print htmlentities($string);
-      $document->loadXML($string);
+      $document->loadXML($string, $flags);
     }
     else {
       $document->loadHTML($string);
@@ -1096,7 +1102,31 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
     return $frag;
   }
   
-  private function parseXMLFile($filename) {
+  /**
+   * Parse an XML or HTML file.
+   *
+   * This attempts to autodetect the type of file, and then parse it.
+   *
+   * @param string $filename
+   *  The file name to parse.
+   * @param int $flags
+   *  The OR-combined flags accepted by the DOM parser. See the PHP documentation
+   *  for DOM or for libxml.
+   * @param resource $context
+   *  The stream context for the file IO. If this is set, then an alternate 
+   *  parsing path is followed: The file is loaded by PHP's stream-aware IO
+   *  facilities, read entirely into memory, and then handed off to 
+   *  {@link parseXMLString()}. On large files, this can have a performance impact.
+   */
+  private function parseXMLFile($filename, $flags = NULL, $context = NULL) {
+    
+    // If a context is specified, we basically have to do the reading in 
+    // two steps:
+    if (!empty($context)) {
+      $contents = file_get_contents($filename, FALSE, $context);
+      return $this->parseXMLString($contents, $flags);
+    }
+    
     $document = new DOMDocument();
     $lastDot = strrpos($filename, '.');
     // FIXME: @ should be replaced with better error handling. 
@@ -1106,7 +1136,7 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
       $r = @$document->loadHTMLFile($filename);
     }
     else {
-      $r = @$document->load($filename);
+      $r = @$document->load($filename, $flags);
     }
     if ($r == FALSE) {
       // FIXME: Need more info.
