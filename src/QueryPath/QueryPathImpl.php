@@ -13,6 +13,7 @@
  * This is the main implementation of the QueryPath interface.
  *
  * It provides core services for the Query Path. The class is final.
+ *
  * @see QueryPath
  */
 final class QueryPathImpl implements QueryPath, IteratorAggregate {

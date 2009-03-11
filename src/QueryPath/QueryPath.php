@@ -99,11 +99,11 @@ require_once 'QueryPathExtension.php';
  * qp(); // New empty QueryPath
  * qp('path/to/file.xml'); // From a file
  * qp('<html><head></head><body></body></html>'); // From HTML or XML
- * qp(HTML_STUB); // From a basic HTML document.
- * qp(HTML_STUB, 'title'); // Create one from a basic HTML doc and position it at the title element.
+ * qp(QueryPath::HTML_STUB); // From a basic HTML document.
+ * qp(QueryPath::HTML_STUB, 'title'); // Create one from a basic HTML doc and position it at the title element.
  *
  * // Most of the time, methods are chained directly off of this call.
- * qp(HTML_STUB, 'body')->append('<h1>Title</h1>')->addClass('body-class');
+ * qp(QueryPath::HTML_STUB, 'body')->append('<h1>Title</h1>')->addClass('body-class');
  * ?>
  * </code>
  *
@@ -114,7 +114,7 @@ require_once 'QueryPathExtension.php';
  * @param mixed $document
  *  A document in one of the following forms:
  *  - A string of XML or HTML (See {@link HTML_STUB})
- *  - A path on the file system
+ *  - A path on the file system or a URL
  *  - A {@link DOMDocument} object
  *  - A {@link SimpleXMLElement} object.
  *  - A {@link DOMNode} object.
@@ -137,19 +137,12 @@ require_once 'QueryPathExtension.php';
  * @example examples/xml.php Using XML
  * @example examples/rss.php Generating RSS (Really Simple Syndication)
  * @example examples/svg.php Working with SVG (Scalable Vector Graphics)
+ * @example examples/musicbrainz.php Working with remote XML documents
  * @example examples/techniques.php Looping/Iteration techniques
  */
 function qp($document = NULL, $string = NULL, $options = array()) {
   // Todo: Make this an abstract factory.
   $qp = new QueryPathImpl($document, $string, $options);
-  // Do wrapping here...
-  /*
-  if (QueryPathExtensionRegistry::$useRegistry) {
-    foreach (QueryPathExtensionRegistry::getExtensions() as $ext) {
-      $qp = new $ext($qp);
-    }
-  }
-  */
   return $qp;
 }
  
@@ -198,9 +191,8 @@ interface QueryPath {
    *  also return zero matches, even if that find has a selector like :root.
    *  The reason for this is that the {@link QueryPathCssEventHandler} does
    *  not set the root of the document tree if it cannot find any elements
-   *  from which to determine what the root is. The workaround is to use end()
-   *  to revert back to the state before the zero-matching find. A better fix 
-   *  may be possible.
+   *  from which to determine what the root is. The workaround is to use 
+   *  {@link top()} to select the root element again.
    */
   public function find($selector);
   
@@ -246,6 +238,8 @@ interface QueryPath {
   /**
    * Get the number of elements currently wrapped by this object.
    *
+   * Note that there is no length property on this object.
+   *
    * @return int
    *  Number of items in the object.
    */
@@ -253,6 +247,23 @@ interface QueryPath {
   
   /**
    * Get one or all elements from this object.
+   *
+   * When called with no paramaters, this returns all objects wrapped by 
+   * the QueryPath. Typically, these are DOMElement objects (unless you have
+   * used {@link map()}, {@link xpath()}, or other methods that can select
+   * non-elements).
+   *
+   * When called with an index, it will return the item in the QueryPath with 
+   * that index number.
+   *
+   * Calling this method does not change the QueryPath (e.g. it is 
+   * non-destructive).
+   *
+   * You can use qp()->get() to iterate over all elements matched. You can
+   * also iterate over qp() itself (QueryPath implementations must be Traversable). 
+   * In the later case, though, each item 
+   * will be wrapped in a QueryPath object. To learn more about iterating
+   * in QueryPath, see {@link examples/techniques.php}.
    *
    * @param int $index
    *   If specified, then only this index value will be returned. If this 
@@ -311,12 +322,18 @@ interface QueryPath {
   
   /**
    * Reduce the matched set to just one.
+   *
+   * This will take a matched set and reduce it to just one item -- the item 
+   * at the index specified. This is a destructive operation, and can be undone
+   * with {@link end()}.
+   *
    * @param $index
    *  The index of the element to keep. The rest will be 
    *  discarded.
    * @return QueryPath
    * @see get()
    * @see is()
+   * @see end()
    */
   public function eq($index);
   
@@ -345,6 +362,11 @@ interface QueryPath {
   
   /**
    * Remove the named attribute from all elements in the current QueryPath.
+   *
+   * This will remove any attribute with the given name. It will do this on each
+   * item currently wrapped by QueryPath.
+   *
+   * As is the case in jQuery, this operation is not considered destructive.
    *
    * @param string $name
    *  Name of the parameter to remove.
@@ -454,8 +476,8 @@ interface QueryPath {
   /**
    * Get an item's index.
    *
-   * Given a DOMElement, get the matching object from the 
-   * matches.
+   * Given a DOMElement, get the index from the matches. This is the 
+   * converse of {@link get()}.
    *
    * @param DOMElement $subject
    *  The item to match.
