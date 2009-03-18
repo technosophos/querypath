@@ -191,15 +191,16 @@ class QueryPathCssEventHandler implements CssEventHandler {
   // Inherited
   public function elementNS($lname, $namespace = NULL) {
     $this->findAnyElement = FALSE;
-    
     $found = array();
-    foreach ($this->matches as $item) {
-      // We build the tag name by combining namespace name and local name (lname).
-      // This is done because CSS does not use URIs for namespaces.
-      $name = $namespace . ':' . $lname;
-      $found = array_merge($found, $item->getElementByTagName($name));
+    $matches = $this->candidateList();
+    foreach ($matches as $item) {
+      $nsuri = $item->lookupNamespaceURI($namespace);
+      if (!empty($nsuri)) {
+        $nl = $item->getElementsByTagNameNS($nsuri, $lname);
+        // If something is found, merge them:
+        if (!empty($nl)) $found = array_merge($found, $this->nodeListToArray($nl));
+      }
     }
-    
     $this->matches = $found;
   }
   
@@ -217,7 +218,17 @@ class QueryPathCssEventHandler implements CssEventHandler {
     $this->findAnyElement = FALSE;
   }
   public function anyElementInNS($ns) {
-    // FIXME: Need to implement this...
+    $this->findAnyElement = TRUE;
+    $nsuri = $this->dom->lookupNamespaceURI($ns);
+    $found = array();
+    if (!empty($nsuri)) {
+      $matches = $this->candidateList();
+      foreach ($matches as $item) {
+        $nl = $item->getElementsByTagNameNS($nsuri, '*');
+        if (!empty($nl)) $found = array_merge($found, $this->nodeListToArray($nl));
+      }
+    }
+    $this->matches = UniqueElementList::get($found);
     $this->findAnyElement = FALSE;
   }
   public function elementClass($name) {

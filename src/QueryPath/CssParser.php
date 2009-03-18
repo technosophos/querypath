@@ -564,9 +564,12 @@ class CssParser {
         elseif ($this->scanner->token !== CssToken::char) {
           $this->throwError(CssToken::char, $this->scanner->token);
         }
-        $elementName = $this->scanner->getNameString();
-        // We have ns|name
-        $this->handler->elementNS($elementName, $elementNS);
+        else {
+          $elementName = $this->scanner->getNameString();
+          // We have ns|name
+          $this->handler->elementNS($elementName, $elementNS);
+        }
+        
       }
       else {
         $this->handler->element($elementName);
