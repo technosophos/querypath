@@ -54,16 +54,18 @@
         <div class="package">
 				<span style="padding-left: 1em;"><a href="../../QueryPath/_src---QueryPath---QueryPath.php.html">QueryPath.php</a></span><br />
 			<span style="padding-left: 1em;"><a href="../../QueryPath/_src---QueryPath---QueryPathExtension.php.html">QueryPathExtension.php</a></span><br />
-			<span style="padding-left: 1em;"><a href="../../QueryPath/_test---test.php.html">test.php</a></span><br />
 	  </div>
   <div class="package">
-	<strong>CSSParser</strong><br />			<span style="padding-left: 1em;"><a href="../../QueryPath/CSSParser/_src---QueryPath---CssEventHandler.php.html">CssEventHandler.php</a></span><br />
+	<strong>CSSParser</strong><br />			<span style="padding-left: 1em;"><a href="../../QueryPath/CSSParser/_src---QueryPath---BottomUpCssEventHandler.php.html">BottomUpCssEventHandler.php</a></span><br />
+			<span style="padding-left: 1em;"><a href="../../QueryPath/CSSParser/_src---QueryPath---CssEventHandler.php.html">CssEventHandler.php</a></span><br />
 			<span style="padding-left: 1em;"><a href="../../QueryPath/CSSParser/_src---QueryPath---CssParser.php.html">CssParser.php</a></span><br />
 	  </div>
   <div class="package">
 	<strong>Extension</strong><br />			<span style="padding-left: 1em;"><a href="../../QueryPath/Extension/_src---QueryPath---Extension---QPDB.php.html">QPDB.php</a></span><br />
+			<span style="padding-left: 1em;"><a href="../../QueryPath/Extension/_src---QueryPath---Extension---QPForm.php.html">QPForm.php</a></span><br />
 			<span style="padding-left: 1em;"><a href="../../QueryPath/Extension/_src---QueryPath---Extension---QPList.php.html">QPList.php</a></span><br />
 			<span style="padding-left: 1em;"><a href="../../QueryPath/Extension/_src---QueryPath---Extension---QPTPL.php.html">QPTPL.php</a></span><br />
+			<span style="padding-left: 1em;"><a href="../../QueryPath/Extension/_src---QueryPath---Extension---QPXML.php.html">QPXML.php</a></span><br />
 	  </div>
   <div class="package">
 	<strong>Internals</strong><br />			<span style="padding-left: 1em;"><a href="../../QueryPath/Internals/_src---QueryPath---QueryPathImpl.php.html">QueryPathImpl.php</a></span><br />
@@ -82,11 +84,13 @@
 	  </div>
                   <b>Classes:</b><br />
         <div class="package">
-	CSSParser<br />	    <span style="padding-left: 1em;">		<a href="../../QueryPath/CSSParser/CssInputStream.html">CssInputStream</a>    </span>	 <br />
+	CSSParser<br />	    <span style="padding-left: 1em;">		<a href="../../QueryPath/CSSParser/BottomUpCssEventHandler.html">BottomUpCssEventHandler</a>    </span>	 <br />
+	    <span style="padding-left: 1em;">		<a href="../../QueryPath/CSSParser/CssInputStream.html">CssInputStream</a>    </span>	 <br />
 	    <span style="padding-left: 1em;">		<a href="../../QueryPath/CSSParser/CSSParseException.html">CSSParseException</a>    </span>	 <br />
 	    <span style="padding-left: 1em;">		<a href="../../QueryPath/CSSParser/CssParser.html">CssParser</a>    </span>	 <br />
 	    <span style="padding-left: 1em;">		<a href="../../QueryPath/CSSParser/CssScanner.html">CssScanner</a>    </span>	 <br />
 	    <span style="padding-left: 1em;">		<a href="../../QueryPath/CSSParser/CssToken.html">CssToken</a>    </span>	 <br />
+	    <span style="padding-left: 1em;">		<a href="../../QueryPath/CSSParser/NamespaceMap.html">NamespaceMap</a>    </span>	 <br />
 	    <span style="padding-left: 1em;">		<a href="../../QueryPath/CSSParser/NegationCssEventHandler.html">NegationCssEventHandler</a>    </span>	 <br />
 	    <span style="padding-left: 1em;">		<a href="../../QueryPath/CSSParser/NotImplementedException.html">NotImplementedException</a>    </span>	 <br />
 	    <span style="padding-left: 1em;">		<a href="../../QueryPath/CSSParser/QueryPathCssEventHandler.html">QueryPathCssEventHandler</a>    </span>	 <br />
@@ -94,10 +98,12 @@
 	  </div>
   <div class="package">
 	Extension<br />	    <span style="padding-left: 1em;">		<a href="../../QueryPath/Extension/QPDB.html">QPDB</a>    </span>	 <br />
+	    <span style="padding-left: 1em;">		<a href="../../QueryPath/Extension/QPForm.html">QPForm</a>    </span>	 <br />
 	    <span style="padding-left: 1em;">		<a href="../../QueryPath/Extension/QPList.html">QPList</a>    </span>	 <br />
 	    <span style="padding-left: 1em;">		<a href="../../QueryPath/Extension/QPTableData.html">QPTableData</a>    </span>	 <br />
 	    <span style="padding-left: 1em;">		<a href="../../QueryPath/Extension/QPTableTextData.html">QPTableTextData</a>    </span>	 <br />
 	    <span style="padding-left: 1em;">		<a href="../../QueryPath/Extension/QPTPL.html">QPTPL</a>    </span>	 <br />
+	    <span style="padding-left: 1em;">		<a href="../../QueryPath/Extension/QPXML.html">QPXML</a>    </span>	 <br />
 	  </div>
   <div class="package">
 		    		<a href="../../QueryPath/QueryPathException.html">QueryPathException</a>    	 <br />
@@ -123,7 +129,8 @@ Source Location: /src/QueryPath/QueryPathImpl.php<br /><br />
 					<span class="disabled">Class Overview</span>
 						
 													| <a href="#sec-method-summary">Method Summary</a> | <a href="#sec-methods">Methods Detail</a>
-								</div>
+														| <a href="#sec-const-summary">Constants Summary</a> | <a href="#sec-consts">Constants Detail</a>
+						</div>
 	<div class="info-box-body">
 		<table width="100%" border="0">
 		<tr><td valign="top" width="60%" class="class-overview">
@@ -137,7 +144,7 @@ Source Location: /src/QueryPath/QueryPathImpl.php<br /><br />
 </strong></p>
 <span class="description"><p>It provides core services for the Query Path. The class is final.</p></span>
 		<p class="notes">
-			Located in <a class="field" href="_src---QueryPath---QueryPathImpl.php.html">/src/QueryPath/QueryPathImpl.php</a> [<span class="field">line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a18">18</a></span>]
+			Located in <a class="field" href="_src---QueryPath---QueryPathImpl.php.html">/src/QueryPath/QueryPathImpl.php</a> [<span class="field">line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a19">19</a></span>]
 		</p>
 
 		
@@ -238,6 +245,27 @@ Source Location: /src/QueryPath/QueryPathImpl.php<br /><br />
 
 
 
+	<a name="sec-const-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Constant Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Class Overview</a>
+									| <span class="disabled">Constants Summary</span> | <a href="#sec-consts">Constants Detail</a>
+															| <a href="#sec-method-summary">Method Summary</a> | <a href="#sec-methods">Methods Detail</a>
+									</div>
+		<div class="info-box-body">
+			<div class="const-summary">
+			<table border="0" cellspacing="0" cellpadding="0" class="var-summary">
+							<div class="var-title">
+					<tr>
+					<td class="var-title"><a href="#constDEFAULT_PARSER_FLAGS" title="details" class="const-name-summary">DEFAULT_PARSER_FLAGS</a>&nbsp;&nbsp;</td>
+					<td class="const-summary-description"></td></tr>
+				</div>
+								</table>
+			</div>
+			<br /><div class="top">[ <a href="#top">Top</a> ]</div>
+		</div>
+	</div>
 
 
 	<a name="sec-method-summary"></a>
@@ -245,7 +273,8 @@ Source Location: /src/QueryPath/QueryPathImpl.php<br /><br />
 		<div class="info-box-title">Method Summary</span></div>
 		<div class="nav-bar">
 			<a href="#sec-description">Class Overview</a>
-									    					| <span class="disabled">Method Summary</span> | <a href="#sec-methods">Methods Detail</a>
+									    		    			    				| <a href="#sec-const-summary">Constants Summary</a> | <a href="#sec-consts">Constants Detail</a>
+    			    					| <span class="disabled">Method Summary</span> | <a href="#sec-methods">Methods Detail</a>
 		</div>
 		<div class="info-box-body">
 			<div class="method-summary">
@@ -594,7 +623,8 @@ Source Location: /src/QueryPath/QueryPathImpl.php<br /><br />
 		<div class="info-box-title">Methods</div>
 		<div class="nav-bar">
 			<a href="#sec-description">Class Overview</a>
-																			| <a href="#sec-method-summary">Method Summary</a> | <span class="disabled">Methods Detail</span>
+																					| <a href="#sec-const-summary">Constants Summary</a> | <a href="#sec-consts">Constants Detail</a>
+														| <a href="#sec-method-summary">Method Summary</a> | <span class="disabled">Methods Detail</span>
 					</div>
 		<div class="info-box-body">
 			<a name='method_detail'></a>
@@ -602,7 +632,7 @@ Source Location: /src/QueryPath/QueryPathImpl.php<br /><br />
 <div class="evenrow">
 
 <div class="method-header">
-	<span class="method-title">static method unique</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a30">30</a>]</span>
+	<span class="method-title">static method unique</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a34">34</a>]</span>
 </div>
 <br />
 
@@ -648,7 +678,7 @@ $list&nbsp;
 <div class="oddrow">
 
 <div class="method-header">
-	<span class="method-title">Constructor __construct</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a34">34</a>]</span>
+	<span class="method-title">Constructor __construct</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a38">38</a>]</span>
 </div>
 <br />
 
@@ -705,7 +735,7 @@ $options = array()]&nbsp;
 <div class="evenrow">
 
 <div class="method-header">
-	<span class="method-title">add</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a698">698</a>]</span>
+	<span class="method-title">add</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a706">706</a>]</span>
 </div>
 <br />
 
@@ -754,7 +784,7 @@ $selector&nbsp;
 <div class="oddrow">
 
 <div class="method-header">
-	<span class="method-title">addClass</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a979">979</a>]</span>
+	<span class="method-title">addClass</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a987">987</a>]</span>
 </div>
 <br />
 
@@ -803,7 +833,7 @@ $class&nbsp;
 <div class="evenrow">
 
 <div class="method-header">
-	<span class="method-title">after</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a483">483</a>]</span>
+	<span class="method-title">after</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a491">491</a>]</span>
 </div>
 <br />
 
@@ -852,7 +882,7 @@ $data&nbsp;
 <div class="oddrow">
 
 <div class="method-header">
-	<span class="method-title">andSelf</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a712">712</a>]</span>
+	<span class="method-title">andSelf</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a720">720</a>]</span>
 </div>
 <br />
 
@@ -889,7 +919,7 @@ $data&nbsp;
 <div class="evenrow">
 
 <div class="method-header">
-	<span class="method-title">append</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a408">408</a>]</span>
+	<span class="method-title">append</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a416">416</a>]</span>
 </div>
 <br />
 
@@ -938,7 +968,7 @@ $data&nbsp;
 <div class="oddrow">
 
 <div class="method-header">
-	<span class="method-title">appendTo</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a439">439</a>]</span>
+	<span class="method-title">appendTo</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a447">447</a>]</span>
 </div>
 <br />
 
@@ -987,7 +1017,7 @@ $dest&nbsp;
 <div class="evenrow">
 
 <div class="method-header">
-	<span class="method-title">attr</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a170">170</a>]</span>
+	<span class="method-title">attr</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a178">178</a>]</span>
 </div>
 <br />
 
@@ -1043,7 +1073,7 @@ $value = NULL]&nbsp;
 <div class="oddrow">
 
 <div class="method-header">
-	<span class="method-title">before</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a464">464</a>]</span>
+	<span class="method-title">before</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a472">472</a>]</span>
 </div>
 <br />
 
@@ -1092,7 +1122,7 @@ $data&nbsp;
 <div class="evenrow">
 
 <div class="method-header">
-	<span class="method-title">branch</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a1020">1020</a>]</span>
+	<span class="method-title">branch</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a1028">1028</a>]</span>
 </div>
 <br />
 
@@ -1129,7 +1159,7 @@ $data&nbsp;
 <div class="oddrow">
 
 <div class="method-header">
-	<span class="method-title">children</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a726">726</a>]</span>
+	<span class="method-title">children</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a734">734</a>]</span>
 </div>
 <br />
 
@@ -1178,7 +1208,7 @@ $selector = NULL]&nbsp;
 <div class="evenrow">
 
 <div class="method-header">
-	<span class="method-title">cloneAll</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a1024">1024</a>]</span>
+	<span class="method-title">cloneAll</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a1032">1032</a>]</span>
 </div>
 <br />
 
@@ -1215,7 +1245,7 @@ $selector = NULL]&nbsp;
 <div class="oddrow">
 
 <div class="method-header">
-	<span class="method-title">contents</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a743">743</a>]</span>
+	<span class="method-title">contents</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a751">751</a>]</span>
 </div>
 <br />
 
@@ -1252,7 +1282,7 @@ $selector = NULL]&nbsp;
 <div class="evenrow">
 
 <div class="method-header">
-	<span class="method-title">css</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a196">196</a>]</span>
+	<span class="method-title">css</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a204">204</a>]</span>
 </div>
 <br />
 
@@ -1308,7 +1338,7 @@ $value = '']&nbsp;
 <div class="oddrow">
 
 <div class="method-header">
-	<span class="method-title">deepest</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a571">571</a>]</span>
+	<span class="method-title">deepest</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a579">579</a>]</span>
 </div>
 <br />
 
@@ -1345,7 +1375,7 @@ $value = '']&nbsp;
 <div class="evenrow">
 
 <div class="method-header">
-	<span class="method-title">deepestNode</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a594">594</a>]</span>
+	<span class="method-title">deepestNode</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a602">602</a>]</span>
 </div>
 <br />
 
@@ -1414,7 +1444,7 @@ $current = NULL], [
 <div class="oddrow">
 
 <div class="method-header">
-	<span class="method-title">each</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a367">367</a>]</span>
+	<span class="method-title">each</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a375">375</a>]</span>
 </div>
 <br />
 
@@ -1463,7 +1493,7 @@ $callback&nbsp;
 <div class="evenrow">
 
 <div class="method-header">
-	<span class="method-title">eachLambda</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a399">399</a>]</span>
+	<span class="method-title">eachLambda</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a407">407</a>]</span>
 </div>
 <br />
 
@@ -1512,7 +1542,7 @@ $lambda&nbsp;
 <div class="oddrow">
 
 <div class="method-header">
-	<span class="method-title">end</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a705">705</a>]</span>
+	<span class="method-title">end</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a713">713</a>]</span>
 </div>
 <br />
 
@@ -1549,7 +1579,7 @@ $lambda&nbsp;
 <div class="evenrow">
 
 <div class="method-header">
-	<span class="method-title">eq</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a223">223</a>]</span>
+	<span class="method-title">eq</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a231">231</a>]</span>
 </div>
 <br />
 
@@ -1598,7 +1628,7 @@ $index&nbsp;
 <div class="oddrow">
 
 <div class="method-header">
-	<span class="method-title">filter</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a238">238</a>]</span>
+	<span class="method-title">filter</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a246">246</a>]</span>
 </div>
 <br />
 
@@ -1647,7 +1677,7 @@ $selector&nbsp;
 <div class="evenrow">
 
 <div class="method-header">
-	<span class="method-title">filterCallback</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a257">257</a>]</span>
+	<span class="method-title">filterCallback</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a265">265</a>]</span>
 </div>
 <br />
 
@@ -1696,7 +1726,7 @@ $callback&nbsp;
 <div class="oddrow">
 
 <div class="method-header">
-	<span class="method-title">filterLambda</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a245">245</a>]</span>
+	<span class="method-title">filterLambda</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a253">253</a>]</span>
 </div>
 <br />
 
@@ -1745,7 +1775,7 @@ $fn&nbsp;
 <div class="evenrow">
 
 <div class="method-header">
-	<span class="method-title">find</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a103">103</a>]</span>
+	<span class="method-title">find</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a110">110</a>]</span>
 </div>
 <br />
 
@@ -1794,7 +1824,7 @@ $selector&nbsp;
 <div class="oddrow">
 
 <div class="method-header">
-	<span class="method-title">get</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a164">164</a>]</span>
+	<span class="method-title">get</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a172">172</a>]</span>
 </div>
 <br />
 
@@ -1843,7 +1873,7 @@ $index = NULL]&nbsp;
 <div class="evenrow">
 
 <div class="method-header">
-	<span class="method-title">getIterator</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a1150">1150</a>]</span>
+	<span class="method-title">getIterator</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a1189">1189</a>]</span>
 </div>
 <br />
 
@@ -1879,7 +1909,7 @@ $index = NULL]&nbsp;
 <div class="oddrow">
 
 <div class="method-header">
-	<span class="method-title">hasClass</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a1009">1009</a>]</span>
+	<span class="method-title">hasClass</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a1017">1017</a>]</span>
 </div>
 <br />
 
@@ -1928,7 +1958,7 @@ $class&nbsp;
 <div class="evenrow">
 
 <div class="method-header">
-	<span class="method-title">html</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a818">818</a>]</span>
+	<span class="method-title">html</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a826">826</a>]</span>
 </div>
 <br />
 
@@ -1977,7 +2007,7 @@ $markup = NULL]&nbsp;
 <div class="oddrow">
 
 <div class="method-header">
-	<span class="method-title">index</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a306">306</a>]</span>
+	<span class="method-title">index</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a314">314</a>]</span>
 </div>
 <br />
 
@@ -2026,7 +2056,7 @@ $subject&nbsp;
 <div class="evenrow">
 
 <div class="method-header">
-	<span class="method-title">insertAfter</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a478">478</a>]</span>
+	<span class="method-title">insertAfter</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a486">486</a>]</span>
 </div>
 <br />
 
@@ -2075,7 +2105,7 @@ $dest&nbsp;
 <div class="oddrow">
 
 <div class="method-header">
-	<span class="method-title">insertBefore</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a473">473</a>]</span>
+	<span class="method-title">insertBefore</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a481">481</a>]</span>
 </div>
 <br />
 
@@ -2124,7 +2154,7 @@ $dest&nbsp;
 <div class="evenrow">
 
 <div class="method-header">
-	<span class="method-title">is</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a228">228</a>]</span>
+	<span class="method-title">is</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a236">236</a>]</span>
 </div>
 <br />
 
@@ -2173,7 +2203,7 @@ $selector&nbsp;
 <div class="oddrow">
 
 <div class="method-header">
-	<span class="method-title">map</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a315">315</a>]</span>
+	<span class="method-title">map</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a323">323</a>]</span>
 </div>
 <br />
 
@@ -2222,7 +2252,7 @@ $callback&nbsp;
 <div class="evenrow">
 
 <div class="method-header">
-	<span class="method-title">next</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a893">893</a>]</span>
+	<span class="method-title">next</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a901">901</a>]</span>
 </div>
 <br />
 
@@ -2271,7 +2301,7 @@ $selector = NULL]&nbsp;
 <div class="oddrow">
 
 <div class="method-header">
-	<span class="method-title">nextAll</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a915">915</a>]</span>
+	<span class="method-title">nextAll</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a923">923</a>]</span>
 </div>
 <br />
 
@@ -2320,7 +2350,7 @@ $selector = NULL]&nbsp;
 <div class="evenrow">
 
 <div class="method-header">
-	<span class="method-title">not</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a291">291</a>]</span>
+	<span class="method-title">not</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a299">299</a>]</span>
 </div>
 <br />
 
@@ -2369,7 +2399,7 @@ $selector&nbsp;
 <div class="oddrow">
 
 <div class="method-header">
-	<span class="method-title">parent</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a774">774</a>]</span>
+	<span class="method-title">parent</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a782">782</a>]</span>
 </div>
 <br />
 
@@ -2418,7 +2448,7 @@ $selector = NULL]&nbsp;
 <div class="evenrow">
 
 <div class="method-header">
-	<span class="method-title">parents</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a798">798</a>]</span>
+	<span class="method-title">parents</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a806">806</a>]</span>
 </div>
 <br />
 
@@ -2467,7 +2497,7 @@ $selector = NULL]&nbsp;
 <div class="oddrow">
 
 <div class="method-header">
-	<span class="method-title">prepareInsert</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a626">626</a>]</span>
+	<span class="method-title">prepareInsert</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a634">634</a>]</span>
 </div>
 <br />
 
@@ -2514,7 +2544,7 @@ $item&nbsp;
 <div class="evenrow">
 
 <div class="method-header">
-	<span class="method-title">prepend</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a444">444</a>]</span>
+	<span class="method-title">prepend</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a452">452</a>]</span>
 </div>
 <br />
 
@@ -2563,7 +2593,7 @@ $data&nbsp;
 <div class="oddrow">
 
 <div class="method-header">
-	<span class="method-title">prependTo</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a458">458</a>]</span>
+	<span class="method-title">prependTo</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a466">466</a>]</span>
 </div>
 <br />
 
@@ -2612,7 +2642,7 @@ $dest&nbsp;
 <div class="evenrow">
 
 <div class="method-header">
-	<span class="method-title">prev</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a936">936</a>]</span>
+	<span class="method-title">prev</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a944">944</a>]</span>
 </div>
 <br />
 
@@ -2661,7 +2691,7 @@ $selector = NULL]&nbsp;
 <div class="oddrow">
 
 <div class="method-header">
-	<span class="method-title">prevAll</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a958">958</a>]</span>
+	<span class="method-title">prevAll</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a966">966</a>]</span>
 </div>
 <br />
 
@@ -2710,7 +2740,7 @@ $selector = NULL]&nbsp;
 <div class="evenrow">
 
 <div class="method-header">
-	<span class="method-title">remove</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a671">671</a>]</span>
+	<span class="method-title">remove</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a679">679</a>]</span>
 </div>
 <br />
 
@@ -2759,7 +2789,7 @@ $selector = NULL]&nbsp;
 <div class="oddrow">
 
 <div class="method-header">
-	<span class="method-title">removeAttr</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a215">215</a>]</span>
+	<span class="method-title">removeAttr</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a223">223</a>]</span>
 </div>
 <br />
 
@@ -2808,7 +2838,7 @@ $name&nbsp;
 <div class="evenrow">
 
 <div class="method-header">
-	<span class="method-title">removeChildren</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a717">717</a>]</span>
+	<span class="method-title">removeChildren</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a725">725</a>]</span>
 </div>
 <br />
 
@@ -2845,7 +2875,7 @@ $name&nbsp;
 <div class="oddrow">
 
 <div class="method-header">
-	<span class="method-title">removeClass</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a991">991</a>]</span>
+	<span class="method-title">removeClass</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a999">999</a>]</span>
 </div>
 <br />
 
@@ -2894,7 +2924,7 @@ $class&nbsp;
 <div class="evenrow">
 
 <div class="method-header">
-	<span class="method-title">replaceAll</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a686">686</a>]</span>
+	<span class="method-title">replaceAll</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a694">694</a>]</span>
 </div>
 <br />
 
@@ -2950,7 +2980,7 @@ $document&nbsp;
 <div class="oddrow">
 
 <div class="method-header">
-	<span class="method-title">replaceWith</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a495">495</a>]</span>
+	<span class="method-title">replaceWith</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a503">503</a>]</span>
 </div>
 <br />
 
@@ -2999,7 +3029,7 @@ $new&nbsp;
 <div class="evenrow">
 
 <div class="method-header">
-	<span class="method-title">siblings</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a754">754</a>]</span>
+	<span class="method-title">siblings</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a762">762</a>]</span>
 </div>
 <br />
 
@@ -3048,7 +3078,7 @@ $selector = NULL]&nbsp;
 <div class="oddrow">
 
 <div class="method-header">
-	<span class="method-title">size</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a160">160</a>]</span>
+	<span class="method-title">size</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a168">168</a>]</span>
 </div>
 <br />
 
@@ -3085,7 +3115,7 @@ $selector = NULL]&nbsp;
 <div class="evenrow">
 
 <div class="method-header">
-	<span class="method-title">slice</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a358">358</a>]</span>
+	<span class="method-title">slice</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a366">366</a>]</span>
 </div>
 <br />
 
@@ -3141,7 +3171,7 @@ $end = NULL]&nbsp;
 <div class="oddrow">
 
 <div class="method-header">
-	<span class="method-title">tag</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a667">667</a>]</span>
+	<span class="method-title">tag</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a675">675</a>]</span>
 </div>
 <br />
 
@@ -3178,7 +3208,7 @@ $end = NULL]&nbsp;
 <div class="evenrow">
 
 <div class="method-header">
-	<span class="method-title">text</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a841">841</a>]</span>
+	<span class="method-title">text</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a849">849</a>]</span>
 </div>
 <br />
 
@@ -3227,7 +3257,7 @@ $text = NULL]&nbsp;
 <div class="oddrow">
 
 <div class="method-header">
-	<span class="method-title">top</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a98">98</a>]</span>
+	<span class="method-title">top</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a105">105</a>]</span>
 </div>
 <br />
 
@@ -3264,7 +3294,7 @@ $text = NULL]&nbsp;
 <div class="evenrow">
 
 <div class="method-header">
-	<span class="method-title">val</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a854">854</a>]</span>
+	<span class="method-title">val</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a862">862</a>]</span>
 </div>
 <br />
 
@@ -3313,7 +3343,7 @@ $value = NULL]&nbsp;
 <div class="oddrow">
 
 <div class="method-header">
-	<span class="method-title">wrap</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a507">507</a>]</span>
+	<span class="method-title">wrap</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a515">515</a>]</span>
 </div>
 <br />
 
@@ -3362,7 +3392,7 @@ $markup&nbsp;
 <div class="evenrow">
 
 <div class="method-header">
-	<span class="method-title">wrapAll</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a530">530</a>]</span>
+	<span class="method-title">wrapAll</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a538">538</a>]</span>
 </div>
 <br />
 
@@ -3411,7 +3441,7 @@ $markup&nbsp;
 <div class="oddrow">
 
 <div class="method-header">
-	<span class="method-title">wrapInner</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a550">550</a>]</span>
+	<span class="method-title">wrapInner</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a558">558</a>]</span>
 </div>
 <br />
 
@@ -3460,7 +3490,7 @@ $markup&nbsp;
 <div class="evenrow">
 
 <div class="method-header">
-	<span class="method-title">writeHTML</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a888">888</a>]</span>
+	<span class="method-title">writeHTML</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a896">896</a>]</span>
 </div>
 <br />
 
@@ -3509,7 +3539,7 @@ $headers = array()]&nbsp;
 <div class="oddrow">
 
 <div class="method-header">
-	<span class="method-title">writeXML</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a883">883</a>]</span>
+	<span class="method-title">writeXML</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a891">891</a>]</span>
 </div>
 <br />
 
@@ -3546,7 +3576,7 @@ $headers = array()]&nbsp;
 <div class="evenrow">
 
 <div class="method-header">
-	<span class="method-title">xml</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a862">862</a>]</span>
+	<span class="method-title">xml</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a870">870</a>]</span>
 </div>
 <br />
 
@@ -3595,7 +3625,7 @@ $markup = NULL]&nbsp;
 <div class="oddrow">
 
 <div class="method-header">
-	<span class="method-title">xpath</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a147">147</a>]</span>
+	<span class="method-title">xpath</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a155">155</a>]</span>
 </div>
 <br />
 
@@ -3644,7 +3674,7 @@ $query&nbsp;
 <div class="evenrow">
 
 <div class="method-header">
-	<span class="method-title">__call</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a1120">1120</a>]</span>
+	<span class="method-title">__call</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a1159">1159</a>]</span>
 </div>
 <br />
 
@@ -3702,7 +3732,7 @@ $arguments&nbsp;
 <div class="oddrow">
 
 <div class="method-header">
-	<span class="method-title">__clone</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a1039">1039</a>]</span>
+	<span class="method-title">__clone</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a1047">1047</a>]</span>
 </div>
 <br />
 
@@ -3734,10 +3764,37 @@ $arguments&nbsp;
 		</div>
 	</div>
 
+	<a name="sec-consts"></a>
+	<div class="info-box">
+		<div class="info-box-title">Constants</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Class Overview</a>
+										| <a href="#sec-const-summary">Constants Summary</a> | <span class="disabled">Constants Detail</span>
+																		| <a href="#sec-method-summary">Method Summary</a> | <a href="#sec-methods">Methods Detail</a>
+									</div>
+		<div class="info-box-body">
+			<a name="constDEFAULT_PARSER_FLAGS" id="DEFAULT_PARSER_FLAGS"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-name">DEFAULT_PARSER_FLAGS</span>
+			 = <span class="var-default"> NULL</span>
+			<span class="smalllinenumber">[line <a href="../../__filesource/fsource_QueryPath_Internals_srcQueryPathQueryPathImpl.php.html#a21">21</a>]</span>
+		</span>
+	</div>
+
+		
+
+	<br />
+	<div class="top">[ <a href="#top">Top</a> ]</div>
+</div>
+		</div>
+	</div>
 
         <div class="credit">
 		    <hr class="separator" />
-		    Documentation generated on Tue, 03 Feb 2009 23:36:23 -0600 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.2</a>
+		    Documentation generated on Thu, 19 Mar 2009 10:21:19 -0500 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.2</a>
 	      </div>
       </td></tr></table>
     </td>

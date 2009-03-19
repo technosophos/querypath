@@ -138,6 +138,8 @@ require_once 'QueryPathExtension.php';
  * @example examples/rss.php Generating RSS (Really Simple Syndication)
  * @example examples/svg.php Working with SVG (Scalable Vector Graphics)
  * @example examples/musicbrainz.php Working with remote XML documents
+ * @example examples/sparql.php Working with SPARQL queries
+ * @example examples/dbpedia.php Working with namespaced XML
  * @example examples/techniques.php Looping/Iteration techniques
  */
 function qp($document = NULL, $string = NULL, $options = array()) {

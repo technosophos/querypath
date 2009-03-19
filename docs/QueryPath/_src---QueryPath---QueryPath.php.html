@@ -54,16 +54,18 @@
         <div class="package">
 				<span style="padding-left: 1em;"><a href="../QueryPath/_src---QueryPath---QueryPath.php.html">QueryPath.php</a></span><br />
 			<span style="padding-left: 1em;"><a href="../QueryPath/_src---QueryPath---QueryPathExtension.php.html">QueryPathExtension.php</a></span><br />
-			<span style="padding-left: 1em;"><a href="../QueryPath/_test---test.php.html">test.php</a></span><br />
 	  </div>
   <div class="package">
-	<strong>CSSParser</strong><br />			<span style="padding-left: 1em;"><a href="../QueryPath/CSSParser/_src---QueryPath---CssEventHandler.php.html">CssEventHandler.php</a></span><br />
+	<strong>CSSParser</strong><br />			<span style="padding-left: 1em;"><a href="../QueryPath/CSSParser/_src---QueryPath---BottomUpCssEventHandler.php.html">BottomUpCssEventHandler.php</a></span><br />
+			<span style="padding-left: 1em;"><a href="../QueryPath/CSSParser/_src---QueryPath---CssEventHandler.php.html">CssEventHandler.php</a></span><br />
 			<span style="padding-left: 1em;"><a href="../QueryPath/CSSParser/_src---QueryPath---CssParser.php.html">CssParser.php</a></span><br />
 	  </div>
   <div class="package">
 	<strong>Extension</strong><br />			<span style="padding-left: 1em;"><a href="../QueryPath/Extension/_src---QueryPath---Extension---QPDB.php.html">QPDB.php</a></span><br />
+			<span style="padding-left: 1em;"><a href="../QueryPath/Extension/_src---QueryPath---Extension---QPForm.php.html">QPForm.php</a></span><br />
 			<span style="padding-left: 1em;"><a href="../QueryPath/Extension/_src---QueryPath---Extension---QPList.php.html">QPList.php</a></span><br />
 			<span style="padding-left: 1em;"><a href="../QueryPath/Extension/_src---QueryPath---Extension---QPTPL.php.html">QPTPL.php</a></span><br />
+			<span style="padding-left: 1em;"><a href="../QueryPath/Extension/_src---QueryPath---Extension---QPXML.php.html">QPXML.php</a></span><br />
 	  </div>
   <div class="package">
 	<strong>Internals</strong><br />			<span style="padding-left: 1em;"><a href="../QueryPath/Internals/_src---QueryPath---QueryPathImpl.php.html">QueryPathImpl.php</a></span><br />
@@ -82,11 +84,13 @@
 	  </div>
                   <b>Classes:</b><br />
         <div class="package">
-	CSSParser<br />	    <span style="padding-left: 1em;">		<a href="../QueryPath/CSSParser/CssInputStream.html">CssInputStream</a>    </span>	 <br />
+	CSSParser<br />	    <span style="padding-left: 1em;">		<a href="../QueryPath/CSSParser/BottomUpCssEventHandler.html">BottomUpCssEventHandler</a>    </span>	 <br />
+	    <span style="padding-left: 1em;">		<a href="../QueryPath/CSSParser/CssInputStream.html">CssInputStream</a>    </span>	 <br />
 	    <span style="padding-left: 1em;">		<a href="../QueryPath/CSSParser/CSSParseException.html">CSSParseException</a>    </span>	 <br />
 	    <span style="padding-left: 1em;">		<a href="../QueryPath/CSSParser/CssParser.html">CssParser</a>    </span>	 <br />
 	    <span style="padding-left: 1em;">		<a href="../QueryPath/CSSParser/CssScanner.html">CssScanner</a>    </span>	 <br />
 	    <span style="padding-left: 1em;">		<a href="../QueryPath/CSSParser/CssToken.html">CssToken</a>    </span>	 <br />
+	    <span style="padding-left: 1em;">		<a href="../QueryPath/CSSParser/NamespaceMap.html">NamespaceMap</a>    </span>	 <br />
 	    <span style="padding-left: 1em;">		<a href="../QueryPath/CSSParser/NegationCssEventHandler.html">NegationCssEventHandler</a>    </span>	 <br />
 	    <span style="padding-left: 1em;">		<a href="../QueryPath/CSSParser/NotImplementedException.html">NotImplementedException</a>    </span>	 <br />
 	    <span style="padding-left: 1em;">		<a href="../QueryPath/CSSParser/QueryPathCssEventHandler.html">QueryPathCssEventHandler</a>    </span>	 <br />
@@ -94,10 +98,12 @@
 	  </div>
   <div class="package">
 	Extension<br />	    <span style="padding-left: 1em;">		<a href="../QueryPath/Extension/QPDB.html">QPDB</a>    </span>	 <br />
+	    <span style="padding-left: 1em;">		<a href="../QueryPath/Extension/QPForm.html">QPForm</a>    </span>	 <br />
 	    <span style="padding-left: 1em;">		<a href="../QueryPath/Extension/QPList.html">QPList</a>    </span>	 <br />
 	    <span style="padding-left: 1em;">		<a href="../QueryPath/Extension/QPTableData.html">QPTableData</a>    </span>	 <br />
 	    <span style="padding-left: 1em;">		<a href="../QueryPath/Extension/QPTableTextData.html">QPTableTextData</a>    </span>	 <br />
 	    <span style="padding-left: 1em;">		<a href="../QueryPath/Extension/QPTPL.html">QPTPL</a>    </span>	 <br />
+	    <span style="padding-left: 1em;">		<a href="../QueryPath/Extension/QPXML.html">QPXML</a>    </span>	 <br />
 	  </div>
   <div class="package">
 		    		<a href="../QueryPath/QueryPathException.html">QueryPathException</a>    	 <br />
@@ -311,7 +317,7 @@ Source Location: /src/QueryPath/QueryPath.php<br /><br />
 <div class="evenrow">
 
 	<div>
-		<span class="method-title">qp</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../__filesource/fsource_QueryPath__srcQueryPathQueryPath.php.html#a139">139</a>]</span>
+		<span class="method-title">qp</span>&nbsp;&nbsp;<span class="smalllinenumber">[line <a href="../__filesource/fsource_QueryPath__srcQueryPathQueryPath.php.html#a145">145</a>]</span>
 	</div>
 <br />
 	<div class="function">
@@ -329,11 +335,11 @@ Source Location: /src/QueryPath/QueryPath.php<br /><br />
 <li><div class="src-line">&nbsp;<a href="../QueryPath/_src---QueryPath---QueryPath.php.html#functionqp">qp</a><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;&nbsp;</span><span class="src-comm">//&nbsp;New&nbsp;empty&nbsp;QueryPath</span></div></li>
 <li><div class="src-line">&nbsp;<a href="../QueryPath/_src---QueryPath---QueryPath.php.html#functionqp">qp</a><span class="src-sym">(</span><span class="src-str">'path/to/file.xml'</span><span class="src-sym">)</span><span class="src-sym">;&nbsp;</span><span class="src-comm">//&nbsp;From&nbsp;a&nbsp;file</span></div></li>
 <li><div class="src-line">&nbsp;<a href="../QueryPath/_src---QueryPath---QueryPath.php.html#functionqp">qp</a><span class="src-sym">(</span><span class="src-str">'&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;/body&gt;&lt;/html&gt;'</span><span class="src-sym">)</span><span class="src-sym">;&nbsp;</span><span class="src-comm">//&nbsp;From&nbsp;HTML&nbsp;or&nbsp;XML</span></div></li>
-<li><div class="src-line">&nbsp;<a href="../QueryPath/_src---QueryPath---QueryPath.php.html#functionqp">qp</a><span class="src-sym">(</span><span class="src-id">HTML_STUB</span><span class="src-sym">)</span><span class="src-sym">;&nbsp;</span><span class="src-comm">//&nbsp;From&nbsp;a&nbsp;basic&nbsp;HTML&nbsp;document.</span></div></li>
-<li><div class="src-line">&nbsp;<a href="../QueryPath/_src---QueryPath---QueryPath.php.html#functionqp">qp</a><span class="src-sym">(</span><span class="src-id">HTML_STUB</span><span class="src-sym">,&nbsp;</span><span class="src-str">'title'</span><span class="src-sym">)</span><span class="src-sym">;&nbsp;</span><span class="src-comm">//&nbsp;Create&nbsp;one&nbsp;from&nbsp;a&nbsp;basic&nbsp;HTML&nbsp;doc&nbsp;and&nbsp;position&nbsp;it&nbsp;at&nbsp;the&nbsp;title&nbsp;element.</span></div></li>
+<li><div class="src-line">&nbsp;<a href="../QueryPath/_src---QueryPath---QueryPath.php.html#functionqp">qp</a><span class="src-sym">(</span><span class="src-id"><a href="../QueryPath/QueryPath.html">QueryPath</a></span><span class="src-sym">::</span><span class="src-id">HTML_STUB</span><span class="src-sym">)</span><span class="src-sym">;&nbsp;</span><span class="src-comm">//&nbsp;From&nbsp;a&nbsp;basic&nbsp;HTML&nbsp;document.</span></div></li>
+<li><div class="src-line">&nbsp;<a href="../QueryPath/_src---QueryPath---QueryPath.php.html#functionqp">qp</a><span class="src-sym">(</span><span class="src-id"><a href="../QueryPath/QueryPath.html">QueryPath</a></span><span class="src-sym">::</span><span class="src-id">HTML_STUB</span><span class="src-sym">,&nbsp;</span><span class="src-str">'title'</span><span class="src-sym">)</span><span class="src-sym">;&nbsp;</span><span class="src-comm">//&nbsp;Create&nbsp;one&nbsp;from&nbsp;a&nbsp;basic&nbsp;HTML&nbsp;doc&nbsp;and&nbsp;position&nbsp;it&nbsp;at&nbsp;the&nbsp;title&nbsp;element.</span></div></li>
 <li><div class="src-line">&nbsp;</div></li>
 <li><div class="src-line">&nbsp;<span class="src-comm">//&nbsp;Most&nbsp;of&nbsp;the&nbsp;time,&nbsp;methods&nbsp;are&nbsp;chained&nbsp;directly&nbsp;off&nbsp;of&nbsp;this&nbsp;call.</span></div></li>
-<li><div class="src-line">&nbsp;<a href="../QueryPath/_src---QueryPath---QueryPath.php.html#functionqp">qp</a><span class="src-sym">(</span><span class="src-id">HTML_STUB</span><span class="src-sym">,&nbsp;</span><span class="src-str">'body'</span><span class="src-sym">)</span><span class="src-sym">-&gt;</span><span class="src-id">append</span><span class="src-sym">(</span><span class="src-str">'&lt;h1&gt;Title&lt;/h1&gt;'</span><span class="src-sym">)</span><span class="src-sym">-&gt;</span><span class="src-id">addClass</span><span class="src-sym">(</span><span class="src-str">'body-class'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;<a href="../QueryPath/_src---QueryPath---QueryPath.php.html#functionqp">qp</a><span class="src-sym">(</span><span class="src-id"><a href="../QueryPath/QueryPath.html">QueryPath</a></span><span class="src-sym">::</span><span class="src-id">HTML_STUB</span><span class="src-sym">,&nbsp;</span><span class="src-str">'body'</span><span class="src-sym">)</span><span class="src-sym">-&gt;</span><span class="src-id">append</span><span class="src-sym">(</span><span class="src-str">'&lt;h1&gt;Title&lt;/h1&gt;'</span><span class="src-sym">)</span><span class="src-sym">-&gt;</span><span class="src-id">addClass</span><span class="src-sym">(</span><span class="src-str">'body-class'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
 <li><div class="src-line">&nbsp;<span class="src-php">?&gt;</span></div></li>
 </ol></p><p>This function is used internally by QueryPath. Anything that modifies the  behavior of this function may also modify the behavior of common QueryPath  methods.</p></span>
     		<strong>Parameters:</strong><br />
@@ -343,7 +349,7 @@ Source Location: /src/QueryPath/QueryPath.php<br /><br />
 				<td>
 				<span class="var-name">$document:&nbsp;</span></td>
 				<td>
-				<span class="var-description"> A document in one of the following forms: <ul><li>A string of XML or HTML (See HTML_STUB)</li><li>A path on the file system</li><li>A DOMDocument object</li><li>A SimpleXMLElement object.</li><li>A DOMNode object.</li><li>An array of DOMNode objects (generally DOMElement nodes).</li><li>Another <a href="../QueryPath/QueryPath.html">QueryPath</a> object.</li></ul>  Keep in mind that most features of QueryPath operate on elements. Other  sorts of DOMNodes might not work with all features.</span>			</td></tr>
+				<span class="var-description"> A document in one of the following forms: <ul><li>A string of XML or HTML (See HTML_STUB)</li><li>A path on the file system or a URL</li><li>A DOMDocument object</li><li>A SimpleXMLElement object.</li><li>A DOMNode object.</li><li>An array of DOMNode objects (generally DOMElement nodes).</li><li>Another <a href="../QueryPath/QueryPath.html">QueryPath</a> object.</li></ul>  Keep in mind that most features of QueryPath operate on elements. Other  sorts of DOMNodes might not work with all features.</span>			</td></tr>
 					<tr><td class="indent">
 				<span class="var-type">string</span>&nbsp;&nbsp;</td>
 				<td>
@@ -355,26 +361,37 @@ Source Location: /src/QueryPath/QueryPath.php<br /><br />
 				<td>
 				<span class="var-name">$options:&nbsp;</span></td>
 				<td>
-				<span class="var-description"> An associative array of options. Currently supported options are: <ul><li>&lt;none&gt; (Coming soon: DOM parser settings.)</li></ul></span>			</td></tr>
+				<span class="var-description"> An associative array of options. Currently supported options are: <ul><li>context: A stream context object. This is used to pass context info
+    to the underlying file IO subsystem.</li><li>parser_flags: An OR-combined set of parser flags. The flags supported
+    by the DOMDocument PHP class are all supported here.</li></ul></span>			</td></tr>
 				</table>
 	
 <br />
 	<strong>API Tags:</strong><br />
 <table border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td class="indent"><strong>Example:</strong>&nbsp;&nbsp;</td><td><a href="../__examplesource/exsource__f91bd002544aba84f7e4587f09b7cf44.html">Working with SVG (Scalable Vector Graphics)</a></td>
+    <td class="indent"><strong>Example:</strong>&nbsp;&nbsp;</td><td><a href="../__examplesource/exsource__Users_mbutcher_Code_QueryPath_examples_sparql.php_d7531d9602ec5b8e82070971c297d0a9.html">Working with SPARQL queries</a></td>
+  </tr>
+  <tr>
+    <td class="indent"><strong>Example:</strong>&nbsp;&nbsp;</td><td><a href="../__examplesource/exsource_Users_mbutcher_Code_QueryPath_examples_dbpedia.php_794658a5405382ed569f2acf368e40bc.html">Working with namespaced XML</a></td>
   </tr>
   <tr>
     <td class="indent"><strong>Example:</strong>&nbsp;&nbsp;</td><td><a href="../__examplesource/exsource_rs_mbutcher_Code_QueryPath_examples_techniques.php_d7e72f5edc3a42cb3df54be6fd6e12ca.html">Looping/Iteration techniques</a></td>
   </tr>
   <tr>
-    <td class="indent"><strong>Example:</strong>&nbsp;&nbsp;</td><td><a href="../__examplesource/exsource__30498b91867a8993e7aaaaec733e501a.html">Generating RSS (Really Simple Syndication)</a></td>
+    <td class="indent"><strong>Example:</strong>&nbsp;&nbsp;</td><td><a href="../__examplesource/exsource_s_mbutcher_Code_QueryPath_examples_musicbrainz.php_1c3311dbd9b75031b51315d335999686.html">Working with remote XML documents</a></td>
+  </tr>
+  <tr>
+    <td class="indent"><strong>Example:</strong>&nbsp;&nbsp;</td><td><a href="../__examplesource/exsource__f91bd002544aba84f7e4587f09b7cf44.html">Working with SVG (Scalable Vector Graphics)</a></td>
+  </tr>
+  <tr>
+    <td class="indent"><strong>Example:</strong>&nbsp;&nbsp;</td><td><a href="../__examplesource/exsource__c3350c0cb55bd943132eefb196053f52.html">Generating HTML</a></td>
   </tr>
   <tr>
     <td class="indent"><strong>Example:</strong>&nbsp;&nbsp;</td><td><a href="../__examplesource/exsource__70b00e3236c69999d2e5858f82061a4d.html">Using XML</a></td>
   </tr>
   <tr>
-    <td class="indent"><strong>Example:</strong>&nbsp;&nbsp;</td><td><a href="../__examplesource/exsource__c3350c0cb55bd943132eefb196053f52.html">Generating HTML</a></td>
+    <td class="indent"><strong>Example:</strong>&nbsp;&nbsp;</td><td><a href="../__examplesource/exsource__30498b91867a8993e7aaaaec733e501a.html">Generating RSS (Really Simple Syndication)</a></td>
   </tr>
   <tr>
     <td class="indent"><strong>Example:</strong>&nbsp;&nbsp;</td><td><a href="../__examplesource/exsource_butcher_Code_QueryPath_examples_simple_example.php_ed79ae33fde60cb1be09e86e08331121.html">Basic Example</a></td>
@@ -392,7 +409,7 @@ Source Location: /src/QueryPath/QueryPath.php<br /><br />
 
         <div class="credit">
 		    <hr class="separator" />
-		    Documentation generated on Tue, 03 Feb 2009 23:36:18 -0600 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.2</a>
+		    Documentation generated on Thu, 19 Mar 2009 10:21:09 -0500 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.2</a>
 	      </div>
       </td></tr></table>
     </td>

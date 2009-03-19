@@ -52,11 +52,11 @@
 <h2>QueryPath</h2>
 <h3><a href="QueryPath/QueryPath.html#methodfind">QueryPath::find()</a></h3>
 <ul>
-    <li>If a find() returns zero matches, then a subsequent find() will   also return zero matches, even if that find has a selector like :root.   The reason for this is that the <a href="QueryPath/CSSParser/QueryPathCssEventHandler.html">QueryPathCssEventHandler</a> does   not set the root of the document tree if it cannot find any elements   from which to determine what the root is. The workaround is to use end()   to revert back to the state before the zero-matching find. A better fix   may be possible.</li>
+    <li>If a find() returns zero matches, then a subsequent find() will   also return zero matches, even if that find has a selector like :root.   The reason for this is that the <a href="QueryPath/CSSParser/QueryPathCssEventHandler.html">QueryPathCssEventHandler</a> does   not set the root of the document tree if it cannot find any elements   from which to determine what the root is. The workaround is to use   <a href="QueryPath/QueryPath.html#methodtop">top()</a> to select the root element again.</li>
 </ul>
         <div class="credit">
 		    <hr class="separator" />
-		    Documentation generated on Tue, 03 Feb 2009 23:36:26 -0600 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.2</a>
+		    Documentation generated on Thu, 19 Mar 2009 10:21:23 -0500 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.2</a>
 	      </div>
       </td></tr></table>
     </td>

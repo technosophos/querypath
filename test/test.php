@@ -1,5 +1,13 @@
 #!/usr/bin/env php
 <?php
+/**
+ * Generic CLI parser tests.
+ *
+ * These are not unit tests. They are just plain parser tests.
+ * @package Tests
+ * @author M Butcher <matt@aleph-null.tv>
+ * @license The GNU Lesser GPL (LGPL) or an MIT-like license.
+ */
 require 'parser.php';
 //$str = 'abc > def.g |: hi(jk)[lmn]*op';
 //$str = '&abc.def';
