@@ -194,11 +194,31 @@ class QueryPathCssEventHandler implements CssEventHandler {
     $found = array();
     $matches = $this->candidateList();
     foreach ($matches as $item) {
-      $nsuri = $item->lookupNamespaceURI($namespace);
+      // Looking up NS URI only works if the XMLNS attributes are declared
+      // at a level equal to or above the searching doc. Normalizing a doc
+      // should fix this, but it doesn't. So we have to use a fallback 
+      // detection scheme which basically searches by lname and then 
+      // does a post hoc check on the tagname.
+      
+      //$nsuri = $item->lookupNamespaceURI($namespace);
+      $nsuri = $this->dom->lookupNamespaceURI($namespace);
       if (!empty($nsuri)) {
         $nl = $item->getElementsByTagNameNS($nsuri, $lname);
         // If something is found, merge them:
         if (!empty($nl)) $found = array_merge($found, $this->nodeListToArray($nl));
+      }
+      else {
+        //$nl = $item->getElementsByTagName($namespace . ':' . $lname);
+        $nl = $item->getElementsByTagName($lname);
+        $tagname = $namespace . ':' . $lname;
+        $nsmatches = array();
+        foreach ($nl as $node) {
+          if ($node->tagName == $tagname) {
+            $nsmatches[] = $node;
+          }
+        }
+        // If something is found, merge them:
+        if (!empty($nsmatches)) $found = array_merge($found, $nsmatches);
       }
     }
     $this->matches = $found;
@@ -1403,6 +1423,23 @@ class UniqueElementList {
   protected function compare($element) {
     if (!in_array($element, $this->result, TRUE)) {
       $this->result[] = $element;
+    }
+  }
+}
+
+class NamespaceMap {
+  protected $map = array();
+  
+  public function __construct($dom) {
+    $all = $dom->getElementsByName('*');
+    foreach ($all as $e) {
+      $attrs = $e->getAttributeNS('xmlns');
+    }
+  }
+  
+  public function getNSURI($name) {
+    if (array_key_exists($this->map, $name)) {
+      return $this->map[$name];
     }
   }
 }
