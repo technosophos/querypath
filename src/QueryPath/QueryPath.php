@@ -951,6 +951,28 @@ interface QueryPath {
   public function children($selector = NULL);
   
   /**
+   * Get the peers (siblings) of the elements in the QueryPath object.
+   *
+   * This will find all elements that have the same direct parent as the
+   * given element. These nodes are usually called siblings or peers. You
+   * can think of this as running both {@link prevAll()} and
+   * {@link nextAll()} and combining
+   * the results.
+   *
+   * @param string $selector
+   *  A valid selector.
+   * @return QueryPath
+   *  A QueryPath object wrapping all of the peer elements.
+   * @see children()
+   * @see nextAll()
+   * @see prevAll()
+   * @see parent()
+   * @see parents()
+   * @since 1.3
+   */
+  public function peers($selector = NULL);
+  
+  /**
    * Get all child nodes (not just elements) of all items in the matched set.
    *
    * It gets only the immediate children, not all nodes in the subtree.

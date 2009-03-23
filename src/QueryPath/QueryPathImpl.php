@@ -881,6 +881,12 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
     }
     // Only return the first item -- that's what JQ does.
     $first = $this->matches[0];
+    
+    // Catch cases where first item is not a legit DOM object.
+    if (!($first instanceof DOMNode)) {
+      return NULL;
+    }
+    
     if ($first instanceof DOMDocument || $first->isSameNode($first->ownerDocument->documentElement)) {
       return $this->document->saveXML();
     }
@@ -976,6 +982,26 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
           }
           else {
             $found[] = $m;
+          }
+        }
+      }
+    }
+    $this->setMatches($found);
+    return $this;
+  }
+  
+  public function peers($selector = NULL) {
+    $found = array();
+    foreach ($this->matches as $m) {
+      foreach ($m->parentNode->childNodes as $kid) {
+        if ($kid->nodeType == XML_ELEMENT_NODE && $m !== $kid) {
+          if (!empty($selector)) {
+            if (qp($kid)->is($selector)) {
+              $found[] = $kid;
+            }
+          }
+          else {
+            $found[] = $kid;
           }
         }
       }

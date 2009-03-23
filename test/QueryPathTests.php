@@ -489,6 +489,11 @@ class QueryPathTests extends PHPUnit_Framework_TestCase {
     $this->assertEquals(3, qp($file, '#four')->prevAll()->size());
     $this->assertEquals(2, qp($file, 'foot')->prevAll('inner')->size());
   }
+  public function testPeers() {
+    $file = './data.xml';
+    $this->assertEquals(3, qp($file, '#two')->peers()->size());
+    $this->assertEquals(2, qp($file, 'foot')->peers('inner')->size());
+  }
   public function testParent() {
     $file = './data.xml';
     $this->assertEquals('root', qp($file, 'unary')->parent()->tag());
