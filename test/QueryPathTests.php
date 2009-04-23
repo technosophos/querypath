@@ -251,6 +251,14 @@ class QueryPathTests extends PHPUnit_Framework_TestCase {
     
     $this->assertEquals(2, qp($file, 'inner')->append('<test/>')->top()->find('test')->size());
     $this->assertEquals(2, qp($file, 'inner')->append(qp('<?xml version="1.0"?><test/>'))->top()->find('test')->size());
+    
+    // Issue #6: This seems to break on Debian Etch systems... no idea why.
+    $this->assertEquals('test', qp()->append('<test/>')->top()->tag());
+    
+    // Issue #7: Failure issues warnings
+    // This seems to be working as expected -- libxml emits
+    // parse errors.
+    //$this->assertEquals(NULL, qp()->append('<test'));
   }
   
   public function testAppendTo() {

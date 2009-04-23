@@ -131,6 +131,9 @@ require_once 'QueryPathExtension.php';
  *    to the underlying file IO subsystem.
  *  - parser_flags: An OR-combined set of parser flags. The flags supported
  *    by the DOMDocument PHP class are all supported here.
+ *  - omit_xml_declaration: Boolean. If this is TRUE, then certain output
+ *    methods (like {@link QueryPath::xml()}) will omit the XML declaration
+ *    from the beginning of a document.
  *
  * @example examples/simple_example.php Basic Example
  * @example examples/html.php Generating HTML

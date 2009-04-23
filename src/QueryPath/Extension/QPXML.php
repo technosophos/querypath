@@ -22,6 +22,14 @@ class QPXML implements QueryPathExtension {
     $this->qp = $qp;
   }
   
+  public function schema($file) {
+    $doc = $this->qp->branch()->top()->get(0)->ownerDocument;
+    
+    if (!$doc->schemaValidate($file)) {
+      throw new QueryPathException('Document did not validate against the schema.');
+    }
+  }
+  
   /**
    * Get or set a CDATA section.
    *
