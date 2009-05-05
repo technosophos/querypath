@@ -23,7 +23,8 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
   private $document = NULL;
   private $options = array(
     'parser_flags' => NULL,
-    'omit_xml_declaration' => TRUE,
+    'omit_xml_declaration' => FALSE,
+    'replace_entities' => FALSE,
   );
   private $matches = array();
   private $last = array(); // Last set of matches.
@@ -36,6 +37,10 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
    */
   public static function unique($list) {
     return UniqueElementList::get($list);
+  }
+  
+  public function getOptions() {
+    return $this->options;
   }
   
   public function __construct($document = NULL, $string = NULL, $options = array()) {
@@ -640,6 +645,12 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
       return;
     }
     elseif (is_string($item)) {
+      // If configured to do so, replace all entities.
+      if ($this->options['replace_entities']) {
+        print "Replacing entities" . PHP_EOL;
+        $item = QueryPathEntities::replaceAllEntities($item);
+      }
+      
       /* This isn't what jQuery does, so we won't do it that way.
       if ($this->isXMLish($item)) {
         $frag = $this->document->createDocumentFragment();
@@ -876,7 +887,7 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
   }
   
   public function xml($markup = NULL) {
-    $omit_xml_decl = $options['omit_xml_declaration'];
+    $omit_xml_decl = $this->options['omit_xml_declaration'];
     if ($markup === TRUE) {
       // Basically, we handle the special case where we don't
       // want the XML declaration to be displayed.
@@ -1110,6 +1121,9 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
     $lead = strtolower(substr($string, 0, 5)); // <?xml
     if ($lead == '<?xml') {
       //print htmlentities($string);
+      if ($this->options['replace_entities']) {
+        $string = QueryPathEntities::replaceAllEntities($string);
+      }
       $document->loadXML($string, $flags);
     }
     else {
@@ -1244,6 +1258,69 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
 
 class QueryPathEntities {
   
+  /*
+   * This is three regexes wrapped into 1. The | divides them.
+   * 1: Match any char-based entity. This will go in $matches[1]
+   * 2: Match any num-based entity. This will go in $matches[2]
+   * 3: Match any ampersand that is not an entity. This goes in $matches[3]
+   *    This last rule will only match if one of the previous two has not already
+   *    matched.
+   */
+  //protected static $regex = '/&([\w]+);|&#([\d]+);|&([\w]*[\s$]+)/m';
+  protected static $regex = '/&([\w]+);|&#([\d]+);|(&)/m';
+  
+  /**
+   * Replace all entities.
+   * This will scan a string and will attempt to replace all
+   * entities with their numeric equivalent. This will not work
+   * with specialized entities.
+   *
+   * @param string $string
+   *  The string to perform replacements on.
+   * @return string
+   *  Returns a string that is similar to the original one, but with 
+   *  all entity replacements made.
+   */
+  public static function replaceAllEntities($string) {
+    return preg_replace_callback(self::$regex, 'QueryPathEntities::doReplacement', $string);
+  }
+  
+  /**
+   * Callback for processing replacements.
+   *
+   * @param array $matches
+   *  The regular expression replacement array.
+   */
+  protected static function doReplacement($matches) {
+    // See how the regex above works out.
+    //print_r($matches);
+
+    // From count, we can tell whether we got a 
+    // char, num, or bare ampersand.
+    $count = count($matches);
+    switch ($count) {
+      case 2:
+        // We have a character entity
+        return '&#' . self::replaceEntity($matches[1]) . ';';
+      case 3: 
+        // we have a numeric entity
+        return '&#' . $matches[2] . ';'; 
+      case 4:
+        // We have an unescaped ampersand.
+        return '&#38;';
+    }
+  }
+  
+  /**
+   * Lookup an entity string's numeric equivalent.
+   *
+   * @param string $entity
+   *  The entity whose numeric value is needed.
+   * @return int
+   *  The integer value corresponding to the entity.
+   * @author Matt Butcher
+   * @author Ryan Mahoney
+   */
   public static function replaceEntity($entity) {
     return self::$entity_array[$entity];
   }
@@ -1251,12 +1328,6 @@ class QueryPathEntities {
   /**
    * Conversion mapper for entities in HTML.
    * Large entity conversion table.
-   * @param string $entity
-   *  The entity whose numeric value is needed.
-   * @return int
-   *  The integer value corresponding to the entity.
-   * @author Matt Butcher
-   * @author Ryan Mahoney
    */
   private static $entity_array = array(
 	  'nbsp' => 160, 'iexcl' => 161, 'cent' => 162, 'pound' => 163, 

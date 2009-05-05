@@ -134,6 +134,10 @@ require_once 'QueryPathExtension.php';
  *  - omit_xml_declaration: Boolean. If this is TRUE, then certain output
  *    methods (like {@link QueryPath::xml()}) will omit the XML declaration
  *    from the beginning of a document.
+ *  - replace_entities: Boolean. If this is TRUE, then any of the insertion
+ *    functions (before(), append(), etc.) will replace named entities with
+ *    their decimal equivalent, and will replace un-escaped ampersands with 
+ *    a numeric entity equivalent.
  *
  * @example examples/simple_example.php Basic Example
  * @example examples/html.php Generating HTML

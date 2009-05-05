@@ -1,5 +1,5 @@
 <?php
-/**
+3/**
  * Tests for the QueryPath library.
  * @package Tests
  * @author M Butcher <matt@aleph-null.tv>
