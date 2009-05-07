@@ -7,6 +7,7 @@ $phpunit QueryPathCssEventHandlerTests CssEventTests.php
 #$phpunit BottomUpCssEventHandlerTests
 $phpunit QueryPathTests
 $phpunit QueryPathEntitiesTests
+$phpunit QueryPathOptionsTests
 $phpunit QueryPathExtensionTests
 #$phpunit QPListTests
 #$phpunit QPTPLTests

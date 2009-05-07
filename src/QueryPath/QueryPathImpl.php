@@ -45,7 +45,7 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
   
   public function __construct($document = NULL, $string = NULL, $options = array()) {
     $string = trim($string);
-    $this->options = $options + $this->options;
+    $this->options = $options + QueryPathOptions::get() + $this->options;
     
     $parser_flags = isset($options['parser_flags']) ? $options['parser_flags'] : self::DEFAULT_PARSER_FLAGS;
     
