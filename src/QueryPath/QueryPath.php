@@ -1406,6 +1406,33 @@ interface QueryPath {
    * @see cloneAll()
    */
   public function branch();
+  
+  /**
+   * Get the effective options for the current QueryPath object.
+   *
+   * This returns an associative array of all of the options as set
+   * for the current QueryPath object. This includes default options,
+   * options directly passed in via {@link qp()} or the constructor,
+   * an options set in the {@link QueryPathOptions} object.
+   *
+   * The order of merging options is this:
+   *  - Options passed in using {@link qp()} are highest priority, and will
+   *    override other options.
+   *  - Options set with {@link QueryPathOptions} will override default options,
+   *    but can be overridden by options passed into {@link qp()}.
+   *  - Default options will be used when no overrides are present.
+   *
+   * This function will return the options currently used, with the above option
+   * overriding having been calculated already.
+   *
+   * @return array
+   *  An associative array of options, calculated from defaults and overridden 
+   *  options. 
+   * @see qp()
+   * @see QueryPathOptions::set()
+   * @see QueryPathOptions::merge()
+   */
+  public function getOptions();
 }
 
 /**
