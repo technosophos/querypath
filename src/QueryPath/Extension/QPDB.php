@@ -575,7 +575,7 @@ class QPDB implements QueryPathExtension {
           if (isset($this->row[$col])) {
             $data = $this->row[$col];
             if ($hasWrap) 
-              $data = qp($wrap)->deepest()->append($data)->top();
+              $data = qp()->append($wrap)->deepest()->append($data)->top();
             $this->qp->$qpFunc($data);
           }
         }
