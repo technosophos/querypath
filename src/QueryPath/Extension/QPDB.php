@@ -597,6 +597,22 @@ class QPDB implements QueryPathExtension {
   }
   
   /**
+   * Get the last insert ID.
+   *
+   * This will only return a meaningful result when used after an INSERT.
+   *
+   * @return mixed
+   *  Return the ID from the last insert. The value and behavior of this
+   *  is database-dependent. See the official PDO driver documentation for
+   *  the database you are using.
+   * @since 1.3
+   */
+  public function getLastInsertID() {
+    $con = self::$con;
+    return $con->lastInsertId();
+  }
+  
+  /**
    * Append the data in the given column(s) to the QueryPath.
    *
    * This appends data to every item in the current QueryPath. The data will
