@@ -28,13 +28,22 @@ class QueryPathEntitiesTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($expect, QueryPathEntities::replaceAllEntities($test));
   }
   
+  public function testReplaceHexEntities() {
+    $test = '&#xA9;';
+    $expect = '&#xA9;';
+    $this->assertEquals($expect, QueryPathEntities::replaceAllEntities($test));
+  }
+  
   public function testQPEntityReplacement() {
     $test = '<?xml version="1.0"?><root>&amp;&copy;&#38;& nothing.</root>';
-    $expect = '<?xml version="1.0"?><root>&#38;&#169;&#38;&#38; nothing.</root>';
+    /*$expect = '<?xml version="1.0"?><root>&#38;&#169;&#38;&#38; nothing.</root>';*/
+    // We get this because the DOM serializer re-converts entities.
+    $expect = '<?xml version="1.0"?>
+<root>&amp;&#xA9;&amp;&amp; nothing.</root>';
     
     $qp = qp($test, NULL, array('replace_entities' => TRUE));
     // Interestingly, the XML serializer converts decimal to hex and ampersands
     // to &amp;.
-    $this->assertEquals($expect, $qp->xml());
+    $this->assertEquals($expect, trim($qp->xml()));
   }
 }

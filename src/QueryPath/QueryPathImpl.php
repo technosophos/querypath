@@ -1258,16 +1258,18 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
 
 class QueryPathEntities {
   
-  /*
+  /**
    * This is three regexes wrapped into 1. The | divides them.
    * 1: Match any char-based entity. This will go in $matches[1]
    * 2: Match any num-based entity. This will go in $matches[2]
-   * 3: Match any ampersand that is not an entity. This goes in $matches[3]
+   * 3: Match any hex-based entry. This will go in $matches[3]
+   * 4: Match any ampersand that is not an entity. This goes in $matches[4]
    *    This last rule will only match if one of the previous two has not already
    *    matched.
+   * XXX: Are octal encodings for entities acceptible?
    */
   //protected static $regex = '/&([\w]+);|&#([\d]+);|&([\w]*[\s$]+)/m';
-  protected static $regex = '/&([\w]+);|&#([\d]+);|(&)/m';
+  protected static $regex = '/&([\w]+);|&#([\d]+);|&#(x[0-9a-fA-F]+);|(&)/m';
   
   /**
    * Replace all entities.
@@ -1302,10 +1304,11 @@ class QueryPathEntities {
       case 2:
         // We have a character entity
         return '&#' . self::replaceEntity($matches[1]) . ';';
-      case 3: 
-        // we have a numeric entity
-        return '&#' . $matches[2] . ';'; 
+      case 3:
       case 4:
+        // we have a numeric entity
+        return '&#' . $matches[$count-1] . ';'; 
+      case 5:
         // We have an unescaped ampersand.
         return '&#38;';
     }
@@ -1327,7 +1330,11 @@ class QueryPathEntities {
   
   /**
    * Conversion mapper for entities in HTML.
-   * Large entity conversion table.
+   * Large entity conversion table. This is 
+   * significantly broader in range than 
+   * get_html_translation_table(HTML_ENTITIES).
+   *
+   * @see get_html_translation_table()
    */
   private static $entity_array = array(
 	  'nbsp' => 160, 'iexcl' => 161, 'cent' => 162, 'pound' => 163, 
