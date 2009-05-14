@@ -9,7 +9,7 @@
 require_once 'PHPUnit/Framework.php';
 require_once '../src/QueryPath/QueryPath.php';
 
-class QueryPathEntitiesTests extends PHPUnit_Framework_TestCase {
+class QueryPathEntitiesTest extends PHPUnit_Framework_TestCase {
   public function testReplaceEntity() {
     $entity = 'amp';
     $this->assertEquals('38', QueryPathEntities::replaceEntity($entity));

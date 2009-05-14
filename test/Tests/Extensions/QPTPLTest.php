@@ -1,5 +1,5 @@
 <?php
-3/**
+/**
  * Tests for the QueryPath library.
  * @package Tests
  * @author M Butcher <matt@aleph-null.tv>
@@ -10,7 +10,7 @@ require_once 'PHPUnit/Framework.php';
 require_once '../src/QueryPath/QueryPath.php';
 require_once '../src/QueryPath/Extension/QPTPL.php';
 
-class QPTPLTests extends PHPUnit_Framework_TestCase {
+class QPTPLTest extends PHPUnit_Framework_TestCase {
   
   public function testIsAssoc() {
     $t = new QPTPL(qp());
@@ -151,7 +151,7 @@ class FixtureTwo {
   private $db;
   
   public function __construct() {
-    $this->db = new PDO('sqlite:./db/qpTest.db');
+    $this->db = new PDO('sqlite:./db/qpTest2.db');
     $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $this->db->exec('CREATE TABLE IF NOT EXISTS test (message TEXT)');
     $this->db->exec('INSERT INTO test (message) VALUES ("This is a message")');

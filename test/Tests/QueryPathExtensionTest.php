@@ -8,12 +8,12 @@
  
 require_once 'PHPUnit/Framework.php';
 require_once '../src/QueryPath/QueryPath.php';
-require_once './QueryPathTests.php';
+require_once 'QueryPathTest.php';
 
 /**
  * Run all of the usual tests, plus some extras, with some extensions loaded.
  */
-class QueryPathExtensionTests extends QueryPathTests {
+class QueryPathExtensionTest extends QueryPathTest {
  public function testExtensions() {
    $this->assertNotNull(qp());
  }

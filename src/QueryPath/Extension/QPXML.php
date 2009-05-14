@@ -63,7 +63,7 @@ class QPXML implements QueryPathExtension {
     // Look for CDATA sections
     foreach ($this->qp->get() as $ele) {
       foreach ($ele->childNodes as $node) {
-        if ($node == XML_CDATA_NODE) {
+        if ($node->nodeType == XML_CDATA_SECTION_NODE) {
           // Return first match.
           return $node->textContent;
         }
@@ -123,7 +123,7 @@ class QPXML implements QueryPathExtension {
     }
     foreach ($this->qp->get() as $ele) {
       foreach ($ele->childNodes as $node) {
-        if ($node->nodeType == XML_PROCESSING_INSTRUCTION_NODE) {
+        if ($node->nodeType == XML_PI_NODE) {
           
           if (isset($prefix)) {
             if ($node->tagName == $prefix) {
@@ -135,8 +135,8 @@ class QPXML implements QueryPathExtension {
             return $node->textContent;
           }
         }
-      }
-    }
+      } // foreach
+    } // foreach
   }
 }
 QueryPathExtensionRegistry::extend('QPXML');

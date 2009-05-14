@@ -1,9 +1,7 @@
 <?xml version="1.0"?>
 <root>
   <first>
-    <![CDATA[
-    This is a CDATA section.
-    ]]>
+    <![CDATA[This is a CDATA section.]]>
   </first>
   <second>
     <inner/>

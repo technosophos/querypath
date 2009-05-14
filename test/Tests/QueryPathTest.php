@@ -14,7 +14,7 @@ require_once '../src/QueryPath/QueryPath.php';
  * class which is exposed through the DomQuery interface and the dq() 
  * factory function.
  */
-class QueryPathTests extends PHPUnit_Framework_TestCase {
+class QueryPathTest extends PHPUnit_Framework_TestCase {
   
   public function testQueryPathConstructors() {
     
