@@ -14,7 +14,7 @@ require_once '../src/QueryPath/Extension/QPTPL.php';
 QPDB::baseDB('sqlite:./db/qpTest.db');
 
 
-class QPDBTests extends PHPUnit_Framework_TestCase {
+class QPDBTest extends PHPUnit_Framework_TestCase {
   private $dsn = 'sqlite:./db/qpTest.db';
   
   public function setUp() {

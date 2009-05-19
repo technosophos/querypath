@@ -30,6 +30,6 @@ class QPXMLTests extends PHPUnit_Framework_TestCase {
   public function testProcessingInstruction() {
     $this->assertEquals('This is a processing instruction.', trim(qp($this->file, 'third')->pi()));
     $msg = "Message";
-    $this->assertEquals($msg, qp($this->file, 'second')->pi('qp', $msg)->top()->find('second')->writeXML()->pi());
+    $this->assertEquals($msg, qp($this->file, 'second')->pi('qp', $msg)->top()->find('second')->pi());
   }
 }
