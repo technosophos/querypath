@@ -273,6 +273,18 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
   
   public function filterCallback($callback) {
     $found = array();
+    
+    if (is_callable($callback)) {
+      for ($i = 0; $i < $this->size(); ++$i) {
+        $item = $this->matches[$i];
+        if (call_user_func($callback, $i, $item) !== FALSE) $found[] = $item;
+      }
+    }
+    else {
+      throw new QueryPathException('The specified callback is not callable.');
+    }
+    
+    /*
     if (is_array($callback)) {
       if (is_object($callback[0])) {
         // Object/func
@@ -301,6 +313,7 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
         if ($callback($i, $item) !== FALSE) $found[] = $item;
       }
     }
+    */
     $this->setMatches($found);
     return $this;
   }
@@ -331,6 +344,21 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
   
   public function map($callback) {
     $found = array();
+    
+    if (is_callable($callback)) {
+      for ($i = 0; $i < $this->size(); ++$i) {
+        $item = $this->matches[$i];
+        $c = call_user_func($callback, $i, $item);
+        if (isset($c)) {
+          is_array($c) ? $found = array_merge($found, $c) : $found[] = $c;
+        }
+      }
+    }
+    else {
+      throw new QueryPathException('Callback is not callable.');
+    }
+    
+    /*
     if (is_array($callback)) {
       if (is_object($callback[0])) {
         // Object/func
@@ -368,6 +396,7 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
         }
       }
     }
+    */
     $this->setMatches($found, FALSE);
     return $this;
   }
@@ -382,6 +411,19 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
   }
   
   public function each($callback) {
+    if (is_callable($callback)) {
+      // Object/func
+      $obj = $callback[0];
+      $func = $callback[1];
+      for ($i = 0; $i < $this->size(); ++$i) {
+        $item = $this->matches[$i];
+        if (call_user_func($callback, $i, $item) === FALSE) return $this;
+      }
+    }
+    else {
+      throw new Exception('Callback is not callable.');
+    }
+    /*
     if (is_array($callback)) {
       if (is_object($callback[0])) {
         // Object/func
@@ -410,6 +452,7 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
         if ($callback($i, $item) === FALSE) return $this; 
       }
     }
+    */
     return $this;
   }
 
