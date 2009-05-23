@@ -1208,6 +1208,8 @@ class QueryPathCssEventHandler implements CssEventHandler {
   public function pseudoElement($name) {
     // process the pseudoElement
     switch ($name) {
+      // XXX: Should this return an array -- first line of 
+      // each of the matched elements?
       case 'first-line':
         $matches = $this->candidateList();
         $found = new SplObjectStorage();
@@ -1218,13 +1220,14 @@ class QueryPathCssEventHandler implements CssEventHandler {
           if (!empty($lines)) {
             $line = trim($lines[0]);
             if (!empty($line))
-              //print '%%%%%%%%%%%%%' . $line . '%%%%%%%%%%%%%' . PHP_EOL;
               $o->text = $line;
               $found->attach($o);//trim($lines[0]);
           }
         }
         $this->matches = $found;
         break;
+      // XXX: Should this return an array -- first letter of each
+      // of the matched elements?
       case 'first-letter':
         $matches = $this->candidateList();
         $found = new SplObjectStorage();
