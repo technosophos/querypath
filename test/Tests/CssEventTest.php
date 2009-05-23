@@ -43,6 +43,16 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
   </html>
   ';
   
+  private function firstMatch($matches) {
+    $matches->rewind();
+    return $matches->current();
+  }
+  private function nthMatch($matches, $n = 0) {
+    foreach ($matches as $m) {
+      if ($matches->key() == $n) return $m;
+    }
+  }
+  
   public function testGetMatches() {
     // Test root element:
     $xml = '<?xml version="1.0" ?><test><inside/>Text<inside/></test>';
@@ -52,24 +62,24 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     // Test handing it a DOM Document
     $handler = new QueryPathCssEventHandler($doc);
     $matches = $handler->getMatches();
-    $this->assertTrue(count($matches) == 1);
-    $match = $matches[0];
+    $this->assertTrue($matches->count() == 1);
+    $match = $this->firstMatch($matches);
     $this->assertEquals('test', $match->tagName);
 
     // Test handling single element
     $root = $doc->documentElement;
     $handler = new QueryPathCssEventHandler($root);
     $matches = $handler->getMatches();
-    $this->assertEquals(1, count($matches));
-    $match = $matches[0];
+    $this->assertEquals(1, $matches->count());
+    $match = $this->firstMatch($matches);
     $this->assertEquals('test', $match->tagName);
     
     // Test handling a node list
     $eles = $doc->getElementsByTagName('inside');
     $handler = new QueryPathCssEventHandler($eles);
     $matches = $handler->getMatches();
-    $this->assertEquals(2, count($matches));
-    $match = $matches[0];
+    $this->assertEquals(2, $matches->count());
+    $match = $this->firstMatch($matches);
     $this->assertEquals('inside', $match->tagName);
     
     // Test handling an array of elements
@@ -78,8 +88,8 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     foreach ($eles as $ele) $array[] = $ele;
     $handler = new QueryPathCssEventHandler($array);
     $matches = $handler->getMatches();
-    $this->assertEquals(2, count($matches));
-    $match = $matches[0];
+    $this->assertEquals(2, $matches->count());
+    $match = $this->firstMatch($matches);
     $this->assertEquals('inside', $match->tagName);
   }
   
@@ -92,8 +102,8 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('inside');
     $matches = $handler->getMatches();
-    $this->assertEquals(2, count($matches));
-    $match = $matches[0];
+    $this->assertEquals(2, $matches->count());
+    $match = $this->firstMatch($matches);
     $this->assertEquals('inside', $match->tagName);
     
     $doc = new DomDocument();
@@ -103,8 +113,8 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('div');
     $matches = $handler->getMatches();
-    $this->assertEquals(3, count($matches));
-    $match = $matches[0];
+    $this->assertEquals(3, $matches->count());
+    $match = $this->firstMatch($matches);
     $this->assertEquals('div', $match->tagName);
     $this->assertEquals('one', $match->getAttribute('id'));
     
@@ -112,8 +122,8 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('li');
     $matches = $handler->getMatches();
-    $this->assertEquals(10, count($matches));
-    $match = $matches[0];
+    $this->assertEquals(10, $matches->count());
+    $match = $this->firstMatch($matches);
     //$this->assertEquals('div', $match->tagName);
     $this->assertEquals('li-one', $match->getAttribute('id'));
     
@@ -121,8 +131,8 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('html');
     $matches = $handler->getMatches();
-    $this->assertEquals(1, count($matches));
-    $match = $matches[0];
+    $this->assertEquals(1, $matches->count());
+    $match = $this->firstMatch($matches);
     $this->assertEquals('html', $match->tagName);
   }
   
@@ -135,16 +145,16 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('#first');
     $matches = $handler->getMatches();
-    $this->assertEquals(1, count($matches));
-    $match = $matches[0];
+    $this->assertEquals(1, $matches->count());
+    $match = $this->firstMatch($matches);
     $this->assertEquals('inside', $match->tagName);
     
     // Test a search with restricted scope:
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('inside#first');
     $matches = $handler->getMatches();
-    $this->assertEquals(1, count($matches));
-    $match = $matches[0];
+    $this->assertEquals(1, $matches->count());
+    $match = $this->firstMatch($matches);
     $this->assertEquals('inside', $match->tagName);
     
   }
@@ -159,8 +169,8 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $handler->find('*');
     $matches = $handler->getMatches();
     
-    $this->assertEquals(3, count($matches));
-    $match = $matches[0];
+    $this->assertEquals(3, $matches->count());
+    $match = $this->firstMatch($matches);
     $this->assertEquals('test', $match->tagName);
     
     $doc = new DomDocument();
@@ -170,8 +180,8 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('#two *');
     $matches = $handler->getMatches();
-    $this->assertEquals(1, count($matches));
-    $match = $matches[0];
+    $this->assertEquals(1, $matches->count());
+    $match = $this->firstMatch($matches);
     $this->assertEquals('three', $match->getAttribute('id'));
   }
   
@@ -184,8 +194,8 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('.foo');
     $matches = $handler->getMatches();
-    $this->assertEquals(1, count($matches));
-    $match = $matches[0];
+    $this->assertEquals(1, $matches->count());
+    $match = $this->firstMatch($matches);
     $this->assertEquals('one', $match->getAttribute('id'));
     
     // Test class in element
@@ -194,16 +204,16 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('li.Odd');
     $matches = $handler->getMatches();
-    $this->assertEquals(5, count($matches));
-    $match = $matches[4];
+    $this->assertEquals(5, $matches->count());
+    $match = $this->nthMatch($matches, 4);
     $this->assertEquals('li-nine', $match->getAttribute('id'));
     
     // Test ID/class combo
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('.Odd#li-nine');
     $matches = $handler->getMatches();
-    $this->assertEquals(1, count($matches));
-    $match = $matches[0];
+    $this->assertEquals(1, $matches->count());
+    $match = $this->firstMatch($matches);
     $this->assertEquals('li-nine', $match->getAttribute('id'));
     
   }
@@ -224,8 +234,8 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('test > inside');
     $matches = $handler->getMatches();
-    $this->assertEquals(2, count($matches));
-    $match = $matches[1];
+    $this->assertEquals(2, $matches->count());
+    $match = $this->nthMatch($matches, 1);
     $this->assertEquals('two', $match->getAttribute('id'));
     
   }
@@ -239,48 +249,48 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('inside[name]');
     $matches = $handler->getMatches();
-    $this->assertEquals(1, count($matches));
-    $match = $matches[0];
+    $this->assertEquals(1, $matches->count());
+    $match = $this->firstMatch($matches);
     $this->assertEquals('one', $match->getAttribute('id'));
     
      // Test broken form
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('inside[@name]');
     $matches = $handler->getMatches();
-    $this->assertEquals(1, count($matches));
-    $match = $matches[0];
+    $this->assertEquals(1, $matches->count());
+    $match = $this->firstMatch($matches);
     $this->assertEquals('one', $match->getAttribute('id'));
     
     // Test match on attr name and equals value
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('inside[name="antidisestablishmentarianism"]');
     $matches = $handler->getMatches();
-    $this->assertEquals(1, count($matches));
-    $match = $matches[0];
+    $this->assertEquals(1, $matches->count());
+    $match = $this->firstMatch($matches);
     $this->assertEquals('one', $match->getAttribute('id'));
     
     // Test match on containsInString
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('inside[name*="disestablish"]');
     $matches = $handler->getMatches();
-    $this->assertEquals(1, count($matches));
-    $match = $matches[0];
+    $this->assertEquals(1, $matches->count());
+    $match = $this->firstMatch($matches);
     $this->assertEquals('one', $match->getAttribute('id'));
     
     // Test match on beginsWith
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('inside[name^="anti"]');
     $matches = $handler->getMatches();
-    $this->assertEquals(1, count($matches));
-    $match = $matches[0];
+    $this->assertEquals(1, $matches->count());
+    $match = $this->firstMatch($matches);
     $this->assertEquals('one', $match->getAttribute('id'));
     
     // Test match on endsWith
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('inside[name$="ism"]');
     $matches = $handler->getMatches();
-    $this->assertEquals(1, count($matches));
-    $match = $matches[0];
+    $this->assertEquals(1, $matches->count());
+    $match = $this->firstMatch($matches);
     $this->assertEquals('one', $match->getAttribute('id'));
     
     // Test containsWithSpace
@@ -291,8 +301,8 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('inside[name~="dis"]');
     $matches = $handler->getMatches();
-    $this->assertEquals(1, count($matches));
-    $match = $matches[0];
+    $this->assertEquals(1, $matches->count());
+    $match = $this->firstMatch($matches);
     $this->assertEquals('one', $match->getAttribute('id'));
 
     // Test containsWithHyphen
@@ -303,8 +313,8 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('inside[name|="us"]');
     $matches = $handler->getMatches();
-    $this->assertEquals(1, count($matches));
-    $match = $matches[0];
+    $this->assertEquals(1, $matches->count());
+    $match = $this->firstMatch($matches);
     $this->assertEquals('one', $match->getAttribute('id'));
     
   }
@@ -318,22 +328,22 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find(':lang(en-us)');
     $matches = $handler->getMatches();
-    $this->assertEquals(1, count($matches));
-    $match = $matches[0];
+    $this->assertEquals(1, $matches->count());
+    $match = $this->firstMatch($matches);
     $this->assertEquals('one', $match->getAttribute('id'));
     
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('inside:lang(en)');
     $matches = $handler->getMatches();
-    $this->assertEquals(1, count($matches));
-    $match = $matches[0];
+    $this->assertEquals(1, $matches->count());
+    $match = $this->firstMatch($matches);
     $this->assertEquals('one', $match->getAttribute('id'));
     
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('inside:lang(us)');
     $matches = $handler->getMatches();
-    $this->assertEquals(1, count($matches));
-    $match = $matches[0];
+    $this->assertEquals(1, $matches->count());
+    $match = $this->firstMatch($matches);
     $this->assertEquals('one', $match->getAttribute('id'));
     
     $xml = '<?xml version="1.0" ?><test><inside lang="en-us" id="one"/>Text<inside lang="us" id="two"/></test>';
@@ -343,8 +353,8 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find(':lang(us)');
     $matches = $handler->getMatches();
-    $this->assertEquals(2, count($matches));
-    $match = $matches[1];
+    $this->assertEquals(2, $matches->count());
+    $match = $this->nthMatch($matches, 1);
     $this->assertEquals('two', $match->getAttribute('id'));
     
     $xml = '<?xml version="1.0" ?>
@@ -358,8 +368,8 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find(':lang(us)');
     $matches = $handler->getMatches();
-    $this->assertEquals(2, count($matches));
-    $match = $matches[1];
+    $this->assertEquals(2, $matches->count());
+    $match = $this->nthMatch($matches, 1);
     $this->assertEquals('two', $match->getAttribute('id'));
   }
   
@@ -376,22 +386,22 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find(':enabled');
     $matches = $handler->getMatches();
-    $this->assertEquals(1, count($matches));
-    $match = $matches[0];
+    $this->assertEquals(1, $matches->count());
+    $match = $this->firstMatch($matches);
     $this->assertEquals('one', $match->getAttribute('id'));
     
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find(':disabled');
     $matches = $handler->getMatches();
-    $this->assertEquals(1, count($matches));
-    $match = $matches[0];
+    $this->assertEquals(1, $matches->count());
+    $match = $this->firstMatch($matches);
     $this->assertEquals('two', $match->getAttribute('id'));
     
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find(':checked()');
     $matches = $handler->getMatches();
-    $this->assertEquals(1, count($matches));
-    $match = $matches[0];
+    $this->assertEquals(1, $matches->count());
+    $match = $this->firstMatch($matches);
     $this->assertEquals('three', $match->getAttribute('id'));
   }
   
@@ -408,11 +418,11 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('inside');
     $matches = $handler->getMatches();
-    $this->assertEquals(3, count($matches));
+    $this->assertEquals(3, $matches->count());
     $handler->find(':x-reset');
     $matches = $handler->getMatches();
-    $this->assertEquals(1, count($matches));
-    $this->assertEquals('test', $matches[0]->tagName);
+    $this->assertEquals(1, $matches->count());
+    $this->assertEquals('test', $this->firstMatch($matches)->tagName);
   }
   
   public function testPseudoClassRoot() {
@@ -430,8 +440,8 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $handler = new QueryPathCssEventHandler($start);
     $handler->find(':root');
     $matches = $handler->getMatches();
-    $this->assertEquals(1, count($matches));
-    $this->assertEquals('test', $matches[0]->tagName);
+    $this->assertEquals(1, $matches->count());
+    $this->assertEquals('test', $this->firstMatch($matches)->tagName);
   }
   
   // Test removed so I can re-declare 
@@ -453,7 +463,7 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('#one');
     $matches = $handler->getMatches();
-    $peers = $handler->listPeerElements($matches[0]);
+    $peers = $handler->listPeerElements($this->firstMatch($matches));
     $this->assertEquals(6, count($peers));
   }
   
@@ -474,92 +484,92 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find(':root :even');
     $matches = $handler->getMatches();
-    $this->assertEquals(3, count($matches));
-    $this->assertEquals('four', $matches[1]->getAttribute('id'));
+    $this->assertEquals(3, $matches->count());
+    $this->assertEquals('four', $this->nthMatch($matches, 1)->getAttribute('id'));
     
     // Test restricted to specific element
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('i:even');
     $matches = $handler->getMatches();
-    $this->assertEquals(2, count($matches));
-    $this->assertEquals('four', $matches[1]->getAttribute('id'));
+    $this->assertEquals(2, $matches->count());
+    $this->assertEquals('four', $this->nthMatch($matches, 1)->getAttribute('id'));
     
     // Test restricted to specific element, odd this time
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('i:odd');
     $matches = $handler->getMatches();
-    $this->assertEquals(3, count($matches));
-    $this->assertEquals('three', $matches[1]->getAttribute('id'));
+    $this->assertEquals(3, $matches->count());
+    $this->assertEquals('three', $this->nthMatch($matches, 1)->getAttribute('id'));
     
     // Test nth-child(odd)
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('i:nth-child(odd)');
     $matches = $handler->getMatches();
-    $this->assertEquals(3, count($matches));
-    $this->assertEquals('three', $matches[1]->getAttribute('id'));
+    $this->assertEquals(3, $matches->count());
+    $this->assertEquals('three', $this->nthMatch($matches, 1)->getAttribute('id'));
     
     // Test nth-child(2n+1)
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('i:nth-child(2n+1)');
     $matches = $handler->getMatches();
-    $this->assertEquals(3, count($matches));
-    $this->assertEquals('three', $matches[1]->getAttribute('id'));
+    $this->assertEquals(3, $matches->count());
+    $this->assertEquals('three', $this->nthMatch($matches, 1)->getAttribute('id'));
     
     // Test nth-child(2n) (even)
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('i:nth-child(2n)');
     $matches = $handler->getMatches();
-    $this->assertEquals(2, count($matches));
-    $this->assertEquals('four', $matches[1]->getAttribute('id'));
+    $this->assertEquals(2, $matches->count());
+    $this->assertEquals('four', $this->nthMatch($matches, 1)->getAttribute('id'));
     
     // Not totally sure what should be returned here
     // Test nth-child(-2n) 
     // $handler = new QueryPathCssEventHandler($doc);
     //     $handler->find('i:nth-child(-2n)');
     //     $matches = $handler->getMatches();
-    //     $this->assertEquals(2, count($matches));
-    //     $this->assertEquals('four', $matches[1]->getAttribute('id'));
+    //     $this->assertEquals(2, $matches->count());
+    //     $this->assertEquals('four', $this->nthMatch($matches, 1)->getAttribute('id'));
     
     // Test nth-child(2n-1) (odd, equiv to 2n + 1)
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('i:nth-child(2n-1)');
     $matches = $handler->getMatches();
-    $this->assertEquals(3, count($matches));
-    $this->assertEquals('three', $matches[1]->getAttribute('id'));
+    $this->assertEquals(3, $matches->count());
+    $this->assertEquals('three', $this->nthMatch($matches, 1)->getAttribute('id'));
     
     // Test nth-child(4n) (every fourth row)
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('i:nth-child(4n)');
     $matches = $handler->getMatches();
-    $this->assertEquals(1, count($matches));
-    $this->assertEquals('four', $matches[0]->getAttribute('id'));
+    $this->assertEquals(1, $matches->count());
+    $this->assertEquals('four', $this->nthMatch($matches, 0)->getAttribute('id'));
     
     // Test nth-child(4n+1) (first of every four rows)
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('i:nth-child(4n+1)');
     $matches = $handler->getMatches();
     // Should match rows one and five
-    $this->assertEquals(2, count($matches));
-    $this->assertEquals('five', $matches[1]->getAttribute('id'));
+    $this->assertEquals(2, $matches->count());
+    $this->assertEquals('five', $this->nthMatch($matches, 1)->getAttribute('id'));
     
     // Test nth-child(1) (First row)
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('i:nth-child(1)');
     $matches = $handler->getMatches();
-    $this->assertEquals(1, count($matches));
-    $this->assertEquals('one', $matches[0]->getAttribute('id'));
+    $this->assertEquals(1, $matches->count());
+    $this->assertEquals('one', $this->firstMatch($matches)->getAttribute('id'));
     
     // Test nth-child(0n-0) (Empty list)
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('i:nth-child(0n-0)');
     $matches = $handler->getMatches();
-    $this->assertEquals(0, count($matches));
+    $this->assertEquals(0, $matches->count());
     
     // Test nth-child(-n+3) (First three lines)
     // $handler = new QueryPathCssEventHandler($doc);
     // $handler->find('i:nth-child(-n+3)');
     // $matches = $handler->getMatches();
-    // $this->assertEquals(3, count($matches));
+    // $this->assertEquals(3, $matches->count());
     
     $xml = '<?xml version="1.0" ?>
     <test>
@@ -580,7 +590,7 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('i:nth-child(odd)');
     $matches = $handler->getMatches();
-    $this->assertEquals(4, count($matches));
+    $this->assertEquals(4, $matches->count());
     $matchIDs = array();
     foreach ($matches as $m) {
       $matchIDs[] = $m->getAttribute('id');
@@ -602,8 +612,8 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('i:only-child');
     $matches = $handler->getMatches();
-    $this->assertEquals(1, count($matches));
-    $this->assertEquals('one', $matches[0]->getAttribute('id'));
+    $this->assertEquals(1, $matches->count());
+    $this->assertEquals('one', $this->firstMatch($matches)->getAttribute('id'));
     
     $xml = '<?xml version="1.0" ?>
     <test>
@@ -617,8 +627,42 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('i:only-child');
     $matches = $handler->getMatches();
-    $this->assertEquals(0, count($matches));
-    //$this->assertEquals('one', $matches[0]->getAttribute('id'));
+    $this->assertEquals(0, $matches->count());
+    //$this->assertEquals('one', $this->firstMatch($matches)->getAttribute('id'));
+  }
+  
+  public function testPseudoClassOnlyOfType() {
+    // TODO: Added this late (it was missing in original test),
+    // and I'm not sure if the assumed behavior is correct.
+    
+    $xml = '<?xml version="1.0" ?>
+    <test>
+      <i class="odd" id="one"/>
+    </test>';
+    $doc = new DomDocument();
+    $doc->loadXML($xml);
+    
+    // Test single last child.
+    $handler = new QueryPathCssEventHandler($doc);
+    $handler->find('i:only-of-type');
+    $matches = $handler->getMatches();
+    $this->assertEquals(1, $matches->count());
+    $this->assertEquals('one', $this->firstMatch($matches)->getAttribute('id'));
+    
+    
+    $xml = '<?xml version="1.0" ?>
+    <test>
+      <i class="odd" id="one"/>
+      <i class="odd" id="two"/>
+    </test>';
+    $doc = new DomDocument();
+    $doc->loadXML($xml);
+    
+    // Test single last child.
+    $handler = new QueryPathCssEventHandler($doc);
+    $handler->find('i:only-of-type');
+    $matches = $handler->getMatches();
+    $this->assertEquals(0, $matches->count());
   }
 
   public function testPseudoClassFirstChild() {
@@ -643,15 +687,15 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('#four > i:first-child');
     $matches = $handler->getMatches();
-    $this->assertEquals(1, count($matches));
-    $this->assertEquals('inner-one', $matches[0]->getAttribute('id'));
+    $this->assertEquals(1, $matches->count());
+    $this->assertEquals('inner-one', $this->firstMatch($matches)->getAttribute('id'));
     
     // Test for two last children
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('i:first-child');
     $matches = $handler->getMatches();
-    $this->assertEquals(2, count($matches));
-    $this->assertEquals('inner-one', $matches[1]->getAttribute('id'));
+    $this->assertEquals(2, $matches->count());
+    $this->assertEquals('inner-one', $this->nthMatch($matches, 1)->getAttribute('id'));
   }
   
   public function testPseudoClassLastChild() {
@@ -676,15 +720,15 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('#four > i:last-child');
     $matches = $handler->getMatches();
-    $this->assertEquals(1, count($matches));
-    $this->assertEquals('inner-four', $matches[0]->getAttribute('id'));
+    $this->assertEquals(1, $matches->count());
+    $this->assertEquals('inner-four', $this->nthMatch($matches, 0)->getAttribute('id'));
     
     // Test for two last children
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('i:last-child');
     $matches = $handler->getMatches();
-    $this->assertEquals(2, count($matches));
-    $this->assertEquals('inner-four', $matches[1]->getAttribute('id'));
+    $this->assertEquals(2, $matches->count());
+    $this->assertEquals('inner-four', $this->nthMatch($matches, 1)->getAttribute('id'));
   }
   
   public function testPseudoClassNthLastChild() {
@@ -709,18 +753,18 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('#four > i:nth-last-child(odd)');
     $matches = $handler->getMatches();
-    $this->assertEquals(2, count($matches));
-    $this->assertEquals('inner-four', $matches[0]->getAttribute('id'));
-    $this->assertEquals('inner-two', $matches[1]->getAttribute('id'));
+    $this->assertEquals(2, $matches->count());
+    $this->assertEquals('inner-four', $this->nthMatch($matches, 0)->getAttribute('id'));
+    $this->assertEquals('inner-two', $this->nthMatch($matches, 1)->getAttribute('id'));
     
     // According to spec, this should be last two elements.
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('#four > i:nth-last-child(-1n+2)');
     $matches = $handler->getMatches();
-    //print $matches[0]->getAttribute('id');
-    $this->assertEquals(2, count($matches));
-    $this->assertEquals('inner-four', $matches[0]->getAttribute('id'));
-    $this->assertEquals('inner-three', $matches[1]->getAttribute('id'));
+    //print $this->firstMatch($matches)->getAttribute('id');
+    $this->assertEquals(2, $matches->count());
+    $this->assertEquals('inner-four', $this->nthMatch($matches, 0)->getAttribute('id'));
+    $this->assertEquals('inner-three', $this->nthMatch($matches, 1)->getAttribute('id'));
   }
 
   public function testPseudoClassFirstOfType() {
@@ -737,8 +781,8 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('i:first-of-type(odd)');
     $matches = $handler->getMatches();
-    $this->assertEquals(1, count($matches));
-    $this->assertEquals('two', $matches[0]->getAttribute('id'));
+    $this->assertEquals(1, $matches->count());
+    $this->assertEquals('two', $this->firstMatch($matches)->getAttribute('id'));
   }
 
   public function testPseudoClassEmpty() {
@@ -753,14 +797,14 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('n:empty');
     $matches = $handler->getMatches();
-    $this->assertEquals(1, count($matches));
-    $this->assertEquals('one', $matches[0]->getAttribute('id'));
+    $this->assertEquals(1, $matches->count());
+    $this->assertEquals('one', $this->firstMatch($matches)->getAttribute('id'));
     
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('i:empty');
     $matches = $handler->getMatches();
-    $this->assertEquals(1, count($matches));
-    $this->assertEquals('two', $matches[0]->getAttribute('id'));
+    $this->assertEquals(1, $matches->count());
+    $this->assertEquals('two', $this->firstMatch($matches)->getAttribute('id'));
   }
   
   public function testPseudoClassFirst() {
@@ -777,8 +821,8 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('i:first');
     $matches = $handler->getMatches();
-    $this->assertEquals(1, count($matches));
-    $this->assertEquals('one', $matches[0]->getAttribute('id'));
+    $this->assertEquals(1, $matches->count());
+    $this->assertEquals('one', $this->firstMatch($matches)->getAttribute('id'));
   }
   
   public function testPseudoClassLast() {
@@ -795,8 +839,8 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('i:last');
     $matches = $handler->getMatches();
-    $this->assertEquals(1, count($matches));
-    $this->assertEquals('three', $matches[0]->getAttribute('id'));
+    $this->assertEquals(1, $matches->count());
+    $this->assertEquals('three', $this->firstMatch($matches)->getAttribute('id'));
   }
   
   public function testPseudoClassGT() {
@@ -813,8 +857,8 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('i:gt(1)');
     $matches = $handler->getMatches();
-    $this->assertEquals(2, count($matches));
-    $this->assertEquals('two', $matches[0]->getAttribute('id'));
+    $this->assertEquals(2, $matches->count());
+    $this->assertEquals('two', $this->firstMatch($matches)->getAttribute('id'));
   }
   public function testPseudoClassLT() {
     $xml = '<?xml version="1.0" ?>
@@ -830,8 +874,8 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('i:lt(3)');
     $matches = $handler->getMatches();
-    $this->assertEquals(2, count($matches));
-    $this->assertEquals('two', $matches[0]->getAttribute('id'));
+    $this->assertEquals(2, $matches->count());
+    $this->assertEquals('two', $this->firstMatch($matches)->getAttribute('id'));
   }
   public function testPseudoClassNTH() {
     $xml = '<?xml version="1.0" ?>
@@ -846,14 +890,14 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('i:nth(2)');
     $matches = $handler->getMatches();
-    $this->assertEquals(1, count($matches));
-    $this->assertEquals('two', $matches[0]->getAttribute('id'));
+    $this->assertEquals(1, $matches->count());
+    $this->assertEquals('two', $this->firstMatch($matches)->getAttribute('id'));
     
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('i:eq(2)');
     $matches = $handler->getMatches();
-    $this->assertEquals(1, count($matches));
-    $this->assertEquals('two', $matches[0]->getAttribute('id'));
+    $this->assertEquals(1, $matches->count());
+    $this->assertEquals('two', $this->firstMatch($matches)->getAttribute('id'));
   }
   
   public function testPseudoClassFormElements() {
@@ -870,8 +914,8 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
       $handler = new QueryPathCssEventHandler($doc);
       $handler->find(':' . $item);
       $matches = $handler->getMatches();
-      $this->assertEquals(1, count($matches));
-      $this->assertEquals('one', $matches[0]->getAttribute('id'));
+      $this->assertEquals(1, $matches->count());
+      $this->assertEquals('one', $this->firstMatch($matches)->getAttribute('id'));
     }
   }
   
@@ -888,8 +932,8 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('test :header');
     $matches = $handler->getMatches();
-    $this->assertEquals(3, count($matches));
-    $this->assertEquals('three', $matches[2]->getAttribute('id'));
+    $this->assertEquals(3, $matches->count());
+    $this->assertEquals('three', $this->nthMatch($matches, 2)->getAttribute('id'));
   }
   
   public function testPseudoClassContains() {
@@ -904,14 +948,14 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find(':contains(This is text.)');
     $matches = $handler->getMatches();
-    $this->assertEquals(1, count($matches));
-    $this->assertEquals('one', $matches[0]->getAttribute('id'));
+    $this->assertEquals(1, $matches->count());
+    $this->assertEquals('one', $this->firstMatch($matches)->getAttribute('id'));
     
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('* :contains(More text)');
     $matches = $handler->getMatches();
-    $this->assertEquals(2, count($matches));
-    $this->assertEquals('two', $matches[0]->getAttribute('id'));
+    $this->assertEquals(2, $matches->count());
+    $this->assertEquals('two', $this->firstMatch($matches)->getAttribute('id'));
   }
   
   public function testPseudoClassHas() {
@@ -928,8 +972,8 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('outer:has(inner)');
     $matches = $handler->getMatches();
-    $this->assertEquals(1, count($matches));
-    $this->assertEquals('one', $matches[0]->getAttribute('id'));
+    $this->assertEquals(1, $matches->count());
+    $this->assertEquals('one', $this->firstMatch($matches)->getAttribute('id'));
   }
   
   public function testPseudoClassNot() {
@@ -946,26 +990,26 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
       $handler = new QueryPathCssEventHandler($doc);
       $handler->find('outer:not(#one)');
       $matches = $handler->getMatches();
-      $this->assertEquals(1, count($matches));
-      $this->assertEquals('two', $matches[0]->getAttribute('id'));
+      $this->assertEquals(1, $matches->count());
+      $this->assertEquals('two', $this->firstMatch($matches)->getAttribute('id'));
       
       $handler = new QueryPathCssEventHandler($doc);
       $handler->find('outer:not(inner)');
       $matches = $handler->getMatches();
-      $this->assertEquals(1, count($matches));
-      $this->assertEquals('two', $matches[0]->getAttribute('id'));
+      $this->assertEquals(1, $matches->count());
+      $this->assertEquals('two', $this->firstMatch($matches)->getAttribute('id'));
       
       $handler = new QueryPathCssEventHandler($doc);
       $handler->find('outer:not(.notMe)');
       $matches = $handler->getMatches();
-      $this->assertEquals(1, count($matches));
-      $this->assertEquals('one', $matches[0]->getAttribute('id'));
+      $this->assertEquals(1, $matches->count());
+      $this->assertEquals('one', $this->firstMatch($matches)->getAttribute('id'));
   }
   
   public function testPseudoElement() {
     $xml = '<?xml version="1.0" ?>
       <test>
-        <outer id="one">Text
+        <outer id="one">Texts
         
         More text</outer>
         <outer id="two" class="notMe"/>
@@ -976,14 +1020,14 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('outer::first-letter');
     $matches = $handler->getMatches();
-    $this->assertEquals(1, count($matches));
-    $this->assertEquals('T', $matches[0]);
+    $this->assertEquals(1, $matches->count());
+    $this->assertEquals('T', $this->firstMatch($matches)->text);
      
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('outer::first-line');
     $matches = $handler->getMatches();
-    $this->assertEquals(1, count($matches));
-    $this->assertEquals('Text', $matches[0]);
+    $this->assertEquals(1, $matches->count());
+    $this->assertEquals('Texts', $this->firstMatch($matches)->text);
   }
   
   public function testAdjacent() {
@@ -1005,8 +1049,8 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('#one + li');
     $matches = $handler->getMatches();
-    $this->assertEquals(1, count($matches));
-    $this->assertEquals('two', $matches[0]->getAttribute('id'));
+    $this->assertEquals(1, $matches->count());
+    $this->assertEquals('two', $this->firstMatch($matches)->getAttribute('id'));
     
     // Tell it to ignore whitespace nodes.
     $doc->loadXML($xml, LIBXML_NOBLANKS);
@@ -1015,8 +1059,8 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('#four + li');
     $matches = $handler->getMatches();
-    $this->assertEquals(1, count($matches));
-    $this->assertEquals('five', $matches[0]->getAttribute('id'));
+    $this->assertEquals(1, $matches->count());
+    $this->assertEquals('five', $this->firstMatch($matches)->getAttribute('id'));
   }
   public function testAnotherSelector() {
     $xml = '<?xml version="1.0" ?>
@@ -1037,9 +1081,9 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('#one, #two');
     $matches = $handler->getMatches();
-    //print $matches[0]->getAttribute('id') . PHP_EOL;
-    $this->assertEquals(2, count($matches));
-    $this->assertEquals('two', $matches[1]->getAttribute('id'));
+    //print $this->firstMatch($matches)->getAttribute('id') . PHP_EOL;
+    $this->assertEquals(2, $matches->count());
+    $this->assertEquals('two', $this->nthMatch($matches, 1)->getAttribute('id'));
     
   }
   public function testSibling() {
@@ -1062,16 +1106,16 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('#one ~ li');
     $matches = $handler->getMatches();
-    //print $matches[0]->getAttribute('id') . PHP_EOL;
-    $this->assertEquals(4, count($matches));
-    $this->assertEquals('three', $matches[1]->getAttribute('id'));
+    //print $this->firstMatch($matches)->getAttribute('id') . PHP_EOL;
+    $this->assertEquals(4, $matches->count());
+    $this->assertEquals('three', $this->nthMatch($matches, 1)->getAttribute('id'));
 
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('#inner-one > li ~ il');
     $matches = $handler->getMatches();
-    //print $matches[0]->getAttribute('id') . PHP_EOL;
-    $this->assertEquals(1, count($matches));
-    $this->assertEquals('inner-inner-two', $matches[0]->getAttribute('id'));
+    //print $this->firstMatch($matches)->getAttribute('id') . PHP_EOL;
+    $this->assertEquals(1, $matches->count());
+    $this->assertEquals('inner-inner-two', $this->firstMatch($matches)->getAttribute('id'));
   }
   
   public function testAnyDescendant() {
@@ -1094,19 +1138,19 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('*');
     $matches = $handler->getMatches();
-    $this->assertEquals(11, count($matches));
+    $this->assertEquals(11, $matches->count());
     
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('*.foo');
     $matches = $handler->getMatches();
-    $this->assertEquals(2, count($matches));
-    $this->assertEquals('inner-inner-one', $matches[1]->getAttribute('id'));
+    $this->assertEquals(2, $matches->count());
+    $this->assertEquals('inner-inner-one', $this->nthMatch($matches, 1)->getAttribute('id'));
     
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('test > li *.foo');
     $matches = $handler->getMatches();
-    $this->assertEquals(2, count($matches));
-    $this->assertEquals('inner-inner-one', $matches[1]->getAttribute('id'));
+    $this->assertEquals(2, $matches->count());
+    $this->assertEquals('inner-inner-one', $this->nthMatch($matches, 1)->getAttribute('id'));
   }
 }
 
