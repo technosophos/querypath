@@ -663,7 +663,7 @@ class QueryPathCssEventHandler implements CssEventHandler {
     return array($aVal, $bVal);
   }
   
-  protected function nthChild($groupSize, $elementInGroup) {
+  protected function nthChild($groupSize, $elementInGroup, $lastChild = FALSE) {
     // EXPERIMENTAL: New in Quark. This should be substantially faster 
     // than the old (jQuery) version. It still has an E_STRICT violation,
     // though.
@@ -672,25 +672,41 @@ class QueryPathCssEventHandler implements CssEventHandler {
     
     $i = 0;
     foreach ($this->matches as $item) {
-      $parent = $item->parentNode; // Can this be removed?
+      $parent = $item->parentNode;
       
       // Build up an array of all of children of this parent, and store the 
       // index of each element for reference later. We only need to do this 
       // once per parent, though.
       if (!$parents->contains($parent)) {
-        $c = 1;
+        
+        // According to CSS 3 Selector spec section 6.6.5, if an element selector
+        // precedes this, then we only count elements of that type. e.g.
+        // foo:nth-last-child should only count foo elements as eligible for last
+        // child status.
+        //if (!$this->findAnyElement || $child->tagName == $item->tagName) continue;
+        
+        $c = 0;
         foreach ($parent->childNodes as $child) {
-          if ($child->nodeType == XML_ELEMENT_NODE) {
+          if ($child->nodeType == XML_ELEMENT_NODE && ($this->findAnyElement || $child->tagName == $item->tagName)) {
             // This may break E_STRICT.
-            $child->nodeIndex = $c++;
+            $child->nodeIndex = ++$c;
           }
-          $parents->attach($parent);
         }
+        $parent->numElements = $c;
+        $parents->attach($parent);
       }
       
       // If group size is 0, then we return element at the right index.
       if ($groupSize == 0) {
-        if ($item->nodeIndex == $elementInGroup) 
+        // If we are looking for the last child and the current index is $elementInGroup away from
+        // the end, then we have a match.
+        // Note that we add 1 because CSS uses 1-based indices.
+        if ($lastChild && $item->parentNode->numElements  - $item->nodeIndex + 1 == $elementInGroup) {
+          $matches->attach($item);
+        }
+        // If we are not looking for the last child, we care about the 
+        // case where the index matches the element in group.
+        elseif (!$lastChild && $item->nodeIndex == $elementInGroup) 
           $matches->attach($item);
       }
       // If group size != 0, then we grab nth element from group offset by
@@ -770,9 +786,9 @@ class QueryPathCssEventHandler implements CssEventHandler {
   protected function nthLastChild($groupSize, $elementInGroup) {
     
     // This can be done more elegantly in other ways.
-    $this->reverseMatches();
-    $this->nthChild($groupSize, $elementInGroup);
-    $this->reverseMatches();
+    //$this->reverseMatches();
+    $this->nthChild($groupSize, $elementInGroup, TRUE);
+    //$this->reverseMatches();
     
     /*
     // If findAnyElement is true, then we 
@@ -1010,9 +1026,13 @@ class QueryPathCssEventHandler implements CssEventHandler {
     // Do second pass: attributes in 'xml' namespace.
     $this->attributeNS('lang', 'xml', $value, $operator);
     
-    // Merge results
-    //$this->matches = array_merge($lang, $this->matches);
-    foreach ($lang as $added) $this->matches->attach($added);
+    
+    // Merge results. 
+    // FIXME: Note that we lose natural ordering in
+    // the document because we search for xml:lang separately
+    // from lang.
+    foreach ($this->matches as $added) $lang->attach($added);
+    $this->matches = $lang;
   }
   
   /**
@@ -1160,13 +1180,21 @@ class QueryPathCssEventHandler implements CssEventHandler {
         $this->matches = new SplObjectStorage();
       }
       $parent = $item->parentNode;
+      $onlyOfType = TRUE;
+      
+      // See if any peers are of the same type
       foreach($parent->childNodes as $kid) {
-        if ($kid->nodeType == XML_ELEMENT_NODE && $kid->tagName == $item->tagName && $kid !== $item) {
-          $this->matches = new SplObjectStorage();
+        if ($kid->nodeType == XML_ELEMENT_NODE 
+            && $kid->tagName == $item->tagName 
+            && $kid !== $item) {
+          //$this->matches = new SplObjectStorage();
+          $onlyOfType = FALSE;
           break;
         }
       }
-      $found->attach($item);
+      
+      // If no others were found, attach this one.
+      if ($onlyOfType) $found->attach($item);
     }
     $this->matches = $found;
   }

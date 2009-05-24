@@ -699,6 +699,7 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
   }
   
   public function testPseudoClassLastChild() {
+    //print '----' . PHP_EOL;
     $xml = '<?xml version="1.0" ?>
     <test>
       <i class="odd" id="one"/>
@@ -728,7 +729,8 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $handler->find('i:last-child');
     $matches = $handler->getMatches();
     $this->assertEquals(2, $matches->count());
-    $this->assertEquals('inner-four', $this->nthMatch($matches, 1)->getAttribute('id'));
+    $this->assertEquals('inner-four', $this->nthMatch($matches, 0)->getAttribute('id'));
+    $this->assertEquals('five', $this->nthMatch($matches, 1)->getAttribute('id'));
   }
   
   public function testPseudoClassNthLastChild() {
@@ -875,7 +877,8 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $handler->find('i:lt(3)');
     $matches = $handler->getMatches();
     $this->assertEquals(2, $matches->count());
-    $this->assertEquals('two', $this->firstMatch($matches)->getAttribute('id'));
+    $this->assertEquals('one', $this->nthMatch($matches,0)->getAttribute('id'));
+    $this->assertEquals('two', $this->nthMatch($matches,1)->getAttribute('id'));
   }
   public function testPseudoClassNTH() {
     $xml = '<?xml version="1.0" ?>
