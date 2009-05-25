@@ -663,9 +663,20 @@ class QueryPathCssEventHandler implements CssEventHandler {
     return array($aVal, $bVal);
   }
   
+  /**
+   * Pseudo-class handler for nth-child and all related pseudo-classes.
+   *
+   * @param int $groupSize
+   *  The size of the group (in an+b, this is a).
+   * @param int $elementInGroup 
+   *  The offset in a group. (in an+b this is b).
+   * @param boolean $lastChild
+   *  Whether counting should begin with the last child. By default, this is false.
+   *  Pseudo-classes that start with the last-child can set this to true.
+   */
   protected function nthChild($groupSize, $elementInGroup, $lastChild = FALSE) {
     // EXPERIMENTAL: New in Quark. This should be substantially faster 
-    // than the old (jQuery) version. It still has an E_STRICT violation,
+    // than the old (jQuery-ish) version. It still has E_STRICT violations
     // though.
     $parents = new SplObjectStorage();
     $matches = new SplObjectStorage();
@@ -679,100 +690,60 @@ class QueryPathCssEventHandler implements CssEventHandler {
       // once per parent, though.
       if (!$parents->contains($parent)) {
         
-        // According to CSS 3 Selector spec section 6.6.5, if an element selector
-        // precedes this, then we only count elements of that type. e.g.
-        // foo:nth-last-child should only count foo elements as eligible for last
-        // child status.
-        //if (!$this->findAnyElement || $child->tagName == $item->tagName) continue;
-        
         $c = 0;
         foreach ($parent->childNodes as $child) {
+          // We only want nodes, and if this call is preceded by an element 
+          // selector, we only want to match elements with the same tag name.
+          // !!! This last part is a grey area in the CSS 3 Selector spec. It seems
+          // necessary to make the implementation match the examples in the spec. However,
+          // jQuery 1.2 does not do this.
           if ($child->nodeType == XML_ELEMENT_NODE && ($this->findAnyElement || $child->tagName == $item->tagName)) {
             // This may break E_STRICT.
             $child->nodeIndex = ++$c;
           }
         }
+        // This may break E_STRICT.
         $parent->numElements = $c;
         $parents->attach($parent);
       }
       
+      // If we are looking for the last child, we count from the end of a list.
+      // Note that we add 1 because CSS indices begin at 1, not 0.
+      if ($lastChild) {
+        $indexToMatch = $item->parentNode->numElements  - $item->nodeIndex + 1;
+      }
+      // Otherwise we count from the beginning of the list.
+      else {
+        $indexToMatch = $item->nodeIndex;
+      }
+      
       // If group size is 0, then we return element at the right index.
       if ($groupSize == 0) {
-        // If we are looking for the last child and the current index is $elementInGroup away from
-        // the end, then we have a match.
-        // Note that we add 1 because CSS uses 1-based indices.
-        if ($lastChild && $item->parentNode->numElements  - $item->nodeIndex + 1 == $elementInGroup) {
-          $matches->attach($item);
-        }
-        // If we are not looking for the last child, we care about the 
-        // case where the index matches the element in group.
-        elseif (!$lastChild && $item->nodeIndex == $elementInGroup) 
+        if ($indexToMatch == $elementInGroup) 
           $matches->attach($item);
       }
       // If group size != 0, then we grab nth element from group offset by
       // element in group.
-      elseif (($item->nodeIndex - $elementInGroup) % $groupSize == 0 
-          && ($item->nodeIndex - $elementInGroup) / $groupSize >= 0) {
-        $matches->attach($item);
+      else {
+        if (($indexToMatch - $elementInGroup) % $groupSize == 0 
+            && ($indexToMatch - $elementInGroup) / $groupSize >= 0) {
+          $matches->attach($item);
+        }
       }
       
       // Iterate.
       ++$i;
     }
     $this->matches = $matches;
-    
-    // BEGIN implementing jQuery algo for this:
-    // This might be more compact, but it has at least one
-    // E_STRICT violation (creating object properties on the fly),
-    // and it may not be as fast in PHP, since most of the descent
-    // processing is handled in PHP instead of in C.
-    /*
-    $merge = array();
-    $tmp = array();
-    $first = $groupSize;
-    $last = $elementInGroup;
-    $r = $this->matches;
-    
-    for($i = 0; $i < count($r); $i++) {
-      $node = $r[$i];
-      $parentNode = $node->parentNode;
-      $id = md5(serialize($parentNode));
-      $nodeIndex = NULL;
-      
-      if (empty($merge[$id])) {
-        $c = 1;
-        
-        for ($n = $parentNode->firstChild; $n; $n = $n->nextSibling) {
-          if ($n->nodeType == XML_ELEMENT_NODE) {
-            $n->nodeIndex = $c++;
-          }
-        }
-        
-        $merge[$id] = TRUE;
-      }
-      
-      $add = FALSE;
-      
-      if ($first == 0) {
-        if ($node->nodeIndex == $last) {
-          $add = TRUE;
-        }
-      }
-      elseif (($node->nodeIndex - $last) % $first == 0 && ($node->nodeIndex - $last) / $first >= 0) {
-        $add = TRUE;
-      }
-      
-      if ($add/ * ^ $not* /) {
-        $tmp[] = $node;
-      }
-    }
-    
-    $this->matches = $tmp;
-    // END jQuery algo
-    return;
-    */
   }
   
+  /**
+   * Reverse a set of matches.
+   *
+   * This is now necessary because internal matches are no longer represented
+   * as arrays.
+   * @since QueryPath 2.0
+   */
   private function reverseMatches() {
     // Reverse the candidate list. There must be a better way of doing
     // this.
@@ -783,121 +754,12 @@ class QueryPathCssEventHandler implements CssEventHandler {
     foreach ($arr as $item) $this->found->attach($item);
   }
   
+  /**
+   * Pseudo-class handler for :nth-last-child and related pseudo-classes.
+   */
   protected function nthLastChild($groupSize, $elementInGroup) {
-    
-    // This can be done more elegantly in other ways.
-    //$this->reverseMatches();
+    // New in Quark.
     $this->nthChild($groupSize, $elementInGroup, TRUE);
-    //$this->reverseMatches();
-    
-    /*
-    // If findAnyElement is true, then we 
-    // know that there was no element selector
-    // preceding this.
-    $restrictToElement = !$this->findAnyElement;
-        
-    //$found = array();
-    $found = new SplObjectStorage();
-    //$groupSize = abs($groupSize);
-    if ($elementInGroup < 0) {
-      // in an-b, element in group is effectively a-b.
-      $elementInGroup = $groupSize + $elementInGroup;
-    }
-    if ($groupSize == 0) {
-      if ($elementInGroup == 0 ) {
-        // Both == 0 means no matches:
-        $this->matches = $found;
-        return;
-      }
-      else {
-        // Return only one element per list:
-        $matches = $this->candidateList();
-        foreach ($matches as $item) {
-          $kids = $this->listPeerElements($item, $restrictToElement);
-          $count = count($kids);
-          if ($count >= $elementInGroup) {
-            // Correct for offset: CSS spec says list begins with
-            // 1, not 0.
-            $found->attach($kids[$count - $elementInGroup]);
-          }
-        }
-        $this->matches = $found;//UniqueElementList::get($found);
-        return;
-      }
-    }
-    //print __FUNCTION__ . " size: $groupSize, $elementInGroup.\n";
-    
-    // Unshift the candidates into an array so that we can later 
-    // loop through them in reverse order.
-    $splos = $this->candidateList();
-    $matches = array();
-    foreach ($splos as $i) {
-      array_unshift($matches, $i);
-    }
-    $alreadyChecked = new SplObjectStorage();//array();
-    
-     // * The code below needs some cleaning. The original version
-     // * only worked after an any-descendant operator, as it did 
-     // * not adequately constrain element types. It still exists as-is
-     // * in the else block. However, the optimization (checking parents)
-     // * has not been tested. If it is not very effective, then we should
-     // * figure out a more elegant way to handle this.
-    
-    // Start at the end and go backward.
-    //$matches = array_reverse($matches);
-    
-    // Handle only the immediate elements
-    if ($restrictToElement) {
-      
-      // FIXME: This needs cleaning up. Iterating through parents should only
-      // happen once, not every time.
-      foreach($matches as $item) {
-        $parent = $item->parentNode;
-        $i = 1;
-        for ($j = $parent->childNodes->length - 1; $j > 0; --$j) {
-          $node = $parent->childNodes->item($j);
-          if ($node->nodeType == XML_ELEMENT_NODE && $node->tagName == $item->tagName) {
-            if ($i % $groupSize == $elementInGroup) {
-              $found->attach($node);
-            }
-            ++$i; // Only increment for matches.
-          }
-        }
-      }
-      // There are no notes that say whether what order the results
-      // shold be retrned in. Should this be reversed again?
-      //$found = UniqueElementList::get($found);
-    }
-    // Handle any child elements. Since no element selector
-    // is effective, then elements of any tag name are considered
-    // to be matches.
-    else {
-      foreach ($matches as $item) {
-        $parent = $item->parentNode;
-        if (in_array($parent, $alreadyChecked)) {
-          // Skip this. It's been done already.
-          break;
-        }
-        $alreadyChecked[] = $parent;
-
-        $i = 1;
-        
-        for ($j = $parent->childNodes->length - 1; $j >= 0; ++$j) {
-          $node = $parent->childNodes->item($j);
-          if ($node->nodeType == XML_ELEMENT_NODE) {
-            // Do an + b matching
-            if ($i % $groupSize == $elementInGroup) {
-              $found->attach($node);
-            }
-            ++$i;
-          }
-        }
-      }  
-    }
-    
-    
-    $this->matches = $found;
-    */
   }
   
   /**
@@ -994,18 +856,83 @@ class QueryPathCssEventHandler implements CssEventHandler {
         }
       } // End foreach
     }
-    
-    
   }
   
+  /**
+   * Pseudo-class handler for nth-of-type-child.
+   * Not implemented.
+   */
   protected function nthOfTypeChild($groupSize, $elementInGroup) {
-    throw new Exception("Not implemented");
+    // EXPERIMENTAL: New in Quark. This should be substantially faster 
+    // than the old (jQuery-ish) version. It still has E_STRICT violations
+    // though.
+    $parents = new SplObjectStorage();
+    $matches = new SplObjectStorage();
+    
+    $i = 0;
+    foreach ($this->matches as $item) {
+      $parent = $item->parentNode;
+      
+      // Build up an array of all of children of this parent, and store the 
+      // index of each element for reference later. We only need to do this 
+      // once per parent, though.
+      if (!$parents->contains($parent)) {
+        
+        $c = 0;
+        foreach ($parent->childNodes as $child) {
+          // This doesn't totally make sense, since the CSS 3 spec does not require that
+          // this pseudo-class be adjoined to an element (e.g. ' :nth-of-type' is allowed).
+          if ($child->nodeType == XML_ELEMENT_NODE && $child->tagName == $item->tagName) {
+            // This may break E_STRICT.
+            $child->nodeIndex = ++$c;
+          }
+        }
+        // This may break E_STRICT.
+        $parent->numElements = $c;
+        $parents->attach($parent);
+      }
+      
+      // If we are looking for the last child, we count from the end of a list.
+      // Note that we add 1 because CSS indices begin at 1, not 0.
+      if ($lastChild) {
+        $indexToMatch = $item->parentNode->numElements  - $item->nodeIndex + 1;
+      }
+      // Otherwise we count from the beginning of the list.
+      else {
+        $indexToMatch = $item->nodeIndex;
+      }
+      
+      // If group size is 0, then we return element at the right index.
+      if ($groupSize == 0) {
+        if ($indexToMatch == $elementInGroup) 
+          $matches->attach($item);
+      }
+      // If group size != 0, then we grab nth element from group offset by
+      // element in group.
+      else {
+        if (($indexToMatch - $elementInGroup) % $groupSize == 0 
+            && ($indexToMatch - $elementInGroup) / $groupSize >= 0) {
+          $matches->attach($item);
+        }
+      }
+      
+      // Iterate.
+      ++$i;
+    }
+    $this->matches = $matches;
   }
   
+  /**
+   * Pseudo-class handler for nth-last-of-type-child.
+   * Not implemented.
+   */
   protected function nthLastOfTypeChild($groupSize, $elementInGroup) {
-    throw new Exception("Not implemented");    
+    $this->nthOfTypeChild($groupSize, $elementInGroup, TRUE);    
   }
   
+  /**
+   * Pseudo-class handler for :lang
+   */
   protected function lang($value) {
     // TODO: This checks for cases where an explicit language is
     // set. The spec seems to indicate that an element should inherit

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>File Source for QueryPathEntitiesTest.php</title>
+	<link rel="stylesheet" type="text/css" href="../media/style.css">
+	<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+	<script src="media/a.js"></script>
+</head>
+<body>
+
+<table border="0" cellspacing="0" cellpadding="0" height="48" width="100%">
+  <tr>
+	<td class="header-top-left"><img src="../media/logo.png" border="0" alt="phpDocumentor " /></td>
+    <td class="header-top-right">Tests<br /><div class="header-top-right-subpackage"></div></td>
+  </tr>
+  <tr><td colspan="2" class="header-line"><img src="../media/empty.png" width="1" height="1" border="0" alt=""  /></td></tr>
+  <tr>
+    <td colspan="2" class="header-menu">
+      
+                                                    
+                      		[ <a href="../classtrees_Tests.html" class="menu">class tree: Tests</a> ]
+		[ <a href="../elementindex_Tests.html" class="menu">index: Tests</a> ]
+            [ <a href="../elementindex.html" class="menu">all elements</a> ]
+    </td>
+  </tr>
+  <tr><td colspan="2" class="header-line"><img src="../media/empty.png" width="1" height="1" border="0" alt=""  /></td></tr>
+</table>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="195" class="menu">
+		<div class="package-title">Tests</div>
+  <div class="package">
+	<div id="todolist">
+			<p><a href="../todolist.html">Todo List</a></p>
+	</div>
+	</div>
+      <b>Packages:</b><br />
+  <div class="package">
+              <a href="../li_QueryPath.html">QueryPath</a><br />
+              <a href="../li_Examples.html">Examples</a><br />
+              <a href="../li_Tests.html">Tests</a><br />
+      	</div>
+      <br />
+                        <br />
+                      </td>
+    <td>
+      <table cellpadding="10" cellspacing="0" width="100%" border="0"><tr><td valign="top">
+
+<h1 align="center">Source for file QueryPathEntitiesTest.php</h1>
+<p>Documentation is available at <a href="../Tests/_test---Tests---QueryPathEntitiesTest.php.html">QueryPathEntitiesTest.php</a></p>
+<div class="src-code"><span class="php">
+<ol><li><div class="src-line"><a name="a1"></a><span class="src-php">&lt;?php</span></div></li>
+<li><div class="src-line"><a name="a2"></a><span class="src-doc">/**</span></div></li>
+<li><div class="src-line"><a name="a3"></a><span class="src-doc">&nbsp;*&nbsp;Tests&nbsp;for&nbsp;the&nbsp;QueryPath&nbsp;library.</span></div></li>
+<li><div class="src-line"><a name="a4"></a><span class="src-doc">&nbsp;*&nbsp;</span><span class="src-doc-coretag">@package</span><span class="src-doc">&nbsp;Tests</span></div></li>
+<li><div class="src-line"><a name="a5"></a><span class="src-doc">&nbsp;*&nbsp;</span><span class="src-doc-coretag">@author</span><span class="src-doc">&nbsp;M&nbsp;Butcher&nbsp;&lt;matt@aleph-null.tv&gt;</span></div></li>
+<li><div class="src-line"><a name="a6"></a><span class="src-doc">&nbsp;*&nbsp;</span><span class="src-doc-coretag">@license</span><span class="src-doc">&nbsp;The&nbsp;GNU&nbsp;Lesser&nbsp;GPL&nbsp;(LGPL)&nbsp;or&nbsp;an&nbsp;MIT-like&nbsp;license.</span></div></li>
+<li><div class="src-line"><a name="a7"></a><span class="src-doc">&nbsp;*/</span></div></li>
+<li><div class="src-line"><a name="a8"></a>&nbsp;</div></li>
+<li><div class="src-line"><a name="a9"></a><span class="src-inc">require_once&nbsp;</span><span class="src-str">'PHPUnit/Framework.php'</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a10"></a><span class="src-inc">require_once&nbsp;</span><span class="src-str">'../src/QueryPath/QueryPath.php'</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a11"></a>&nbsp;</div></li>
+<li><div class="src-line"><a name="a12"></a><span class="src-key">class&nbsp;</span><a href="../Tests/QueryPathEntitiesTest.html">QueryPathEntitiesTest</a>&nbsp;<span class="src-key">extends&nbsp;</span><span class="src-id">PHPUnit_Framework_TestCase&nbsp;</span><span class="src-sym">{</span></div></li>
+<li><div class="src-line"><a name="a13"></a>&nbsp;&nbsp;<span class="src-key">public&nbsp;</span><span class="src-key">function&nbsp;</span><a href="../Tests/QueryPathEntitiesTest.html#methodtestReplaceEntity">testReplaceEntity</a><span class="src-sym">(</span><span class="src-sym">)&nbsp;</span><span class="src-sym">{</span></div></li>
+<li><div class="src-line"><a name="a14"></a>&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$entity&nbsp;</span>=&nbsp;<span class="src-str">'amp'</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a15"></a>&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-id">assertEquals</span><span class="src-sym">(</span><span class="src-str">'38'</span><span class="src-sym">,&nbsp;</span><span class="src-id"><a href="../QueryPath/Internals/QueryPathEntities.html">QueryPathEntities</a></span><span class="src-sym">::</span><a href="../QueryPath/Internals/QueryPathEntities.html#methodreplaceEntity">replaceEntity</a><span class="src-sym">(</span><span class="src-var">$entity</span><span class="src-sym">))</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a16"></a>&nbsp;&nbsp;&nbsp;&nbsp;</div></li>
+<li><div class="src-line"><a name="a17"></a>&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$entity&nbsp;</span>=&nbsp;<span class="src-str">'lceil'</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a18"></a>&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-id">assertEquals</span><span class="src-sym">(</span><span class="src-str">'8968'</span><span class="src-sym">,&nbsp;</span><span class="src-id"><a href="../QueryPath/Internals/QueryPathEntities.html">QueryPathEntities</a></span><span class="src-sym">::</span><a href="../QueryPath/Internals/QueryPathEntities.html#methodreplaceEntity">replaceEntity</a><span class="src-sym">(</span><span class="src-var">$entity</span><span class="src-sym">))</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a19"></a>&nbsp;&nbsp;<span class="src-sym">}</span></div></li>
+<li><div class="src-line"><a name="a20"></a>&nbsp;&nbsp;</div></li>
+<li><div class="src-line"><a name="a21"></a>&nbsp;&nbsp;<span class="src-key">public&nbsp;</span><span class="src-key">function&nbsp;</span><a href="../Tests/QueryPathEntitiesTest.html#methodtestReplaceAllEntities">testReplaceAllEntities</a><span class="src-sym">(</span><span class="src-sym">)&nbsp;</span><span class="src-sym">{</span></div></li>
+<li><div class="src-line"><a name="a22"></a>&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$test&nbsp;</span>=&nbsp;<span class="src-str">'&lt;?xml&nbsp;version=&quot;1.0&quot;?&gt;&lt;root&gt;&amp;amp;&amp;copy;&amp;#38;&amp;&nbsp;nothing.&lt;/root&gt;'</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a23"></a>&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$expect&nbsp;</span>=&nbsp;<span class="src-str">'&lt;?xml&nbsp;version=&quot;1.0&quot;?&gt;&lt;root&gt;&amp;#38;&amp;#169;&amp;#38;&amp;#38;&nbsp;nothing.&lt;/root&gt;'</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a24"></a>&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-id">assertEquals</span><span class="src-sym">(</span><span class="src-var">$expect</span><span class="src-sym">,&nbsp;</span><span class="src-id"><a href="../QueryPath/Internals/QueryPathEntities.html">QueryPathEntities</a></span><span class="src-sym">::</span><a href="../QueryPath/Internals/QueryPathEntities.html#methodreplaceAllEntities">replaceAllEntities</a><span class="src-sym">(</span><span class="src-var">$test</span><span class="src-sym">))</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a25"></a>&nbsp;&nbsp;&nbsp;&nbsp;</div></li>
+<li><div class="src-line"><a name="a26"></a>&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$test&nbsp;</span>=&nbsp;<span class="src-str">'&amp;&amp;&amp;&nbsp;'</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a27"></a>&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$expect&nbsp;</span>=&nbsp;<span class="src-str">'&amp;#38;&amp;#38;&amp;#38;&nbsp;'</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a28"></a>&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-id">assertEquals</span><span class="src-sym">(</span><span class="src-var">$expect</span><span class="src-sym">,&nbsp;</span><span class="src-id"><a href="../QueryPath/Internals/QueryPathEntities.html">QueryPathEntities</a></span><span class="src-sym">::</span><a href="../QueryPath/Internals/QueryPathEntities.html#methodreplaceAllEntities">replaceAllEntities</a><span class="src-sym">(</span><span class="src-var">$test</span><span class="src-sym">))</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a29"></a>&nbsp;&nbsp;<span class="src-sym">}</span></div></li>
+<li><div class="src-line"><a name="a30"></a>&nbsp;&nbsp;</div></li>
+<li><div class="src-line"><a name="a31"></a>&nbsp;&nbsp;<span class="src-key">public&nbsp;</span><span class="src-key">function&nbsp;</span><a href="../Tests/QueryPathEntitiesTest.html#methodtestReplaceHexEntities">testReplaceHexEntities</a><span class="src-sym">(</span><span class="src-sym">)&nbsp;</span><span class="src-sym">{</span></div></li>
+<li><div class="src-line"><a name="a32"></a>&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$test&nbsp;</span>=&nbsp;<span class="src-str">'&amp;#xA9;'</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a33"></a>&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$expect&nbsp;</span>=&nbsp;<span class="src-str">'&amp;#xA9;'</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a34"></a>&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-id">assertEquals</span><span class="src-sym">(</span><span class="src-var">$expect</span><span class="src-sym">,&nbsp;</span><span class="src-id"><a href="../QueryPath/Internals/QueryPathEntities.html">QueryPathEntities</a></span><span class="src-sym">::</span><a href="../QueryPath/Internals/QueryPathEntities.html#methodreplaceAllEntities">replaceAllEntities</a><span class="src-sym">(</span><span class="src-var">$test</span><span class="src-sym">))</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a35"></a>&nbsp;&nbsp;<span class="src-sym">}</span></div></li>
+<li><div class="src-line"><a name="a36"></a>&nbsp;&nbsp;</div></li>
+<li><div class="src-line"><a name="a37"></a>&nbsp;&nbsp;<span class="src-key">public&nbsp;</span><span class="src-key">function&nbsp;</span><a href="../Tests/QueryPathEntitiesTest.html#methodtestQPEntityReplacement">testQPEntityReplacement</a><span class="src-sym">(</span><span class="src-sym">)&nbsp;</span><span class="src-sym">{</span></div></li>
+<li><div class="src-line"><a name="a38"></a>&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$test&nbsp;</span>=&nbsp;<span class="src-str">'&lt;?xml&nbsp;version=&quot;1.0&quot;?&gt;&lt;root&gt;&amp;amp;&amp;copy;&amp;#38;&amp;&nbsp;nothing.&lt;/root&gt;'</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a39"></a>&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-comm">/*$expect&nbsp;=&nbsp;'&lt;?xml&nbsp;version=&quot;1.0&quot;?&gt;&lt;root&gt;&amp;#38;&amp;#169;&amp;#38;&amp;#38;&nbsp;nothing.&lt;/root&gt;';*/</span></div></li>
+<li><div class="src-line"><a name="a40"></a>&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-comm">//&nbsp;We&nbsp;get&nbsp;this&nbsp;because&nbsp;the&nbsp;DOM&nbsp;serializer&nbsp;re-converts&nbsp;entities.</span></div></li>
+<li><div class="src-line"><a name="a41"></a>&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$expect&nbsp;</span>=&nbsp;<span class="src-str">'&lt;?xml&nbsp;version=&quot;1.0&quot;?&gt;</span></div></li>
+<li><div class="src-line"><a name="a42"></a><span class="src-str">&lt;root&gt;&amp;amp;&amp;#xA9;&amp;amp;&amp;amp;&nbsp;nothing.&lt;/root&gt;'</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a43"></a>&nbsp;&nbsp;&nbsp;&nbsp;</div></li>
+<li><div class="src-line"><a name="a44"></a>&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$qp&nbsp;</span>=&nbsp;<a href="../QueryPath/_src---QueryPath---QueryPath.php.html#functionqp">qp</a><span class="src-sym">(</span><span class="src-var">$test</span><span class="src-sym">,&nbsp;</span><span class="src-id">NULL</span><span class="src-sym">,&nbsp;</span><span class="src-key">array</span><span class="src-sym">(</span><span class="src-str">'replace_entities'&nbsp;</span>=&gt;&nbsp;<span class="src-id">TRUE</span><span class="src-sym">))</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a45"></a>&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-comm">//&nbsp;Interestingly,&nbsp;the&nbsp;XML&nbsp;serializer&nbsp;converts&nbsp;decimal&nbsp;to&nbsp;hex&nbsp;and&nbsp;ampersands</span></div></li>
+<li><div class="src-line"><a name="a46"></a>&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-comm">//&nbsp;to&nbsp;&amp;amp;.</span></div></li>
+<li><div class="src-line"><a name="a47"></a>&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-id">assertEquals</span><span class="src-sym">(</span><span class="src-var">$expect</span><span class="src-sym">,&nbsp;</span><a href="http://www.php.net/trim">trim</a><span class="src-sym">(</span><span class="src-var">$qp</span><span class="src-sym">-&gt;</span><span class="src-id">xml</span><span class="src-sym">(</span><span class="src-sym">)))</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a48"></a>&nbsp;&nbsp;<span class="src-sym">}</span></div></li>
+<li><div class="src-line"><a name="a49"></a><span class="src-sym">}</span></div></li>
+</ol>
+</span></div>
+        <div class="credit">
+		    <hr class="separator" />
+		    Documentation generated on Sun, 24 May 2009 23:58:53 -0500 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.2</a>
+	      </div>
+      </td></tr></table>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>

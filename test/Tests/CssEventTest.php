@@ -756,8 +756,8 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $handler->find('#four > i:nth-last-child(odd)');
     $matches = $handler->getMatches();
     $this->assertEquals(2, $matches->count());
-    $this->assertEquals('inner-four', $this->nthMatch($matches, 0)->getAttribute('id'));
-    $this->assertEquals('inner-two', $this->nthMatch($matches, 1)->getAttribute('id'));
+    $this->assertEquals('inner-two', $this->nthMatch($matches, 0)->getAttribute('id'));
+    $this->assertEquals('inner-four', $this->nthMatch($matches, 1)->getAttribute('id'));
     
     // According to spec, this should be last two elements.
     $handler = new QueryPathCssEventHandler($doc);
@@ -765,8 +765,8 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $matches = $handler->getMatches();
     //print $this->firstMatch($matches)->getAttribute('id');
     $this->assertEquals(2, $matches->count());
-    $this->assertEquals('inner-four', $this->nthMatch($matches, 0)->getAttribute('id'));
-    $this->assertEquals('inner-three', $this->nthMatch($matches, 1)->getAttribute('id'));
+    $this->assertEquals('inner-three', $this->nthMatch($matches, 0)->getAttribute('id'));
+    $this->assertEquals('inner-four', $this->nthMatch($matches, 1)->getAttribute('id'));
   }
 
   public function testPseudoClassFirstOfType() {

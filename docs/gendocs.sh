@@ -7,7 +7,7 @@ phpdoc=/Applications/MAMP/bin/php5/bin/phpdoc
 
 src='../src/QueryPath,../tutorials,../test,../examples';
 docs='../docs'
-title='QueryPath 1.1'
+title='QueryPath 2 (Quark)'
 #format='HTML:frames:phpdoc.de'#',PDF:default:default'
 #format='HTML:frames:earthli'
 #format='HTML:Smarty:HandS'

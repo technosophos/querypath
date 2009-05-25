@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>File Source for QPXSL.php</title>
+	<link rel="stylesheet" type="text/css" href="../media/style.css">
+	<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+	<script src="media/a.js"></script>
+</head>
+<body>
+
+<table border="0" cellspacing="0" cellpadding="0" height="48" width="100%">
+  <tr>
+	<td class="header-top-left"><img src="../media/logo.png" border="0" alt="phpDocumentor " /></td>
+    <td class="header-top-right">QueryPath<br /><div class="header-top-right-subpackage">Extension</div></td>
+  </tr>
+  <tr><td colspan="2" class="header-line"><img src="../media/empty.png" width="1" height="1" border="0" alt=""  /></td></tr>
+  <tr>
+    <td colspan="2" class="header-menu">
+      
+                        
+                                                  		[ <a href="../classtrees_QueryPath.html" class="menu">class tree: QueryPath</a> ]
+		[ <a href="../elementindex_QueryPath.html" class="menu">index: QueryPath</a> ]
+            [ <a href="../elementindex.html" class="menu">all elements</a> ]
+    </td>
+  </tr>
+  <tr><td colspan="2" class="header-line"><img src="../media/empty.png" width="1" height="1" border="0" alt=""  /></td></tr>
+</table>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="195" class="menu">
+		<div class="package-title">QueryPath</div>
+  <div class="package">
+	<div id="todolist">
+			<p><a href="../todolist.html">Todo List</a></p>
+	</div>
+	</div>
+      <b>Packages:</b><br />
+  <div class="package">
+              <a href="../li_QueryPath.html">QueryPath</a><br />
+              <a href="../li_Examples.html">Examples</a><br />
+              <a href="../li_Tests.html">Tests</a><br />
+      	</div>
+      <br />
+                        <br />
+                      </td>
+    <td>
+      <table cellpadding="10" cellspacing="0" width="100%" border="0"><tr><td valign="top">
+
+<h1 align="center">Source for file QPXSL.php</h1>
+<p>Documentation is available at <a href="../QueryPath/Extension/_src---QueryPath---Extension---QPXSL.php.html">QPXSL.php</a></p>
+<div class="src-code"><span class="php">
+<ol><li><div class="src-line"><a name="a1"></a><span class="src-php">&lt;?php</span></div></li>
+<li><div class="src-line"><a name="a2"></a><span class="src-doc">/**</span></div></li>
+<li><div class="src-line"><a name="a3"></a><span class="src-doc">&nbsp;*&nbsp;Provide&nbsp;QueryPath&nbsp;with&nbsp;XSLT&nbsp;support&nbsp;using&nbsp;the&nbsp;PHP&nbsp;libxslt&nbsp;module.</span></div></li>
+<li><div class="src-line"><a name="a4"></a><span class="src-doc">&nbsp;*</span></div></li>
+<li><div class="src-line"><a name="a5"></a><span class="src-doc">&nbsp;*&nbsp;This&nbsp;is&nbsp;called&nbsp;'QPXSL'&nbsp;instead&nbsp;of&nbsp;'QPXSLT'&nbsp;in&nbsp;accordance&nbsp;with&nbsp;the&nbsp;name</span></div></li>
+<li><div class="src-line"><a name="a6"></a><span class="src-doc">&nbsp;*&nbsp;of&nbsp;the&nbsp;PHP&nbsp;extension&nbsp;that&nbsp;provides&nbsp;libxslt&nbsp;support.</span></div></li>
+<li><div class="src-line"><a name="a7"></a><span class="src-doc">&nbsp;*</span></div></li>
+<li><div class="src-line"><a name="a8"></a><span class="src-doc">&nbsp;*&nbsp;You&nbsp;must&nbsp;have&nbsp;PHP&nbsp;XSL&nbsp;support&nbsp;for&nbsp;this&nbsp;to&nbsp;function.</span></div></li>
+<li><div class="src-line"><a name="a9"></a><span class="src-doc">&nbsp;*</span></div></li>
+<li><div class="src-line"><a name="a10"></a><span class="src-doc">&nbsp;*&nbsp;</span><span class="src-doc-coretag">@package</span><span class="src-doc">&nbsp;QueryPath</span></div></li>
+<li><div class="src-line"><a name="a11"></a><span class="src-doc">&nbsp;*&nbsp;</span><span class="src-doc-coretag">@subpackage</span><span class="src-doc">&nbsp;Extension</span></div></li>
+<li><div class="src-line"><a name="a12"></a><span class="src-doc">&nbsp;*&nbsp;</span><span class="src-doc-coretag">@author</span><span class="src-doc">&nbsp;M&nbsp;Butcher&nbsp;&lt;matt@aleph-null.tv&gt;</span></div></li>
+<li><div class="src-line"><a name="a13"></a><span class="src-doc">&nbsp;*&nbsp;</span><span class="src-doc-coretag">@license</span><span class="src-doc">&nbsp;http://opensource.org/licenses/lgpl-2.1.php&nbsp;LGPL&nbsp;or&nbsp;MIT-like&nbsp;license.</span></div></li>
+<li><div class="src-line"><a name="a14"></a><span class="src-doc">&nbsp;*&nbsp;</span><span class="src-doc-coretag">@see</span><span class="src-doc">&nbsp;QueryPathExtension</span></div></li>
+<li><div class="src-line"><a name="a15"></a><span class="src-doc">&nbsp;*&nbsp;</span><span class="src-doc-coretag">@see</span><span class="src-doc">&nbsp;QueryPathExtensionRegistry::extend()</span></div></li>
+<li><div class="src-line"><a name="a16"></a><span class="src-doc">&nbsp;*&nbsp;</span><span class="src-doc-coretag">@see</span><span class="src-doc">&nbsp;QPXSL</span></div></li>
+<li><div class="src-line"><a name="a17"></a><span class="src-doc">&nbsp;*&nbsp;</span><span class="src-doc-coretag">@see</span><span class="src-doc">&nbsp;QPXML</span></div></li>
+<li><div class="src-line"><a name="a18"></a><span class="src-doc">&nbsp;*/</span></div></li>
+<li><div class="src-line"><a name="a19"></a>&nbsp;</div></li>
+<li><div class="src-line"><a name="a20"></a><span class="src-doc">/**</span></div></li>
+<li><div class="src-line"><a name="a21"></a><span class="src-doc">&nbsp;*&nbsp;Provide&nbsp;tools&nbsp;for&nbsp;running&nbsp;XSL&nbsp;Transformation&nbsp;(XSLT)&nbsp;on&nbsp;a&nbsp;document.</span></div></li>
+<li><div class="src-line"><a name="a22"></a><span class="src-doc">&nbsp;*</span></div></li>
+<li><div class="src-line"><a name="a23"></a><span class="src-doc">&nbsp;*&nbsp;This&nbsp;extension&nbsp;provides&nbsp;the&nbsp;</span><span class="src-doc-inlinetag">{@link&nbsp;QPXSL::xslt()}</span><span class="src-doc">&nbsp;function,&nbsp;which&nbsp;transforms</span></div></li>
+<li><div class="src-line"><a name="a24"></a><span class="src-doc">&nbsp;*&nbsp;a&nbsp;source&nbsp;XML&nbsp;document&nbsp;into&nbsp;another&nbsp;XML&nbsp;document&nbsp;according&nbsp;to&nbsp;the&nbsp;rules&nbsp;in</span></div></li>
+<li><div class="src-line"><a name="a25"></a><span class="src-doc">&nbsp;*&nbsp;an&nbsp;XSLT&nbsp;document.</span></div></li>
+<li><div class="src-line"><a name="a26"></a><span class="src-doc">&nbsp;*</span></div></li>
+<li><div class="src-line"><a name="a27"></a><span class="src-doc">&nbsp;*&nbsp;This&nbsp;QueryPath&nbsp;extension&nbsp;can&nbsp;be&nbsp;used&nbsp;as&nbsp;follows:</span></div></li>
+<li><div class="src-line"><a name="a28"></a><span class="src-doc">&nbsp;*&nbsp;&lt;code&gt;</span></div></li>
+<li><div class="src-line"><a name="a29"></a><span class="src-doc">&nbsp;*&nbsp;&lt;?php</span></div></li>
+<li><div class="src-line"><a name="a30"></a><span class="src-doc">&nbsp;*&nbsp;require&nbsp;'QueryPath/QueryPath.php';</span></div></li>
+<li><div class="src-line"><a name="a31"></a><span class="src-doc">&nbsp;*&nbsp;require&nbsp;'QueryPath/Extension/QPXSL.php';</span></div></li>
+<li><div class="src-line"><a name="a32"></a><span class="src-doc">&nbsp;*</span></div></li>
+<li><div class="src-line"><a name="a33"></a><span class="src-doc">&nbsp;*&nbsp;qp('src.xml')-&gt;xslt('stylesheet.xml')-&gt;writeXML();</span></div></li>
+<li><div class="src-line"><a name="a34"></a><span class="src-doc">&nbsp;*&nbsp;?&gt;</span></div></li>
+<li><div class="src-line"><a name="a35"></a><span class="src-doc">&nbsp;*</span></div></li>
+<li><div class="src-line"><a name="a36"></a><span class="src-doc">&nbsp;*&nbsp;This&nbsp;will&nbsp;transform&nbsp;src.xml&nbsp;according&nbsp;to&nbsp;the&nbsp;XSLT&nbsp;rules&nbsp;in</span></div></li>
+<li><div class="src-line"><a name="a37"></a><span class="src-doc">&nbsp;*&nbsp;stylesheet.xml.&nbsp;The&nbsp;results&nbsp;are&nbsp;returned&nbsp;as&nbsp;a&nbsp;QueryPath&nbsp;object,&nbsp;which</span></div></li>
+<li><div class="src-line"><a name="a38"></a><span class="src-doc">&nbsp;*&nbsp;is&nbsp;written&nbsp;to&nbsp;XML&nbsp;using&nbsp;</span><span class="src-doc-inlinetag">{@link&nbsp;QueryPath::writeXML()}</span><span class="src-doc">.</span></div></li>
+<li><div class="src-line"><a name="a39"></a><span class="src-doc">&nbsp;*&nbsp;&lt;/code&gt;</span></div></li>
+<li><div class="src-line"><a name="a40"></a><span class="src-doc">&nbsp;*/</span></div></li>
+<li><div class="src-line"><a name="a41"></a><span class="src-key">class&nbsp;</span><a href="../QueryPath/Extension/QPXSL.html">QPXSL</a>&nbsp;<span class="src-key">implements&nbsp;</span><span class="src-id">QueryPathExtension&nbsp;</span><span class="src-sym">{</span></div></li>
+<li><div class="src-line"><a name="a42"></a>&nbsp;&nbsp;</div></li>
+<li><div class="src-line"><a name="a43"></a>&nbsp;&nbsp;<span class="src-key">protected&nbsp;</span><a href="../QueryPath/Extension/QPXSL.html#var$src">$src</a>&nbsp;=&nbsp;<span class="src-id">NULL</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a44"></a>&nbsp;&nbsp;</div></li>
+<li><div class="src-line"><a name="a45"></a>&nbsp;&nbsp;<span class="src-key">public&nbsp;</span><span class="src-key">function&nbsp;</span><a href="../QueryPath/Extension/QPXSL.html#method__construct">__construct</a><span class="src-sym">(</span><span class="src-id">QueryPath&nbsp;</span><span class="src-var">$qp</span><span class="src-sym">)&nbsp;</span><span class="src-sym">{</span></div></li>
+<li><div class="src-line"><a name="a46"></a>&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$this</span><span class="src-sym">-&gt;</span><a href="../QueryPath/Extension/QPXSL.html#var$src">src</a>&nbsp;=&nbsp;<span class="src-var">$qp</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a47"></a>&nbsp;&nbsp;<span class="src-sym">}</span></div></li>
+<li><div class="src-line"><a name="a48"></a>&nbsp;&nbsp;</div></li>
+<li><div class="src-line"><a name="a49"></a>&nbsp;&nbsp;<span class="src-doc">/**</span></div></li>
+<li><div class="src-line"><a name="a50"></a><span class="src-doc">&nbsp;&nbsp;&nbsp;*&nbsp;Given&nbsp;an&nbsp;XSLT&nbsp;stylesheet,&nbsp;run&nbsp;a&nbsp;transformation.</span></div></li>
+<li><div class="src-line"><a name="a51"></a><span class="src-doc">&nbsp;&nbsp;&nbsp;*</span></div></li>
+<li><div class="src-line"><a name="a52"></a><span class="src-doc">&nbsp;&nbsp;&nbsp;*&nbsp;This&nbsp;will&nbsp;attempt&nbsp;to&nbsp;read&nbsp;the&nbsp;provided&nbsp;stylesheet&nbsp;and&nbsp;then</span></div></li>
+<li><div class="src-line"><a name="a53"></a><span class="src-doc">&nbsp;&nbsp;&nbsp;*&nbsp;execute&nbsp;it&nbsp;on&nbsp;the&nbsp;current&nbsp;source&nbsp;document.</span></div></li>
+<li><div class="src-line"><a name="a54"></a><span class="src-doc">&nbsp;&nbsp;&nbsp;*</span></div></li>
+<li><div class="src-line"><a name="a55"></a><span class="src-doc">&nbsp;&nbsp;&nbsp;*&nbsp;</span><span class="src-doc-coretag">@param&nbsp;</span><span class="src-doc-type">mixed&nbsp;</span><span class="src-doc-var">$style&nbsp;</span></div></li>
+<li><div class="src-line"><a name="a56"></a><span class="src-doc">&nbsp;&nbsp;&nbsp;*&nbsp;&nbsp;&nbsp;This&nbsp;takes&nbsp;a&nbsp;QueryPath&nbsp;object&nbsp;or&nbsp;&lt;em&gt;any&lt;/em&gt;&nbsp;of&nbsp;the&nbsp;types&nbsp;that&nbsp;the</span></div></li>
+<li><div class="src-line"><a name="a57"></a><span class="src-doc">&nbsp;&nbsp;&nbsp;*&nbsp;&nbsp;&nbsp;</span><span class="src-doc-inlinetag">{@link&nbsp;qp()}</span><span class="src-doc">&nbsp;function&nbsp;can&nbsp;take.</span></div></li>
+<li><div class="src-line"><a name="a58"></a><span class="src-doc">&nbsp;&nbsp;&nbsp;*&nbsp;</span><span class="src-doc-coretag">@return&nbsp;</span><span class="src-doc-type">QueryPath&nbsp;</span></div></li>
+<li><div class="src-line"><a name="a59"></a><span class="src-doc">&nbsp;&nbsp;&nbsp;*&nbsp;&nbsp;&nbsp;A&nbsp;QueryPath&nbsp;object&nbsp;wrapping&nbsp;the&nbsp;transformed&nbsp;document.&nbsp;Not&nbsp;that&nbsp;this&nbsp;is&nbsp;a</span></div></li>
+<li><div class="src-line"><a name="a60"></a><span class="src-doc">&nbsp;&nbsp;&nbsp;*&nbsp;&nbsp;&nbsp;&lt;i&gt;different&lt;/em&gt;&nbsp;document&nbsp;than&nbsp;the&nbsp;original.&nbsp;As&nbsp;such,&nbsp;it&nbsp;has&nbsp;no&nbsp;history.</span></div></li>
+<li><div class="src-line"><a name="a61"></a><span class="src-doc">&nbsp;&nbsp;&nbsp;*&nbsp;&nbsp;&nbsp;You&nbsp;cannot&nbsp;call&nbsp;</span><span class="src-doc-inlinetag">{@link&nbsp;QueryPath::end()}</span><span class="src-doc">&nbsp;to&nbsp;undo&nbsp;a&nbsp;transformation.&nbsp;(However,</span></div></li>
+<li><div class="src-line"><a name="a62"></a><span class="src-doc">&nbsp;&nbsp;&nbsp;*&nbsp;&nbsp;&nbsp;the&nbsp;original&nbsp;source&nbsp;document&nbsp;will&nbsp;remain&nbsp;unchanged.)</span></div></li>
+<li><div class="src-line"><a name="a63"></a><span class="src-doc">&nbsp;&nbsp;&nbsp;*/</span></div></li>
+<li><div class="src-line"><a name="a64"></a>&nbsp;&nbsp;<span class="src-key">public&nbsp;</span><span class="src-key">function&nbsp;</span><a href="../QueryPath/Extension/QPXSL.html#methodxslt">xslt</a><span class="src-sym">(</span><span class="src-var">$style</span><span class="src-sym">)&nbsp;</span><span class="src-sym">{</span></div></li>
+<li><div class="src-line"><a name="a65"></a>&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">if&nbsp;</span><span class="src-sym">(</span><span class="src-sym">!</span><span class="src-sym">(</span><span class="src-var">$style&nbsp;</span>instanceof&nbsp;<span class="src-id"><a href="../QueryPath/QueryPath.html">QueryPath</a></span><span class="src-sym">))&nbsp;</span><span class="src-sym">{</span></div></li>
+<li><div class="src-line"><a name="a66"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$style&nbsp;</span>=&nbsp;<a href="../QueryPath/_src---QueryPath---QueryPath.php.html#functionqp">qp</a><span class="src-sym">(</span><span class="src-var">$style</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a67"></a>&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">}</span></div></li>
+<li><div class="src-line"><a name="a68"></a>&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$sourceDoc&nbsp;</span>=&nbsp;<span class="src-var">$this</span><span class="src-sym">-&gt;</span><a href="../QueryPath/Extension/QPXSL.html#var$src">src</a><span class="src-sym">-&gt;</span><span class="src-id">top</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">-&gt;</span><span class="src-id">get</span><span class="src-sym">(</span><span class="src-num">0</span><span class="src-sym">)</span><span class="src-sym">-&gt;</span><span class="src-id">ownerDocument</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a69"></a>&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$styleDoc&nbsp;</span>=&nbsp;<span class="src-var">$style</span><span class="src-sym">-&gt;</span><span class="src-id">get</span><span class="src-sym">(</span><span class="src-num">0</span><span class="src-sym">)</span><span class="src-sym">-&gt;</span><span class="src-id">ownerDocument</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a70"></a>&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$processor&nbsp;</span>=&nbsp;<span class="src-key">new&nbsp;</span><span class="src-id">XSLTProcessor</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a71"></a>&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$processor</span><span class="src-sym">-&gt;</span><span class="src-id">importStylesheet</span><span class="src-sym">(</span><span class="src-var">$styleDoc</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a72"></a>&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">return&nbsp;</span><a href="../QueryPath/_src---QueryPath---QueryPath.php.html#functionqp">qp</a><span class="src-sym">(</span><span class="src-var">$processor</span><span class="src-sym">-&gt;</span><span class="src-id">transformToDoc</span><span class="src-sym">(</span><span class="src-var">$sourceDoc</span><span class="src-sym">))</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a73"></a>&nbsp;&nbsp;<span class="src-sym">}</span></div></li>
+<li><div class="src-line"><a name="a74"></a><span class="src-sym">}</span></div></li>
+<li><div class="src-line"><a name="a75"></a><span class="src-id"><a href="../QueryPath/QueryPathExtensionRegistry.html">QueryPathExtensionRegistry</a></span><span class="src-sym">::</span><a href="../QueryPath/QueryPathExtensionRegistry.html#methodextend">extend</a><span class="src-sym">(</span><span class="src-str">'QPXSL'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol>
+</span></div>
+        <div class="credit">
+		    <hr class="separator" />
+		    Documentation generated on Sun, 24 May 2009 23:58:48 -0500 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.2</a>
+	      </div>
+      </td></tr></table>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
