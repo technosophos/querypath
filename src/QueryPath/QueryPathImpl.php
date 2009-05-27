@@ -370,17 +370,17 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
       $this->setMatches($found);
       return $this;
     }
-    #STOPPED HERE
     
     $i = $j = 0;
     foreach ($this->matches as $m) {
       if ($i >= $start) {
-        if ($j >= $end) {
+        if ($end > 0 && $j >= $end) {
           break;
         }
-        $this->found->attach($m);
+        $found->attach($m);
         ++$j;
       }
+      ++$i;
     }
     
     $this->setMatches($found);
@@ -1489,7 +1489,7 @@ class QueryPathIterator extends ArrayIterator {
  *  This class will be removed in QueryPath 3.0. It is not used in
  *  QueryPath 2.0.
  */
-class UniqueElementList {
+class UniqueElementListFoo {
   var $result;
   
   /**
