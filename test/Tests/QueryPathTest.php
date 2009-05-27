@@ -159,14 +159,25 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
   public function testSlice() {
     $file = './data.xml';
     // There are five <li> elements
-    $this->assertEquals(4, qp($file, 'li')->slice(1)->size());
+    $qp = qp($file, 'li')->slice(1);
+    $this->assertEquals(4, $qp->size());
+    
+    // The first item in the matches should be #two.
+    $this->assertEquals('two', $qp->attr('id'));
+    
+    // THe last item should be #five
+    $this->assertEquals('five', $qp->eq(3)->attr('id'));
     
     // This should not throw an error.
     $this->assertEquals(4, qp($file, 'li')->slice(1, 9)->size());
     
     $this->assertEquals(0, qp($file, 'li')->slice(9)->size());
     
-    $this->assertEquals(2, qp($file, 'li')->slice(1, 2)->size());
+    // The first item should be #two, the last #three
+    $qp = qp($file, 'li')->slice(1, 2);
+    $this->assertEquals(2, $qp->size());
+    $this->assertEquals('two', $qp->attr('id'));
+    $this->assertEquals('three', $qp->eq(1)->attr('id'));
   }
   
   public function mapCallbackFunction($index, $item) {
