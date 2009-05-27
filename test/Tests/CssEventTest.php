@@ -1024,13 +1024,13 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $handler->find('outer::first-letter');
     $matches = $handler->getMatches();
     $this->assertEquals(1, $matches->count());
-    $this->assertEquals('T', $this->firstMatch($matches)->text);
+    $this->assertEquals('T', $this->firstMatch($matches)->textContent);
      
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('outer::first-line');
     $matches = $handler->getMatches();
     $this->assertEquals(1, $matches->count());
-    $this->assertEquals('Texts', $this->firstMatch($matches)->text);
+    $this->assertEquals('Texts', $this->firstMatch($matches)->textContent);
   }
   
   public function testAdjacent() {

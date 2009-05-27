@@ -80,7 +80,7 @@ class QueryPathCssEventHandler implements CssEventHandler {
     $matches = new SplObjectStorage();
     
     // Array of DOMElements
-    if (is_array($dom)) {
+    if (is_array($dom) || $dom instanceof SplObjectStorage) {
       //$matches = array();
       foreach($dom as $item) {
         if ($item instanceof DOMNode && $item->nodeType == XML_ELEMENT_NODE) {
@@ -1175,7 +1175,7 @@ class QueryPathCssEventHandler implements CssEventHandler {
           if (!empty($lines)) {
             $line = trim($lines[0]);
             if (!empty($line))
-              $o->text = $line;
+              $o->textContent = $line;
               $found->attach($o);//trim($lines[0]);
           }
         }
@@ -1191,7 +1191,7 @@ class QueryPathCssEventHandler implements CssEventHandler {
           $str = $item->textContent;
           if (!empty($str)) {
             $str = substr($str,0, 1);
-            $o->text = $str;
+            $o->textContent = $str;
             $found->attach($o);
           }
         }
