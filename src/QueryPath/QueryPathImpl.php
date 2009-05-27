@@ -878,10 +878,11 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
   public function textImplode($sep = ', ', $filterEmpties = TRUE) {
     $tmp = array(); 
     foreach ($this->matches as $m) {
-      $txt = trim($m->textContent);
+      $txt = $m->textContent;
+      $trimmed = trim($txt);
       // If filter empties out, then we only add items that have content.
       if ($filterEmpties) {
-        if (strlen($txt) > 0) $tmp[] = $txt;
+        if (strlen($trimmed) > 0) $tmp[] = $txt;
       }
       // Else add even emptes
       else {
@@ -1466,14 +1467,8 @@ class QueryPathEntities {
  * a QueryPathIterator. QueryPath does this when its {@link QueryPath::getIterator()}
  * method is called.
  */
-class QueryPathIterator extends ArrayIterator {
-  public function __construct(SplObjectStorage $splos) {
-    $array = array();
-    foreach ($splos as $m) $array[] = $m;
-    parent::__construct($array);
-  }
-  
+class QueryPathIterator extends IteratorIterator {
   public function current() {
-    return qp(parent::current($this->key()));
+    return qp(parent::current());
   }
 }

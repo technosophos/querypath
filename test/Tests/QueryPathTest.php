@@ -489,6 +489,14 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $xml = '<?xml version="1.0"?><root><div>Text A</div><div>Text B</div></root>';
     $this->assertEquals('Text A, Text B', qp($xml, 'div')->textImplode());
     $this->assertEquals('Text A--Text B', qp($xml, 'div')->textImplode('--'));
+    
+    $xml = '<?xml version="1.0"?><root><div>Text A </div><div>Text B</div></root>';
+    $this->assertEquals('Text A , Text B', qp($xml, 'div')->textImplode());
+    
+    $xml = '<?xml version="1.0"?><root><div>Text A </div>
+    <div>
+    </div><div>Text B</div></root>';
+    $this->assertEquals('Text A , Text B', qp($xml, 'div')->textImplode(', ', TRUE));
   }
   
   public function testNext() {
