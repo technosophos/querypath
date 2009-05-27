@@ -277,10 +277,14 @@ interface QueryPath {
    * @param int $index
    *   If specified, then only this index value will be returned. If this 
    *   index is out of bounds, a NULL will be returned.
+   * @param boolean $asObject
+   *   If this is TRUE, an {@link SplObjectStorage} object will be returned 
+   *   instead of an array. This is the preferred method for extensions to use.
    * @return mixed
    *   If an index is passed, one element will be returned. If no index is
    *   present, an array of all matches will be returned.
    * @see eq()
+   * @see SplObjectStorage
    */
   public function get($index = NULL);
   
@@ -1520,3 +1524,25 @@ class QueryPathOptions {
  * Exception indicating that a problem has occured inside of a QueryPath object.
  */
 class QueryPathException extends Exception {}
+
+/**
+ * Exception indicating that a parser has failed to parse a file.
+ *
+ * This will report parser warnings as well as parser errors. It should only be 
+ * thrown, though, under error conditions.
+ */
+class QueryPathParseException extends QueryPathException {
+  const ERR_MSG_FORMAT = 'Parse error in %s on line %d column %d: %s (%d)';
+  const WARN_MSG_FORMAT = 'Parser warning in %s on line %d column %d: %s (%d)';
+  // trigger_error
+  public function __construct($msg = '', $code = 0) {
+    $msgs = array();
+    foreach(libxml_get_errors() as $err) {
+      $format = $err->level == LIBXML_ERR_WARNING ? self::WARN_MSG_FORMAT : self::ERR_MSG_FORMAT;
+      $msgs[] = sprintf($format, $err->file, $err->line, $err->column, $err->message, $err->code);
+    }
+    $msg .= implode("\n", $msgs);
+    
+    parent::__construct($msg, $code);
+  }
+}

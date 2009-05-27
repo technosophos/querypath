@@ -90,7 +90,7 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $file = './data.xml';
     
     $qp = qp($file)->find('#head');
-    //$this->assertEquals(1, $qp->size());
+    $this->assertEquals(1, $qp->size());
     $this->assertEquals($qp->get(0)->getAttribute('id'), $qp->attr('id'));
     
     $qp->attr('foo', 'bar');
@@ -474,6 +474,12 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('Foo', qp($xml, 'div')->eq(0)->text('Foo')->text());
   }
   
+  public function testTextImplode() {
+    $xml = '<?xml version="1.0"?><root><div>Text A</div><div>Text B</div></root>';
+    $this->assertEquals('Text A, Text B', qp($xml, 'div')->textImplode());
+    $this->assertEquals('Text A--Text B', qp($xml, 'div')->textImplode('--'));
+  }
+  
   public function testNext() {
     $file = './data.xml';
     $this->assertEquals('inner', qp($file, 'unary')->next()->tag());
@@ -568,8 +574,10 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
   public function testIterator() {
     
     $qp = qp(QueryPath::HTML_STUB, 'body')->append('<li/><li/><li/><li/>');
+    
+    $this->assertEquals(4, $qp->find('li')->size());
     $i = 0;
-    foreach ($qp->find('li') as $li) {
+    foreach ($qp as $li) {
       ++$i;
       $li->text('foo');
     }

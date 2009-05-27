@@ -34,6 +34,7 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
    * Take a list of DOMNodes and return a unique list.
    *
    * Constructs a new array of elements with no duplicate DOMNodes.
+   * @deprecated
    */
   public static function unique($list) {
     return UniqueElementList::get($list);
@@ -52,34 +53,42 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
     // Empty: Just create an empty QP.
     if (empty($document)) {
       $this->document = new DOMDocument();
-      $this->matches = array();
+      $this->setMatches(new SplObjectStorage());
     }
     // Figure out if document is DOM, HTML/XML, or a filename
     elseif (is_object($document)) {
       
       if ($document instanceof QueryPath) {
-        $this->matches = $document->get();
-        if (!empty($this->matches))
-          $this->document = $this->matches[0]->ownerDocument;
+        $this->matches = $document->get(NULL, TRUE);
+        if ($this->matches->count() > 0)
+          $this->document = $this->getFirstMatch()->ownerDocument;
       }
       elseif ($document instanceof DOMDocument) {
         $this->document = $document;
-        $this->matches = array($document->documentElement);
+        //$this->matches = $this->matches($document->documentElement);
+        $this->setMatches($document->documentElement);
       }
       elseif ($document instanceof DOMNode) {
         $this->document = $document->ownerDocument;
-        $this->matches = array($document);
+        //$this->matches = array($document);
+        $this->setMatches($document);
       }
       elseif ($document instanceof SimpleXMLElement) {
         $import = dom_import_simplexml($document);
         $this->document = $import->ownerDocument;
-        $this->matches = array($import);
+        //$this->matches = array($import);
+        $this->setMatches($import);
+      }
+      elseif ($document instanceof SplObjectStorage) {
+        $this->matches = $document;
+        $this->document = $this->getFirstMatch()->ownerDocument;
       }
       else {
         throw new QueryPathException('Unsupported class type: ' . get_class($document));
       }
     }
     elseif (is_array($document)) {
+      trigger_error('Detected deprecated array support', E_USER_NOTICE);
       if (!empty($document) && $document[0] instanceof DOMNode) {
         $this->matches = $document;
         $this->document = $this->matches[0]->ownerDocument;
@@ -88,14 +97,13 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
     elseif ($this->isXMLish($document)) {
       // $document is a string with XML
       $this->document = $this->parseXMLString($document);
-      $this->matches = array($this->document->documentElement);
+      $this->setMatches($this->document->documentElement);
     }
     else {
       // $document is a filename
       $context = empty($options['context']) ? NULL : $options['context'];
       $this->document = $this->parseXMLFile($document, $parser_flags, $context);
-      
-      $this->matches = array($this->document->documentElement);
+      $this->setMatches($this->document->documentElement);
     }
     
     // Do a find if the second param was set.
@@ -112,7 +120,7 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
   }
   
   public function top() {
-    $this->setMatches(array($this->document->documentElement));
+    $this->setMatches($this->document->documentElement);
     return $this;
   }
   
@@ -130,7 +138,7 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
         foreach ($this->matches as $item) {
           $nl = $xpath->query("//*[@id='{$ids[1]}']", $item);
           if ($nl->length > 0) {
-            $this->setMatches(array($nl->item(0)));
+            $this->setMatches($nl->item(0));
             break;
           }
         }
@@ -140,12 +148,12 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
       else {
         //$this->xpath("//*[@class='{$ids[2]}']");
         $xpath = new DOMXPath($this->document);
-        $found = array();
+        $found = new SplObjectStorage();
         foreach ($this->matches as $item) {
           $nl = $xpath->query("//*[@class]", $item);
           for ($i = 0; $i < $nl->length; ++$i) {
             $vals = explode(' ', $nl->item($i)->getAttribute('class'));
-            if (in_array($ids[2], $vals)) $found[] = $nl->item($i);
+            if (in_array($ids[2], $vals)) $found->attach($nl->item($i));
           }
         }
         $this->setMatches($found);
@@ -163,11 +171,11 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
   
   public function xpath($query) {
     $xpath = new DOMXPath($this->document);
-    $found = array();
+    $found = new SplObjectStorage();
     foreach ($this->matches as $item) {
       $nl = $xpath->query($query, $item);
       if ($nl->length > 0) {
-        for ($i = 0; $i < $nl->length; ++$i) $found[] = $nl->item($i);
+        for ($i = 0; $i < $nl->length; ++$i) $found->attach($nl->item($i));
       }
     }
     $this->setMatches($found);
@@ -175,12 +183,18 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
   }
   
   public function size() {
-    return count($this->matches);
+    return $this->matches->count();
   }
   
-  public function get($index = NULL) {
+  public function get($index = NULL, $asObject = FALSE) {
     if (isset($index)) {
-      return ($this->size() > $index) ? $this->matches[$index] : NULL;
+      return ($this->size() > $index) ? $this->getNthMatch($index) : NULL;
+    }
+    // Retain support for legacy.
+    if (!$asObject) {
+      $matches = array();
+      foreach ($this->matches as $m) $matches[] = $m;
+      return $matches;
     }
     return $this->matches;
   }
@@ -199,15 +213,15 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
     }
     
     //getter
-    if (empty($this->matches)) return NULL;
+    if ($this->matches->count() == 0) return NULL;
     
     // Special node type handler:
     if ($name == 'nodeType') {
-      return $this->matches[0]->nodeType;
+      return $this->getFirstMatch()->nodeType;
     }
     
     // Always return first match's attr.
-    return $this->matches[0]->getAttribute($name);
+    return $this->getFirstMatch()->getAttribute($name);
   }
   
   public function css($name = NULL, $value = '') {
@@ -238,14 +252,15 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
   }
   
   public function eq($index) {
-    $this->setMatches(array($this->matches[$index]));
+    // XXX: Might there be a more efficient way of doing this?
+    $this->setMatches($this->getNthMatch($index));
     return $this;
   }
   
   public function is($selector) {
     foreach ($this->matches as $m) {
       $q = new QueryPathCssEventHandler($m);
-      if (count($q->find($selector)->getMatches())) {
+      if ($q->find($selector)->getMatches()->count()) {
         return TRUE;
       }
     }
@@ -253,214 +268,145 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
   }
   
   public function filter($selector) {
-    $found = array();
-    foreach ($this->matches as $m) if (qp($m)->is($selector)) $found[] = $m;
+    $found = new SplObjectStorage();
+    foreach ($this->matches as $m) if (qp($m)->is($selector)) $found->attach($m);
     $this->setMatches($found);
     return $this;
   }
   
   public function filterLambda($fn) {
     $function = create_function('$index, $item', $fn);
-    $found = array();
-    $count = count($this->matches);
-    for ($i = 0; $i < $count; ++$i) {
-      $item = $this->matches[$i];
-      if ($function($i, $item) !== FALSE) $found[] = $item;
-    }
+    $found = new SplObjectStorage();
+    $i = 0;
+    foreach ($this->matches as $item)
+      if ($function($i++, $item) !== FALSE) $found->attach($item);
+    
     $this->setMatches($found);
     return $this;
   }
   
   public function filterCallback($callback) {
-    $found = array();
-    
+    $found = new SplObjectStorage();
+    $i = 0;
     if (is_callable($callback)) {
-      for ($i = 0; $i < $this->size(); ++$i) {
-        $item = $this->matches[$i];
-        if (call_user_func($callback, $i, $item) !== FALSE) $found[] = $item;
-      }
+      foreach($this->matches as $item) 
+        if (call_user_func($callback, $i++, $item) !== FALSE) $found->attach($item);
     }
     else {
       throw new QueryPathException('The specified callback is not callable.');
     }
-    
-    /*
-    if (is_array($callback)) {
-      if (is_object($callback[0])) {
-        // Object/func
-        $obj = $callback[0];
-        $func = $callback[1];
-        for ($i = 0; $i < $this->size(); ++$i) {
-          $item = $this->matches[$i];
-          if ($obj->$func($i, $item) !== FALSE) $found[] = $item;
-        }
-      }
-      else {
-        // Class/func
-        $class = $callback[0];
-        $func = $callback[1];
-        for ($i = 0; $i < $this->size(); ++$i) {
-          $item = $this->matches[$i];
-          // FIXME: This might only work on >= 5.2. Plus it's lame.
-          if (${"$class::$func"}($i, $item) !== FALSE) $found[] = $item;
-        }
-      }
-    }
-    else {
-      // function
-      for ($i = 0; $i < $this->size(); ++$i) {
-        $item = $this->matches[$i];
-        if ($callback($i, $item) !== FALSE) $found[] = $item;
-      }
-    }
-    */
     $this->setMatches($found);
     return $this;
   }
   
   public function not($selector) {
-    $found = array();
+    $found = new SplObjectStorage();
     if ($selector instanceof DOMElement) {
-      foreach ($this->matches as $m) if ($m !== $selector) $found[] = $m; 
+      foreach ($this->matches as $m) if ($m !== $selector) $found->attach($m); 
     }
     elseif (is_array($selector)) {
-      foreach ($this->matches as $m) if (!in_array($m, $selector)) $found[] = $m; 
+      foreach ($this->matches as $m) if (!in_array($m, $selector)) $found->attach($m); 
+    }
+    elseif ($selector instanceof SplObjectStorage) {
+      foreach ($this->matches as $m) if ($selector->contains($m)) $found->attach($m); 
     }
     else {
-      foreach ($this->matches as $m) if (!qp($m)->is($selector)) $found[] = $m;
+      foreach ($this->matches as $m) if (!qp($m)->is($selector)) $found->attach($m);
     }
     $this->setMatches($found);
     return $this;
   }
   
   public function index($subject) {
-    for ($i = 0; $i < $this->size(); ++$i) {
-      if ($this->matches[$i] === $subject) {
-        return $i;
-      }
+    
+    $i = 0;
+    foreach ($this->matches as $m) {
+      if ($m === $subject) return $i;
+      ++$i;
     }
     return FALSE;
   }
   
   public function map($callback) {
-    $found = array();
+    $found = new SplObjectStorage();
     
     if (is_callable($callback)) {
-      for ($i = 0; $i < $this->size(); ++$i) {
-        $item = $this->matches[$i];
+      $i = 0;
+      foreach ($this->matches as $item) {
         $c = call_user_func($callback, $i, $item);
         if (isset($c)) {
-          is_array($c) ? $found = array_merge($found, $c) : $found[] = $c;
+          if (is_array($c) || $c instanceof Iterable) {
+            foreach ($c as $retval) {
+              if (!is_object($retval)) {
+                $tmp = new stdClass();
+                $tmp->textContent = $retval;
+                $retval = $tmp;
+              }
+              $found->attach($retval);
+            }
+          }
+          else {
+            if (!is_object($c)) {
+              $tmp = new stdClass();
+              $tmp->textContent = $c;
+              $c = $tmp;
+            }
+            $found->attach($c);
+          }
         }
+        ++$i;
       }
     }
     else {
       throw new QueryPathException('Callback is not callable.');
     }
-    
-    /*
-    if (is_array($callback)) {
-      if (is_object($callback[0])) {
-        // Object/func
-        $obj = $callback[0];
-        $func = $callback[1];
-        for ($i = 0; $i < $this->size(); ++$i) {
-          $item = $this->matches[$i];
-          $c = $obj->$func($i, $item);
-          if (isset($c)) {
-            is_array($c) ? $found = array_merge($found, $c) : $found[] = $c;
-          }
-        }
-      }
-      else {
-        // Class/func
-        $class = $callback[0];
-        $func = $callback[1];
-        for ($i = 0; $i < $this->size(); ++$i) {
-          $item = $this->matches[$i];
-          // FIXME: This might only work on >= 5.2. Plus it's lame.
-          $c = ${"$class::$func"}($i, $item);
-          if (isset($c)) {
-            is_array($c) ? $found = array_merge($found, $c) : $found[] = $c;
-          }
-        }
-      }
-    }
-    else {
-      // function
-      for ($i = 0; $i < $this->size(); ++$i) {
-        $item = $this->matches[$i];
-        $c = $callback($i, $item); 
-        if (isset($c)) {
-          is_array($c) ? $found = array_merge($found, $c) : $found[] = $c;
-        }
-      }
-    }
-    */
     $this->setMatches($found, FALSE);
     return $this;
   }
   
-  public function slice($start, $end = NULL) {
+  public function slice($start, $end = 0) {
+    $found = new SplObjectStorage();
     if ($start >= $this->size()) {
-      $this->setMatches(array());
+      $this->setMatches($found);
       return $this;
     }
-    $this->setMatches(array_slice($this->matches, $start, $end));
+    #STOPPED HERE
+    
+    $i = $j = 0;
+    foreach ($this->matches as $m) {
+      if ($i >= $start) {
+        if ($j >= $end) {
+          break;
+        }
+        $this->found->attach($m);
+        ++$j;
+      }
+    }
+    
+    $this->setMatches($found);
     return $this;
   }
   
   public function each($callback) {
     if (is_callable($callback)) {
-      // Object/func
-      $obj = $callback[0];
-      $func = $callback[1];
-      for ($i = 0; $i < $this->size(); ++$i) {
-        $item = $this->matches[$i];
+      $i = 0;
+      foreach ($this->matches as $item) {
         if (call_user_func($callback, $i, $item) === FALSE) return $this;
+        ++$i;
       }
     }
     else {
       throw new Exception('Callback is not callable.');
     }
-    /*
-    if (is_array($callback)) {
-      if (is_object($callback[0])) {
-        // Object/func
-        $obj = $callback[0];
-        $func = $callback[1];
-        for ($i = 0; $i < $this->size(); ++$i) {
-          $item = $this->matches[$i];
-          if ($obj->$func($i, $item) === FALSE) return $this;
-        }
-      }
-      else {
-        // Class/func
-        $class = $callback[0];
-        $func = $callback[1];
-        for ($i = 0; $i < $this->size(); ++$i) {
-          $item = $this->matches[$i];
-          // FIXME: This might only work on >= 5.2. Plus it's lame.
-          if (${"$class::$func"}($i, $item) === FALSE) return $this;
-        }
-      }
-    }
-    else {
-      // function
-      for ($i = 0; $i < $this->size(); ++$i) {
-        $item = $this->matches[$i];
-        if ($callback($i, $item) === FALSE) return $this; 
-      }
-    }
-    */
     return $this;
   }
 
   public function eachLambda($lambda) {
-    for ($index = 0; $index < $this->size(); ++$index) {
+    $index = 0;
+    foreach ($this->matches as $item) {
       $fn = create_function('$index, &$item', $lambda);
-      $item = $this->matches[$index];  
       if ($fn($index, $item) === FALSE) return $this;
+      ++$index;
     }
     return $this;
   }
@@ -468,11 +414,10 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
   public function append($data) {
     $data = $this->prepareInsert($data);
     if (isset($data)) {
-      //print empty($this->document->documentElement) ? 'empty' : 'ne';
-      if (empty($this->document->documentElement) && empty($this->matches)) {
+      if (empty($this->document->documentElement) && $this->matches->count() == 0) {
         // Then we assume we are writing to the doc root
         $this->document->appendChild($data);
-        $this->matches = array($this->document->documentElement);
+        $this->matches = $this->setMatches($this->document->documentElement);
       }
       else {
         // You can only append in item once. So in cases where we
@@ -554,11 +499,11 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
   
   public function replaceWith($new) {
     $data = $this->prepareInsert($new);
-    $found = array();
+    $found = new SplObjectStorage();
     foreach ($this->matches as $m) {
       $parent = $m->parentNode;
       $parent->insertBefore($data->cloneNode(TRUE), $m);
-      $found[] = $parent->removeChild($m);
+      $found->attach($parent->removeChild($m));
     }
     $this->setMatches($found);
     return $this;
@@ -573,6 +518,7 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
       // XXX: Should be able to avoid doing this over and over.
       if ($copy->hasChildNodes()) {
         $deepest = $this->deepestNode($copy); 
+        // FIXME: Does this need a different data structure?
         $bottom = $deepest[0];
       }
       else
@@ -588,19 +534,20 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
   }
   
   public function wrapAll($markup) {
-    if (empty($this->matches))
-      return;
+    if ($this->matches->count() == 0) return;
     
     $data = $this->prepareInsert($markup);
     if ($data->hasChildNodes()) {
       $deepest = $this->deepestNode($data); 
+      // FIXME: Does this need fixing?
       $bottom = $deepest[0];
     }
     else
       $bottom = $data;
 
-    $parent = $this->matches[0]->parentNode;
-    $parent->insertBefore($data, $this->matches[0]);
+    $first = $this->getFirstMatch();
+    $parent = $first->parentNode;
+    $parent->insertBefore($data, $first);
     foreach ($this->matches as $m) {
       $bottom->appendChild($m->parentNode->removeChild($m));
     }
@@ -611,6 +558,7 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
     $data = $this->prepareInsert($markup);
     if ($data->hasChildNodes()) {
       $deepest = $this->deepestNode($data); 
+      // FIXME: ???
       $bottom = $deepest[0];
     }
     else
@@ -630,19 +578,24 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
   
   public function deepest() {
     $deepest = 0;
-    $winner = array();
+    $winner = new SplObjectStorage();
     foreach ($this->matches as $m) {
       $local_deepest = 0;
       $local_ele = $this->deepestNode($m, 0, NULL, $local_deepest);
+      
+      // Replace with the new deepest.
       if ($local_deepest > $deepest) {
-        $winner = $local_ele;
+        $winner = new SplObjectStorage();
+        foreach ($local_ele as $lele) $winner->attach($lele);
         $deepest = $local_deepest;
       }
+      // Augument with other equally deep elements.
       elseif ($local_deepest == $deepest) {
-        $winner = array_merge($winner, $local_ele);
+        foreach ($local_ele as $lele)
+          $winner->attach($lele);
       }
     }
-    $this->setMatches($winner);//array($winner);
+    $this->setMatches($winner);
     return $this;
   }
   
@@ -652,6 +605,7 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
    * @see deepest();
    */
   protected function deepestNode(DOMNode $ele, $depth = 0, $current = NULL, &$deepest = NULL) {
+    // FIXME: Should this use SplObjectStorage?
     if (!isset($current)) $current = array($ele);
     if (!isset($deepest)) $deepest = $depth;
     if ($ele->hasChildNodes()) {
@@ -694,16 +648,6 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
         $item = QueryPathEntities::replaceAllEntities($item);
       }
       
-      /* This isn't what jQuery does, so we won't do it that way.
-      if ($this->isXMLish($item)) {
-        $frag = $this->document->createDocumentFragment();
-        $frag->appendXML($item);
-        return $frag;
-      }
-      else {
-        return $this->document->createElement($item);
-      }
-      */
       $frag = $this->document->createDocumentFragment();
       if ($frag->appendXML($item) === FALSE) {
         // Return NULL instead of a broken fragment.
@@ -735,7 +679,7 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
   }
   
   public function tag() {
-    return ($this->size() > 0) ? $this->matches[0]->tagName : '';
+    return ($this->size() > 0) ? $this->getFirstMatch()->tagName : '';
   }
   
   public function remove($selector = NULL) {
@@ -743,18 +687,18 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
     if(!empty($selector))
       $this->find($selector);
     
-    $found = array();
+    $found = new SplObjectStorage();
     foreach ($this->matches as $item) {
       // The item returned is (according to docs) different from 
       // the one passed in, so we have to re-store it.
-      $found[] = $item->parentNode->removeChild($item);
+      $found->attach($item->parentNode->removeChild($item));
     }
     $this->setMatches($found);
     return $this;
   }
   
   public function replaceAll($selector, DOMDocument $document) {
-    $replacement = $this->size() > 0 ? $this->matches[0] : $this->document->createTextNode('');
+    $replacement = $this->size() > 0 ? $this->getFirstMatch() : $this->document->createTextNode('');
     
     $c = new QueryPathCssEventHandler($document);
     $c->find($selector);
@@ -766,9 +710,12 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
   }
   
   public function add($selector) {
-    $found = qp($this->document, $selector)->get();
-    // XXX: Need to test if this correctly handles duplicates.
-    $this->setMatches(array_merge($this->matches, $found));
+    
+    // This is destructive, so we need to set $last:
+    $this->last = $this->matches;
+    
+    foreach (qp($this->document, $selector)->get() as $item)
+      $this->matches->attach($item);
     return $this;
   }
   
@@ -776,11 +723,14 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
     // Note that this does not use setMatches because it must set the previous
     // set of matches to empty array.
     $this->matches = $this->last;
-    $this->last = array();
+    $this->last = new SplObjectStorage();
     return $this;
   }
   public function andSelf() {
-    $this->setMatches(array_merge($this->matches, $this->last));
+    // This is destructive, so we need to set $last:
+    $this->last = $this->matches;
+    
+    foreach ($this->last as $item) $this->matches->attach($item);
     return $this;
   }
   
@@ -794,10 +744,10 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
   }
   
   public function children($selector = NULL) {
-    $found = array();
+    $found = new SplObjectStorage();
     foreach ($this->matches as $m) {
       foreach($m->childNodes as $c) {
-        if ($c->nodeType == XML_ELEMENT_NODE) $found[] = $c;
+        if ($c->nodeType == XML_ELEMENT_NODE) $found->attach($c);
       }
     }
     if (empty($selector)) {
@@ -811,23 +761,23 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
   }
   
   public function contents() {
-    $found = array();
+    $found = new SplObjectStorage();
     foreach ($this->matches as $m) {
       foreach ($m->childNodes as $c) {
-        $found[] = $c;
+        $found->attach($c);
       }
     }
-    $this->setMatches(UniqueElementList::get($found));
+    $this->setMatches($found);
     return $this;
   }
   
   public function siblings($selector = NULL) {
-    $found = array();
+    $found = new SplObjectStorage();
     foreach ($this->matches as $m) {
       $parent = $m->parentNode;
       foreach ($parent->childNodes as $n) {
         if ($n->nodeType == XML_ELEMENT_NODE && $n !== $m) {
-          $found[] = $n;
+          $found->attach($n);
         }
       }
     }
@@ -842,7 +792,7 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
   }
   
   public function parent($selector = NULL) {
-    $found = array();
+    $found = new SplObjectStorage();
     foreach ($this->matches as $m) {
       while ($m->parentNode->nodeType !== XML_DOCUMENT_NODE) {
         $m = $m->parentNode;
@@ -850,12 +800,12 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
         if ($m->nodeType === XML_ELEMENT_NODE) {
           if (!empty($selector)) {
             if (qp($m)->is($selector) > 0) {
-              $found[] = $m;
+              $found->attach($m);
               break;
             }
           }
           else {
-            $found[] = $m;
+            $found->attach($m);
             break;
           }
         }
@@ -866,7 +816,7 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
   }
   
   public function parents($selector = NULL) {
-    $found = array();
+    $found = new SplObjectStorage();
     foreach ($this->matches as $m) {
       while ($m->parentNode->nodeType !== XML_DOCUMENT_NODE) {
         $m = $m->parentNode;
@@ -874,10 +824,10 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
         if ($m->nodeType === XML_ELEMENT_NODE) {
           if (!empty($selector)) {
             if (qp($m)->is($selector) > 0)
-              $found[] = $m;
+              $found->attach($m);
           }
           else 
-            $found[] = $m;
+            $found->attach($m);
         }
       }
     }
@@ -900,14 +850,45 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
       return NULL;
     }
     // Only return the first item -- that's what JQ does.
-    $first = $this->matches[0];
+    $first = $this->getFirstMatch();
     if ($first instanceof DOMDocument || $first->isSameNode($first->ownerDocument->documentElement)) {
       return $this->document->saveHTML();
     }
     // saveHTML cannot take a node and serialize it.
-    return $this->document->saveXML($this->matches[0]);
-    
+    return $this->document->saveXML($first);
   }
+  
+  /**
+   * Retrieve the text of each match and concatenate them with the given separator.
+   *
+   * This has the effect of looping through all children, retrieving their text
+   * content, and then concatenating the text with a separator.
+   *
+   * @param string $separator
+   *  The string used to separate text items. The default is a comma followed by a
+   *  space.
+   * @return string
+   *  The text contents, concatenated together with the given separator between
+   *  every pair of items.
+   * @see implode()
+   * @see text()
+   */
+  public function textImplode($sep = ', ', $filterEmpties = TRUE) {
+    $tmp = array(); 
+    foreach ($this->matches as $m) {
+      $txt = trim($m->textContent);
+      // If filter empties out, then we only add items that have content.
+      if ($filterEmpties) {
+        if (strlen($txt) > 0) $tmp[] = $txt;
+      }
+      // Else add even emptes
+      else {
+        $tmp[] = $txt;
+      }
+    }
+    return implode($sep, $tmp);
+  }
+  
   public function text($text = NULL) {
     if (isset($text)) {
       $this->removeChildren();
@@ -926,7 +907,7 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
       foreach ($this->matches as $m) $m->attr('value', $value);
       return;
     }
-    return empty($this->matches) ? NULL : $this->matches[0]->attr('value');
+    return $this->matches->count() == 0 ? NULL : $this->getFirstMatch()->attr('value');
   }
   
   public function xml($markup = NULL) {
@@ -948,7 +929,7 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
       return NULL;
     }
     // Only return the first item -- that's what JQ does.
-    $first = $this->matches[0];
+    $first = $this->getFirstMatch();
     
     // Catch cases where first item is not a legit DOM object.
     if (!($first instanceof DOMNode)) {
@@ -959,8 +940,7 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
       
       return  ($omit_xml_decl ? $this->document->saveXML($first->ownerDocument->documentElement) : $this->document->saveXML());
     }
-    // saveHTML cannot take a node and serialize it.
-    return $this->document->saveXML($this->matches[0]);
+    return $this->document->saveXML($first);
   }
   
   public function writeXML() {
@@ -968,25 +948,25 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
     return $this;
   }
   
-  public function writeHTML($headers = array()) {
+  public function writeHTML() {
     print $this->document->saveHTML();
     return $this;
   }
 
   public function next($selector = NULL) {
-    $found = array();
+    $found = new SplObjectStorage();
     foreach ($this->matches as $m) {
       while (isset($m->nextSibling)) {
         $m = $m->nextSibling;
         if ($m->nodeType === XML_ELEMENT_NODE) {
           if (!empty($selector)) {
             if (qp($m)->is($selector) > 0) {
-              $found[] = $m;
+              $found->attach($m);
               break;
             }
           }
           else {
-            $found[] = $m;
+            $found->attach($m);
             break;
           }
         }
@@ -996,18 +976,18 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
     return $this;
   }
   public function nextAll($selector = NULL) {
-    $found = array();
+    $found = new SplObjectStorage();
     foreach ($this->matches as $m) {
       while (isset($m->nextSibling)) {
         $m = $m->nextSibling;
         if ($m->nodeType === XML_ELEMENT_NODE) {
           if (!empty($selector)) {
             if (qp($m)->is($selector) > 0) {
-              $found[] = $m;
+              $found->attach($m);
             }
           }
           else {
-            $found[] = $m;
+            $found->attach($m);
           }
         }
       }
@@ -1017,19 +997,19 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
   }
   
   public function prev($selector = NULL) {
-    $found = array();
+    $found = new SplObjectStorage();
     foreach ($this->matches as $m) {
       while (isset($m->previousSibling)) {
         $m = $m->previousSibling;
         if ($m->nodeType === XML_ELEMENT_NODE) {
           if (!empty($selector)) {
             if (qp($m)->is($selector)) {
-              $found[] = $m;
+              $found->attach($m);
               break;
             }
           }
           else {
-            $found[] = $m;
+            $found->attach($m);
             break;
           }
         }
@@ -1039,18 +1019,18 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
     return $this;
   }
   public function prevAll($selector = NULL) {
-    $found = array();
+    $found = new SplObjectStorage();
     foreach ($this->matches as $m) {
       while (isset($m->previousSibling)) {
         $m = $m->previousSibling;
         if ($m->nodeType === XML_ELEMENT_NODE) {
           if (!empty($selector)) {
             if (qp($m)->is($selector)) {
-              $found[] = $m;
+              $found->attach($m);
             }
           }
           else {
-            $found[] = $m;
+            $found->attach($m);
           }
         }
       }
@@ -1060,17 +1040,17 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
   }
   
   public function peers($selector = NULL) {
-    $found = array();
+    $found = new SplObjectStorage();
     foreach ($this->matches as $m) {
       foreach ($m->parentNode->childNodes as $kid) {
         if ($kid->nodeType == XML_ELEMENT_NODE && $m !== $kid) {
           if (!empty($selector)) {
             if (qp($kid)->is($selector)) {
-              $found[] = $kid;
+              $found->attach($kid);
             }
           }
           else {
-            $found[] = $kid;
+            $found->attach($kid);
           }
         }
       }
@@ -1125,8 +1105,8 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
   }
   
   public function cloneAll() {
-    $found = array();
-    foreach ($this->matches as $m) $found[] = $m->cloneNode(TRUE);
+    $found = new SplObjectStorage();
+    foreach ($this->matches as $m) $found->attach($m->cloneNode(TRUE));
     $this->setMatches($found, FALSE);
     return $this;
   }
@@ -1181,10 +1161,50 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
    */
   private function setMatches($matches, $unique = TRUE) {
     // This causes a lot of overhead....
-    if ($unique) $matches = self::unique($matches);
-    
+    //if ($unique) $matches = self::unique($matches);
     $this->last = $this->matches;
-    $this->matches = $matches;
+    
+    // Just set current matches.
+    if ($matches instanceof SplObjectStorage) {
+      $this->matches = $matches;
+    }
+    // This is likely legacy code that needs conversion.
+    elseif (is_array($matches)) {
+      trigger_error('Legacy array detected.');
+      $tmp = new SplObjectStorage();
+      foreach ($matches as $m) $tmp->attach($m);
+      $this->matches = $tmp;
+    }
+    // For non-arrays, try to create a new match set and 
+    // add this object.
+    else {
+      $found = new SplObjectStorage();
+      if (isset($matches)) $found->attach($matches);
+      $this->matches = $found;
+    }
+  }
+  
+  /**
+   * A utility function for retriving a match by index.
+   *
+   * The internal data structure used in QueryPath does not have
+   * strong random access support, so we suppliment it with this method.
+   */
+  private function getNthMatch($index) {
+    if ($index > $this->matches->count()) return;
+    
+    $i = 0;
+    foreach ($this->matches as $m) {
+      if ($i++ == $index) return $m;
+    }
+  }
+  
+  /**
+   * Convenience function for getNthMatch(0).
+   */
+  private function getFirstMatch() {
+    $this->matches->rewind();
+    return $this->matches->current();
   }
   
   /**
@@ -1239,7 +1259,7 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
     }
     if ($r == FALSE) {
       // FIXME: Need more info.
-      throw new QueryPathException('Failed to load file ' . $filename);
+      throw new QueryPathParseException('Failed to load file ' . $filename);
     }
     return $document;
   }
@@ -1281,22 +1301,12 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
       $method = new ReflectionMethod($owner, $name);
       return $method->invokeArgs($this->ext[$owner], $arguments);
     }
-    throw new QueryPathException("No method named $name found.");
+    throw new QueryPathException("No method named $name found. Possibly missing an extension.");
   }
   
   public function getIterator() {
     return new QueryPathIterator($this->matches);
   }
-  
-	/**
-	 * Process the entities in the string.
-	 *
-	 * This will convert entities from their string value to an integer value.
-	 * This also replaces bare ampersands with an encoded representation.
-	 */
-	public function entities($string) {
-	  preg_replace_callback('/&([\w\.].);/', array('QueryPathEntities::replaceEntity'), $string);
-	}
 }
 
 class QueryPathEntities {
@@ -1309,7 +1319,7 @@ class QueryPathEntities {
    * 4: Match any ampersand that is not an entity. This goes in $matches[4]
    *    This last rule will only match if one of the previous two has not already
    *    matched.
-   * XXX: Are octal encodings for entities acceptible?
+   * XXX: Are octal encodings for entities acceptable?
    */
   //protected static $regex = '/&([\w]+);|&#([\d]+);|&([\w]*[\s$]+)/m';
   protected static $regex = '/&([\w]+);|&#([\d]+);|&#(x[0-9a-fA-F]+);|(&)/m';
@@ -1376,6 +1386,8 @@ class QueryPathEntities {
    * Large entity conversion table. This is 
    * significantly broader in range than 
    * get_html_translation_table(HTML_ENTITIES).
+   *
+   * This code comes from Rhizome ({@link http://code.google.com/p/sinciput})
    *
    * @see get_html_translation_table()
    */
@@ -1453,13 +1465,71 @@ class QueryPathEntities {
  * method is called.
  */
 class QueryPathIterator extends ArrayIterator {
-  protected $a;
-  public function __construct($array) {
-    $this->a = $array;
+  public function __construct(SplObjectStorage $splos) {
+    $array = array();
+    foreach ($splos as $m) $array[] = $m;
     parent::__construct($array);
   }
   
   public function current() {
     return qp(parent::current($this->key()));
+  }
+}
+
+/**
+ * Utility class to winnow a list of Elements down to unique ones.
+ * This uses strong equality.
+ *
+ * Why not use array_unique()? Because that requires a cast to a string,
+ * which doesn't work well for elements (loses idempotence).
+ *
+ * @deprecated 
+ *  This class will be removed in QueryPath 3.0. It is not used in
+ *  QueryPath 2.0.
+ */
+class UniqueElementList {
+  var $result;
+  
+  /**
+   * Given an array of elements, return an array of unique elements.
+   * Static utility method.
+   *
+   * @param array $list
+   *  An array of objects.
+   * @return 
+   *  An array of objects with all duplicates removed.
+   */
+  public static function get($list) {
+    $uel = new UniqueElementList($list);
+    return $uel->toArray();
+  }
+  
+  /**
+   * Construct a new list and filter it.
+   */
+  public function __construct($list) {
+    trigger_error(__CLASS__ . ' is deprecated.');
+    $this->result = array();
+    foreach ($list as $item) {
+      $this->compare($item);
+    }
+  }
+  
+  /**
+   * Get the list as an array.
+   */
+  public function toArray() {
+    return $this->result;
+  }
+  
+  /**
+   * Compare the current element to previous elements in the list.
+   * If it is unique, it is kept. If it is not, it is discarded from
+   * the list.
+   */
+  protected function compare($element) {
+    if (!in_array($element, $this->result, TRUE)) {
+      $this->result[] = $element;
+    }
   }
 }
