@@ -728,9 +728,11 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
   }
   public function andSelf() {
     // This is destructive, so we need to set $last:
-    $this->last = $this->matches;
+    $last = $this->matches;
     
     foreach ($this->last as $item) $this->matches->attach($item);
+    
+    $this->last = $last;
     return $this;
   }
   
