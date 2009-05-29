@@ -33,10 +33,10 @@ class QPDBTest extends PHPUnit_Framework_TestCase {
   }
   
   public function tearDown() {
-    //$this->db->exec('DROP TABLE qpdb_test');
-    $s = $this->db->prepare('DELETE FROM qpdb_test');
-    $s->execute();
-    $s->closeCursor();
+    $this->db->exec('DROP TABLE qpdb_test');
+    //$s = $this->db->prepare('DELETE FROM qpdb_test');
+    //$s->execute();
+    //$s->closeCursor();
   }
   
   public function testQueryInto() {
