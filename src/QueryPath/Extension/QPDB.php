@@ -474,6 +474,8 @@ class QPDB implements QueryPathExtension {
    */
   public function doneWithQuery() {
     if (isset($this->stmt) && $this->stmt instanceof PDOStatement) {
+      // Some drivers choke if results haven't been iterated.
+      //while($this->stmt->fetch()) {}
       $this->stmt->closeCursor();
     }
       

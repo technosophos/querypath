@@ -33,7 +33,10 @@ class QPDBTest extends PHPUnit_Framework_TestCase {
   }
   
   public function tearDown() {
-    $this->db->exec('DROP TABLE qpdb_test');
+    //$this->db->exec('DROP TABLE qpdb_test');
+    $s = $this->db->prepare('DELETE FROM qpdb_test');
+    $s->execute();
+    $s->closeCursor();
   }
   
   public function testQueryInto() {
@@ -101,7 +104,7 @@ class QPDBTest extends PHPUnit_Framework_TestCase {
       ->doneWithQuery();
     $this->assertEquals('Title 0Title 1', $qp->top()->find('tbody')->text());
     
-    $wrap = '<?xml version="1.0"?><tr><td/></tr>';    
+    $wrap = '<tr><td/></tr>';    
     $qp = qp(QueryPath::HTML_STUB, 'body')
       ->append('<table><tbody/></table>')
       ->find('tbody')

@@ -88,10 +88,13 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
       }
     }
     elseif (is_array($document)) {
-      trigger_error('Detected deprecated array support', E_USER_NOTICE);
+      //trigger_error('Detected deprecated array support', E_USER_NOTICE);
       if (!empty($document) && $document[0] instanceof DOMNode) {
-        $this->matches = $document;
-        $this->document = $this->matches[0]->ownerDocument;
+        $found = new SplObjectStorage();
+        foreach ($document as $item) $found->attach($item);
+        //$this->matches = $found;
+        $this->setMatches($found);
+        $this->document = $this->getFirstMatch()->ownerDocument;
       }
     }
     elseif ($this->isXMLish($document)) {
@@ -417,7 +420,9 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
       if (empty($this->document->documentElement) && $this->matches->count() == 0) {
         // Then we assume we are writing to the doc root
         $this->document->appendChild($data);
-        $this->matches = $this->setMatches($this->document->documentElement);
+        $found = new SplObjectStorage();
+        $found->attach($this->document->documentElement);
+        $this->setMatches($found);
       }
       else {
         // You can only append in item once. So in cases where we
