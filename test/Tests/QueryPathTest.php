@@ -465,10 +465,54 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     
     // We expect an XML declaration at the top.
     $this->assertEquals('<?xml', substr($out, 0, 5));
+    
+    $xml = '<?xml version="1.0"?><html><head><script>
+    <!-- 
+    1 < 2;
+    -->
+    </script>
+    <![CDATA[This is CDATA]]>
+    <title>foo</title></head><body>bar</body></html>';
+    
+    if (!ob_start()) die ("Could not start OB.");
+    qp($xml, 'tml')->writeXML();
+    $out = ob_get_contents();
+    ob_end_clean();
+    
+    // We expect an XML declaration at the top.
+    $this->assertEquals('<?xml', substr($out, 0, 5));
   }
   
   public function testWriteHTML() {
     $xml = '<html><head><title>foo</title></head><body>bar</body></html>';
+    
+    if (!ob_start()) die ("Could not start OB.");
+    qp($xml, 'tml')->writeHTML();
+    $out = ob_get_contents();
+    ob_end_clean();
+    
+    // We expect a doctype declaration at the top.
+    $this->assertEquals('<!DOC', substr($out, 0, 5));
+    
+    $xml = '<html><head><title>foo</title>
+    <script><!--
+    var foo = 1 < 5;
+    --></script>
+    </head><body>bar</body></html>';
+    
+    if (!ob_start()) die ("Could not start OB.");
+    qp($xml, 'tml')->writeHTML();
+    $out = ob_get_contents();
+    ob_end_clean();
+    
+    // We expect a doctype declaration at the top.
+    $this->assertEquals('<!DOC', substr($out, 0, 5));
+    
+    $xml = '<html><head><title>foo</title>
+    <script><![CDATA[
+    var foo = 1 < 5;
+    ]]></script>
+    </head><body>bar</body></html>';
     
     if (!ob_start()) die ("Could not start OB.");
     qp($xml, 'tml')->writeHTML();
