@@ -1,5 +1,7 @@
 QueryPath: Find your way.
 Author: Matt Butcher
+Website: http://querypath.org
+API Docs: http://api.querypath.org
 
 This package is licensed under the GNU LGPL or, at your choice, an MIT-style
 license. The licenses should have been distributed with this library.
