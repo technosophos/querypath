@@ -65,95 +65,13 @@
  * @copyright Copyright (c) 2009, Matt Butcher.
  */
  
-//define('QUICK_EXP', '/^[^<]*(<(.|\s)+>)[^>]*$|^#([\w-]+)$/');
-/**
- * Regular expression for checking whether a string looks like XML.
- */
-define('ML_EXP','/^[^<]*(<(.|\s)+>)[^>]*$/');
-
 /**
  * The main implementation of Query Path is stored in the QueryPathImple.php file.
  */
 require_once 'QueryPathImpl.php';
-/**
- * The CssEventHandler interfaces with the CSS parser.
- */
-require_once 'CssEventHandler.php';
-/**
- * The extender is used to provide support for extensions.
- */
-require_once 'QueryPathExtension.php';
 
-/**
- * Build a new Query Path.
- * This builds a new Query Path object. The new object can be used for 
- * reading, search, and modifying a document.
- *
- * While it is permissible to directly create new instances of a QueryPath
- * implementation, it is not advised. Instead, you should use this function
- * as a factory.
- *
- * Example:
- * <code>
- * <?php
- * qp(); // New empty QueryPath
- * qp('path/to/file.xml'); // From a file
- * qp('<html><head></head><body></body></html>'); // From HTML or XML
- * qp(QueryPath::HTML_STUB); // From a basic HTML document.
- * qp(QueryPath::HTML_STUB, 'title'); // Create one from a basic HTML doc and position it at the title element.
- *
- * // Most of the time, methods are chained directly off of this call.
- * qp(QueryPath::HTML_STUB, 'body')->append('<h1>Title</h1>')->addClass('body-class');
- * ?>
- * </code>
- *
- * This function is used internally by QueryPath. Anything that modifies the
- * behavior of this function may also modify the behavior of common QueryPath
- * methods.
- *
- * @param mixed $document
- *  A document in one of the following forms:
- *  - A string of XML or HTML (See {@link HTML_STUB})
- *  - A path on the file system or a URL
- *  - A {@link DOMDocument} object
- *  - A {@link SimpleXMLElement} object.
- *  - A {@link DOMNode} object.
- *  - An array of {@link DOMNode} objects (generally {@link DOMElement} nodes).
- *  - Another {@link QueryPath} object.
- *
- * Keep in mind that most features of QueryPath operate on elements. Other 
- * sorts of DOMNodes might not work with all features.
- * @param string $string 
- *  A CSS 3 selector.
- * @param array $options
- *  An associative array of options. Currently supported options are:
- *  - context: A stream context object. This is used to pass context info
- *    to the underlying file IO subsystem.
- *  - parser_flags: An OR-combined set of parser flags. The flags supported
- *    by the DOMDocument PHP class are all supported here.
- *  - omit_xml_declaration: Boolean. If this is TRUE, then certain output
- *    methods (like {@link QueryPath::xml()}) will omit the XML declaration
- *    from the beginning of a document.
- *  - replace_entities: Boolean. If this is TRUE, then any of the insertion
- *    functions (before(), append(), etc.) will replace named entities with
- *    their decimal equivalent, and will replace un-escaped ampersands with 
- *    a numeric entity equivalent.
- *
- * @example examples/simple_example.php Basic Example
- * @example examples/html.php Generating HTML
- * @example examples/xml.php Using XML
- * @example examples/rss.php Generating RSS (Really Simple Syndication)
- * @example examples/svg.php Working with SVG (Scalable Vector Graphics)
- * @example examples/musicbrainz.php Working with remote XML documents
- * @example examples/sparql.php Working with SPARQL queries
- * @example examples/dbpedia.php Working with namespaced XML
- * @example examples/techniques.php Looping/Iteration techniques
- */
-function qp($document = NULL, $string = NULL, $options = array()) {
-  // Todo: Make this an abstract factory.
-  $qp = new QueryPathImpl($document, $string, $options);
-  return $qp;
-}
+
+
  
 /**
  * The Query Path object is the primary tool in this library.
@@ -171,22 +89,9 @@ function qp($document = NULL, $string = NULL, $options = array()) {
  * @see qp()
  * @see QueryPath.php
  */
-interface QueryPath {
+interface QueryPathI {
   
-  /**
-   * This is a stub HTML document.
-   * 
-   * It can be passed into {@link qp()} to begin a new basic HTML document.
-   */
-  const HTML_STUB = '<?xml version="1.0"?>
-  <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-  <html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-  	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-  	<title>Untitled</title>
-  </head>
-  <body></body>
-  </html>';
+
   
   /**
    * Given a CSS Selector, find matching items.

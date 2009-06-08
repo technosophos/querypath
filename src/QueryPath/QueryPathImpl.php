@@ -1,22 +1,187 @@
 <?php
 /**
- * This file contains the QueryPathImpl, the main implementation of the 
- * QueryPath interface.
- * @see QueryPath
+ * The Query Path package provides tools for manipulating a Document Object Model.
+ * The two major DOMs are the XML DOM and the HTML DOM. Using Query Path, you can 
+ * build, parse, search, and modify DOM documents.
+ *
+ * To use Query Path, this is the only file you should need to import.
+ *
+ * Standard usage:
+ * <code>
+ * <?php
+ * $qp = qp('#myID', '<?xml version="1.0"?><test><foo id="myID"/></test>');
+ * $qp->append('<new><elements/></new>')->writeHTML();
+ * ?>
+ * </code>
+ *
+ * The above would print (formatted for readability):
+ * <code>
+ * <?xml version="1.0"?>
+ * <test>
+ *  <foo id="myID">
+ *    <new>
+ *      <element/>
+ *    </new>
+ *  </foo>
+ * </test>
+ * </code>
+ *
+ * To learn about the functions available to a Query Path object, 
+ * see {@link QueryPath}. The {@link qp()} function is used to build
+ * new QueryPath objects. The documentation for that function explains the
+ * wealth of arguments that the function can take.
+ *
+ * Included with the source code for QueryPath is a complete set of unit tests
+ * as well as some example files. THose are good resources for learning about
+ * how to apply QueryPath's tools.
+ *
+ * If you are interested in building extensions for QueryParser, see the 
+ * {@link QueryPathExtender} class. There, you will find information on adding
+ * your own tools to QueryPath.
+ *
+ * QueryPath also comes with a full CSS 3 selector parser implementation. If
+ * you are interested in reusing that in other code, you will want to start
+ * with {@link CssEventHandler.php}, which is the event interface for the parser.
+ *
+ * If you want to learn the nitty gritty details of QueryPath, you can take a 
+ * look at the implementation in {@link QueryPathImpl.php}. There you will find
+ * the "real" code.
+ *
+ * All of the code in QueryPath is licensed under either the LGPL or an MIT-like
+ * license (you may choose which you prefer). All of the code is Copyright, 2009
+ * by Matt Butcher.
+ * @example examples/simple_example.php Basic Example
+ * @example examples/html.php Generating HTML
+ * @example examples/xml.php Using XML
+ * @example examples/rss.php Generating RSS (Really Simple Syndication)
+ * @example examples/svg.php Working with SVG (Scalable Vector Graphics)
+ * @example examples/techniques.php Looping/Iteration techniques
+ *
  * @package QueryPath
- * @subpackage Internals
- * @author M Butcher <matt@aleph-null.tv>
- * @license http://opensource.org/licenses/lgpl-2.1.php LGPL (The GNU Lesser GPL) or an MIT-like license.
+ * @author M Butcher <matt @aleph-null.tv>
+ * @license http://opensource.org/licenses/lgpl-2.1.php The GNU Lesser GPL (LGPL) or an MIT-like license.
+ * @see QueryPath
+ * @see qp()
+ * @copyright Copyright (c) 2009, Matt Butcher.
  */
+ 
+/**
+ * Regular expression for checking whether a string looks like XML.
+ */
+define('ML_EXP','/^[^<]*(<(.|\s)+>)[^>]*$/');
 
 /**
- * This is the main implementation of the QueryPath interface.
- *
- * It provides core services for the Query Path. The class is final.
- *
- * @see QueryPath
+ * The CssEventHandler interfaces with the CSS parser.
  */
-final class QueryPathImpl implements QueryPath, IteratorAggregate {
+require_once 'CssEventHandler.php';
+/**
+ * The extender is used to provide support for extensions.
+ */
+require_once 'QueryPathExtension.php';
+
+/**
+ * Build a new Query Path.
+ * This builds a new Query Path object. The new object can be used for 
+ * reading, search, and modifying a document.
+ *
+ * While it is permissible to directly create new instances of a QueryPath
+ * implementation, it is not advised. Instead, you should use this function
+ * as a factory.
+ *
+ * Example:
+ * <code>
+ * <?php
+ * qp(); // New empty QueryPath
+ * qp('path/to/file.xml'); // From a file
+ * qp('<html><head></head><body></body></html>'); // From HTML or XML
+ * qp(QueryPath::HTML_STUB); // From a basic HTML document.
+ * qp(QueryPath::HTML_STUB, 'title'); // Create one from a basic HTML doc and position it at the title element.
+ *
+ * // Most of the time, methods are chained directly off of this call.
+ * qp(QueryPath::HTML_STUB, 'body')->append('<h1>Title</h1>')->addClass('body-class');
+ * ?>
+ * </code>
+ *
+ * This function is used internally by QueryPath. Anything that modifies the
+ * behavior of this function may also modify the behavior of common QueryPath
+ * methods.
+ *
+ * @param mixed $document
+ *  A document in one of the following forms:
+ *  - A string of XML or HTML (See {@link HTML_STUB})
+ *  - A path on the file system or a URL
+ *  - A {@link DOMDocument} object
+ *  - A {@link SimpleXMLElement} object.
+ *  - A {@link DOMNode} object.
+ *  - An array of {@link DOMNode} objects (generally {@link DOMElement} nodes).
+ *  - Another {@link QueryPath} object.
+ *
+ * Keep in mind that most features of QueryPath operate on elements. Other 
+ * sorts of DOMNodes might not work with all features.
+ * @param string $string 
+ *  A CSS 3 selector.
+ * @param array $options
+ *  An associative array of options. Currently supported options are:
+ *  - context: A stream context object. This is used to pass context info
+ *    to the underlying file IO subsystem.
+ *  - parser_flags: An OR-combined set of parser flags. The flags supported
+ *    by the DOMDocument PHP class are all supported here.
+ *  - omit_xml_declaration: Boolean. If this is TRUE, then certain output
+ *    methods (like {@link QueryPath::xml()}) will omit the XML declaration
+ *    from the beginning of a document.
+ *  - replace_entities: Boolean. If this is TRUE, then any of the insertion
+ *    functions (before(), append(), etc.) will replace named entities with
+ *    their decimal equivalent, and will replace un-escaped ampersands with 
+ *    a numeric entity equivalent.
+ *
+ * @example examples/simple_example.php Basic Example
+ * @example examples/html.php Generating HTML
+ * @example examples/xml.php Using XML
+ * @example examples/rss.php Generating RSS (Really Simple Syndication)
+ * @example examples/svg.php Working with SVG (Scalable Vector Graphics)
+ * @example examples/musicbrainz.php Working with remote XML documents
+ * @example examples/sparql.php Working with SPARQL queries
+ * @example examples/dbpedia.php Working with namespaced XML
+ * @example examples/techniques.php Looping/Iteration techniques
+ */
+function qp($document = NULL, $string = NULL, $options = array()) {
+  // Todo: Make this an abstract factory.
+  $qp = new QueryPathImpl($document, $string, $options);
+  return $qp;
+}
+
+/**
+ * The Query Path object is the primary tool in this library.
+ *
+ * To create a new Query Path, use the {@link qp()} function.
+ *
+ * If you are new to these documents, start at the {@link QueryPath.php} page.
+ * There you will find a quick guide to the tools contained in this project.
+ *
+ * A note on serialization: QueryPath uses DOM classes internally, and those
+ * do not serialize well at all. In addition, QueryPath may contain many
+ * extensions, and there is no guarantee that extensions can serialize. The
+ * moral of the story: Don't serialize QueryPath.
+ *
+ * @see qp()
+ * @see QueryPath.php
+ */
+final class QueryPath implements IteratorAggregate {
+  
+  /**
+   * This is a stub HTML document.
+   * 
+   * It can be passed into {@link qp()} to begin a new basic HTML document.
+   */
+  const HTML_STUB = '<?xml version="1.0"?>
+  <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+  	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  	<title>Untitled</title>
+  </head>
+  <body></body>
+  </html>';
   
   const DEFAULT_PARSER_FLAGS = NULL;
   
@@ -31,19 +196,37 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
   private $ext = array(); // Extensions array.
   
   /**
-   * Take a list of DOMNodes and return a unique list.
+   * Get the effective options for the current QueryPath object.
    *
-   * Constructs a new array of elements with no duplicate DOMNodes.
-   * @deprecated
+   * This returns an associative array of all of the options as set
+   * for the current QueryPath object. This includes default options,
+   * options directly passed in via {@link qp()} or the constructor,
+   * an options set in the {@link QueryPathOptions} object.
+   *
+   * The order of merging options is this:
+   *  - Options passed in using {@link qp()} are highest priority, and will
+   *    override other options.
+   *  - Options set with {@link QueryPathOptions} will override default options,
+   *    but can be overridden by options passed into {@link qp()}.
+   *  - Default options will be used when no overrides are present.
+   *
+   * This function will return the options currently used, with the above option
+   * overriding having been calculated already.
+   *
+   * @return array
+   *  An associative array of options, calculated from defaults and overridden 
+   *  options. 
+   * @see qp()
+   * @see QueryPathOptions::set()
+   * @see QueryPathOptions::merge()
    */
-  public static function unique($list) {
-    return UniqueElementList::get($list);
-  }
-  
   public function getOptions() {
     return $this->options;
   }
   
+  /**
+   * Constructor.
+   */
   public function __construct($document = NULL, $string = NULL, $options = array()) {
     $string = trim($string);
     $this->options = $options + QueryPathOptions::get() + $this->options;
@@ -122,11 +305,43 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
     */
   }
   
+  /**
+   * Select the root element of the document.
+   *
+   * This sets the current match to the document's root element. For 
+   * practical purposes, this is the same as:
+   * <code>
+   * qp($someDoc)->find(':root');
+   * </code>
+   * However, since it doesn't invoke a parser, it has less overhead. It also 
+   * works in cases where the QueryPath has been reduced to zero elements (a
+   * case that is not handled by find(':root') because there is no element
+   * whose root can be found).
+   *
+   * @return QueryPath
+   *  The QueryPath object, wrapping the root element (document element)
+   *  for the current document.
+   */
   public function top() {
     $this->setMatches($this->document->documentElement);
     return $this;
   }
   
+  /**
+   * Given a CSS Selector, find matching items.
+   *
+   * @param string $selector
+   *   CSS 3 Selector
+   * @return QueryPath
+   * @see filter()
+   * @see is()
+   * @todo If a find() returns zero matches, then a subsequent find() will
+   *  also return zero matches, even if that find has a selector like :root.
+   *  The reason for this is that the {@link QueryPathCssEventHandler} does
+   *  not set the root of the document tree if it cannot find any elements
+   *  from which to determine what the root is. The workaround is to use 
+   *  {@link top()} to select the root element again.
+   */
   public function find($selector) {
     
     // Optimize for ID/Class searches. These two take a long time
@@ -172,6 +387,24 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
     return $this;
   }
   
+  /**
+   * Execute an XPath query and store the results in the QueryPath.
+   *
+   * Most methods in this class support CSS 3 Selectors. Sometimes, though,
+   * XPath provides a finer-grained query language. Use this to execute
+   * XPath queries.
+   *
+   * Beware, though. QueryPath works best on DOM Elements, but an XPath 
+   * query can return other nodes, strings, and values. These may not work with
+   * other QueryPath functions (though you will be able to access the
+   * values with {@link get()}).
+   *
+   * @param string $query
+   *  An XPath query.
+   * @return QueryPath 
+   *  A QueryPath object wrapping the results of the query.
+   * @see find()
+   */
   public function xpath($query) {
     $xpath = new DOMXPath($this->document);
     $found = new SplObjectStorage();
@@ -185,10 +418,50 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
     return $this;
   }
   
+  /**
+   * Get the number of elements currently wrapped by this object.
+   *
+   * Note that there is no length property on this object.
+   *
+   * @return int
+   *  Number of items in the object.
+   */
   public function size() {
     return $this->matches->count();
   }
   
+  /**
+   * Get one or all elements from this object.
+   *
+   * When called with no paramaters, this returns all objects wrapped by 
+   * the QueryPath. Typically, these are DOMElement objects (unless you have
+   * used {@link map()}, {@link xpath()}, or other methods that can select
+   * non-elements).
+   *
+   * When called with an index, it will return the item in the QueryPath with 
+   * that index number.
+   *
+   * Calling this method does not change the QueryPath (e.g. it is 
+   * non-destructive).
+   *
+   * You can use qp()->get() to iterate over all elements matched. You can
+   * also iterate over qp() itself (QueryPath implementations must be Traversable). 
+   * In the later case, though, each item 
+   * will be wrapped in a QueryPath object. To learn more about iterating
+   * in QueryPath, see {@link examples/techniques.php}.
+   *
+   * @param int $index
+   *   If specified, then only this index value will be returned. If this 
+   *   index is out of bounds, a NULL will be returned.
+   * @param boolean $asObject
+   *   If this is TRUE, an {@link SplObjectStorage} object will be returned 
+   *   instead of an array. This is the preferred method for extensions to use.
+   * @return mixed
+   *   If an index is passed, one element will be returned. If no index is
+   *   present, an array of all matches will be returned.
+   * @see eq()
+   * @see SplObjectStorage
+   */
   public function get($index = NULL, $asObject = FALSE) {
     if (isset($index)) {
       return ($this->size() > $index) ? $this->getNthMatch($index) : NULL;
@@ -201,6 +474,27 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
     }
     return $this->matches;
   }
+  /**
+   * Get/set an attribute.
+   * - If both name and value are set, then this will set the attribute name/value
+   *   pair for all items in this object. 
+   * - If name is set, and is an array, then
+   *   all attributes in the array will be set for all items in this object.
+   * - If name is a string and is set, then the attribute value will be returned.
+   *
+   * When an attribute value is retrieved, only the attribute value of the FIRST
+   * match is returned.
+   *
+   * @param mixed $name
+   *   The name of the attribute or an associative array of name/value pairs.
+   * @param string $value
+   *   A value (used only when setting an individual property).
+   * @return mixed
+   *   If this was a setter request, return the QueryPath object. If this was
+   *   an access request (getter), return the string value.
+   * @see removeAttr()
+   * @see tag()
+   */
   public function attr($name, $value = NULL) {
     // multi-setter
     if (is_array($name)) {
@@ -226,7 +520,40 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
     // Always return first match's attr.
     return $this->getFirstMatch()->getAttribute($name);
   }
-  
+  /**
+   * Set/get a CSS value for the current element(s).
+   * This sets the CSS value for each element in the QueryPath object.
+   * It does this by setting (or getting) the style attribute (without a namespace).
+   *
+   * For example, consider this code:
+   * <code>
+   * <?php
+   * qp(HTML_STUB, 'body')->css('background-color','red')->html();
+   * ?>
+   * </code>
+   * This will return the following HTML:
+   * <code>
+   * <body style="background-color: red"/>
+   * </code>
+   *
+   * If no parameters are passed into this function, then the current style
+   * element will be returned unparsed. Example:
+   * <code>
+   * <?php
+   * qp(HTML_STUB, 'body')->css('background-color','red')->css();
+   * ?>
+   * </code>
+   * This will return the following:
+   * <code>
+   * background-color: red
+   * </code>
+   *
+   * @param mixed $name
+   *  If this is a string, it will be used as a CSS name. If it is an array,
+   *  this will assume it is an array of name/value pairs of CSS rules. It will
+   *  apply all rules to all elements in the set.
+   * @return QueryPath
+   */
   public function css($name = NULL, $value = '') {
     if (empty($name)) {
       return $this->attr('style');
@@ -245,7 +572,20 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
     $this->attr('style', $css);
     return $this;
   }
-  
+  /**
+   * Remove the named attribute from all elements in the current QueryPath.
+   *
+   * This will remove any attribute with the given name. It will do this on each
+   * item currently wrapped by QueryPath.
+   *
+   * As is the case in jQuery, this operation is not considered destructive.
+   *
+   * @param string $name
+   *  Name of the parameter to remove.
+   * @return QueryPath
+   *  The QueryPath object with the same elements.
+   * @see attr()
+   */
   public function removeAttr($name) {
     foreach ($this->matches as $m) {
       //if ($m->hasAttribute($name))
@@ -253,13 +593,38 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
     }
     return $this;
   }
-  
+  /**
+   * Reduce the matched set to just one.
+   *
+   * This will take a matched set and reduce it to just one item -- the item 
+   * at the index specified. This is a destructive operation, and can be undone
+   * with {@link end()}.
+   *
+   * @param $index
+   *  The index of the element to keep. The rest will be 
+   *  discarded.
+   * @return QueryPath
+   * @see get()
+   * @see is()
+   * @see end()
+   */
   public function eq($index) {
     // XXX: Might there be a more efficient way of doing this?
     $this->setMatches($this->getNthMatch($index));
     return $this;
   }
-  
+  /**
+   * Given a selector, this checks to see if the current set has one or more matches.
+   *
+   * Unlike jQuery's version, this supports full selectors (not just simple ones).
+   *
+   * @param string $selector
+   *   The selector to search for.
+   * @return boolean
+   *   TRUE if one or more elements match. FALSE if no match is found.
+   * @see get()
+   * @see eq()
+   */
   public function is($selector) {
     foreach ($this->matches as $m) {
       $q = new QueryPathCssEventHandler($m);
@@ -269,14 +634,53 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
     }
     return FALSE;
   }
-  
+  /**
+   * Filter a list down to only elements that match the selector.
+   * Use this, for example, to find all elements with a class, or with 
+   * certain children.
+   *
+   * @param string $selector
+   *   The selector to use as a filter.
+   * @return QueryPath
+   *   The QueryPath with non-matching items filtered out.
+   * @see filterLambda()
+   * @see filterCallback()
+   * @see map()
+   * @see find()
+   * @see is()
+   */
   public function filter($selector) {
     $found = new SplObjectStorage();
     foreach ($this->matches as $m) if (qp($m)->is($selector)) $found->attach($m);
     $this->setMatches($found);
     return $this;
   }
-  
+  /**
+   * Filter based on a lambda function.
+   *
+   * The function string will be executed as if it were the body of a 
+   * function. It is passed two arguments:
+   * - $index: The index of the item.
+   * - $item: The current Element.
+   * If the function returns boolean FALSE, the item will be removed from
+   * the list of elements. Otherwise it will be kept.
+   *
+   * Example:
+   * <code>
+   * qp('li')->filterLambda('qp($item)->attr("id") == "test"');
+   * </code>
+   *
+   * The above would filter down the list to only an item whose ID is
+   * 'text'.
+   *
+   * @param string $function
+   *  Inline lambda function in a string.
+   * @return QueryPath
+   * @see filter()
+   * @see map()
+   * @see mapLambda()
+   * @see filterCallback()
+   */
   public function filterLambda($fn) {
     $function = create_function('$index, $item', $fn);
     $found = new SplObjectStorage();
@@ -287,7 +691,30 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
     $this->setMatches($found);
     return $this;
   }
-  
+  /**
+   * Filter based on a callback function.
+   *
+   * A callback may be any of the following:
+   *  - a function: 'my_func'.
+   *  - an object/method combo: $obj, 'myMethod'
+   *  - a class/method combo: 'MyClass', 'myMethod'
+   * Note that classes are passed in strings. Objects are not.
+   *
+   * Each callback is passed to arguments:
+   *  - $index: The index position of the object in the array.
+   *  - $item: The item to be operated upon.
+   *
+   * @param $callback.
+   *   A callback either as a string (function) or an array (object, method OR 
+   *   classname, method).
+   * @return QueryPath
+   *   Query path object augmented according to the function.
+   * @see filter()
+   * @see filterLambda()
+   * @see map()
+   * @see is()
+   * @see find()
+   */
   public function filterCallback($callback) {
     $found = new SplObjectStorage();
     $i = 0;
@@ -301,7 +728,16 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
     $this->setMatches($found);
     return $this;
   }
-  
+  /**
+   * Filter a list to contain only items that do NOT match.
+   *
+   * @param string $selector
+   *  A selector to use as a negation filter. If the filter is matched, the 
+   *  element will be removed from the list.
+   * @return QueryPath
+   *  The QueryPath object with matching items filtered out.
+   * @see find()
+   */
   public function not($selector) {
     $found = new SplObjectStorage();
     if ($selector instanceof DOMElement) {
@@ -319,7 +755,21 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
     $this->setMatches($found);
     return $this;
   }
-  
+  /**
+   * Get an item's index.
+   *
+   * Given a DOMElement, get the index from the matches. This is the 
+   * converse of {@link get()}.
+   *
+   * @param DOMElement $subject
+   *  The item to match.
+   * 
+   * @return mixed
+   *  The index as an integer (if found), or boolean FALSE. Since 0 is a 
+   *  valid index, you should use strong equality (===) to test..
+   * @see get()
+   * @see is()
+   */
   public function index($subject) {
     
     $i = 0;
@@ -329,7 +779,34 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
     }
     return FALSE;
   }
-  
+  /**
+   * Run a function on each item in a set.
+   *
+   * The mapping callback can return anything. Whatever it returns will be
+   * stored as a match in the set, though. This means that afer a map call, 
+   * there is no guarantee that the elements in the set will behave correctly
+   * with other QueryPath functions.
+   *
+   * Callback rules:
+   * - If the callback returns NULL, the item will be removed from the array.
+   * - If the callback returns an array, the entire array will be stored in 
+   *   the results.
+   * - If the callback returns anything else, it will be appended to the array 
+   *   of matches.
+   *
+   * @param callback $callback
+   *  The function or callback to use. The callback will be passed two params:
+   *  - $index: The index position in the list of items wrapped by this object.
+   *  - $item: The current item.
+   *
+   * @return QueryPath
+   *  The QueryPath object wrapping a list of whatever values were returned
+   *  by each run of the callback.
+   *
+   * @see QueryPath::get()
+   * @see filter()
+   * @see find()
+   */
   public function map($callback) {
     $found = new SplObjectStorage();
     
