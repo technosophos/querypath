@@ -146,7 +146,7 @@ require_once 'QueryPathExtension.php';
  */
 function qp($document = NULL, $string = NULL, $options = array()) {
   // Todo: Make this an abstract factory.
-  $qp = new QueryPathImpl($document, $string, $options);
+  $qp = new QueryPath($document, $string, $options);
   return $qp;
 }
 
@@ -843,7 +843,18 @@ final class QueryPath implements IteratorAggregate {
     $this->setMatches($found, FALSE);
     return $this;
   }
-  
+  /**
+   * Narrow the items in this object down to only a slice of the starting items.
+   *
+   * @param integer $start
+   *  Where in the list of matches to begin the slice.
+   * @param integer $count
+   *  The number of items to include in the slice. If nothing is specified, the 
+   *  all remaining matches (from $start onward) will be included in the sliced
+   *  list.
+   * @return QueryPath
+   * @see array_slice()
+   */
   public function slice($start, $end = 0) {
     $found = new SplObjectStorage();
     if ($start >= $this->size()) {
@@ -866,7 +877,27 @@ final class QueryPath implements IteratorAggregate {
     $this->setMatches($found);
     return $this;
   }
-  
+  /**
+   * Run a callback on each item in the list of items.
+   *
+   * Rules of the callback:
+   * - A callback is passed two variables: $index and $item. (There is no 
+   *   special treatment of $this, as there is in jQuery.)
+   *   - You will want to pass $item by reference if it is not an
+   *     object (DOMNodes are all objects).
+   * - A callback that returns FALSE will stop execution of the each() loop. This
+   *   works like break in a standard loop.
+   * - A TRUE return value from the callback is analogous to a continue statement.
+   * - All other return values are ignored.
+   *
+   * @param callback $callback
+   *  The callback to run.
+   * @return QueryPath
+   *  The QueryPath.
+   * @see eachLambda()
+   * @see filter()
+   * @see map()
+   */
   public function each($callback) {
     if (is_callable($callback)) {
       $i = 0;
@@ -880,7 +911,18 @@ final class QueryPath implements IteratorAggregate {
     }
     return $this;
   }
-
+  /**
+   * An each() iterator that takes a lambda function.
+   * 
+   * @param string $lambda
+   *  The lambda function. This will be passed ($index, &$item).
+   * @return QueryPath
+   *  The QueryPath object.
+   * @see each()
+   * @see filterLambda()
+   * @see filterCallback()
+   * @see map()
+   */
   public function eachLambda($lambda) {
     $index = 0;
     foreach ($this->matches as $item) {
@@ -890,7 +932,27 @@ final class QueryPath implements IteratorAggregate {
     }
     return $this;
   }
-  
+  /**
+   * Insert the given markup as the last child.
+   *
+   * The markup will be inserted into each match in the set.
+   *
+   * The same element cannot be inserted multiple times into a document. DOM
+   * documents do not allow a single object to be inserted multiple times 
+   * into the DOM. To insert the same XML repeatedly, we must first clone
+   * the object. This has one practical implication: Once you have inserted
+   * an element into the object, you cannot further manipulate the original 
+   * element and expect the changes to be replciated in the appended object.
+   * (They are not the same -- there is no shared reference.) Instead, you
+   * will need to retrieve the appended object and operate on that.
+   *
+   * @param mixed $data
+   *  This can be either a string (the usual case), or a DOM Element.
+   * @return QueryPath
+   *  The QueryPath object.
+   * @see appendTo()
+   * @see prepend()
+   */
   public function append($data) {
     $data = $this->prepareInsert($data);
     if (isset($data)) {
@@ -922,12 +984,39 @@ final class QueryPath implements IteratorAggregate {
     }
     return $this;
   }
-  
+  /**
+   * Append the current elements to the destination passed into the function.
+   *
+   * This cycles through all of the current matches and appends them to 
+   * the context given in $destination. If a selector is provided then the 
+   * $destination is queried (using that selector) prior to the data being
+   * appended. The data is then appended to the found items.
+   *
+   * @param QueryPath $destination
+   *  A QueryPath object that will be appended to.
+   * @return QueryPath
+   *  The original QueryPath, unaltered. Only the destination QueryPath will
+   *  be modified.
+   * @see append()
+   * @see prependTo()
+   */
   public function appendTo(QueryPath $dest) {
     foreach ($this->matches as $m) $dest->append($m);
     return $this;
   }
-  
+  /**
+   * Insert the given markup as the first child.
+   *
+   * The markup will be inserted into each match in the set.
+   *
+   * @param mixed $prependage
+   *  This can be either a string (the usual case), or a DOM Element.
+   * @return QueryPath
+   * @see append()
+   * @see before()
+   * @see after()
+   * @see prependTo()
+   */
   public function prepend($data) {
     $data = $this->prepareInsert($data);
     if (isset($data)) {
@@ -941,13 +1030,42 @@ final class QueryPath implements IteratorAggregate {
     }
     return $this;
   }
-  
+  /**
+   * Take all nodes in the current object and prepend them to the children nodes of
+   * each matched node in the passed-in QueryPath object.
+   *
+   * This will iterate through each item in the current QueryPath object and 
+   * add each item to the beginning of the children of each element in the 
+   * passed-in QueryPath object.
+   *
+   * @see insertBefore()
+   * @see insertAfter()
+   * @see prepend()
+   * @see appendTo()
+   * @param QueryPath $dest
+   *  The destination QueryPath object.
+   * @return QueryPath
+   *  The original QueryPath, unmodified. NOT the destination QueryPath.
+   */
   public function prependTo(QueryPath $dest) {
     foreach ($this->matches as $m) $dest->prepend($m);
     return $this;
   }
 
-  
+  /**
+   * Insert the given data before each element in the current set of matches.
+   * 
+   * @param mixed $data
+   *  The data to be inserted. This can be XML in a string, a DomFragment, a DOMElement,
+   *  or the other usual suspects. (See {@link qp()}).
+   * @return QueryPath
+   *  Returns the QueryPath with the new modifications. The list of elements currently
+   *  selected will remain the same.
+   * @see insertBefore()
+   * @see after()
+   * @see append()
+   * @see prepend()
+   */
   public function before($data) {
     $data = $this->prepareInsert($data);
     foreach ($this->matches as $m) {
@@ -957,16 +1075,54 @@ final class QueryPath implements IteratorAggregate {
     
     return $this;
   }
+  /**
+   * Insert the current elements into the destination document.
+   * The items are inserted before each element in the given QueryPath document.
+   * That is, they will be siblings with the current elements.
+   *
+   * @param QueryPath $dest
+   *  Destination QueryPath document.
+   * @return QueryPath
+   *  The current QueryPath object, unaltered. Only the destination QueryPath
+   *  object is altered.
+   * @see before()
+   * @see insertAfter()
+   * @see appendTo()
+   */
   public function insertBefore(QueryPath $dest) {
     foreach ($this->matches as $m) $dest->before($m);
     return $this;
   }
-  
+  /**
+   * Insert the contents of the current QueryPath after the nodes in the 
+   * destination QueryPath object.
+   *
+   * @param QueryPath $dest
+   *  Destination object where the current elements will be deposited.
+   * @return QueryPath
+   *  The present QueryPath, unaltered. Only the destination object is altered.
+   * @see after()
+   * @see insertBefore()
+   * @see append()
+   */
   public function insertAfter(QueryPath $dest) {
     foreach ($this->matches as $m) $dest->after($m);
     return $this;
   }
-  
+  /**
+   * Insert the given data after each element in the current QueryPath object.
+   *
+   * This inserts the element as a peer to the currently matched elements.
+   * Contrast this with {@link append()}, which inserts the data as children
+   * of matched elements.
+   *
+   * @param mixed $data
+   *  The data to be appended.
+   * @return QueryPath
+   *  The QueryPath object (with the items inserted).
+   * @see before()
+   * @see append()
+   */
   public function after($data) {
     $data = $this->prepareInsert($data);
     foreach ($this->matches as $m) {
@@ -978,7 +1134,22 @@ final class QueryPath implements IteratorAggregate {
     }
     return $this;
   }
-  
+  /**
+   * Replace the existing element(s) in the list with a new one.
+   *
+   * @param mixed $new
+   *  A DOMElement or XML in a string. This will replace all elements
+   *  currently wrapped in the QueryPath object.
+   * @return QueryPath
+   *  The QueryPath object wrapping <b>the items that were removed</b>.
+   *  This remains consistent with the jQuery API.
+   * @see append()
+   * @see prepend()
+   * @see before()
+   * @see after()
+   * @see remove()
+   * @see replaceAll()
+   */
   public function replaceWith($new) {
     $data = $this->prepareInsert($new);
     $found = new SplObjectStorage();
@@ -990,7 +1161,20 @@ final class QueryPath implements IteratorAggregate {
     $this->setMatches($found);
     return $this;
   }
-  
+  /**
+   * Wrap each element inside of the given markup.
+   *
+   * Markup is usually a string, but it can also be a DOMNode, a document
+   * fragment, a SimpleXMLElement, or another QueryPath object (in which case
+   * the first item in the list will be used.)
+   *
+   * @param mixed $markup 
+   *  Markup that will wrap each element in the current list.
+   * @return QueryPath
+   *  The QueryPath object with the wrapping changes made.
+   * @see wrapAll()
+   * @see wrapInner()
+   */
   public function wrap($markup) {
     $data = $this->prepareInsert($markup);
     
@@ -1014,7 +1198,26 @@ final class QueryPath implements IteratorAggregate {
     }
     return $this;  
   }
-  
+  /**
+   * Wrap all elements inside of the given markup.
+   *
+   * So all elements will be grouped together under this single marked up 
+   * item. This works by first determining the parent element of the first item
+   * in the list. It then moves all of the matching elements under the wrapper
+   * and inserts the wrapper where that first element was found. (This is in 
+   * accordance with the way jQuery works.)
+   *
+   * Markup is usually XML in a string, but it can also be a DOMNode, a document
+    * fragment, a SimpleXMLElement, or another QueryPath object (in which case
+    * the first item in the list will be used.)
+    * 
+   * @param string $markup 
+   *  Markup that will wrap all elements in the current list.
+   * @return QueryPath
+   *  The QueryPath object with the wrapping changes made.
+   * @see wrap()
+   * @see wrapInner()
+   */
   public function wrapAll($markup) {
     if ($this->matches->count() == 0) return;
     
@@ -1035,7 +1238,20 @@ final class QueryPath implements IteratorAggregate {
     }
     return $this;
   }
-  
+  /**
+   * Wrap the child elements of each item in the list with the given markup.
+   *
+   * Markup is usually a string, but it can also be a DOMNode, a document
+   * fragment, a SimpleXMLElement, or another QueryPath object (in which case
+   * the first item in the list will be used.)
+   *
+   * @param string $markup 
+   *  Markup that will wrap children of each element in the current list.
+   * @return QueryPath
+   *  The QueryPath object with the wrapping changes made.
+   * @see wrap()
+   * @see wrapAll()
+   */
   public function wrapInner($markup) {
     $data = $this->prepareInsert($markup);
     if ($data->hasChildNodes()) {
@@ -1057,7 +1273,21 @@ final class QueryPath implements IteratorAggregate {
     }
     return $this; 
   }
-  
+  /**
+   * Reduce the set of matches to the deepest child node in the tree.
+   *
+   * This loops through the matches and looks for the deepest child node of all of 
+   * the matches. "Deepest", here, is relative to the nodes in the list. It is 
+   * calculated as the distance from the starting node to the most distant child
+   * node. In other words, it is not necessarily the farthest node from the root
+   * element, but the farthest note from the matched element.
+   *
+   * In the case where there are multiple nodes at the same depth, all of the 
+   * nodes at that depth will be included.
+   *
+   * @return QueryPath
+   *  The QueryPath wrapping the single deepest node.
+   */
   public function deepest() {
     $deepest = 0;
     $winner = new SplObjectStorage();
@@ -1159,11 +1389,32 @@ final class QueryPath implements IteratorAggregate {
     //var_dump($item);
     throw new QueryPathException("Cannot prepare item of unsupported type: " . gettype($item));
   }
-  
+  /**
+   * The tag name of the first element in the list.
+   * @return string
+   *  The tag name of the first element in the list.
+   */
   public function tag() {
     return ($this->size() > 0) ? $this->getFirstMatch()->tagName : '';
   }
-  
+  /**
+   * Remove any items from the list if they match the selector.
+   *
+   * In other words, each item that matches the selector will be remove 
+   * from the DOM document. The returned QueryPath wraps the list of 
+   * removed elements.
+   *
+   * If no selector is specified, this will remove all current matches from
+   * the document.
+   *
+   * @param string $selector
+   *  A CSS Selector.
+   * @return QueryPath
+   *  The Query path wrapping a list of removed items.
+   * @see replaceAll()
+   * @see replaceWith()
+   * @see removeChildren()
+   */
   public function remove($selector = NULL) {
     
     if(!empty($selector))
@@ -1178,7 +1429,30 @@ final class QueryPath implements IteratorAggregate {
     $this->setMatches($found);
     return $this;
   }
-  
+  /**
+   * This replaces everything that matches the selector with the first value
+   * in the current list.
+   *
+   * This is the reverse of replaceWith.
+   *
+   * Unlike jQuery, QueryPath cannot assume a default document. Consequently,
+   * you must specify the intended destination document. If it is omitted, the
+   * present document is assumed to be tthe document. However, that can result
+   * in undefined behavior if the selector and the replacement are not sufficiently
+   * distinct.
+   *
+   * @param string $selector
+   *  The selector.
+   * @param DOMDocument $document
+   *  The destination document.
+   * @return QueryPath
+   *  The QueryPath wrapping the modified document.
+   * @deprecated Due to the fact that this is not a particularly friendly method,
+   *  and that it can be easily replicated using {@see replaceWith()}, it is to be 
+   *  considered deprecated.
+   * @see remove()
+   * @see replaceWith()
+   */
   public function replaceAll($selector, DOMDocument $document) {
     $replacement = $this->size() > 0 ? $this->getFirstMatch() : $this->document->createTextNode('');
     
@@ -1190,7 +1464,22 @@ final class QueryPath implements IteratorAggregate {
       
     return $this;
   }
-  
+  /**
+   * Add more elements to the current set of matches.
+   *
+   * This begins the new query at the top of the DOM again. The results found
+   * when running this selector are then merged into the existing results. In
+   * this way, you can add additional elements to the existing set.
+   *
+   * @param string $selector
+   *  A valid selector.
+   * @return QueryPath
+   *  The QueryPath object with the newly added elements.
+   * @see append()
+   * @see after()
+   * @see andSelf()
+   * @see end()
+   */
   public function add($selector) {
     
     // This is destructive, so we need to set $last:
@@ -1200,7 +1489,38 @@ final class QueryPath implements IteratorAggregate {
       $this->matches->attach($item);
     return $this;
   }
-  
+  /**
+   * Revert to the previous set of matches.
+   *
+   * This will revert back to the last set of matches (before the last 
+   * "destructive" set of operations). This undoes any change made to the set of
+   * matched objects. Functions like {@see find()} and {@see filter()} change the 
+   * list of matched objects. The end() function will revert back to the last set of
+   * matched items.
+   *
+   * Note that functions that modify the document, but do not change the list of 
+   * matched objects, are not "destructive". Thus, calling append('something')->end()
+   * will not undo the append() call.
+   *
+   * Only one level of changes is stored. Reverting beyond that will result in 
+   * an empty set of matches. Example:
+   * <code>
+   * // The line below returns the same thing as qp(document, 'p');
+   * qp(document, 'p')->find('div')->end();
+   * // This returns an empty array:
+   * qp(document, 'p')->end();
+   * // This returns an empty array:
+   * qp(document, 'p')->find('div')->find('span')->end()->end();
+   * </code>
+   *
+   * The last one returns an empty array because only one level of changes is stored.
+   *
+   * @return QueryPath
+   *  A QueryPath object reflecting the list of matches prior to the last destructive
+   *  operation.
+   * @see andSelf()
+   * @see add()
+   */
   public function end() {
     // Note that this does not use setMatches because it must set the previous
     // set of matches to empty array.
@@ -1208,6 +1528,22 @@ final class QueryPath implements IteratorAggregate {
     $this->last = new SplObjectStorage();
     return $this;
   }
+  /**
+   * Combine the current and previous set of matched objects.
+   *
+   * Example:
+   * <code>
+   * qp(document, 'p')->find('div')->andSelf();
+   * </code>
+   * The code above will contain a list of all p elements and all div elements that 
+   * are beneath p elements.
+   *
+   * @see end();
+   * @return QueryPath
+   *  A QueryPath object with the results of the last two "destructive" operations.
+   * @see add()
+   * @see end()
+   */
   public function andSelf() {
     // This is destructive, so we need to set $last:
     $last = $this->matches;
@@ -1217,7 +1553,18 @@ final class QueryPath implements IteratorAggregate {
     $this->last = $last;
     return $this;
   }
-  
+  /**
+   * Remove all child nodes.
+   *
+   * This is equivalent to jQuery's empty() function. (However, empty() is a 
+   * PHP built-in, and cannot be used as a method name.)
+   *
+   * @return QueryPath
+   *  The QueryPath object with the child nodes removed.
+   * @see replaceWith()
+   * @see replaceAll()
+   * @see remove()
+   */
   public function removeChildren() {
     foreach ($this->matches as $m) {
       while($kid = $m->firstChild) {
@@ -1226,7 +1573,22 @@ final class QueryPath implements IteratorAggregate {
     }
     return $this;
   }
-  
+  /**
+   * Get the children of the elements in the QueryPath object.
+   *
+   * If a selector is provided, the list of children will be filtered through
+   * the selector.
+   *
+   * @param string $selector
+   *  A valid selector.
+   * @return QueryPath
+   *  A QueryPath wrapping all of the children.
+   * @see removeChildren()
+   * @see parent()
+   * @see parents()
+   * @see next()
+   * @see prev()
+   */
   public function children($selector = NULL) {
     $found = new SplObjectStorage();
     foreach ($this->matches as $m) {
@@ -1243,7 +1605,22 @@ final class QueryPath implements IteratorAggregate {
     }
     return $this;
   }
-  
+  /**
+   * Get all child nodes (not just elements) of all items in the matched set.
+   *
+   * It gets only the immediate children, not all nodes in the subtree.
+   *
+   * This does not process iframes. Xinclude processing is dependent on the 
+   * DOM implementation and configuration.
+   *
+   * @return QueryPath
+   *  A QueryPath object wrapping all child nodes for all elements in the 
+   *  QueryPath object.
+   * @see find()
+   * @see text()
+   * @see html()
+   * @see xml()
+   */
   public function contents() {
     $found = new SplObjectStorage();
     foreach ($this->matches as $m) {
@@ -1254,7 +1631,28 @@ final class QueryPath implements IteratorAggregate {
     $this->setMatches($found);
     return $this;
   }
-  
+  /**
+   * Get a list of siblings for elements currently wrapped by this object.
+   *
+   * This will compile a list of every sibling of every element in the 
+   * current list of elements. 
+   *
+   * Note that if two siblings are present in the QueryPath object to begin with,
+   * then both will be returned in the matched set, since they are siblings of each 
+   * other. In other words,if the matches contain a and b, and a and b are siblings of 
+   * each other, than running siblings will return a set that contains 
+   * both a and b.
+   *
+   * @param string $selector
+   *  If the optional selector is provided, siblings will be filtered through
+   *  this expression.
+   * @return QueryPath
+   *  The QueryPath containing the matched siblings.
+   * @see contents()
+   * @see children()
+   * @see parent()
+   * @see parents()
+   */
   public function siblings($selector = NULL) {
     $found = new SplObjectStorage();
     foreach ($this->matches as $m) {
@@ -1274,7 +1672,20 @@ final class QueryPath implements IteratorAggregate {
     }
     return $this;
   }
-  
+  /**
+   * Get the immediate parent of each element in the QueryPath.
+   *
+   * If a selector is passed, this will return the nearest matching parent for
+   * each element in the QueryPath.
+   *
+   * @param string $selector
+   *  A valid CSS3 selector.
+   * @return QueryPath
+   *  A QueryPath object wrapping the matching parents.
+   * @see children()
+   * @see siblings()
+   * @see parents()
+   */
   public function parent($selector = NULL) {
     $found = new SplObjectStorage();
     foreach ($this->matches as $m) {
@@ -1298,7 +1709,19 @@ final class QueryPath implements IteratorAggregate {
     $this->setMatches($found);
     return $this;
   }
-  
+  /**
+   * Get all ancestors of each element in the QueryPath.
+   * 
+   * If a selector is present, only matching ancestors will be retrieved.
+   *
+   * @see parent()
+   * @param string $selector
+   *  A valid CSS 3 Selector.
+   * @return QueryPath
+   *  A QueryPath object containing the matching ancestors.
+   * @see siblings()
+   * @see children()
+   */
   public function parents($selector = NULL) {
     $found = new SplObjectStorage();
     foreach ($this->matches as $m) {
@@ -1318,7 +1741,31 @@ final class QueryPath implements IteratorAggregate {
     $this->setMatches($found);
     return $this;
   }
-  
+  /**
+   * Set or get the markup for an element.
+   * 
+   * If $markup is set, then the giving markup will be injected into each
+   * item in the set. All other children of that node will be deleted, and this
+   * new code will be the only child or children. The markup MUST BE WELL FORMED.
+   *
+   * If no markup is given, this will return a string representing the child 
+   * markup of the first node.
+   *
+   * <b>Important:</b> This differs from jQuery's html() function. This function
+   * returns <i>the current node</i> and all of its children. jQuery returns only
+   * the children. This means you do not need to do things like this: 
+   * <code>$qp->parent()->html()</code>.
+   *
+   * By default, this is HTML 4.01, not XHTML. Use {@link xml()} for XHTML.
+   *
+   * @param string $markup
+   *  The text to insert.
+   * @return mixed
+   *  A string if no markup was passed, or a QueryPath if markup was passed.
+   * @see xml()
+   * @see text()
+   * @see contents()
+   */
   public function html($markup = NULL) {
     if (isset($markup)) {
       // Parse the HTML and insert it into the DOM
@@ -1373,7 +1820,18 @@ final class QueryPath implements IteratorAggregate {
     }
     return implode($sep, $tmp);
   }
-  
+  /**
+   * Get or set the text contents of a node.
+   * @param string $text
+   *  If this is not NULL, this value will be set as the text of the node. It
+   *  will replace any existing content.
+   * @return mixed 
+   *  A QueryPath if $text is set, or the text content if no text
+   *  is passed in as a pram.
+   * @see html()
+   * @see xml()
+   * @see contents()
+   */
   public function text($text = NULL) {
     if (isset($text)) {
       $this->removeChildren();
@@ -1386,7 +1844,25 @@ final class QueryPath implements IteratorAggregate {
     foreach ($this->matches as $m) $buf .= $m->textContent;
     return $buf;
   }
-  
+  /**
+   * Set or get the value of an element's 'value' attribute.
+   *
+   * The 'value' attribute is common in HTML form elements. This is a 
+   * convenience function for accessing the values. Since this is not  common
+   * task on the server side, this method may be removed in future releases. (It 
+   * is currently provided for jQuery compatibility.)
+   *
+   * If a value is provided in the params, then the value will be set for all 
+   * matches. If no params are given, then the value of the first matched element
+   * will be returned. This may be NULL.
+   *
+   * @deprecated Just use attr(). There's no reason to use this on the server.
+   * @see attr()
+   * @param string $value
+   * @return mixed
+   *  Returns a QueryPath if a string was passed in, and a string if no string
+   *  was passed in. In the later case, an error will produce NULL.
+   */
   public function val($value = NULL) {
     if (isset($value)) {
       foreach ($this->matches as $m) $m->attr('value', $value);
@@ -1394,7 +1870,28 @@ final class QueryPath implements IteratorAggregate {
     }
     return $this->matches->count() == 0 ? NULL : $this->getFirstMatch()->attr('value');
   }
-  
+  /**
+   * Set or get the XML markup for an element or elements.
+   *
+   * Like {@link html()}, this functions in both a setter and a getter mode.
+   * 
+   * In setter mode, the string passed in will be parsed and then appended to the 
+   * elements wrapped by this QueryPath object.When in setter mode, this parses 
+   * the XML using the DOMFragment parser. For that reason, an XML declaration 
+   * is not necessary.
+   *
+   * In getter mode, the first element wrapped by this QueryPath object will be 
+   * converted to an XML string and returned.
+   *
+   * @param string $markup
+   *  A string containing XML data.
+   * @return mixed
+   *  If markup is passed in, a QueryPath is returned. If no markup is passed
+   *  in, XML representing the first matched element is returned.
+   * @see html()
+   * @see text()
+   * @see content()
+   */
   public function xml($markup = NULL) {
     $omit_xml_decl = $this->options['omit_xml_declaration'];
     if ($markup === TRUE) {
@@ -1427,17 +1924,51 @@ final class QueryPath implements IteratorAggregate {
     }
     return $this->document->saveXML($first);
   }
-  
+  /**
+   * Send the XML document to the client.
+   * 
+   * Write the document to stdout (usually the client).
+   *
+   * This prints the entire document.
+   *
+   * @return QueryPath
+   *  The QueryPath object, unmodified.
+   * @see xml()
+   */
   public function writeXML() {
     print $this->document->saveXML();
     return $this;
   }
-  
+  /**
+   * Send the HTML to the client.
+   *
+   * HTML is formatted as HTML 4.01.
+   * 
+   * Write the document to stdout (usually the client).
+   * @return QueryPath
+   *  The QueryPath object, unmodified.
+   * @see html()
+   */
   public function writeHTML() {
     print $this->document->saveHTML();
     return $this;
   }
-
+  /**
+   * Get the next sibling of each element in the QueryPath.
+   *
+   * If a selector is provided, the next matching sibling will be returned.
+   *
+   * @param string $selector
+   *  A CSS3 selector.
+   * @return QueryPath
+   *  The QueryPath object.
+   * @see nextAll()
+   * @see prev()
+   * @see children()
+   * @see contents()
+   * @see parent()
+   * @see parents()
+   */
   public function next($selector = NULL) {
     $found = new SplObjectStorage();
     foreach ($this->matches as $m) {
@@ -1460,6 +1991,22 @@ final class QueryPath implements IteratorAggregate {
     $this->setMatches($found);
     return $this;
   }
+  /**
+   * Get all siblings after an element.
+   *
+   * For each element in the QueryPath, get all siblings that appear after
+   * it. If a selector is passed in, then only siblings that match the 
+   * selector will be included.
+   *
+   * @param string $selector 
+   *  A valid CSS 3 selector.
+   * @return QueryPath
+   *  The QueryPath object, now containing the matching siblings.
+   * @see next()
+   * @see prevAll()
+   * @see children()
+   * @see siblings()
+   */
   public function nextAll($selector = NULL) {
     $found = new SplObjectStorage();
     foreach ($this->matches as $m) {
@@ -1480,7 +2027,23 @@ final class QueryPath implements IteratorAggregate {
     $this->setMatches($found);
     return $this;
   }
-  
+  /**
+   * Get the next sibling before each element in the QueryPath.
+   *
+   * For each element in the QueryPath, this retrieves the previous sibling
+   * (if any). If a selector is supplied, it retrieves the first matching 
+   * sibling (if any is found).
+   *
+   * @param string $selector
+   *  A valid CSS 3 selector.
+   * @return QueryPath
+   *  A QueryPath object, now containing any previous siblings that have been 
+   *  found.
+   * @see prevAll()
+   * @see next()
+   * @see siblings()
+   * @see children()
+   */
   public function prev($selector = NULL) {
     $found = new SplObjectStorage();
     foreach ($this->matches as $m) {
@@ -1503,6 +2066,22 @@ final class QueryPath implements IteratorAggregate {
     $this->setMatches($found);
     return $this;
   }
+  /**
+   * Get the previous siblings for each element in the QueryPath.
+   *
+   * For each element in the QueryPath, get all previous siblings. If a 
+   * selector is provided, only matching siblings will be retrieved.
+   *
+   * @param string $selector
+   *  A valid CSS 3 selector.
+   * @return QueryPath
+   *  The QueryPath object, now wrapping previous sibling elements.
+   * @see prev()
+   * @see nextAll()
+   * @see siblings()
+   * @see contents()
+   * @see children()
+   */
   public function prevAll($selector = NULL) {
     $found = new SplObjectStorage();
     foreach ($this->matches as $m) {
@@ -1523,7 +2102,9 @@ final class QueryPath implements IteratorAggregate {
     $this->setMatches($found);
     return $this;
   }
-  
+  /**
+   * @deprecated Use {@link siblings()}.
+   */
   public function peers($selector = NULL) {
     $found = new SplObjectStorage();
     foreach ($this->matches as $m) {
@@ -1543,7 +2124,23 @@ final class QueryPath implements IteratorAggregate {
     $this->setMatches($found);
     return $this;
   }
-  
+  /**
+   * Add a class to all elements in the current QueryPath.
+   *
+   * This searchers for a class attribute on each item wrapped by the current 
+   * QueryPath object. If no attribute is found, a new one is added and its value
+   * is set to $class. If a class attribute is found, then the value is appended
+   * on to the end.
+   *
+   * @param string $class 
+   *  The name of the class.
+   * @return QueryPath
+   *  Returns the QueryPath object.
+   * @see css()
+   * @see attr()
+   * @see removeClass()
+   * @see hasClass()
+   */
   public function addClass($class) {
     foreach ($this->matches as $m) {
       if ($m->hasAttribute('class')) {
@@ -1556,6 +2153,38 @@ final class QueryPath implements IteratorAggregate {
     }
     return $this;
   }
+  /**
+   * Remove the named class from any element in the QueryPath that has it.
+   *
+   * This may result in the entire class attribute being removed. If there
+   * are other items in the class attribute, though, they will not be removed.
+   * 
+   * Example:
+   * Consider this XML:
+   * <code>
+   * <element class="first second"/>
+   * </code>
+   *
+   * Executing this fragment of code will remove only the 'first' class:
+   * <code>
+   * qp(document, 'element')->removeClass('first');
+   * </code>
+   *
+   * The resulting XML will be:
+   * <code>
+   * <element class="second"/>
+   * </code>
+   *
+   * To remove the entire 'class' attribute, you should use {@see removeAttr()}.
+   *
+   * @param string $class
+   *  The class name to remove.
+   * @return QueryPath
+   *  The modified QueryPath object.
+   * @see attr()
+   * @see addClass()
+   * @see hasClass()
+   */
   public function removeClass($class) {
     foreach ($this->matches as $m) {
       if ($m->hasAttribute('class')) {
@@ -1574,6 +2203,16 @@ final class QueryPath implements IteratorAggregate {
     }
     return $this;
   }
+  /**
+   * Returns TRUE if any of the elements in the QueryPath have the specified class.
+   *
+   * @param string $class
+   *  The name of the class.
+   * @return boolean 
+   *  TRUE if the class exists in one or more of the elements, FALSE otherwise.
+   * @see addClass()
+   * @see removeClass()
+   */
   public function hasClass($class) {
     foreach ($this->matches as $m) {
       if ($m->hasAttribute('class')) {
@@ -1584,11 +2223,82 @@ final class QueryPath implements IteratorAggregate {
     return FALSE;
   }
 
-
+  /**
+   * Branch the base QueryPath into another one with the same matches.
+   *
+   * This function makes a copy of the QueryPath object, but keeps the new copy 
+   * (initially) pointed at the same matches. This object can then be queried without
+   * changing the original QueryPath. However, changes to the elements inside of this
+   * QueryPath will show up in the QueryPath from which it is branched.
+   * 
+   * Compare this operation with {@link cloneAll()}. The cloneAll() call takes
+   * the current QueryPath object and makes a copy of all of its matches. You continue
+   * to operate on the same QueryPath object, but the elements inside of the QueryPath
+   * are copies of those before the call to cloneAll().
+   *
+   * This, on the other hand, copies <i>the QueryPath</i>, but keeps valid 
+   * references to the document and the wrapped elements. A new query branch is 
+   * created, but any changes will be written back to the same document.
+   *
+   * In practice, this comes in handy when you want to do multiple queries on a part
+   * of the document, but then return to a previous set of matches. (see {@link QPTPL}
+   * for examples of this in practice).
+   *
+   * Example:
+   * <code>
+   * <?php
+   * $qp = qp(QueryPath::HTML_STUB);
+   * $branch = $qp->branch();
+   * $branch->find('title')->text('Title');
+   * $qp->find('body')->text('This is the body')->writeHTML;
+   * ?>
+   * </code>
+   * Notice that in the code, each of the QueryPath objects is doing its own 
+   * query. However, both are modifying the same document. The result of the above 
+   * would look something like this:
+   * <code>
+   * <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+   * <html xmlns="http://www.w3.org/1999/xhtml">
+   * <head>
+   *    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"></meta>
+   *    <title>Title</title>
+   * </head>
+   * <body>This is the body</body>
+   * </html>
+   * </code>
+   *
+   * Notice that while $qp and $banch were performing separate queries, they 
+   * both modified the same document.
+   *
+   * In jQuery or a browser-based solution, you generally do not need a branching
+   * function because there is (implicitly) only one document. In QueryPath, there
+   * is no implicit document. Every document must be explicitly specified (and,
+   * in most cases, parsed -- which is costly). Branching makes it possible to 
+   * work on one document with multiple QueryPath objects.
+   *
+   * @return QueryPath
+   *  A copy of the QueryPath object that points to the same set of elements that
+   *  the original QueryPath was pointing to.
+   * @since 1.1
+   * @see cloneAll()
+   */
   public function branch() {
     return qp($this->matches);
   }
-  
+  /**
+   * Perform a deep clone of each node in the QueryPath.
+   *
+   * This does not clone the QueryPath object, but instead clones the 
+   * list of nodes wrapped by the QueryPath. Every element is deeply 
+   * cloned.
+   *
+   * This method is analogous to jQuery's clone() method.
+   *
+   * This is a destructive operation, which means that end() will revert
+   * the list back to the clone's original.
+   * @see qp()
+   * @return QueryPath
+   */
   public function cloneAll() {
     $found = new SplObjectStorage();
     foreach ($this->matches as $m) $found->attach($m->cloneNode(TRUE));
