@@ -2437,7 +2437,12 @@ final class QueryPath implements IteratorAggregate {
     // If a context is specified, we basically have to do the reading in 
     // two steps:
     if (!empty($context)) {
-      $contents = file_get_contents($filename, FALSE, $context);
+      $contents = @file_get_contents($filename, FALSE, $context);
+      if ($contents == FALSE) {
+        $fmt = 'Failed to load file %s: %s (%s, %s)';
+        $err = error_get_last();
+        throw new QueryPathParseException(sprintf($fmt, $filename, $err['message'], $err['file'], $err['line']));
+      }
       return $this->parseXMLString($contents, $flags);
     }
     
@@ -2454,7 +2459,9 @@ final class QueryPath implements IteratorAggregate {
     }
     if ($r == FALSE) {
       // FIXME: Need more info.
-      throw new QueryPathParseException('Failed to load file ' . $filename);
+      $fmt = 'Failed to load file %s: %s (%s, %s)';
+      $err = error_get_last();
+      throw new QueryPathParseException(sprintf($fmt, $filename, $err['message'], $err['file'], $err['line']));
     }
     return $document;
   }

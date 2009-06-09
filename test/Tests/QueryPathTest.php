@@ -70,6 +70,20 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $this->assertTrue($qp->get(0) instanceof DOMNode);
   }
   
+  /**
+   * @expectedException QueryPathParseException
+   */
+  public function testFailedHTTPLoad() {
+    qp('http://localhost:8877/no_such_file.xml');
+  }
+  
+  /**
+   * @expectedException QueryPathParseException
+   */
+  public function testFailedHTTPLoadWithContext() {
+    qp('http://localhost:8877/no_such_file.xml', NULL, array('foo' => 'bar'));
+  }
+  
   public function testFind() {
     $file = './data.xml';
     $qp = qp($file)->find('#head');
