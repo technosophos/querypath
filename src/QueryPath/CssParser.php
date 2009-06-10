@@ -250,8 +250,9 @@ class CssParser {
    * This begins an event-based parsing process that will 
    * fire events as the selector is handled. A CssEventHandler
    * implementation will be responsible for handling the events.
+   * @throws CssParseException
    */
-  public function parse() /* throws CSSParseException */ {
+  public function parse() {
     $this->scanner->nextToken();
     while ($this->scanner->token !== FALSE) {
       if ($this->DEBUG) {

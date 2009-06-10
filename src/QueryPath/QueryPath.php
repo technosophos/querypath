@@ -62,6 +62,9 @@
  * @license http://opensource.org/licenses/lgpl-2.1.php The GNU Lesser GPL (LGPL) or an MIT-like license.
  * @see QueryPath
  * @see qp()
+ * @see http://querypath.org The QueryPath home page.
+ * @see http://api.querypath.org An online version of the API docs.
+ * @see http://technosophos.com For how-tos and examples.
  * @copyright Copyright (c) 2009, Matt Butcher.
  */
  
@@ -226,6 +229,17 @@ final class QueryPath implements IteratorAggregate {
   
   /**
    * Constructor.
+   *
+   * This should not be called directly. Use the {@link qp()} factory function
+   * instead.
+   *
+   * @param mixed $document 
+   *   A document-like object.
+   * @param string $string
+   *   A CSS 3 Selector
+   * @param array $options
+   *   An associative array of options.
+   * @see qp()
    */
   public function __construct($document = NULL, $string = NULL, $options = array()) {
     $string = trim($string);
