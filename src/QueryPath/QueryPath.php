@@ -402,6 +402,38 @@ final class QueryPath implements IteratorAggregate {
   }
   
   /**
+   * Find something and return a NEW QueryPath object.
+   *
+   * This executes a find() on a copy of the initial QueryPath object, and
+   * then returns the copy. The original QueryPath object will not be modified.
+   *
+   * This basically performs as a <code>branch()->find()</code>. It can be used
+   * to streamline queries.
+   *
+   * Use this if:
+   * - You need to keep track of multiple locations in the same document.
+   *
+   * Normally, you will want to use {@link find()} instead, because it is more 
+   * memory-efficient if you do not need multiple copies of a QueryPath.
+   *
+   * Note that {@link end()} called immediately after this will have no impact.
+   *
+   * @author Ryan Mahoney
+   * @since 2.0
+   * @param string $selector 
+   *  The selector.
+   * @return QueryPath
+   *  A copy of the original QueryPath, but wrapping the results found by 
+   *  searching for the selector. This functions analogously to {@link find()}.
+   * @see find()
+   * @see branch()
+   * @see qp()
+   */
+  public function query ($selector) {
+     return $this->branch()->find($selector);
+  }
+  
+  /**
    * Execute an XPath query and store the results in the QueryPath.
    *
    * Most methods in this class support CSS 3 Selectors. Sometimes, though,
