@@ -373,6 +373,10 @@ final class QueryPath implements IteratorAggregate {
             $this->setMatches($nl->item(0));
             break;
           }
+          else {
+            // If no match is found, we set an empty.
+            $this->noMatches();
+          }
         }
       }
       // Quick search for class values. While the XPath can't do it
@@ -399,38 +403,6 @@ final class QueryPath implements IteratorAggregate {
     //$this->matches = $query->getMatches();
     $this->setMatches($query->getMatches());
     return $this;
-  }
-  
-  /**
-   * Find something and return a NEW QueryPath object.
-   *
-   * This executes a find() on a copy of the initial QueryPath object, and
-   * then returns the copy. The original QueryPath object will not be modified.
-   *
-   * This basically performs as a <code>branch()->find()</code>. It can be used
-   * to streamline queries.
-   *
-   * Use this if:
-   * - You need to keep track of multiple locations in the same document.
-   *
-   * Normally, you will want to use {@link find()} instead, because it is more 
-   * memory-efficient if you do not need multiple copies of a QueryPath.
-   *
-   * Note that {@link end()} called immediately after this will have no impact.
-   *
-   * @author Ryan Mahoney
-   * @since 2.0
-   * @param string $selector 
-   *  The selector.
-   * @return QueryPath
-   *  A copy of the original QueryPath, but wrapping the results found by 
-   *  searching for the selector. This functions analogously to {@link find()}.
-   * @see find()
-   * @see branch()
-   * @see qp()
-   */
-  public function query ($selector) {
-     return $this->branch()->find($selector);
   }
   
   /**
@@ -1814,6 +1786,7 @@ final class QueryPath implements IteratorAggregate {
    */
   public function html($markup = NULL) {
     if (isset($markup)) {
+      
       // Parse the HTML and insert it into the DOM
       //$doc = DOMDocument::loadHTML($markup);
       $doc = $this->document->createDocumentFragment();
@@ -2322,14 +2295,20 @@ final class QueryPath implements IteratorAggregate {
    * in most cases, parsed -- which is costly). Branching makes it possible to 
    * work on one document with multiple QueryPath objects.
    *
+   * @param string $selector
+   *  If a selector is passed in, an additional {@link find()} will be executed
+   *  on the branch before it is returned. (Added in QueryPath 2.0.)
    * @return QueryPath
    *  A copy of the QueryPath object that points to the same set of elements that
    *  the original QueryPath was pointing to.
    * @since 1.1
    * @see cloneAll()
+   * @see find()
    */
-  public function branch() {
-    return qp($this->matches);
+  public function branch($selector = NULL) {
+    $temp = qp($this->matches);
+    if (isset($selector)) $temp->find($selector);
+    return $temp;
   }
   /**
    * Perform a deep clone of each node in the QueryPath.
@@ -2425,6 +2404,17 @@ final class QueryPath implements IteratorAggregate {
     }
   }
   
+  /**
+   * Set the match monitor to empty.
+   *
+   * This preserves history.
+   *
+   * @since 2.0
+   */
+  private function noMatches() {
+    $this->setMatches(NULL);
+  }
+    
   /**
    * A utility function for retriving a match by index.
    *

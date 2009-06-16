@@ -456,6 +456,11 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $html = '<html><head><title>foo</title></head><body>bar</body></html>';
     // We expect a DocType to be prepended:
     $this->assertEquals('<!DOCTYPE', substr(qp($html)->html(), 0, 9));
+    
+    // Check that HTML is not added to empty finds. Note the # is for a special 
+    // case.
+    $this->assertEquals('', qp($html, '#nonexistant')->html('<p>Hello</p>')->html());
+    $this->assertEquals('', qp($html, 'nonexistant')->html('<p>Hello</p>')->html());
   }
   
   public function testXML() {
@@ -625,6 +630,12 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $qp->find('body')->text('This is the body');
     
     $this->assertEquals($qp->top()->find('title')->text(), $branch->top()->find('title')->text());
+    
+    $qp = qp(QueryPath::HTML_STUB);
+    $branch = $qp->branch('title');
+    $branch->find('title')->text('Title');
+    $qp->find('body')->text('This is the body');
+    $this->assertEquals($qp->top()->find('title')->text(), $branch->text());
   }
   
   public function testXpath() {
