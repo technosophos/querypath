@@ -198,34 +198,6 @@ final class QueryPath implements IteratorAggregate {
   private $last = array(); // Last set of matches.
   private $ext = array(); // Extensions array.
   
-  /**
-   * Get the effective options for the current QueryPath object.
-   *
-   * This returns an associative array of all of the options as set
-   * for the current QueryPath object. This includes default options,
-   * options directly passed in via {@link qp()} or the constructor,
-   * an options set in the {@link QueryPathOptions} object.
-   *
-   * The order of merging options is this:
-   *  - Options passed in using {@link qp()} are highest priority, and will
-   *    override other options.
-   *  - Options set with {@link QueryPathOptions} will override default options,
-   *    but can be overridden by options passed into {@link qp()}.
-   *  - Default options will be used when no overrides are present.
-   *
-   * This function will return the options currently used, with the above option
-   * overriding having been calculated already.
-   *
-   * @return array
-   *  An associative array of options, calculated from defaults and overridden 
-   *  options. 
-   * @see qp()
-   * @see QueryPathOptions::set()
-   * @see QueryPathOptions::merge()
-   */
-  public function getOptions() {
-    return $this->options;
-  }
   
   /**
    * Constructor.
@@ -317,6 +289,35 @@ final class QueryPath implements IteratorAggregate {
       $this->ext = QueryPathExtensionRegistry::getExtensions($this);
     }
     */
+  }
+  
+  /**
+   * Get the effective options for the current QueryPath object.
+   *
+   * This returns an associative array of all of the options as set
+   * for the current QueryPath object. This includes default options,
+   * options directly passed in via {@link qp()} or the constructor,
+   * an options set in the {@link QueryPathOptions} object.
+   *
+   * The order of merging options is this:
+   *  - Options passed in using {@link qp()} are highest priority, and will
+   *    override other options.
+   *  - Options set with {@link QueryPathOptions} will override default options,
+   *    but can be overridden by options passed into {@link qp()}.
+   *  - Default options will be used when no overrides are present.
+   *
+   * This function will return the options currently used, with the above option
+   * overriding having been calculated already.
+   *
+   * @return array
+   *  An associative array of options, calculated from defaults and overridden 
+   *  options. 
+   * @see qp()
+   * @see QueryPathOptions::set()
+   * @see QueryPathOptions::merge()
+   */
+  public function getOptions() {
+    return $this->options;
   }
   
   /**
@@ -2474,18 +2475,41 @@ final class QueryPath implements IteratorAggregate {
     // two steps:
     if (!empty($context)) {
       $contents = @file_get_contents($filename, FALSE, $context);
+      // $file = fopen($filename, 'r', FALSE, $context);
+      // $md = stream_get_meta_data($file);
+      // $contents = stream_get_contents($file);
+      // fclose($file);
       if ($contents == FALSE) {
         $fmt = 'Failed to load file %s: %s (%s, %s)';
         $err = error_get_last();
         throw new QueryPathParseException(sprintf($fmt, $filename, $err['message'], $err['file'], $err['line']));
       }
+      
+      /* This is basically unneccessary overhead, as it is not more
+       * accurate than the existing method.
+      if (isset($md['wrapper_type']) &&  $md['wrapper_type'] == 'http') {
+        for ($i = 0; $i < count($md['wrapper_data']); ++$i) {
+          if (stripos($md['wrapper_data'][$i], 'content-type:') !== FALSE) {
+            $ct = trim(substr($md['wrapper_data'][$i], 12));
+            if (stripos('text/html') === 0) {
+              $this->parseXMLString($contents, $flags, 'text/html');
+            }
+            else {
+              // We can't account for all of the mime types that have
+              // an XML payload, so we set it to XML.
+              $this->parseXMLString($contents, $flags, 'text/xml');
+            }
+            break;
+          }
+        }
+      }
+      */
+      
       return $this->parseXMLString($contents, $flags);
     }
     
     $document = new DOMDocument();
     $lastDot = strrpos($filename, '.');
-    // FIXME: @ should be replaced with better error handling. 
-    // We lose the real error.
     if ($lastDot !== FALSE && strtolower(substr($filename, $lastDot)) == '.html') {
       // Try parsing it as HTML.
       $r = @$document->loadHTMLFile($filename);
@@ -2494,7 +2518,6 @@ final class QueryPath implements IteratorAggregate {
       $r = @$document->load($filename, $flags);
     }
     if ($r == FALSE) {
-      // FIXME: Need more info.
       $fmt = 'Failed to load file %s: %s (%s, %s)';
       $err = error_get_last();
       throw new QueryPathParseException(sprintf($fmt, $filename, $err['message'], $err['file'], $err['line']));
