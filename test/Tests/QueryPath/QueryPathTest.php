@@ -396,8 +396,28 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
    */
   public function testAppendBadMarkup() {
     $file = './data.xml';
-    qp($file, 'root')->append('<foo><bar></foo>');
+    try{
+      qp($file, 'root')->append('<foo><bar></foo>');
+    }
+    catch (Exception $e) {
+      //print $e->getMessage();
+      throw $e;
+    }
   }
+  
+  /**
+    * @expectedException QueryPathException
+    */
+   public function testAppendBadObject() {
+     $file = './data.xml';
+     try{
+       qp($file, 'root')->append(new stdClass);
+     }
+     catch (Exception $e) {
+       //print $e->getMessage();
+       throw $e;
+     }
+   }
   
   public function testAppendTo() {
     $file = './data.xml';

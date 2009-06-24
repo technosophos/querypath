@@ -975,6 +975,8 @@ final class QueryPath implements IteratorAggregate {
    *  The QueryPath object.
    * @see appendTo()
    * @see prepend()
+   * @throws QueryPathException
+   *  Thrown if $data is an unsupported object type.
    */
   public function append($data) {
     $data = $this->prepareInsert($data);
@@ -1022,6 +1024,8 @@ final class QueryPath implements IteratorAggregate {
    *  be modified.
    * @see append()
    * @see prependTo()
+   * @throws QueryPathException
+   *  Thrown if $data is an unsupported object type.
    */
   public function appendTo(QueryPath $dest) {
     foreach ($this->matches as $m) $dest->append($m);
@@ -1039,6 +1043,8 @@ final class QueryPath implements IteratorAggregate {
    * @see before()
    * @see after()
    * @see prependTo()
+   * @throws QueryPathException
+   *  Thrown if $data is an unsupported object type.
    */
   public function prepend($data) {
     $data = $this->prepareInsert($data);
@@ -1069,6 +1075,8 @@ final class QueryPath implements IteratorAggregate {
    *  The destination QueryPath object.
    * @return QueryPath
    *  The original QueryPath, unmodified. NOT the destination QueryPath.
+   * @throws QueryPathException
+   *  Thrown if $data is an unsupported object type.
    */
   public function prependTo(QueryPath $dest) {
     foreach ($this->matches as $m) $dest->prepend($m);
@@ -1088,6 +1096,8 @@ final class QueryPath implements IteratorAggregate {
    * @see after()
    * @see append()
    * @see prepend()
+   * @throws QueryPathException
+   *  Thrown if $data is an unsupported object type.
    */
   public function before($data) {
     $data = $this->prepareInsert($data);
@@ -1111,6 +1121,8 @@ final class QueryPath implements IteratorAggregate {
    * @see before()
    * @see insertAfter()
    * @see appendTo()
+   * @throws QueryPathException
+   *  Thrown if $data is an unsupported object type.
    */
   public function insertBefore(QueryPath $dest) {
     foreach ($this->matches as $m) $dest->before($m);
@@ -1127,6 +1139,8 @@ final class QueryPath implements IteratorAggregate {
    * @see after()
    * @see insertBefore()
    * @see append()
+   * @throws QueryPathException
+   *  Thrown if $data is an unsupported object type.
    */
   public function insertAfter(QueryPath $dest) {
     foreach ($this->matches as $m) $dest->after($m);
@@ -1145,6 +1159,8 @@ final class QueryPath implements IteratorAggregate {
    *  The QueryPath object (with the items inserted).
    * @see before()
    * @see append()
+   * @throws QueryPathException
+   *  Thrown if $data is an unsupported object type.
    */
   public function after($data) {
     $data = $this->prepareInsert($data);
@@ -1371,6 +1387,9 @@ final class QueryPath implements IteratorAggregate {
    * - If the item is a DOMNode, it is imported into the current DOM if necessary.
    * - If the item is a SimpleXMLElement, it is converted into a DOM node and then
    *   imported.
+   *
+   * @throws QueryPathException
+   *  Thrown if the object passed in is not of a supprted object type.
    */
   protected function prepareInsert($item) {
     if(empty($item)) {
