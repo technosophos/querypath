@@ -1862,7 +1862,7 @@ final class QueryPath implements IteratorAggregate {
       if ($filterEmpties) {
         if (strlen($trimmed) > 0) $tmp[] = $txt;
       }
-      // Else add even emptes
+      // Else add all content, even if it's empty.
       else {
         $tmp[] = $txt;
       }
