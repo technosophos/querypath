@@ -6,6 +6,16 @@
 require_once 'PHPUnit/Framework.php';
 require_once '../src/QueryPath/CssEventHandler.php';
 
+class CssTokenTest extends PHPUnit_Framework_TestCase {
+  public function testName() {
+    
+    $this->assertEquals('character', (CssToken::name(0)));
+    $this->assertEquals('a legal non-alphanumeric character', (CssToken::name(99)));
+    $this->assertEquals('end of file', (CssToken::name(FALSE)));
+    $this->assertEquals(0, strpos(CssToken::name(22),'illegal character'));
+  }
+}
+
 /**
  * Tests for QueryPathCssEventHandler class.
  */

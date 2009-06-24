@@ -200,7 +200,7 @@ final class CssToken {
       'colon', 'right parenthesis', 'left parenthesis', 'plus', 'tilde',
       'equals', 'vertical bar', 'comma', 'space', 'quote', 'single quote',
       'backslash', 'carat', 'dollar', 'at');
-    if (isset($a[$const_int])) {
+    if (isset($a[$const_int]) && is_numeric($const_int)) {
       return $a[$const_int];
     }
     elseif ($const_int == 99) {
