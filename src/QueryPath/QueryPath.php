@@ -795,7 +795,9 @@ final class QueryPath implements IteratorAggregate {
     
     $i = 0;
     foreach ($this->matches as $m) {
-      if ($m === $subject) return $i;
+      if ($m === $subject) {
+        return $i;
+      }
       ++$i;
     }
     return FALSE;
@@ -1887,10 +1889,10 @@ final class QueryPath implements IteratorAggregate {
    */
   public function val($value = NULL) {
     if (isset($value)) {
-      foreach ($this->matches as $m) $m->attr('value', $value);
-      return;
+      $this->attr('value', $value);
+      return $this;
     }
-    return $this->matches->count() == 0 ? NULL : $this->getFirstMatch()->attr('value');
+    return $this->attr('value');
   }
   /**
    * Set or get the XML markup for an element or elements.

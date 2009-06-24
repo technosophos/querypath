@@ -181,6 +181,14 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     
   }
   
+  public function testVal() {
+    $qp = qp('<?xml version="1.0"?><foo><bar value="test"/></foo>', 'bar');
+    $this->assertEquals('test', $qp->val());
+    
+    $qp = qp('<?xml version="1.0"?><foo><bar/></foo>', 'bar')->val('test');
+    $this->assertEquals('test', $qp->attr('value'));
+  }
+  
   public function testCss() {
     $file = './data.xml';
     $this->assertEquals('foo: bar', qp($file, 'unary')->css('foo', 'bar')->attr('style'));
@@ -207,6 +215,14 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $file = './data.xml';
     $this->assertTrue(qp($file)->find('#one')->is('#one'));
     $this->assertTrue(qp($file)->find('li')->is('#one'));
+  }
+  
+  public function testIndex() {
+    $xml = '<?xml version="1.0"?><foo><bar id="one"/><baz id="two"/></foo>';
+    $qp = qp($xml, 'bar');
+    $e1 = $qp->get(0);
+    $this->assertEquals(0, $qp->find('bar')->index($e1));
+    $this->assertFalse($qp->top()->find('#two')->index($e1));
   }
   
   public function testFilter() {
