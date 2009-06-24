@@ -585,7 +585,7 @@ final class QueryPath implements IteratorAggregate {
       foreach ($name as $key => $val) {
         $buf[] = sprintf($format, $key, $val);
       }
-      implode(';', $buf);
+      $css = implode(';', $buf);
     }
     else {
       $css = sprintf($format, $name, $value);
@@ -2464,11 +2464,13 @@ final class QueryPath implements IteratorAggregate {
    * @return DOMDocumentFragment 
    *   The parsed document fragment.
    */
+   /*
   private function parseXMLFragment($string) {
     $frag = $this->document->createDocumentFragment();
     $frag->appendXML($string);
     return $frag;
   }
+  */
   
   /**
    * Parse an XML or HTML file.

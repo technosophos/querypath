@@ -200,6 +200,7 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $file = './data.xml';
     $this->assertEquals('foo: bar', qp($file, 'unary')->css('foo', 'bar')->attr('style'));
     $this->assertEquals('foo: bar', qp($file, 'unary')->css('foo', 'bar')->css());
+    $this->assertEquals('foo: bar', qp($file, 'unary')->css(array('foo' =>'bar'))->css()); 
   }
   
   public function testRemoveAttr() {
@@ -254,6 +255,19 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $file = './data.xml';
     $cb = array($this, 'filterCallbackFunction');
     $this->assertEquals(2, qp($file, 'li')->filterCallback($cb)->size());
+  }
+  
+  public function testNot() {
+    $file = './data.xml';
+    
+    // Test with selector
+    $qp = qp($file, 'li:odd')->not('#one');
+    $this->assertEquals(2, $qp->size());
+    
+    // Test with DOM Element
+    $qp = qp($file, 'li');
+    $el = $qp->branch()->find('#one')->get(0);
+    $this->assertEquals(4, $qp->not($el)->size());
   }
   
   public function testSlice() {
