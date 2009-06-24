@@ -2389,17 +2389,6 @@ final class QueryPath implements IteratorAggregate {
     
     if (empty($document)) {
       throw new QueryPathParseException('Unknown parser exception.');
-      /*
-      $fmt = 'Failed to parse markup: %s (%s, %s)';
-      $err = error_get_last();
-      if ($err['type'] & self::IGNORE_ERRORS) {
-        // Need to report these somehow...
-        throw new QueryPathParseWarning($err['message']);
-      }
-      else {
-        throw new QueryPathParseException(sprintf($fmt, $err['message'], $err['file'], $err['line']));
-      }
-      */
     }
     return $document;
   }
@@ -2858,7 +2847,7 @@ class QueryPathOptions {
    *  Associative array of options to merge into the existing options.
    */
   static function merge($array) {
-    self::$options += $array;
+    self::$options = $array + self::$options;
   }
   
   /**
@@ -2910,5 +2899,3 @@ class QueryPathParseException extends QueryPathException {
     throw new QueryPathParseException($str, $code, $file, $line);
   }
 }
-
-class QueryPathParseWarning extends QueryPathParseException {}

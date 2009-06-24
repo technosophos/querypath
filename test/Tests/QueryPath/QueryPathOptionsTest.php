@@ -36,4 +36,23 @@ class QueryPathOptionsTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($expect['test2'], $qpOpts['test2']);
   }
   
+  public function testQPHas() {
+    $options = array('test1' => 'val1', 'test2' => 'val2');
+    
+    QueryPathOptions::set($options);
+    $this->assertTrue(QueryPathOptions::has('test1'));
+    $this->assertFalse(QueryPathOptions::has('test3'));
+  }
+  public function testQPMerge() {
+    $options = array('test1' => 'val1', 'test2' => 'val2');
+    $options2 = array('test1' => 'val3', 'test4' => 'val4');
+    
+    QueryPathOptions::set($options);
+    QueryPathOptions::merge($options2);
+    
+    $results = QueryPathOptions::get();
+    $this->assertTrue(QueryPathOptions::has('test4'));
+    $this->assertEquals('val3', $results['test1']);
+  }
+  
 }

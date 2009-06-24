@@ -71,6 +71,13 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
   }
   
   /**
+   * @expectedException QueryPathException
+   */
+  public function testFailedObjectConstruction() {
+    qp(new stdClass());
+  }
+  
+  /**
    * @expectedException QueryPathParseException
    */
   public function testFailedHTTPLoad() {
