@@ -273,6 +273,16 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $cb = array($this, 'noSuchFunction');
     qp($file, 'li')->filterCallback($cb)->size();
   }
+
+  /**
+   * @expectedException QueryPathException
+   */
+  public function testFailedMapCallback() {
+    $file = './data.xml';
+    $cb = array($this, 'noSuchFunction');
+    qp($file, 'li')->map($cb)->size();
+  }
+
   
   public function testNot() {
     $file = './data.xml';
@@ -538,6 +548,9 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
   
   public function testWrap() {
     $file = './data.xml';
+    $xml = qp($file,'unary')->wrap('');
+    $this->assertTrue($xml instanceof QueryPath);
+    
     $xml = qp($file,'unary')->wrap('<test id="testWrap"></test>')->get(0)->ownerDocument->saveXML();
     $this->assertEquals(1, qp($xml, '#testWrap')->get(0)->childNodes->length);
     
@@ -550,6 +563,10 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
   
   public function testWrapAll() {
     $file = './data.xml';
+    
+    $xml = qp($file,'unary')->wrapAll('');
+    $this->assertTrue($xml instanceof QueryPath);
+    
     $xml = qp($file,'unary')->wrapAll('<test id="testWrap"></test>')->get(0)->ownerDocument->saveXML();
     $this->assertEquals(1, qp($xml, '#testWrap')->get(0)->childNodes->length);
     
@@ -560,6 +577,9 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
   
   public function testWrapInner() {
     $file = './data.xml';
+    
+    $this->assertTrue(qp($file,'#inner-one')->wrapInner('') instanceof QueryPath);
+    
     $xml = qp($file,'#inner-one')->wrapInner('<test class="testWrap"></test>')->get(0)->ownerDocument->saveXML();
     // FIXME: 9 includes text nodes. Should fix this.
     $this->assertEquals(9, qp($xml, '.testWrap')->get(0)->childNodes->length);

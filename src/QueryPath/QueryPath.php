@@ -1219,6 +1219,11 @@ final class QueryPath implements IteratorAggregate {
   public function wrap($markup) {
     $data = $this->prepareInsert($markup);
     
+    // If the markup passed in is empty, we don't do any wrapping.
+    if (empty($data)) {
+      return $this;
+    }
+    
     foreach ($this->matches as $m) {
       $copy = $data->firstChild->cloneNode(TRUE);
       
@@ -1249,9 +1254,9 @@ final class QueryPath implements IteratorAggregate {
    * accordance with the way jQuery works.)
    *
    * Markup is usually XML in a string, but it can also be a DOMNode, a document
-    * fragment, a SimpleXMLElement, or another QueryPath object (in which case
-    * the first item in the list will be used.)
-    * 
+   * fragment, a SimpleXMLElement, or another QueryPath object (in which case
+   * the first item in the list will be used.)
+   * 
    * @param string $markup 
    *  Markup that will wrap all elements in the current list.
    * @return QueryPath
@@ -1263,6 +1268,11 @@ final class QueryPath implements IteratorAggregate {
     if ($this->matches->count() == 0) return;
     
     $data = $this->prepareInsert($markup);
+    
+    if (empty($data)) {
+      return $this;
+    }
+    
     if ($data->hasChildNodes()) {
       $deepest = $this->deepestNode($data); 
       // FIXME: Does this need fixing?
@@ -1295,6 +1305,10 @@ final class QueryPath implements IteratorAggregate {
    */
   public function wrapInner($markup) {
     $data = $this->prepareInsert($markup);
+    
+    // No data? Short circuit.
+    if (empty($data)) return $this;
+    
     if ($data->hasChildNodes()) {
       $deepest = $this->deepestNode($data); 
       // FIXME: ???
