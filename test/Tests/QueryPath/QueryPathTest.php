@@ -328,6 +328,15 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('test', $res->eq(1)->attr('class'));
   }
   
+  /**
+   * @expectedException QueryPathException
+   */
+  public function testEachOnInvalidCallback() {
+    $file = './data.xml';
+    $fn = 'eachCallbackFunctionFake';
+    $res = qp($file, 'li')->each(array($this, $fn));
+  }
+  
   public function testEachLambda() {
     $file = './data.xml';
     $fn = 'qp($item)->attr("class", "foo");';
@@ -389,6 +398,13 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $simp = simplexml_load_file($file);
     $qp = qp('<?xml version="1.0"?><foo/>')->append($simp);
     $this->assertEquals(1, $qp->find('root')->size());
+    
+    // Test with replace entities turned on:
+    $qp = qp($file, 'root', array('replace_entities' => TRUE))->append('<p>&raquo;</p>');
+    $this->assertEquals('<p>»</p>', $qp->find('p')->html());
+    
+    // Test with empty, mainly to make sure it doesn't explode.
+    $this->assertTrue(qp($file)->append('') instanceof QueryPath);
   }
   
   /**

@@ -930,7 +930,7 @@ final class QueryPath implements IteratorAggregate {
       }
     }
     else {
-      throw new Exception('Callback is not callable.');
+      throw new QueryPathException('Callback is not callable.');
     }
     return $this;
   }
@@ -1398,7 +1398,6 @@ final class QueryPath implements IteratorAggregate {
     elseif (is_string($item)) {
       // If configured to do so, replace all entities.
       if ($this->options['replace_entities']) {
-        print "Replacing entities" . PHP_EOL;
         $item = QueryPathEntities::replaceAllEntities($item);
       }
       
