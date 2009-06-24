@@ -74,14 +74,77 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
    * @expectedException QueryPathParseException
    */
   public function testFailedHTTPLoad() {
-    qp('http://localhost:8877/no_such_file.xml');
+    try {
+      qp('http://localhost:8877/no_such_file.xml');
+    }
+    catch (Exception $e) {
+      //print $e->getMessage();
+      throw $e;
+    }
   }
   
   /**
    * @expectedException QueryPathParseException
    */
   public function testFailedHTTPLoadWithContext() {
-    qp('http://localhost:8877/no_such_file.xml', NULL, array('foo' => 'bar'));
+    try {
+      qp('http://localhost:8877/no_such_file.xml', NULL, array('foo' => 'bar'));
+    }
+    catch (Exception $e) {
+      //print $e->getMessage();
+      throw $e;
+    }
+  }
+  
+  /**
+   * @expectedException QueryPathParseException
+   */
+  public function testFailedParseHTMLElement() {
+    try {
+      qp('<foo>&foonator;</foo>', NULL);
+    }
+    catch (Exception $e) {
+      //print $e->getMessage();
+      throw $e;
+    }
+  }
+
+  /**
+   * @expectedException QueryPathParseException
+   */
+  public function testFailedParseXMLElement() {
+    try {
+      qp('<?xml version="1.0"?><foo><bar>foonator;</foo>', NULL);
+    }
+    catch (Exception $e) {
+      //print $e->getMessage();
+      throw $e;
+    }
+  }
+  /**
+   * @expectedException QueryPathParseException
+   */  
+  public function testFailedParseNonMarkup() {
+    try {
+      qp('<23dfadf', NULL);
+    }
+    catch (Exception $e) {
+      //print $e->getMessage();
+      throw $e;
+    }
+  }
+  
+  /**
+   * @expectedException QueryPathParseException
+   */
+  public function testFailedParseEntity() {
+    try {
+      qp('<?xml version="1.0"?><foo>&foonator;</foo>', NULL);
+    }
+    catch (Exception $e) {
+      //print $e->getMessage();
+      throw $e;
+    }
   }
   
   public function testFind() {

@@ -188,6 +188,8 @@ final class QueryPath implements IteratorAggregate {
   
   const DEFAULT_PARSER_FLAGS = NULL;
   
+  const IGNORE_ERRORS = 1544; //E_NOTICE | E_USER_WARNING | E_USER_NOTICE;
+  
   private $document = NULL;
   private $options = array(
     'parser_flags' => NULL,
@@ -2363,15 +2365,39 @@ final class QueryPath implements IteratorAggregate {
   private function parseXMLString($string, $flags = NULL) {
     $document = new DOMDocument();
     $lead = strtolower(substr($string, 0, 5)); // <?xml
-    if ($lead == '<?xml') {
-      //print htmlentities($string);
-      if ($this->options['replace_entities']) {
-        $string = QueryPathEntities::replaceAllEntities($string);
+    try {
+      set_error_handler(array('QueryPathParseException', 'initializeFromError'));
+      if ($lead == '<?xml') {
+        //print htmlentities($string);
+        if ($this->options['replace_entities']) {
+          $string = QueryPathEntities::replaceAllEntities($string);
+        }
+        $document->loadXML($string, $flags);
       }
-      $document->loadXML($string, $flags);
+      else {
+        $document->loadHTML($string);
+      }
     }
-    else {
-      $document->loadHTML($string);
+    // Emulate 'finally' behavior.
+    catch (Exception $e) {
+      restore_error_handler();
+      throw $e;
+    }
+    restore_error_handler();
+    
+    if (empty($document)) {
+      throw new QueryPathParseException('Unknown parser exception.');
+      /*
+      $fmt = 'Failed to parse markup: %s (%s, %s)';
+      $err = error_get_last();
+      if ($err['type'] & self::IGNORE_ERRORS) {
+        // Need to report these somehow...
+        throw new QueryPathParseWarning($err['message']);
+      }
+      else {
+        throw new QueryPathParseException(sprintf($fmt, $err['message'], $err['file'], $err['line']));
+      }
+      */
     }
     return $document;
   }
@@ -2468,22 +2494,31 @@ final class QueryPath implements IteratorAggregate {
    *  parsing path is followed: The file is loaded by PHP's stream-aware IO
    *  facilities, read entirely into memory, and then handed off to 
    *  {@link parseXMLString()}. On large files, this can have a performance impact.
+   * @throws QueryPathParseException 
+   *  Thrown when a file cannot be loaded or parsed.
    */
   private function parseXMLFile($filename, $flags = NULL, $context = NULL) {
     
     // If a context is specified, we basically have to do the reading in 
     // two steps:
     if (!empty($context)) {
-      $contents = @file_get_contents($filename, FALSE, $context);
-      // $file = fopen($filename, 'r', FALSE, $context);
-      // $md = stream_get_meta_data($file);
-      // $contents = stream_get_contents($file);
-      // fclose($file);
-      if ($contents == FALSE) {
-        $fmt = 'Failed to load file %s: %s (%s, %s)';
-        $err = error_get_last();
-        throw new QueryPathParseException(sprintf($fmt, $filename, $err['message'], $err['file'], $err['line']));
+      try {
+        set_error_handler(array('QueryPathParseException', 'initializeFromError'));
+        $contents = file_get_contents($filename, FALSE, $context);
+        
       }
+      // Apparently there is no 'finally' in PHP, so we have to restore the error
+      // handler this way:
+      catch(Exception $e) {
+        restore_error_handler();
+        throw $e;
+      }
+      restore_error_handler();
+      
+      if ($contents == FALSE) {
+        throw new QueryPathParseException(sprintf('Contents of the file %s could not be retrieved.', $filename));
+      }
+      
       
       /* This is basically unneccessary overhead, as it is not more
        * accurate than the existing method.
@@ -2510,18 +2545,42 @@ final class QueryPath implements IteratorAggregate {
     
     $document = new DOMDocument();
     $lastDot = strrpos($filename, '.');
-    if ($lastDot !== FALSE && strtolower(substr($filename, $lastDot)) == '.html') {
-      // Try parsing it as HTML.
-      $r = @$document->loadHTMLFile($filename);
+    
+    try {
+      set_error_handler(array('QueryPathParseException', 'initializeFromError'));
+      if ($lastDot !== FALSE && strtolower(substr($filename, $lastDot)) == '.html') {
+        // Try parsing it as HTML.
+        $r = $document->loadHTMLFile($filename);
+      }
+      else {
+        $r = $document->load($filename, $flags);
+      }
+      
     }
-    else {
-      $r = @$document->load($filename, $flags);
+    // Emulate 'finally' behavior.
+    catch (Exception $e) {
+      restore_error_handler();
+      throw $e;
     }
+    restore_error_handler();
+    
+    
+    
+    /*
     if ($r == FALSE) {
       $fmt = 'Failed to load file %s: %s (%s, %s)';
       $err = error_get_last();
-      throw new QueryPathParseException(sprintf($fmt, $filename, $err['message'], $err['file'], $err['line']));
+      if ($err['type'] & self::IGNORE_ERRORS) {
+        // Need to report these somehow...
+        trigger_error($err['message'], E_USER_WARNING);
+      }
+      else {
+        throw new QueryPathParseException(sprintf($fmt, $filename, $err['message'], $err['file'], $err['line']));
+      }
+      
+      //throw new QueryPathParseException(sprintf($fmt, $filename, $err['message'], $err['file'], $err['line']));
     }
+    */
     return $document;
   }
   
@@ -2827,7 +2886,8 @@ class QueryPathParseException extends QueryPathException {
   const ERR_MSG_FORMAT = 'Parse error in %s on line %d column %d: %s (%d)';
   const WARN_MSG_FORMAT = 'Parser warning in %s on line %d column %d: %s (%d)';
   // trigger_error
-  public function __construct($msg = '', $code = 0) {
+  public function __construct($msg = '', $code = 0, $file = NULL, $line = NULL) {
+
     $msgs = array();
     foreach(libxml_get_errors() as $err) {
       $format = $err->level == LIBXML_ERR_WARNING ? self::WARN_MSG_FORMAT : self::ERR_MSG_FORMAT;
@@ -2835,6 +2895,18 @@ class QueryPathParseException extends QueryPathException {
     }
     $msg .= implode("\n", $msgs);
     
+    if (isset($file)) {
+      $msg .= ' (' . $file;
+      if (isset($line)) $msg .= ': ' . $line;
+      $msg .= ')';
+    }
+    
     parent::__construct($msg, $code);
   }
+  
+  public static function initializeFromError($code, $str, $file, $line, $cxt) {
+    throw new QueryPathParseException($str, $code, $file, $line);
+  }
 }
+
+class QueryPathParseWarning extends QueryPathParseException {}

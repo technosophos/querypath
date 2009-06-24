@@ -14,6 +14,7 @@ require_once 'QueryPathTest.php';
  * Run all of the usual tests, plus some extras, with some extensions loaded.
  */
 class QueryPathExtensionTest extends QueryPathTest {
+//class QueryPathExtensionTest extends PHPUnit_Framework_TestCase {
  public function testExtensions() {
    $this->assertNotNull(qp());
  }
