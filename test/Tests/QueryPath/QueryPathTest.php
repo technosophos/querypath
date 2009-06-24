@@ -384,6 +384,19 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     // This seems to be working as expected -- libxml emits
     // parse errors.
     //$this->assertEquals(NULL, qp()->append('<test'));
+    
+    // Test loading SimpleXML.
+    $simp = simplexml_load_file($file);
+    $qp = qp('<?xml version="1.0"?><foo/>')->append($simp);
+    $this->assertEquals(1, $qp->find('root')->size());
+  }
+  
+  /**
+   * @expectedException QueryPathParseException
+   */
+  public function testAppendBadMarkup() {
+    $file = './data.xml';
+    qp($file, 'root')->append('<foo><bar></foo>');
   }
   
   public function testAppendTo() {

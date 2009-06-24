@@ -1384,11 +1384,16 @@ final class QueryPath implements IteratorAggregate {
       }
       
       $frag = $this->document->createDocumentFragment();
-      if ($frag->appendXML($item) === FALSE) {
-        // Return NULL instead of a broken fragment.
-        // Practically speaking, this is probably unnecessary.
-        return; 
+      try {
+        set_error_handler(array('QueryPathParseException', 'initializeFromError'));
+        $frag->appendXML($item);
       }
+      // Simulate a finally block.
+      catch (Exception $e) {
+        restore_error_handler();
+        throw $e;
+      }
+      restore_error_handler();
       return $frag;
     }
     elseif ($item instanceof QueryPath) {
