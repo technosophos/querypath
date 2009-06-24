@@ -619,6 +619,13 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     // case.
     $this->assertEquals('', qp($html, '#nonexistant')->html('<p>Hello</p>')->html());
     $this->assertEquals('', qp($html, 'nonexistant')->html('<p>Hello</p>')->html());
+    
+    // We expect NULL if the document is empty.
+    $this->assertNull(qp()->html());
+    
+    // Non-DOMNodes should not be rendered:
+    $fn = 'mapCallbackFunction';
+    $this->assertNull(qp($file, 'li')->map(array($this, $fn))->html());
   }
   
   public function testXML() {
@@ -628,8 +635,19 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($xml, $qp->xml($xml)->find('b')->xml());
     
     $xml = '<html><head><title>foo</title></head><body>bar</body></html>';
-    // We expect a DocType to be prepended:
+    // We expect an XML declaration to be prepended:
     $this->assertEquals('<?xml', substr(qp($xml, 'html')->xml(), 0, 5));
+    
+    // We don't want an XM/L declaration if xml(TRUE).
+    $xml = '<?xml version="1.0"?><foo/>';
+    $this->assertFalse(strpos(qp($xml)->xml(TRUE), '<?xml'));
+    
+    // We expect NULL if the document is empty.
+    $this->assertNull(qp()->xml());
+    
+    // Non-DOMNodes should not be rendered:
+    $fn = 'mapCallbackFunction';
+    $this->assertNull(qp($file, 'li')->map(array($this, $fn))->xml());
   }
   
   public function testWriteXML() {

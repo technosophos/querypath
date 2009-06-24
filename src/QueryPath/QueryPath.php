@@ -1831,6 +1831,12 @@ final class QueryPath implements IteratorAggregate {
     }
     // Only return the first item -- that's what JQ does.
     $first = $this->getFirstMatch();
+
+    // Catch cases where first item is not a legit DOM object.
+    if (!($first instanceof DOMNode)) {
+      return NULL;
+    }
+    
     if ($first instanceof DOMDocument || $first->isSameNode($first->ownerDocument->documentElement)) {
       return $this->document->saveHTML();
     }
