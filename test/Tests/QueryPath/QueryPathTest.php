@@ -326,6 +326,10 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals(5, $res->size());
     $this->assertFalse($res->get(4)->getAttribute('class') === NULL);
     $this->assertEquals('test', $res->eq(1)->attr('class'));
+    
+    // Test when each runs out of things to test before returning.
+    $res = qp($file, '#one')->each(array($this, $fn));
+    $this->assertEquals(1, $res->size());
   }
   
   /**
@@ -500,7 +504,12 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
   }
   
   public function testReplaceAll() {
-    // TODO: write unit test for this.
+    $qp1 = qp('<?xml version="1.0"?><root><l/><l/></root>');
+    $doc = qp('<?xml version="1.0"?><bob><m/><m/></bob>')->get(0)->ownerDocument;
+    
+    $qp2 = $qp1->find('l')->replaceAll('m', $doc);
+    
+    $this->assertEquals(2, $qp2->top()->find('l')->size());
   }
   
   public function testWrap() {

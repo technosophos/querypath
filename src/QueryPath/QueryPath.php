@@ -1505,10 +1505,12 @@ final class QueryPath implements IteratorAggregate {
     $c = new QueryPathCssEventHandler($document);
     $c->find($selector);
     $temp = $c->getMatches();
-    foreach ($temp as $item)
-      $item->parentNode->replaceChild($item, $replacement);
-      
-    return $this;
+    foreach ($temp as $item) {
+      $node = $replacement->cloneNode();
+      $node = $document->importNode($node);
+      $item->parentNode->replaceChild($node, $item);
+    }
+    return qp($document);
   }
   /**
    * Add more elements to the current set of matches.
