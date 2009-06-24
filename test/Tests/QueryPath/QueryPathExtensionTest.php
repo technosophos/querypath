@@ -30,6 +30,21 @@ class QueryPathExtensionTest extends QueryPathTest {
  /**
   * @expectedException QueryPathException
   */
+ public function testNoRegistry() {
+   QueryPathExtensionRegistry::$useRegistry = FALSE;
+   try {
+    qp('./data.xml')->stuble('arg1', 'arg2'); 
+   }
+   catch (QueryPathException $e) {
+     QueryPathExtensionRegistry::$useRegistry = TRUE;
+     throw $e;
+   }
+   
+ }
+ 
+ /**
+  * @expectedException QueryPathException
+  */
  public function testCallFailure() {
    qp()->foo();
  }

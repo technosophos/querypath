@@ -73,6 +73,14 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
   /**
    * @expectedException QueryPathException
    */
+  public function testFailedCall() {
+    // This should hit __call() and then fail.
+    qp()->fooMethod();
+  }
+  
+  /**
+   * @expectedException QueryPathException
+   */
   public function testFailedObjectConstruction() {
     qp(new stdClass());
   }
@@ -257,6 +265,15 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals(2, qp($file, 'li')->filterCallback($cb)->size());
   }
   
+  /**
+   * @expectedException QueryPathException
+   */
+  public function testFailedFilterCallback() {
+    $file = './data.xml';
+    $cb = array($this, 'noSuchFunction');
+    qp($file, 'li')->filterCallback($cb)->size();
+  }
+  
   public function testNot() {
     $file = './data.xml';
     
@@ -268,6 +285,13 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $qp = qp($file, 'li');
     $el = $qp->branch()->find('#one')->get(0);
     $this->assertEquals(4, $qp->not($el)->size());
+    
+    // Test with array of DOM Elements
+    $qp = qp($file, 'li');
+    $arr = $qp->get();
+    $this->assertEquals(count($arr), $qp->size());
+    array_shift($arr);
+    $this->assertEquals(1, $qp->not($arr)->size());
   }
   
   public function testSlice() {
@@ -553,6 +577,9 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
   public function testHasClass() {
     $file = './data.xml';
     $this->assertTrue(qp($file, '#inner-one')->hasClass('innerClass'));
+    
+    $file = './data.xml';
+    $this->assertFalse(qp($file, '#inner-one')->hasClass('noSuchClass'));
   }
   
   public function testAddClass() {

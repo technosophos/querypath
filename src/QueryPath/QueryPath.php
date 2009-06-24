@@ -765,7 +765,9 @@ final class QueryPath implements IteratorAggregate {
       foreach ($this->matches as $m) if ($m !== $selector) $found->attach($m); 
     }
     elseif (is_array($selector)) {
-      foreach ($this->matches as $m) if (!in_array($m, $selector)) $found->attach($m); 
+      foreach ($this->matches as $m) {
+        if (!in_array($m, $selector, TRUE)) $found->attach($m);
+      }
     }
     elseif ($selector instanceof SplObjectStorage) {
       foreach ($this->matches as $m) if ($selector->contains($m)) $found->attach($m); 
