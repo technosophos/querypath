@@ -262,6 +262,9 @@ class QueryPathCssEventHandler implements CssEventHandler {
     if (!empty($nsuri)) {
       $matches = $this->candidateList();
       foreach ($matches as $item) {
+        if ($item instanceOf DOMNode && $nsuri == $item->namespaceURI) {
+          $found->attach($item);
+        }
         $nl = $item->getElementsByTagNameNS($nsuri, '*');
         //if (!empty($nl)) $found = array_merge($found, $this->nodeListToArray($nl));
         $this->attachNodeList($nl, $found);
@@ -799,6 +802,7 @@ class QueryPathCssEventHandler implements CssEventHandler {
    *
    * This is used by pseudo-class handlers.
    */
+   /*
   protected function childAtIndex($index, $tagName = NULL) {
     $restrictToElement = !$this->findAnyElement;
     $matches = $this->candidateList();
@@ -856,13 +860,14 @@ class QueryPathCssEventHandler implements CssEventHandler {
         }
       } // End foreach
     }
-  }
+    
+  }*/
   
   /**
    * Pseudo-class handler for nth-of-type-child.
    * Not implemented.
    */
-  protected function nthOfTypeChild($groupSize, $elementInGroup) {
+  protected function nthOfTypeChild($groupSize, $elementInGroup, $lastChild) {
     // EXPERIMENTAL: New in Quark. This should be substantially faster 
     // than the old (jQuery-ish) version. It still has E_STRICT violations
     // though.

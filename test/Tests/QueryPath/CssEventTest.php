@@ -169,6 +169,21 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     
   }
   
+  public function testAnyElementInNS() {
+    $xml = '<?xml version="1.0" ?><ns1:test xmlns:ns1="urn:foo/bar"><ns1:inside/>Text<ns1:inside/></ns1:test>';
+    $doc = new DomDocument();
+    $doc->loadXML($xml);
+    
+    // Test handing it a DOM Document
+    $handler = new QueryPathCssEventHandler($doc);
+    $handler->find('ns1|*');
+    $matches = $handler->getMatches();
+    
+    $this->assertEquals(3, $matches->count());
+    $match = $this->firstMatch($matches);
+    $this->assertEquals('ns1:test', $match->tagName);
+  }
+  
   public function testAnyElement() {
     $xml = '<?xml version="1.0" ?><test><inside/>Text<inside/></test>';
     $doc = new DomDocument();
@@ -455,7 +470,7 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
   }
   
   // Test removed so I can re-declare 
-  // listPeerElemens as private.
+  // listPeerElements as private.
   public function xtestListPeerElements() {
     $xml = '<?xml version="1.0" ?>
     <test>
@@ -476,6 +491,27 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $peers = $handler->listPeerElements($this->firstMatch($matches));
     $this->assertEquals(6, count($peers));
   }
+  /*
+  public function testChildAtIndex() {
+    $xml = '<?xml version="1.0" ?>
+    <test>
+      <i class="odd" id="one"/>
+      <i class="even" id="two"/>
+      <i class="odd" id="three"/>
+      <i class="even" id="four"/>
+      <i class="odd" id="five"/>
+      <e class="even" id="six"/>
+    </test>';
+    $doc = new DomDocument();
+    $doc->loadXML($xml);
+    
+    // Test full list
+    $handler = new QueryPathCssEventHandler($doc);
+    $handler->find('test:child-at-index(1)');
+    $matches = $handler->getMatches();
+    $this->assertEquals(1, $matches->count());
+    $this->assertEquals('one', $this->nthMatch($matches, 1)->getAttribute('id'));
+  }*/
   
   public function testPseudoClassNthChild() {
     $xml = '<?xml version="1.0" ?>
@@ -795,6 +831,60 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $matches = $handler->getMatches();
     $this->assertEquals(1, $matches->count());
     $this->assertEquals('two', $this->firstMatch($matches)->getAttribute('id'));
+  }
+  
+  public function testPseudoClassNthFirstOfType() {
+    $xml = '<?xml version="1.0" ?>
+    <test>
+      <n class="odd" id="one"/>
+      <i class="even" id="two"/>
+      <i class="odd" id="three"/>
+    </test>';
+    $doc = new DomDocument();
+    $doc->loadXML($xml);
+    
+    // Test alternate rows from the end.
+    $handler = new QueryPathCssEventHandler($doc);
+    $handler->find('i:first-of-type(1)');
+    $matches = $handler->getMatches();
+    $this->assertEquals(1, $matches->count());
+    $this->assertEquals('two', $this->firstMatch($matches)->getAttribute('id'));
+  }
+
+  public function testPseudoClassLastOfType() {
+    $xml = '<?xml version="1.0" ?>
+    <test>
+      <n class="odd" id="one"/>
+      <i class="even" id="two"/>
+      <i class="odd" id="three"/>
+    </test>';
+    $doc = new DomDocument();
+    $doc->loadXML($xml);
+    
+    // Test alternate rows from the end.
+    $handler = new QueryPathCssEventHandler($doc);
+    $handler->find('i:last-of-type(odd)');
+    $matches = $handler->getMatches();
+    $this->assertEquals(1, $matches->count());
+    $this->assertEquals('three', $this->firstMatch($matches)->getAttribute('id'));
+  }
+  
+  public function testPseudoNthClassLastOfType() {
+    $xml = '<?xml version="1.0" ?>
+    <test>
+      <n class="odd" id="one"/>
+      <i class="even" id="two"/>
+      <i class="odd" id="three"/>
+    </test>';
+    $doc = new DomDocument();
+    $doc->loadXML($xml);
+    
+    // Test alternate rows from the end.
+    $handler = new QueryPathCssEventHandler($doc);
+    $handler->find('i:nth-last-of-type(1)');
+    $matches = $handler->getMatches();
+    $this->assertEquals(1, $matches->count());
+    $this->assertEquals('three', $this->firstMatch($matches)->getAttribute('id'));
   }
 
   public function testPseudoClassEmpty() {
