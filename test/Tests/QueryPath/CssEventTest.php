@@ -103,6 +103,28 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $this->assertEquals('inside', $match->tagName);
   }
   
+  public function testElementNS() {
+    $xml = '<?xml version="1.0" ?><t:test xmlns:t="urn:foo/bar"><t:inside id="first"/>Text<t:inside/><inside/></t:test>';
+    $doc = new DomDocument();
+    $doc->loadXML($xml);
+
+    // Basic test
+    $handler = new QueryPathCssEventHandler($doc);
+    $handler->find('t|inside');
+    $matches = $handler->getMatches();
+    $this->assertEquals(2, $matches->count());
+    $match = $this->firstMatch($matches);
+    $this->assertEquals('t:inside', $match->tagName);
+    
+    // Basic test
+    $handler = new QueryPathCssEventHandler($doc);
+    $handler->find('t|test');
+    $matches = $handler->getMatches();
+    $this->assertEquals(1, $matches->count());
+    $match = $this->firstMatch($matches);
+    $this->assertEquals('t:test', $match->tagName);
+  }
+  
   public function testElement() {
     $xml = '<?xml version="1.0" ?><test><inside id="first"/>Text<inside/></test>';
     $doc = new DomDocument();

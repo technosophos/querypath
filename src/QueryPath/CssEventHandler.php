@@ -218,6 +218,18 @@ class QueryPathCssEventHandler implements CssEventHandler {
       
       //$nsuri = $item->lookupNamespaceURI($namespace);
       $nsuri = $this->dom->lookupNamespaceURI($namespace);
+      
+      // XXX: Presumably the base item needs to be checked. Spec isn't
+      // too clear, but there are three possibilities:
+      // - base should always be checked (what we do here)
+      // - base should never be checked (only children)
+      // - base should only be checked if it is the root node
+      if ($item instanceof DOMNode 
+          && $item->namespaceURI == $nsuri 
+          && $lname == $item->localName) {
+        $found->attach($item);
+      }
+      
       if (!empty($nsuri)) {
         $nl = $item->getElementsByTagNameNS($nsuri, $lname);
         // If something is found, merge them:
@@ -262,6 +274,11 @@ class QueryPathCssEventHandler implements CssEventHandler {
     if (!empty($nsuri)) {
       $matches = $this->candidateList();
       foreach ($matches as $item) {
+        // XXX: Presumably the base item needs to be checked. Spec isn't
+        // too clear, but there are three possibilities:
+        // - base should always be checked (what we do here)
+        // - base should never be checked (only children)
+        // - base should only be checked if it is the root node
         if ($item instanceOf DOMNode && $nsuri == $item->namespaceURI) {
           $found->attach($item);
         }
