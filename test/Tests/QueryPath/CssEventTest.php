@@ -1215,6 +1215,14 @@ class CssEventParserTests extends PHPUnit_Framework_TestCase {
     
     $parser = new CssParser('*|mytest', $mock);
     $parser->parse();
+    
+    $mock = $this->getMock('TestCssEventHandler', array('anyElementInNS'));
+    $mock->expects($this->once())
+      ->method('anyElementInNS')
+      ->with($this->equalTo('*'));
+    
+    $parser = new CssParser('*|*', $mock);
+    $parser->parse();
   }
   
   public function testAnyElement() {
@@ -1340,6 +1348,24 @@ class CssEventParserTests extends PHPUnit_Framework_TestCase {
     $parser->parse();
   }
   
+  /**
+   * @expectedException CSSParseException
+   */
+  public function testIllegalAttribute() {
+    
+    // Note that this is designed to test throwError() as well as 
+    // bad selector handling.
+    
+    $parser = new CssParser('[test=~far]', new TestCssEventHandler());
+    try {
+      $parser->parse();
+    }
+    catch (Exception $e) {
+      //print $e->getMessage();
+      throw $e;
+    }
+  }
+  
   public function testAttribute() {
     $selectors = array(
       'element[attr]' => 'attr',
@@ -1370,6 +1396,13 @@ class CssEventParserTests extends PHPUnit_Framework_TestCase {
       // This behavior is displayed in the spec, but not accounted for in the 
       // grammar:
       '*[attr=value]' => array('attr','value',CssEventHandler::isExactly),
+      
+      // Should be able to escape chars using backslash.
+      '*[attr="\.value"]' => array('attr','\.value',CssEventHandler::isExactly),
+      
+      // Should return an empty value. It seems, though, that a value should be
+      // passed here.
+      '*[attr=""]' => array('attr','',CssEventHandler::isExactly),
     );
     foreach ($selectors as $filter => $expected) {
       $mock = $this->getMock('TestCssEventHandler', array('attribute'));
@@ -1381,7 +1414,7 @@ class CssEventParserTests extends PHPUnit_Framework_TestCase {
       $parser->parse();
     }
   }
-  
+    
   public function testAttributeNS() {
     $selectors = array(
       '*[ns|attr="value"]' => array('attr', 'ns', 'value',CssEventHandler::isExactly),
