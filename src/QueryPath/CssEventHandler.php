@@ -763,7 +763,7 @@ class QueryPathCssEventHandler implements CssEventHandler {
    * This is now necessary because internal matches are no longer represented
    * as arrays.
    * @since QueryPath 2.0
-   */
+   *//*
   private function reverseMatches() {
     // Reverse the candidate list. There must be a better way of doing
     // this.
@@ -772,7 +772,7 @@ class QueryPathCssEventHandler implements CssEventHandler {
     
     $this->found = new SplObjectStorage();
     foreach ($arr as $item) $this->found->attach($item);
-  }
+  }*/
   
   /**
    * Pseudo-class handler for :nth-last-child and related pseudo-classes.
@@ -794,7 +794,7 @@ class QueryPathCssEventHandler implements CssEventHandler {
    *  element name (tagName) as $element.
    * @return
    *  Array of peer elements.
-   */
+   *//*
   protected function listPeerElements($element, $requireSameTag = FALSE) {
     $peers = array();
     $parent = $element->parentNode;
@@ -813,7 +813,7 @@ class QueryPathCssEventHandler implements CssEventHandler {
     }
     return $peers;
   }
-  
+  */
   /**
    * Get the nth child (by index) from matching candidates.
    *

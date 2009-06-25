@@ -452,6 +452,12 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $this->assertEquals('three', $match->getAttribute('id'));
   }
   
+  public function testPseudoClassLink() {
+    $xml = '<?xml version="1.0"?><a><b href="foo"/><c href="foo"/></a>';
+    $qp = qp($xml, ':link');
+    $this->assertEquals(2, $qp->size());
+  }
+  
   public function testPseudoClassXReset() {
     $xml = '<?xml version="1.0" ?>
     <test>
