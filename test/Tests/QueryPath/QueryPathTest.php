@@ -723,6 +723,13 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     
     // We expect an XML declaration at the top.
     $this->assertEquals('<?xml', substr($out, 0, 5));
+    
+    // Test writing to a file:
+    $name = './' . __FUNCTION__ . '.xml';
+    qp($xml)->writeXML($name);
+    $this->assertTrue(file_exists($name));
+    $this->assertTrue(qp($name) instanceof QueryPath);
+    //unlink($name);
   }
   
   public function testWriteHTML() {

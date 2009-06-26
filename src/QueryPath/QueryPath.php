@@ -1998,7 +1998,8 @@ final class QueryPath implements IteratorAggregate {
   /**
    * Send the XML document to the client.
    * 
-   * Write the document to stdout (usually the client).
+   * Write the document to a file path, if given, or 
+   * to stdout (usually the client).
    *
    * This prints the entire document.
    *
@@ -2006,8 +2007,13 @@ final class QueryPath implements IteratorAggregate {
    *  The QueryPath object, unmodified.
    * @see xml()
    */
-  public function writeXML() {
-    print $this->document->saveXML();
+  public function writeXML($path = NULL) {
+    if ($path == NULL) {
+      print $this->document->saveXML();
+    }
+    else {
+      $this->document->save($path);
+    }
     return $this;
   }
   /**
