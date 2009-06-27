@@ -26,6 +26,10 @@ class QueryPathEntitiesTest extends PHPUnit_Framework_TestCase {
     $test = '&&& ';
     $expect = '&#38;&#38;&#38; ';
     $this->assertEquals($expect, QueryPathEntities::replaceAllEntities($test));
+    
+    $test = "&eacute;\n";
+    $expect = "&#233;\n";
+    $this->assertEquals($expect, QueryPathEntities::replaceAllEntities($test));
   }
   
   public function testReplaceHexEntities() {

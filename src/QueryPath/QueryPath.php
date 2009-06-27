@@ -2003,9 +2003,15 @@ final class QueryPath implements IteratorAggregate {
    *
    * This prints the entire document.
    *
+   * @param string $path
+   *  The path to the file into which the XML should be written. if 
+   *  this is NULL, data will be written to STDOUT, which is usually
+   *  sent to the remote browser.
    * @return QueryPath
    *  The QueryPath object, unmodified.
    * @see xml()
+   * @throws Exception 
+   *  In the event that a file cannot be written, an Exception will be thrown.
    */
   public function writeXML($path = NULL) {
     if ($path == NULL) {
@@ -2019,15 +2025,26 @@ final class QueryPath implements IteratorAggregate {
   /**
    * Send the HTML to the client.
    *
-   * HTML is formatted as HTML 4.01.
+   * HTML is formatted as HTML 4.01, without strict XML unary tags.
    * 
    * Write the document to stdout (usually the client).
+   * @param string $path
+   *  The path to the file into which the XML should be written. if 
+   *  this is NULL, data will be written to STDOUT, which is usually
+   *  sent to the remote browser.
    * @return QueryPath
    *  The QueryPath object, unmodified.
    * @see html()
+   * @throws Exception 
+   *  In the event that a file cannot be written, an Exception will be thrown.
    */
-  public function writeHTML() {
-    print $this->document->saveHTML();
+  public function writeHTML($path = NULL) {
+    if ($path == NULL) {
+      print $this->document->saveHTML();
+    }
+    else {
+      $this->document->saveHTMLFile($path);
+    }
     return $this;
   }
   /**

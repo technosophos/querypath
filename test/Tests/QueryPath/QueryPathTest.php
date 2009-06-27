@@ -729,7 +729,35 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     qp($xml)->writeXML($name);
     $this->assertTrue(file_exists($name));
     $this->assertTrue(qp($name) instanceof QueryPath);
-    //unlink($name);
+    unlink($name);
+  }
+  
+  /**
+   * @expectedException Exception
+   */
+  public function testFailWriteXML() {
+    try {
+      qp()->writeXML('./no-writing.xml');
+    }
+    catch (Exception $e) {
+      //print $e->getMessage();
+      throw $e;
+    }
+    
+  }
+  
+  /**
+   * @expectedException Exception
+   */
+  public function testFailWriteHTML() {
+    try {
+      qp()->writeXML('./no-writing.xml');
+    }
+    catch (Exception $e) {
+      //print $e->getMessage();
+      throw $e;
+    }
+    
   }
   
   public function testWriteHTML() {
@@ -770,6 +798,13 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     
     // We expect a doctype declaration at the top.
     $this->assertEquals('<!DOC', substr($out, 0, 5));
+    
+    // Test writing to a file:
+    $name = './' . __FUNCTION__ . '.html';
+    qp($xml)->writeXML($name);
+    $this->assertTrue(file_exists($name));
+    $this->assertTrue(qp($name) instanceof QueryPath);
+    unlink($name);
   }
   
   public function testText() {
