@@ -697,6 +697,28 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $this->assertNull(qp($file, 'li')->map(array($this, $fn))->xml());
   }
   
+  public function testXHTML() {
+    $file = './data.xml';
+    $qp = qp($file, 'unary');
+    $xml = '<b>test</b>';
+    $this->assertEquals($xml, $qp->xml($xml)->find('b')->xhtml());
+    
+    $xml = '<html><head><title>foo</title></head><body>bar</body></html>';
+    // We expect an XML declaration to be prepended:
+    $this->assertEquals('<?xml', substr(qp($xml, 'html')->xhtml(), 0, 5));
+    
+    // We don't want an XM/L declaration if xml(TRUE).
+    $xml = '<?xml version="1.0"?><foo/>';
+    $this->assertFalse(strpos(qp($xml)->xhtml(TRUE), '<?xml'));
+    
+    // We expect NULL if the document is empty.
+    $this->assertNull(qp()->xhtml());
+    
+    // Non-DOMNodes should not be rendered:
+    $fn = 'mapCallbackFunction';
+    $this->assertNull(qp($file, 'li')->map(array($this, $fn))->xhtml());
+  }
+  
   public function testWriteXML() {
     $xml = '<?xml version="1.0"?><html><head><title>foo</title></head><body>bar</body></html>';
     
@@ -732,12 +754,61 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     unlink($name);
   }
   
+  public function testWriteXHTML() {
+    $xml = '<?xml version="1.0"?><html><head><title>foo</title></head><body>bar</body></html>';
+    
+    if (!ob_start()) die ("Could not start OB.");
+    qp($xml, 'tml')->writeXHTML();
+    $out = ob_get_contents();
+    ob_end_clean();
+    
+    // We expect an XML declaration at the top.
+    $this->assertEquals('<?xml', substr($out, 0, 5));
+    
+    $xml = '<?xml version="1.0"?><html><head><script>
+    <!-- 
+    1 < 2;
+    -->
+    </script>
+    <![CDATA[This is CDATA]]>
+    <title>foo</title></head><body>bar</body></html>';
+    
+    if (!ob_start()) die ("Could not start OB.");
+    qp($xml, 'tml')->writeXHTML();
+    $out = ob_get_contents();
+    ob_end_clean();
+    
+    // We expect an XML declaration at the top.
+    $this->assertEquals('<?xml', substr($out, 0, 5));
+    
+    // Test writing to a file:
+    $name = './' . __FUNCTION__ . '.xml';
+    qp($xml)->writeXHTML($name);
+    $this->assertTrue(file_exists($name));
+    $this->assertTrue(qp($name) instanceof QueryPath);
+    unlink($name);
+  }
+  
   /**
    * @expectedException Exception
    */
   public function testFailWriteXML() {
     try {
       qp()->writeXML('./no-writing.xml');
+    }
+    catch (Exception $e) {
+      //print $e->getMessage();
+      throw $e;
+    }
+    
+  }
+  
+  /**
+   * @expectedException Exception
+   */
+  public function testFailWriteXHTML() {
+    try {
+      qp()->writeXHTML('./no-writing.xml');
     }
     catch (Exception $e) {
       //print $e->getMessage();

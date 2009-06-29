@@ -1942,6 +1942,21 @@ final class QueryPath implements IteratorAggregate {
     return $this->attr('value');
   }
   /**
+   * Set or get XHTML markup for an element or elements.
+   * 
+   * This differs from {@link html()} in that it processes (and produces)
+   * strictly XML 1.0 compliant markup.
+   *
+   * Like {@link xml()} and {@link html()}, this functions as both a 
+   * setter and a getter.
+   *
+   * This is a convenience function for fetching HTML in XML format.
+   * It does no processing of the markup (such as schema validation).
+   */
+  public function xhtml($markup = NULL) {
+    return $this->xml($markup);
+  }
+  /**
    * Set or get the XML markup for an element or elements.
    *
    * Like {@link html()}, this functions in both a setter and a getter mode.
@@ -1959,6 +1974,7 @@ final class QueryPath implements IteratorAggregate {
    * @return mixed
    *  If markup is passed in, a QueryPath is returned. If no markup is passed
    *  in, XML representing the first matched element is returned.
+   * @see xhtml()
    * @see html()
    * @see text()
    * @see content()
@@ -2023,11 +2039,13 @@ final class QueryPath implements IteratorAggregate {
     return $this;
   }
   /**
-   * Send the HTML to the client.
+   * Writes HTML to output.
    *
-   * HTML is formatted as HTML 4.01, without strict XML unary tags.
+   * HTML is formatted as HTML 4.01, without strict XML unary tags. This is for
+   * legacy HTML content. Modern XHTML should be written using {@link toXHTML()}.
    * 
-   * Write the document to stdout (usually the client).
+   * Write the document to stdout (usually the client) or to a file.
+   *
    * @param string $path
    *  The path to the file into which the XML should be written. if 
    *  this is NULL, data will be written to STDOUT, which is usually
@@ -2046,6 +2064,27 @@ final class QueryPath implements IteratorAggregate {
       $this->document->saveHTMLFile($path);
     }
     return $this;
+  }
+  
+  /**
+   * Write an XHTML file to output.
+   *
+   * Typically, you should use this instead of {@link writeHTML()}.
+   *
+   * Currently, this functions identically to {@link toXML()}. It will
+   * write the file as well-formed XML. No XML schema validation is done.
+   *
+   * @see toXML()
+   * @see xml()
+   * @see toHTML()
+   * @param string $path
+   *  The filename of the file to write to.
+   * @throws Exception
+   *  In the event that the output file cannot be written, an exception is
+   *  thrown.
+   */
+  public function writeXHTML($path = NULL) {
+    return $this->writeXML($path);
   }
   /**
    * Get the next sibling of each element in the QueryPath.
