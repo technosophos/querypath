@@ -2,3 +2,6 @@ bin
 *.tmproj
 releases
 test/coverage
+test/reports
+test/db
+docs/*

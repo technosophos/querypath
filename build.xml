@@ -71,6 +71,23 @@ an MIT license. See COPYING-LGPL.txt and COPYING-MIT.txt for details.
       <fileset refid="licensefiles"/>
     </copy>
     <tar destfile="QueryPath-${version}-minimal.tgz" compression="gzip" basedir="${releasedir}"/>
+    <tar destfile="QueryPath-${version}-minimal.zip" basedir="${releasedir}"/>
+  </target>
+  
+  <target name="fullBuild" description="Full QueryPath build, including docs." depends="docs">
+    <property name="releasedir" value="${builddir}/QueryPath-${version}-full"/>
+    <delete dir="${releasedir}" />
+    <mkdir dir="${releasedir}"/>
+    <copy todir="${releasedir}">
+      <fileset refid="sourcecode"/>
+      <fileset refid="unittests"/>
+      <fileset refid="examplecode"/>
+    </copy>
+    <copy todir="${releasedir}">
+      <fileset refid="licensefiles"/>
+    </copy>
+    <tar destfile="QueryPath-${version}-minimal.tgz" compression="gzip" basedir="${releasedir}"/>
+    <tar destfile="QueryPath-${version}-minimal.zip" basedir="${releasedir}"/>
   </target>
   
   <!-- Check syntax -->
