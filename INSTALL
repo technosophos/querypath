@@ -1,8 +1,47 @@
+INSTALLING QUERYPATH
+==============================
+
+There are two distributions of QueryPath: 
+
+1. The full version, which includes source, documentation, unit tests, 
+and examples.
+
+2. The minimal version, which includes only the source code in 
+compacted form.
+
+INSTALLING THE MINIMAL VERSION
+==============================
+To install QueryPath-minimal:
+- Extract the contents of the archive:
+  
+  tar -zxvf QueryPath-2.0-minimal.tgz
+
+- Move the extracted directory to the desired location. Generally,
+  it is best to rename this folder 'QueryPath'. 
+
+  mv QueryPath-2.0-minimal myproject/QueryPath
+  
+- Include QueryPath in your scripts:
+
+  require 'QueryPath/QueryPath.php';
+  
+- The minimal package does not contain any documentation. To view
+  the documentation online, go to http://api.querypath.org.
+
+INSTALLING THE FULL VERSION
+==============================
 To install QueryPath:
 
 - Extract the contents of the archive.
+
+  tar -zxvf QueryPath-2.0.tgz
+
 - Copy the src/QueryPath directory to the desired location.
+
+  cp QueryPath-2.0/src/QueryPath myproject
+  
 - Include QueryPath/QueryPath.php in your PHP scripts
 
-For more information, visit https://fedorahosted.org/querypath and 
-http://querypath.org.
+  require 'QueryPath/QueryPath.php';
+
+For more information, visit http://querypath.org.

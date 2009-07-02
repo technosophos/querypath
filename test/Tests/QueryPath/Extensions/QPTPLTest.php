@@ -7,8 +7,8 @@
  */
 
 require_once 'PHPUnit/Framework.php';
-require_once '../src/QueryPath/QueryPath.php';
-require_once '../src/QueryPath/Extension/QPTPL.php';
+require_once 'src/QueryPath/QueryPath.php';
+require_once 'src/QueryPath/Extension/QPTPL.php';
 
 class QPTPLTest extends PHPUnit_Framework_TestCase {
   
@@ -151,7 +151,7 @@ class FixtureTwo {
   private $db;
   
   public function __construct() {
-    $this->db = new PDO('sqlite:./db/qpTest2.db');
+    $this->db = new PDO('sqlite:./test/db/qpTest2.db');
     $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $this->db->exec('CREATE TABLE IF NOT EXISTS test (message TEXT)');
     $this->db->exec('INSERT INTO test (message) VALUES ("This is a message")');

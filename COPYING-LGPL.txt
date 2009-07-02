@@ -1,4 +1,5 @@
 QueryPath: Find Your Way
+Matt Butcher <mbutcher@aleph-null.tv>
 Copyright (C) 2009 Matt Butcher
 
 This library is free software; you can redistribute it and/or

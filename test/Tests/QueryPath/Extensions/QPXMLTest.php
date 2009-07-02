@@ -7,12 +7,12 @@
  */
 
 require_once 'PHPUnit/Framework.php';
-require_once '../src/QueryPath/QueryPath.php';
-require_once '../src/QueryPath/Extension/QPXML.php';
+require_once 'src/QueryPath/QueryPath.php';
+require_once 'src/QueryPath/Extension/QPXML.php';
 
 class QPXMLTests extends PHPUnit_Framework_TestCase {
   
-  protected $file = './advanced.xml';
+  protected $file = './test/advanced.xml';
   
   public function testCDATA() {
     $this->assertEquals('This is a CDATA section.', qp($this->file, 'first')->cdata());

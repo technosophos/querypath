@@ -1,0 +1,161 @@
+<?xml version="1.0"?>
+<project 
+  name="QueryPath" 
+  description="A simple, powerful, robust tool for working with XML, HTML, and HTTP"
+  default="ftest">
+<!--
+This is the Phing build file for QueryPath.
+
+Phing is a build tool. Learn more about it at http://phing.info.
+
+Copyright (c) 2009, Matt Butcher, some rights reserved.
+
+License:
+This file is released under the GNU LGPL 2.1 or, at your preference,
+an MIT license. See COPYING-LGPL.txt and COPYING-MIT.txt for details.
+-->
+
+  <!-- Global properties -->
+  <property name="srcdir" value="./src"/>
+  <property name="testdir" value="./test"/>
+  <property name="builddir" value="./bin"/>
+  
+  <!-- Default version -->
+  <property name="version" value="dev"/>
+  
+  <!-- Files that must be included in the release -->
+  <fileset id="licensefiles" dir=".">
+    <include name="README"/>
+    <include name="INSTALL"/>
+    <include name="LGPL-2.1.txt"/>
+    <include name="COPYING-LGPL.txt"/>
+    <include name="COPYING-MIT.txt"/>
+  </fileset>
+  
+  <!-- Files to be treated as source code -->
+  <fileset id="sourcecode" dir="${srcdir}">
+    <include name="**/*.php" />
+  </fileset>
+  
+  <!-- Unit tests and auxilliary files -->
+  <fileset id="unittests" dir="${testdir}/Tests">
+    <include name="**/*Test.php" />
+  </fileset>
+  
+  <!-- Examples -->
+  <fileset id="examplecode" dir="./examples">
+    <include name="**/*" />
+  </fileset>
+  
+  <!-- DocBook Tutorials -->
+  <fileset id="tutorials" dir="./tutorials">
+    <include name="**/*" />
+  </fileset>
+
+  <target name="build"></target>
+  
+  <target name="minimalBuild" description="Minimal QueryPath build.">
+    <property name="releasedir" value="${builddir}/QueryPath-${version}-minimal"/>
+    <delete dir="${releasedir}" />
+    <mkdir dir="${releasedir}"/>
+    <copy todir="${releasedir}">
+      <filterchain>
+        <stripphpcomments/>
+        <stripwhitespace/>
+      </filterchain>
+      <fileset dir="${srcdir}/QueryPath">
+        <include name="**/*"/>
+      </fileset>
+    </copy>
+    <copy todir="${releasedir}">
+      <fileset refid="licensefiles"/>
+    </copy>
+    <tar destfile="QueryPath-${version}-minimal.tgz" compression="gzip" basedir="${releasedir}"/>
+  </target>
+  
+  <!-- Check syntax -->
+  <target name="lint" description="Check syntax of source.">
+    <phplint>
+      <fileset refid="sourcecode" />
+    </phplint>
+  </target>
+  
+  <!-- Build documentation -->
+  <target name="doc" depends="lint" description="Generate API docs.">
+    <phpdoc title="QueryPath 2 (Quark)"
+      sourcecode="yes"
+      destdir="docs"
+      output="HTML:Smarty:QueryPath"
+      defaultcategoryname="QueryPath"
+      defaultpackagename="QueryPath"
+      examplesdir="examples"
+      quiet="true"
+      >
+      <fileset refid="sourcecode"/>
+      <fileset refid="tutorials"/>
+      <fileset dir="examplecode"/>
+      <projdocfileset dir=".">
+        <include name="README"/>
+        <include name="INSTALL"/>
+        <include name="COPYING-LGPL.txt"/>
+        <include name="COPYING-MIT.txt"/>
+        <include name="LGPL-2.1.txt"/>
+      </projdocfileset>
+    </phpdoc>
+  </target>
+  
+  <!-- Run a fast test and print the results to the console -->
+  <target name="ftest" depends="lint" description="Run a quick unit test.">
+    <!-- Fast test. -->
+    <phpunit>
+      <formatter type="plain" usefile="false"/>
+      <batchtest>
+        <fileset refid="unittests"/>
+      </batchtest>
+    </phpunit>    
+    <delete file="./test/db/qpTest.db" />
+    <delete file="./test/db/qpTest2.db" />
+  </target>
+  
+  <!-- Run a coverage report -->
+  <target name="coverage" depends="lint" description="Run a coverage analysis.">
+    <coverage-setup database="./test/db/coverage.db">
+      <fileset dir="src">
+        <include name="QueryPath/*.php"/>
+      </fileset>
+    </coverage-setup>
+    <phpunit codecoverage="true" haltonfailure="true">
+      <formatter type="plain" todir="test/reports" outfile="coverage.xml"/>
+      <batchtest>
+        <fileset dir="test/Tests">
+          <include name="**/*Test.php"/>
+        </fileset>
+      </batchtest>
+    </phpunit>
+    <coverage-report outfile="test/reports/coverage.xml">
+      <report todir="test/coverage"/>
+    </coverage-report>
+  </target>
+  
+  <!-- Run a full test and format an HTML report -->
+  <target name="test" depends="lint" description="Run full tests">
+    <phpunit>
+      <formatter todir="test/reports" type="xml"/>
+      <batchtest>
+        <fileset dir="test/Tests">
+          <include name="**/*Test.php"/>
+        </fileset>
+      </batchtest>
+    </phpunit>
+    <phpunitreport 
+      infile="test/reports/testsuites.xml" 
+      format="noframes" 
+      todir="test/reports/html" 
+      />
+    <delete file="./test/db/qpTest.db" />
+    <delete file="./test/db/qpTest2.db" />
+  </target>
+  
+</project>
+
+

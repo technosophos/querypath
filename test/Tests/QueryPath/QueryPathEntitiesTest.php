@@ -7,7 +7,7 @@
  */
 
 require_once 'PHPUnit/Framework.php';
-require_once '../src/QueryPath/QueryPath.php';
+require_once 'src/QueryPath/QueryPath.php';
 
 class QueryPathEntitiesTest extends PHPUnit_Framework_TestCase {
   public function testReplaceEntity() {

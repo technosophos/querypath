@@ -7,7 +7,7 @@
  */
 
 require_once 'PHPUnit/Framework.php';
-require_once '../src/QueryPath/QueryPath.php';
+require_once 'src/QueryPath/QueryPath.php';
 
 class QueryPathOptionsTest extends PHPUnit_Framework_TestCase {
   

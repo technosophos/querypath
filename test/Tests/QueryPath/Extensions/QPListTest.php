@@ -7,8 +7,8 @@
  */
 
 require_once 'PHPUnit/Framework.php';
-require_once '../src/QueryPath/QueryPath.php';
-require_once '../src/QueryPath/Extension/QPList.php';
+require_once 'src/QueryPath/QueryPath.php';
+require_once 'src/QueryPath/Extension/QPList.php';
 
 class QPListTests extends PHPUnit_Framework_TestCase {
   public function testAppendList() {

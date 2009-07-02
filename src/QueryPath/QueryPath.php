@@ -2034,7 +2034,15 @@ final class QueryPath implements IteratorAggregate {
       print $this->document->saveXML();
     }
     else {
-      $this->document->save($path);
+      try {
+        set_error_handler(array('QueryPathIOException', 'initializeFromError'));
+        $this->document->save($path);
+      }
+      catch (Exception $e) {
+        restore_error_handler();
+        throw $e;
+      }
+      restore_error_handler();
     }
     return $this;
   }
@@ -2061,7 +2069,15 @@ final class QueryPath implements IteratorAggregate {
       print $this->document->saveHTML();
     }
     else {
-      $this->document->saveHTMLFile($path);
+      try {
+        set_error_handler(array('QueryPathIOException', 'initializeFromError'));
+        $this->document->saveHTMLFile($path);
+      }
+      catch (Exception $e) {
+        restore_error_handler();
+        throw $e;
+      }
+      restore_error_handler();
     }
     return $this;
   }
@@ -3007,6 +3023,14 @@ class QueryPathParseException extends QueryPathException {
   }
   
   public static function initializeFromError($code, $str, $file, $line, $cxt) {
-    throw new QueryPathParseException($str, $code, $file, $line);
+    $class = __CLASS__;
+    throw new $class($str, $code, $file, $line);
+  }
+}
+
+class QueryPathIOException extends QueryPathParseException {
+  public static function initializeFromError($code, $str, $file, $line, $cxt) {
+    $class = __CLASS__;
+    throw new $class($str, $code, $file, $line);
   }
 }

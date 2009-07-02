@@ -4,7 +4,8 @@
  */
  
 require_once 'PHPUnit/Framework.php';
-require_once '../src/QueryPath/CssEventHandler.php';
+//require_once 'src/QueryPath/CssEventHandler.php';
+require_once 'src/QueryPath/QueryPath.php';
 
 class CssTokenTest extends PHPUnit_Framework_TestCase {
   public function testName() {
