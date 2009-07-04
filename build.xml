@@ -18,13 +18,12 @@ an MIT license. See COPYING-LGPL.txt and COPYING-MIT.txt for details.
   <!-- Global properties -->
   <property name="srcdir" value="./src"/>
   <property name="testdir" value="./test"/>
-  <property name="builddir" value="./bin"/>
+  <property name="builddir" value="./bin/build"/>
   <property name="docsdir" value="./docs"/>
   <property name="packagedir" value="./releases"/>
   
   
-  <!-- Default version -->
-  <property name="version" value="dev"/>
+  
   
   <!-- Files that must be included in the release -->
   <fileset id="licensefiles" dir=".">
@@ -67,6 +66,8 @@ an MIT license. See COPYING-LGPL.txt and COPYING-MIT.txt for details.
   <!-- Target that should be run always. -->
   <target name="setup">
     <tstamp/>
+    <!-- Default version -->
+    <property name="version" value="dev-${DSTAMP}"/>
   </target>
   
   <target name="minimalBuild" description="Minimal QueryPath build." 
@@ -89,33 +90,69 @@ an MIT license. See COPYING-LGPL.txt and COPYING-MIT.txt for details.
     <copy todir="${releasedir}">
       <fileset refid="licensefiles"/>
     </copy>
-    <tar destfile="${packagefile}/QueryPath-${version}-minimal.tgz" 
-      compression="gzip" basedir="${releasedir}"/>
-    <zip destfile="${packagefile}/QueryPath-${version}-minimal.zip"
-      basedir="${releasedir}"/>
+    <tar destfile="${packagedir}/QueryPath-${version}-minimal.tgz" 
+      compression="gzip">
+      <fileset dir="${builddir}">
+        <include name="QueryPath-${version}-minimal/**/*"/>
+      </fileset>
+    </tar>
+    <zip destfile="${packagedir}/QueryPath-${version}-minimal.zip" basedir="${releasedir}"/>
   </target>
   
   <target name="fullBuild" description="Full QueryPath build, including docs."
     depends="setup">
     <property name="releasedir" value="${builddir}/QueryPath-${version}"/>
     <delete dir="${releasedir}" />
+    
+    <!-- Make all necessary directories. -->
     <mkdir dir="${releasedir}"/>
+    <mkdir dir="${releasedir}/src"/>
+    <mkdir dir="${releasedir}/examples"/>
+    <mkdir dir="${releasedir}/test"/>
+    <mkdir dir="${releasedir}/tutorials"/>
+    <mkdir dir="${releasedir}/docs"/>
+    
+    <!-- Copy license files. -->
     <copy todir="${releasedir}">
+      <fileset refid="licensefiles"/>
+    </copy>
+    
+    <!-- Copy source code, doing token replacement on version. -->
+    <copy todir="${releasedir}/src">
       <filterchain>
         <replacetokens begintoken="@" endtoken="@">
           <token key="UNSTABLE" value="${version}"/>
         </replacetokens>
       </filterchain>
       <fileset refid="sourcecode"/>
-      <fileset refid="unittests"/>
+    </copy>
+
+    <!-- Copy examples. -->
+    <copy todir="${releasedir}/examples">
       <fileset refid="examplecode"/>
+    </copy>
+    
+    <!-- Copy tests. -->
+    <copy todir="${releasedir}/test">
+      <fileset refid="unittests"/>
+    </copy>
+    
+    <!-- Copy tutorials -->
+    <copy todir="${releasedir}/tutorials">
       <fileset refid="tutorials"/>
     </copy>
-    <copy todir="${releasedir}">
-      <fileset refid="licensefiles"/>
+    
+    <!-- Copy documentation --> 
+    <copy todir="${releasedir}/docs">
+      <fileset refid="docs"/>
     </copy>
-    <tar destfile="${packagedir}/QueryPath-${version}.tgz" compression="gzip" 
-      basedir="${releasedir}"/>
+    
+    <!-- Create tgz and zip versions. -->
+    <tar destfile="${packagedir}/QueryPath-${version}.tgz" compression="gzip">
+      <fileset dir="${builddir}">
+        <include name="QueryPath-${version}/**/*"/>
+      </fileset>
+    </tar>
     <zip destfile="${packagedir}/QueryPath-${version}.zip" basedir="${releasedir}"/>
   </target>
   

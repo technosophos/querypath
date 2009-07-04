@@ -1,4 +1,5 @@
 bin/build
+bin/local
 bin/*.tgz
 bin/*.zip
 *.tmproj
