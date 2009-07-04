@@ -11,7 +11,7 @@ Phing is a build tool. Learn more about it at http://phing.info.
 Copyright (c) 2009, Matt Butcher, some rights reserved.
 
 License:
-This file is released under the GNU LGPL 2.1 or, at your preference,
+QueryPath is released under the GNU LGPL 2.1 or, at your preference,
 an MIT license. See COPYING-LGPL.txt and COPYING-MIT.txt for details.
 -->
 
@@ -20,7 +20,7 @@ an MIT license. See COPYING-LGPL.txt and COPYING-MIT.txt for details.
   <property name="testdir" value="./test"/>
   <property name="builddir" value="./bin/build"/>
   <property name="docsdir" value="./docs"/>
-  <property name="packagedir" value="./releases"/>
+  <property name="packagedir" value="./dist"/>
   
   
   

@@ -21,6 +21,9 @@ To install QueryPath-minimal:
 
   mv QueryPath-2.0-minimal myproject/QueryPath
   
+  (Alternately, you may wish to install QueryPath in a location available on
+  you PHP library path for use in all applications on your system.)
+  
 - Include QueryPath in your scripts:
 
   require 'QueryPath/QueryPath.php';
@@ -43,5 +46,18 @@ To install QueryPath:
 - Include QueryPath/QueryPath.php in your PHP scripts
 
   require 'QueryPath/QueryPath.php';
+  
+The structure of the full version:
+
+/ -- Base information about the library
+  src/ -- The source (PHP) code. Include the contents of this directory in your 
+    applications.
+  test/ -- Unit tests for QueryPath. You can run these with PHPUnit.
+  examples/ -- Examples scripts written with QueryPath.
+  docs/ -- Full API documentation in HTML format. You can regenerate this from
+    the source using PHPDocumentor.
+  tutorials/ -- DocBook additions to the QueryPath PHPDocumentor data. An HTML 
+    version of this is included in the docs/ directory. The files here are 
+    probably only useful when re-generating the API documentation.
 
 For more information, visit http://querypath.org.

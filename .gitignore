@@ -4,6 +4,7 @@ bin/*.tgz
 bin/*.zip
 *.tmproj
 releases
+dist
 test/coverage
 test/reports
 test/db
