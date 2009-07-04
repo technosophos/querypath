@@ -171,6 +171,8 @@ function qp($document = NULL, $string = NULL, $options = array()) {
  */
 final class QueryPath implements IteratorAggregate {
   
+  const VERSION = '@UNSTABLE@';
+  
   /**
    * This is a stub HTML document.
    * 

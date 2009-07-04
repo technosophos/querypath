@@ -19,6 +19,9 @@ an MIT license. See COPYING-LGPL.txt and COPYING-MIT.txt for details.
   <property name="srcdir" value="./src"/>
   <property name="testdir" value="./test"/>
   <property name="builddir" value="./bin"/>
+  <property name="docsdir" value="./docs"/>
+  <property name="packagedir" value="./releases"/>
+  
   
   <!-- Default version -->
   <property name="version" value="dev"/>
@@ -51,10 +54,23 @@ an MIT license. See COPYING-LGPL.txt and COPYING-MIT.txt for details.
   <fileset id="tutorials" dir="./tutorials">
     <include name="**/*" />
   </fileset>
-
-  <target name="build"></target>
   
-  <target name="minimalBuild" description="Minimal QueryPath build.">
+  <!-- Documentation -->
+  <fileset id="docs" dir="./docs">
+    <include name="**/*" />
+  </fileset>
+
+  <target name="build" depends="lint, setup, doc, minimalBuild, fullBuild"
+    description="Generate docs, minimal, and full builds and then creates packages."
+    ></target>
+  
+  <!-- Target that should be run always. -->
+  <target name="setup">
+    <tstamp/>
+  </target>
+  
+  <target name="minimalBuild" description="Minimal QueryPath build." 
+    depends="setup">
     <property name="releasedir" value="${builddir}/QueryPath-${version}-minimal"/>
     <delete dir="${releasedir}" />
     <mkdir dir="${releasedir}"/>
@@ -62,6 +78,9 @@ an MIT license. See COPYING-LGPL.txt and COPYING-MIT.txt for details.
       <filterchain>
         <stripphpcomments/>
         <stripwhitespace/>
+        <replacetokens begintoken="@" endtoken="@">
+          <token key="UNSTABLE" value="${version}"/>
+        </replacetokens>
       </filterchain>
       <fileset dir="${srcdir}/QueryPath">
         <include name="**/*"/>
@@ -70,24 +89,34 @@ an MIT license. See COPYING-LGPL.txt and COPYING-MIT.txt for details.
     <copy todir="${releasedir}">
       <fileset refid="licensefiles"/>
     </copy>
-    <tar destfile="QueryPath-${version}-minimal.tgz" compression="gzip" basedir="${releasedir}"/>
-    <tar destfile="QueryPath-${version}-minimal.zip" basedir="${releasedir}"/>
+    <tar destfile="${packagefile}/QueryPath-${version}-minimal.tgz" 
+      compression="gzip" basedir="${releasedir}"/>
+    <zip destfile="${packagefile}/QueryPath-${version}-minimal.zip"
+      basedir="${releasedir}"/>
   </target>
   
-  <target name="fullBuild" description="Full QueryPath build, including docs." depends="docs">
-    <property name="releasedir" value="${builddir}/QueryPath-${version}-full"/>
+  <target name="fullBuild" description="Full QueryPath build, including docs."
+    depends="setup">
+    <property name="releasedir" value="${builddir}/QueryPath-${version}"/>
     <delete dir="${releasedir}" />
     <mkdir dir="${releasedir}"/>
     <copy todir="${releasedir}">
+      <filterchain>
+        <replacetokens begintoken="@" endtoken="@">
+          <token key="UNSTABLE" value="${version}"/>
+        </replacetokens>
+      </filterchain>
       <fileset refid="sourcecode"/>
       <fileset refid="unittests"/>
       <fileset refid="examplecode"/>
+      <fileset refid="tutorials"/>
     </copy>
     <copy todir="${releasedir}">
       <fileset refid="licensefiles"/>
     </copy>
-    <tar destfile="QueryPath-${version}-minimal.tgz" compression="gzip" basedir="${releasedir}"/>
-    <tar destfile="QueryPath-${version}-minimal.zip" basedir="${releasedir}"/>
+    <tar destfile="${packagedir}/QueryPath-${version}.tgz" compression="gzip" 
+      basedir="${releasedir}"/>
+    <zip destfile="${packagedir}/QueryPath-${version}.zip" basedir="${releasedir}"/>
   </target>
   
   <!-- Check syntax -->
@@ -99,9 +128,10 @@ an MIT license. See COPYING-LGPL.txt and COPYING-MIT.txt for details.
   
   <!-- Build documentation -->
   <target name="doc" depends="lint" description="Generate API docs.">
+    <delete dir="${docsdir}"/>
     <phpdoc title="QueryPath 2 (Quark)"
       sourcecode="yes"
-      destdir="docs"
+      destdir="${docsdir}"
       output="HTML:Smarty:QueryPath"
       defaultcategoryname="QueryPath"
       defaultpackagename="QueryPath"
@@ -110,7 +140,7 @@ an MIT license. See COPYING-LGPL.txt and COPYING-MIT.txt for details.
       >
       <fileset refid="sourcecode"/>
       <fileset refid="tutorials"/>
-      <fileset dir="examplecode"/>
+      <fileset refid="examplecode"/>
       <projdocfileset dir=".">
         <include name="README"/>
         <include name="INSTALL"/>
@@ -125,7 +155,7 @@ an MIT license. See COPYING-LGPL.txt and COPYING-MIT.txt for details.
   <target name="ftest" depends="lint" description="Run a quick unit test.">
     <!-- Fast test. -->
     <phpunit>
-      <formatter type="plain" usefile="false"/>
+      <formatter type="plain" usefile="no"/>
       <batchtest>
         <fileset refid="unittests"/>
       </batchtest>

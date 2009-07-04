@@ -1,4 +1,6 @@
-bin
+bin/build
+bin/*.tgz
+bin/*.zip
 *.tmproj
 releases
 test/coverage
