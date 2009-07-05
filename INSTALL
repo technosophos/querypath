@@ -60,4 +60,21 @@ The structure of the full version:
     version of this is included in the docs/ directory. The files here are 
     probably only useful when re-generating the API documentation.
 
+
+INSTALLING FROM GitHub
+==============================
+
+The complete source code and all utilities for QueryPath are located in a GitHub
+repository. If you plan on contributing back to QueryPath, you will be able to 
+achieve the most by working from the GitHub source. Here's how:
+
+1. Obtain the source code from here: http://github.com/technosophos/querypath
+
+2. Install PHPDocumentor, PHPUnit, and Phing. XDebug is strongly recommended for
+  doing coverage analysis. These tools are used to auto-generate
+  documentation, run unit tests, and manage project builds.
+  
+3. Run 'phing info' from the base QueryPath checkout. This will tell you how to 
+  perform various tasks with QueryPath.
+  
 For more information, visit http://querypath.org.
