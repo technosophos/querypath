@@ -12,3 +12,6 @@ See COPYING-LGPL.txt
 
 MIT:
 See COPYING-MIT.txt
+
+This is the maintenance branch of QueryPath 1.x. You should upgrade to 2.x if
+possible.
