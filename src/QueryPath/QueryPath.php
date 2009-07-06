@@ -1863,6 +1863,92 @@ final class QueryPath implements IteratorAggregate {
   }
   
   /**
+   * Fetch the HTML contents INSIDE of the first QueryPath item.
+   *
+   * <b>This behaves the way jQuery's <code>html()</code> function behaves.</b>
+   *
+   * This gets all children of the first match in QueryPath. 
+   *
+   * Consider this fragment:
+   * <code>
+   * <div>
+   * test <p>foo</p> test
+   * </div>
+   * </code>
+   *
+   * We can retrieve just the contents of this code by doing something like
+   * this:
+   * <code>
+   * qp($xml, 'div')->innerHTML();
+   * </code>
+   *
+   * This would return the following:
+   * <code>test <p>foo</p> test</code>
+   *
+   * @return string
+   *  Returns a string representation of the child nodes of the first
+   *  matched element.
+   * @see html()
+   * @see innerXML()
+   * @see innerXHTML()
+   */
+  public function innerHTML() {
+    return $this->innerXML();
+  } 
+  
+  /**
+   * Fetch child (inner) nodes of the first match.
+   *
+   * This will return the children of the present match. For an example, 
+   * see {@link innerHTML()}.
+   *
+   * @see innerHTML()
+   * @see innerXML()
+   * @return string
+   *  Returns a string of XHTML that represents the children of the present
+   *  node.
+   */
+  public function innerXHTML() {
+    return $this->innerXML();
+  }
+  
+  /**
+   * Fetch child (inner) nodes of the first match.
+   *
+   * This will return the children of the present match. For an example, 
+   * see {@link innerHTML()}.
+   *
+   * @see innerHTML()
+   * @see innerXHTML()
+   * @return string
+   *  Returns a string of XHTML that represents the children of the present
+   *  node.
+   */
+  public function innerXML() {
+    $length = $this->size();
+    if ($length == 0) {
+      return NULL;
+    }
+    // Only return the first item -- that's what JQ does.
+    $first = $this->getFirstMatch();
+
+    // Catch cases where first item is not a legit DOM object.
+    if (!($first instanceof DOMNode)) {
+      return NULL;
+    }
+    elseif (!$first->hasChildNodes()) {
+      return '';
+    }
+    
+    $buffer = '';
+    foreach ($first->childNodes as $child) {
+      $buffer .= $this->document->saveXML($child);
+    }
+    
+    return $buffer;
+  }
+  
+  /**
    * Retrieve the text of each match and concatenate them with the given separator.
    *
    * This has the effect of looping through all children, retrieving their text

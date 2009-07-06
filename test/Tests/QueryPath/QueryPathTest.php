@@ -681,6 +681,34 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $this->assertNull(qp($file, 'li')->map(array($this, $fn))->html());
   }
   
+  public function testInnerHTML() {
+    $html = '<html><head></head><body><div id="me">Test<p>Again</p></div></body></html>';
+    
+    $this->assertEquals('Test<p>Again</p>', qp($html,'#me')->innerHTML());
+  }
+  
+  public function testInnerXML() {
+    $html = '<?xml version="1.0"?><div id="me">Test<p>Again</p></div>';
+    $test = 'Test<p>Again</p>';
+    
+    $this->assertEquals($test, qp($html,'#me')->innerHTML());
+    
+    $html = '<?xml version="1.0"?><div id="me">Test<p>Again<br/></p><![CDATA[Hello]]><?pi foo ?></div>';
+    $test = 'Test<p>Again<br/></p><![CDATA[Hello]]><?pi foo ?>';
+    
+    $this->assertEquals($test, qp($html,'#me')->innerHTML());
+    
+    $html = '<?xml version="1.0"?><div id="me"/>';
+    $test = '';
+    $this->assertEquals($test, qp($html,'#me')->innerHTML());    
+  }
+  
+  public function testInnerXHTML() {
+    $html = '<?xml version="1.0"?><html><head></head><body><div id="me">Test<p>Again</p></div></body></html>';
+    
+    $this->assertEquals('Test<p>Again</p>', qp($html,'#me')->innerHTML());
+  }
+  
   public function testXML() {
     $file = DATA_FILE;
     $qp = qp($file, 'unary');
