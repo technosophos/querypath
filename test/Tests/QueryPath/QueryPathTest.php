@@ -522,7 +522,7 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
   
   public function testBefore() {
     $file = DATA_FILE;
-    $this->assertEquals(1, qp($file,'unary')->before('<test/>')->find(':root > unary ~ test')->size());
+    $this->assertEquals(1, qp($file,'unary')->before('<test/>')->find(':root > head ~ test')->size());
     $this->assertEquals('unary', qp($file,'unary')->before('<test/>')->find(':root > test')->get(0)->nextSibling->tagName);
     
     // Test repeated insert

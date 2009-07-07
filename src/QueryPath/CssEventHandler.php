@@ -1300,11 +1300,16 @@ class QueryPathCssEventHandler implements CssEventHandler {
     if ($this->matches->count() > 0) {
       $sibs = new SplObjectStorage();
       foreach ($this->matches as $item) {
-        $candidates = $item->parentNode->childNodes;
+        /*$candidates = $item->parentNode->childNodes;
         foreach ($candidates as $candidate) {
           if ($candidate->nodeType === XML_ELEMENT_NODE && $candidate !== $item) {
             $sibs->attach($candidate);
           }
+        }
+        */
+        while ($item->nextSibling != NULL) {
+          $item = $item->nextSibling;
+          if ($item->nodeType === XML_ELEMENT_NODE) $sibs->attach($item);
         }
       }
       $this->matches = $sibs;

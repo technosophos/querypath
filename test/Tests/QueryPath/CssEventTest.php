@@ -1241,6 +1241,13 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     //print $this->firstMatch($matches)->getAttribute('id') . PHP_EOL;
     $this->assertEquals(4, $matches->count());
     $this->assertEquals('three', $this->nthMatch($matches, 1)->getAttribute('id'));
+    
+    $handler = new QueryPathCssEventHandler($doc);
+    $handler->find('#two ~ li');
+    $matches = $handler->getMatches();
+    //print $this->firstMatch($matches)->getAttribute('id') . PHP_EOL;
+    $this->assertEquals(3, $matches->count());
+    //$this->assertEquals('three', $this->nthMatch($matches, 1)->getAttribute('id'));
 
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('#inner-one > li ~ il');

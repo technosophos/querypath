@@ -548,6 +548,8 @@ class QueryPath implements IteratorAggregate {
    *   an access request (getter), return the string value.
    * @see removeAttr()
    * @see tag()
+   * @see hasAttr()
+   * @see hasClass()
    */
   public function attr($name, $value = NULL) {
     // multi-setter
@@ -584,6 +586,9 @@ class QueryPath implements IteratorAggregate {
    *  The attribute name.
    * @return boolean
    *  TRUE if all matches have the attribute, FALSE otherwise.
+   * @since 2.0
+   * @see attr()
+   * @see hasClass()
    */
   public function hasAttr($attrName) {
     foreach ($this->matches as $match) {
