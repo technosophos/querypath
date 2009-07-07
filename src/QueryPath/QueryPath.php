@@ -575,6 +575,23 @@ class QueryPath implements IteratorAggregate {
     return $this->getFirstMatch()->getAttribute($name);
   }
   /**
+   * Check to see if the given attribute is present.
+   *
+   * This returns TRUE if <em>all</em> selected items have the attribute, or 
+   * FALSE if at least one item does not have the attribute.
+   *
+   * @param string $attrName
+   *  The attribute name.
+   * @return boolean
+   *  TRUE if all matches have the attribute, FALSE otherwise.
+   */
+  public function hasAttr($attrName) {
+    foreach ($this->matches as $match) {
+      if (!$match->hasAttribute($attrName)) return FALSE;
+    }
+    return TRUE;
+  }
+  /**
    * Set/get a CSS value for the current element(s).
    * This sets the CSS value for each element in the QueryPath object.
    * It does this by setting (or getting) the style attribute (without a namespace).

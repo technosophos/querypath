@@ -202,6 +202,22 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     
   }
   
+  public function testHasAttr() {
+    $xml = '<?xml version="1.0"?><root><div foo="bar"/></root>';
+    
+    $this->assertFalse(qp($xml, 'root')->hasAttr('foo'));
+    $this->assertTrue(qp($xml, 'div')->hasAttr('foo'));
+    
+    $xml = '<?xml version="1.0"?><root><div foo="bar"/><div foo="baz"></div></root>';
+    $this->assertTrue(qp($xml, 'div')->hasAttr('foo'));
+    
+    $xml = '<?xml version="1.0"?><root><div bar="bar"/><div foo="baz"></div></root>';
+    $this->assertFalse(qp($xml, 'div')->hasAttr('foo'));
+    
+    $xml = '<?xml version="1.0"?><root><div bar="bar"/><div bAZ="baz"></div></root>';
+    $this->assertFalse(qp($xml, 'div')->hasAttr('foo'));
+  }
+  
   public function testVal() {
     $qp = qp('<?xml version="1.0"?><foo><bar value="test"/></foo>', 'bar');
     $this->assertEquals('test', $qp->val());
