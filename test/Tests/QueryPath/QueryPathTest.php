@@ -970,6 +970,19 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('root', qp($file, 'li')->parent('root')->tag());
     $this->assertEquals(2, qp($file, 'li')->parent()->size());
   }
+  public function testClosest() {
+    $file = DATA_FILE;
+    $this->assertEquals('root', qp($file, 'li')->parent('root')->tag());
+    
+    $xml = '<?xml version="1.0"?>
+    <root>
+      <a class="foo">
+        <b/>
+      </a>
+      <b class="foo"/>
+    </root>';
+    $this->assertEquals(2, qp($xml, 'b')->closest('.foo')->size());
+  }
   
   public function testParents() {
     $file = DATA_FILE;

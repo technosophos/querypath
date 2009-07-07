@@ -9,6 +9,7 @@
  * Standard usage:
  * <code>
  * <?php
+ * require 'QueryPath/QueryPath.php';
  * $qp = qp('#myID', '<?xml version="1.0"?><test><foo id="myID"/></test>');
  * $qp->append('<new><elements/></new>')->writeHTML();
  * ?>
@@ -32,8 +33,9 @@
  * wealth of arguments that the function can take.
  *
  * Included with the source code for QueryPath is a complete set of unit tests
- * as well as some example files. THose are good resources for learning about
- * how to apply QueryPath's tools.
+ * as well as some example files. Those are good resources for learning about
+ * how to apply QueryPath's tools. The full API documentation can be generated
+ * from these files using PHPDocumentor.
  *
  * If you are interested in building extensions for QueryParser, see the 
  * {@link QueryPathExtender} class. There, you will find information on adding
@@ -42,10 +44,6 @@
  * QueryPath also comes with a full CSS 3 selector parser implementation. If
  * you are interested in reusing that in other code, you will want to start
  * with {@link CssEventHandler.php}, which is the event interface for the parser.
- *
- * If you want to learn the nitty gritty details of QueryPath, you can take a 
- * look at the implementation in {@link QueryPathImpl.php}. There you will find
- * the "real" code.
  *
  * All of the code in QueryPath is licensed under either the LGPL or an MIT-like
  * license (you may choose which you prefer). All of the code is Copyright, 2009
@@ -97,11 +95,11 @@ require_once 'QueryPathExtension.php';
  * qp(); // New empty QueryPath
  * qp('path/to/file.xml'); // From a file
  * qp('<html><head></head><body></body></html>'); // From HTML or XML
- * qp(QueryPath::HTML_STUB); // From a basic HTML document.
- * qp(QueryPath::HTML_STUB, 'title'); // Create one from a basic HTML doc and position it at the title element.
+ * qp(QueryPath::XHTML_STUB); // From a basic HTML document.
+ * qp(QueryPath::XHTML_STUB, 'title'); // Create one from a basic HTML doc and position it at the title element.
  *
  * // Most of the time, methods are chained directly off of this call.
- * qp(QueryPath::HTML_STUB, 'body')->append('<h1>Title</h1>')->addClass('body-class');
+ * qp(QueryPath::XHTML_STUB, 'body')->append('<h1>Title</h1>')->addClass('body-class');
  * ?>
  * </code>
  *
@@ -111,7 +109,7 @@ require_once 'QueryPathExtension.php';
  *
  * @param mixed $document
  *  A document in one of the following forms:
- *  - A string of XML or HTML (See {@link HTML_STUB})
+ *  - A string of XML or HTML (See {@link XHTML_STUB})
  *  - A path on the file system or a URL
  *  - A {@link DOMDocument} object
  *  - A {@link SimpleXMLElement} object.
@@ -169,28 +167,67 @@ function qp($document = NULL, $string = NULL, $options = array()) {
  * @see qp()
  * @see QueryPath.php
  */
-final class QueryPath implements IteratorAggregate {
+class QueryPath implements IteratorAggregate {
   
+  /**
+   * The version string for this version of QueryPath.
+   * @since 2.0
+   */
   const VERSION = '@UNSTABLE@';
   
   /**
-   * This is a stub HTML document.
-   * 
-   * It can be passed into {@link qp()} to begin a new basic HTML document.
+   * This is a stub HTML 4.01 document.
+   *
+   * <b>Using {@link QueryPath::XHTML_STUB} is preferred.</b>
+   *
+   * This is primarily for generating legacy HTML content. Modern web applications
+   * should use {@link QueryPath::XHTML_STUB}.
+   *
+   * Use this stub with the HTML familiy of methods ({@link html()}, 
+   * {@link writeHTML()}, {@link innerHTML()}).
    */
-  const HTML_STUB = '<?xml version="1.0"?>
-  <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-  <html xmlns="http://www.w3.org/1999/xhtml">
+  const HTML_STUB = '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+  <html lang="en">
   <head>
-  	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-  	<title>Untitled</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>Untitled</title>
   </head>
   <body></body>
   </html>';
   
+  /**
+   * This is a stub XHTML document.
+   * 
+   * Since XHTML is an XML format, you should use XML functions with this document
+   * fragment. For example, you should use {@link xml()}, {@link innerXML()}, and 
+   * {@link writeXML()}.
+   * 
+   * This can be passed into {@link qp()} to begin a new basic HTML document.
+   *
+   * Example:
+   * <code>
+   * $qp = qp(QueryPath::XHTML_STUB); // Creates a new XHTML document
+   * $qp->writeXML(); // Writes the document as well-formed XHTML.
+   * </code>
+   * @since 2.0
+   */
+  const XHTML_STUB = '<?xml version="1.0"?>
+  <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>Untitled</title>
+  </head>
+  <body></body>
+  </html>';
+  
+  /**
+   * Default parser flags.
+   * @since 2.0
+   */
   const DEFAULT_PARSER_FLAGS = NULL;
   
-  const IGNORE_ERRORS = 1544; //E_NOTICE | E_USER_WARNING | E_USER_NOTICE;
+  //const IGNORE_ERRORS = 1544; //E_NOTICE | E_USER_WARNING | E_USER_NOTICE;
   
   private $document = NULL;
   private $options = array(
@@ -286,13 +323,6 @@ final class QueryPath implements IteratorAggregate {
     if (isset($string) && strlen($string) > 0) {
       $this->find($string);
     }
-    
-    // Do extensions loading.
-    /* Defer this until an extension method is actually called.
-    if (QueryPathExtensionRegistry::$useRegistry) {
-      $this->ext = QueryPathExtensionRegistry::getExtensions($this);
-    }
-    */
   }
   
   /**
@@ -319,6 +349,7 @@ final class QueryPath implements IteratorAggregate {
    * @see qp()
    * @see QueryPathOptions::set()
    * @see QueryPathOptions::merge()
+   * @since 2.0
    */
   public function getOptions() {
     return $this->options;
@@ -1372,6 +1403,14 @@ final class QueryPath implements IteratorAggregate {
    * A depth-checking function. Typically, it only needs to be
    * invoked with the first parameter. The rest are used for recursion.
    * @see deepest();
+   * @param DOMNode $ele
+   *  The element.
+   * @param int $depth
+   *  The depth guage
+   * @param mixed $current
+   *  The current set.
+   * @param DOMNode $deepest
+   *  A reference to the current deepest node.
    */
   protected function deepestNode(DOMNode $ele, $depth = 0, $current = NULL, &$deepest = NULL) {
     // FIXME: Should this use SplObjectStorage?
@@ -1455,6 +1494,12 @@ final class QueryPath implements IteratorAggregate {
   }
   /**
    * The tag name of the first element in the list.
+   *
+   * This returns the tag name of the first element in the list of matches. If
+   * the list is empty, an empty string will be used.
+   *
+   * @see replaceAll()
+   * @see replaceWith()
    * @return string
    *  The tag name of the first element in the list.
    */
@@ -1685,7 +1730,9 @@ final class QueryPath implements IteratorAggregate {
    * @see find()
    * @see text()
    * @see html()
+   * @see innerHTML()
    * @see xml()
+   * @see innerXML()
    */
   public function contents() {
     $found = new SplObjectStorage();
@@ -1736,6 +1783,42 @@ final class QueryPath implements IteratorAggregate {
       $this->matches = $found; // Don't buffer this. It is temporary.
       $this->filter($selector);
     }
+    return $this;
+  }
+  /**
+   * Find the closest element matching the selector.
+   *
+   * This finds the closest match in the ancestry chain. It first checks the 
+   * present element. If the present element does not match, this traverses up 
+   * the ancestry chain (e.g. checks each parent) looking for an item that matches.
+   *
+   * It is provided for jQuery 1.3 compatibility.
+   * @param string $selector
+   *  A CSS Selector to match.
+   * @return QueryPath
+   *  The set of matches.
+   * @since 2.0
+   */
+  public function closest($selector) {
+    $found = new SplObjectStorage();
+    foreach ($this->matches as $m) {
+      
+      if (qp($m)->is($selector) > 0) {
+        $found->attach($m);
+      }
+      else {
+        while ($m->parentNode->nodeType !== XML_DOCUMENT_NODE) {
+          $m = $m->parentNode;
+          // Is there any case where parent node is not an element?
+          if ($m->nodeType === XML_ELEMENT_NODE && qp($m)->is($selector) > 0) {
+            $found->attach($m);
+            break;
+          }
+        }
+      }
+      
+    }
+    $this->setMatches($found);
     return $this;
   }
   /**
@@ -1891,6 +1974,7 @@ final class QueryPath implements IteratorAggregate {
    * @see html()
    * @see innerXML()
    * @see innerXHTML()
+   * @since 2.0
    */
   public function innerHTML() {
     return $this->innerXML();
@@ -1907,6 +1991,7 @@ final class QueryPath implements IteratorAggregate {
    * @return string
    *  Returns a string of XHTML that represents the children of the present
    *  node.
+   * @since 2.0
    */
   public function innerXHTML() {
     return $this->innerXML();
@@ -1923,6 +2008,7 @@ final class QueryPath implements IteratorAggregate {
    * @return string
    *  Returns a string of XHTML that represents the children of the present
    *  node.
+   * @since 2.0
    */
   public function innerXML() {
     $length = $this->size();
@@ -1962,6 +2048,7 @@ final class QueryPath implements IteratorAggregate {
    *  every pair of items.
    * @see implode()
    * @see text()
+   * @since 2.0
    */
   public function textImplode($sep = ', ', $filterEmpties = TRUE) {
     $tmp = array(); 
@@ -2040,6 +2127,9 @@ final class QueryPath implements IteratorAggregate {
    *
    * This is a convenience function for fetching HTML in XML format.
    * It does no processing of the markup (such as schema validation).
+   *
+   * @see html()
+   * @see innerXHTML()
    */
   public function xhtml($markup = NULL) {
     return $this->xml($markup);
@@ -2066,6 +2156,7 @@ final class QueryPath implements IteratorAggregate {
    * @see html()
    * @see text()
    * @see content()
+   * @see innerXML()
    */
   public function xml($markup = NULL) {
     $omit_xml_decl = $this->options['omit_xml_declaration'];
@@ -2114,6 +2205,7 @@ final class QueryPath implements IteratorAggregate {
    * @return QueryPath
    *  The QueryPath object, unmodified.
    * @see xml()
+   * @see innerXML()
    * @throws Exception 
    *  In the event that a file cannot be written, an Exception will be thrown.
    */
@@ -2149,6 +2241,7 @@ final class QueryPath implements IteratorAggregate {
    * @return QueryPath
    *  The QueryPath object, unmodified.
    * @see html()
+   * @see innerHTML()
    * @throws Exception 
    *  In the event that a file cannot be written, an Exception will be thrown.
    */
@@ -2178,14 +2271,17 @@ final class QueryPath implements IteratorAggregate {
    * Currently, this functions identically to {@link toXML()}. It will
    * write the file as well-formed XML. No XML schema validation is done.
    *
-   * @see toXML()
+   * @see writeXML()
    * @see xml()
-   * @see toHTML()
+   * @see writeHTML()
+   * @see innerXHTML()
+   * @see xhtml()
    * @param string $path
    *  The filename of the file to write to.
    * @throws Exception
    *  In the event that the output file cannot be written, an exception is
    *  thrown.
+   * @since 2.0
    */
   public function writeXHTML($path = NULL) {
     return $this->writeXML($path);
