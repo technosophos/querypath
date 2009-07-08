@@ -1433,6 +1433,8 @@ class QueryPath implements IteratorAggregate {
    *  The current set.
    * @param DOMNode $deepest
    *  A reference to the current deepest node.
+   * @return array
+   *  Returns an array of DOM nodes.
    */
   protected function deepestNode(DOMNode $ele, $depth = 0, $current = NULL, &$deepest = NULL) {
     // FIXME: Should this use SplObjectStorage?
@@ -1467,6 +1469,10 @@ class QueryPath implements IteratorAggregate {
    * - If the item is a SimpleXMLElement, it is converted into a DOM node and then
    *   imported.
    *
+   * @param mixed $item
+   *  Item to prepare for insert.
+   * @return mixed
+   *  Returns the prepared item.
    * @throws QueryPathException
    *  Thrown if the object passed in is not of a supprted object type.
    */
@@ -2149,7 +2155,11 @@ class QueryPath implements IteratorAggregate {
    *
    * This is a convenience function for fetching HTML in XML format.
    * It does no processing of the markup (such as schema validation).
-   *
+   * @param string $markup
+   *  A string containing XML data.
+   * @return mixed
+   *  If markup is passed in, a QueryPath is returned. If no markup is passed
+   *  in, XML representing the first matched element is returned.
    * @see html()
    * @see innerXHTML()
    */
@@ -2300,6 +2310,8 @@ class QueryPath implements IteratorAggregate {
    * @see xhtml()
    * @param string $path
    *  The filename of the file to write to.
+   * @return QueryPath
+   *  Returns the QueryPath, unmodified.
    * @throws Exception
    *  In the event that the output file cannot be written, an exception is
    *  thrown.
@@ -2948,6 +2960,11 @@ class QueryPath implements IteratorAggregate {
     throw new QueryPathException("No method named $name found. Possibly missing an extension.");
   }
   
+  /**
+   * Get an iterator for the matches in this object.
+   * @return Iterable
+   *  Returns an iterator.
+   */
   public function getIterator() {
     return new QueryPathIterator($this->matches);
   }

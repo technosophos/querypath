@@ -210,12 +210,15 @@ To print this message, do:
     <phpdoc title="QueryPath 2 (Quark)"
       sourcecode="yes"
       destdir="${docsdir}"
-      output="HTML:Smarty:QueryPath"
+      output="HTML:Smarty:QueryPath" 
       defaultcategoryname="QueryPath"
       defaultpackagename="QueryPath"
       examplesdir="examples"
       quiet="true"
       >
+      <!-- 
+        output="HTML:frames:phphtmllib"
+      -->
       <fileset refid="sourcecode"/>
       <fileset refid="tutorials"/>
       <fileset refid="examplecode"/>
@@ -297,6 +300,33 @@ To print this message, do:
       />
     <delete file="./test/db/qpTest.db" />
     <delete file="./test/db/qpTest2.db" />
+  </target>
+  
+  <target name="docBuild" description="Build a package containing just docs." 
+    depends="setup,doc">
+    <property name="releasedir" value="${builddir}/QueryPath-${version}-docs"/>
+    <delete dir="${releasedir}" />
+    
+    <!-- Make all necessary directories. -->
+    <mkdir dir="${releasedir}"/>
+    
+    <!-- Copy license files. -->
+    <copy todir="${releasedir}">
+      <fileset refid="licensefiles"/>
+    </copy>
+        
+    <!-- Copy documentation --> 
+    <copy todir="${releasedir}/docs">
+      <fileset refid="docs"/>
+    </copy>
+    
+    <!-- Create tgz and zip versions. -->
+    <tar destfile="${packagedir}/QueryPath-${version}-docs.tgz" compression="gzip">
+      <fileset dir="${builddir}">
+        <include name="QueryPath-${version}-docs/**/*"/>
+      </fileset>
+    </tar>
+    <zip destfile="${packagedir}/QueryPath-${version}-docs.zip" basedir="${releasedir}"/>
   </target>
   
 </project>
