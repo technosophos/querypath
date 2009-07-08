@@ -64,6 +64,7 @@
  * @see http://api.querypath.org An online version of the API docs.
  * @see http://technosophos.com For how-tos and examples.
  * @copyright Copyright (c) 2009, Matt Butcher.
+ * @version @UNSTABLE@
  */
  
 /**
@@ -171,6 +172,16 @@ class QueryPath implements IteratorAggregate {
   
   /**
    * The version string for this version of QueryPath.
+   *
+   * Standard releases will be of the following form: <MAJOR>.<MINOR>[.<PATCH>][-STABILITY].
+   *
+   * Examples:
+   * - 2.0
+   * - 2.1.1
+   * - 2.0-alpha1
+   *
+   * Developer releases will always be of the form dev-<DATE>.
+   *
    * @since 2.0
    */
   const VERSION = '@UNSTABLE@';
@@ -223,6 +234,8 @@ class QueryPath implements IteratorAggregate {
   
   /**
    * Default parser flags.
+   *
+   * These are flags that will be used if no global or local flags override them.
    * @since 2.0
    */
   const DEFAULT_PARSER_FLAGS = NULL;

@@ -207,7 +207,7 @@ To print this message, do:
   <!-- Build documentation -->
   <target name="doc" depends="lint" description="Generate API docs.">
     <delete dir="${docsdir}"/>
-    <phpdoc title="QueryPath 2 (Quark)"
+    <phpdoc title="QueryPath ${version}"
       sourcecode="yes"
       destdir="${docsdir}"
       output="HTML:Smarty:QueryPath" 
@@ -230,6 +230,15 @@ To print this message, do:
         <include name="LGPL-2.1.txt"/>
       </projdocfileset>
     </phpdoc>
+    <!-- Need to replace version information in generated documentation -->
+    <reflexive>
+      <fileset refid="docs"/>
+      <filterchain>
+        <replacetokens begintoken="@" endtoken="@">
+          <token key="UNSTABLE" value="${version}"/>
+        </replacetokens>
+      </filterchain>
+    </reflexive>
   </target>
   
   <!-- Run a fast test and print the results to the console -->

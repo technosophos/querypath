@@ -1,15 +1,14 @@
 <?xml version="1.0"?>
 <refentry id="{@id}">
  <refnamediv>
-  <refname>Using QueryPath</refname>
+  <refname>Using QueryPath @UNSTABLE@</refname>
   <refpurpose>How to make the most of the QueryPath library.</refpurpose>
  </refnamediv>
  <refsynopsisdiv>
   <author>
    Matt Butcher
    <authorblurb>
-    {@link http://querypath.org Project Founder}
-    {@link http://queryPath.org}
+    {@link http://querypath.org Project Founder} {@link http://queryPath.org} {@link http://technosophos.com}
    </authorblurb>
   </author>
  </refsynopsisdiv>
@@ -23,8 +22,8 @@
     it is optimized for server-side work.
   </para>
   <para>
-   The user guide for QueryPath is located in the 
-   {@link http://fedorahosted.org/querypath official wiki}. 
+   The user guide for QueryPath is located at the
+   {@link http://querypath.org official website}. 
    It is kept updated with all of the latest information.
   </para>
   <para>
