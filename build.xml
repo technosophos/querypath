@@ -205,7 +205,7 @@ To print this message, do:
   </target>
   
   <!-- Build documentation -->
-  <target name="doc" depends="lint" description="Generate API docs.">
+  <target name="doc" depends="lint,setup" description="Generate API docs.">
     <delete dir="${docsdir}"/>
     <phpdoc title="QueryPath ${version}"
       sourcecode="yes"
