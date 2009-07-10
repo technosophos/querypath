@@ -2738,7 +2738,8 @@ class QueryPath implements IteratorAggregate {
     // Long strings will exhaust the regex engine, so we
     // grab a representative string.
     $test = substr($string, 0, 255);
-    return preg_match(ML_EXP, $test) > 0;
+    return (strpos($string, '<') !== FALSE && strpos($string, '>') !== FALSE);
+    //return preg_match(ML_EXP, $test) > 0;
   }
   
   private function parseXMLString($string, $flags = NULL) {
