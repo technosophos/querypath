@@ -98,7 +98,7 @@ To print this message, do:
   </fileset>
   
   <!-- BUILD: The primary build target. -->
-  <target name="build" depends="lint, setup, doc, minimalBuild, fullBuild"
+  <target name="build" depends="lint, setup, docBuild, minimalBuild, fullBuild"
     description="Generate docs, minimal, and full builds and then creates packages."
     ></target>
   
@@ -242,7 +242,7 @@ To print this message, do:
   </target>
   
   <!-- Run a fast test and print the results to the console -->
-  <target name="ftest" depends="lint" description="Run a quick unit test.">
+  <target name="ftest" description="Run a quick unit test.">
     <!-- Fast test. -->
     <phpunit>
       <formatter type="summary" usefile="no"/>
