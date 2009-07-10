@@ -381,13 +381,16 @@ class QueryPath implements IteratorAggregate {
    * case that is not handled by find(':root') because there is no element
    * whose root can be found).
    *
+   * @param string $selector
+   *  A selector. If this is supplied, QueryPath will navigate to the 
+   *  document root and then run the query. (Added in QueryPath 2.0 Beta 2) 
    * @return QueryPath
    *  The QueryPath object, wrapping the root element (document element)
    *  for the current document.
    */
-  public function top() {
+  public function top($selector = NULL) {
     $this->setMatches($this->document->documentElement);
-    return $this;
+    return !empty($selector) ? $this->find($selector) : $this;
   }
   
   /**
@@ -2712,15 +2715,34 @@ class QueryPath implements IteratorAggregate {
   // (It is, after all, final). Instead of extending this class, you 
   // should create a decorator for the class.
   
-  // Subclasses may not implment this. Altering them may be altering
-  // core assumptions about how things work. Instead, classes should 
-  // override the constructor and pass in only one of the parsed types
-  // that this class expects.
-  private function isXMLish($string) {
-    return preg_match(ML_EXP, $string) > 0;
+  
+  /**
+   * Determine whether a given string looks like XML or not.
+   *
+   * Basically, this scans a portion of the supplied string, checking to see
+   * if it has a tag-like structure. It is possible to "confuse" this, which
+   * may subsequently result in parse errors, but in the vast majority of 
+   * cases, this method serves as a valid inicator of whether or not the 
+   * content looks like XML.
+   *
+   * Things that are intentional excluded:
+   * - plain text with no markup.
+   * - strings that look like filesystem paths.
+   * 
+   * Subclasses SHOULD NOT OVERRIDE THIS. Altering it may be altering
+   * core assumptions about how things work. Instead, classes should 
+   * override the constructor and pass in only one of the parsed types
+   * that this class expects.
+   */
+  protected function isXMLish($string) {
+    // Long strings will exhaust the regex engine, so we
+    // grab a representative string.
+    $test = substr($string, 0, 255);
+    return preg_match(ML_EXP, $test) > 0;
   }
   
   private function parseXMLString($string, $flags = NULL) {
+    
     $document = new DOMDocument();
     $lead = strtolower(substr($string, 0, 5)); // <?xml
     try {

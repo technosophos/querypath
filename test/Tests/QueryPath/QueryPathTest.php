@@ -14,6 +14,7 @@ require_once 'src/QueryPath/QueryPath.php';
 define('DATA_FILE', 'test/data.xml');
 define('DATA_HTML_FILE', 'test/data.html');
 define('NO_WRITE_FILE', 'test/no-write.xml');
+define('MEDIUM_FILE', 'test/amplify.xml');
 
 /**
  * Tests for DOM Query. Primarily, this is focused on the DomQueryImpl
@@ -182,6 +183,12 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $qp = qp($file)->find('li');
     $this->assertGreaterThan(2, $qp->size());
     $this->assertEquals(1, $qp->top()->size());
+    
+    // Added for QP 2.0
+    $xml = '<?xml version="1.0"?><root><u><l/><l/><l/></u><u/></root>';
+    $qp = qp($xml, 'l');
+    $this->assertEquals(3, $qp->size());
+    $this->assertEquals(2, $qp->top('u')->size());
   }
   
   public function testAttr() {
@@ -1074,5 +1081,48 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     }
     $this->assertEquals(4, $i);
     $this->assertEquals('foofoofoofoo', $qp->top()->find('li')->text());
+  }
+  
+  public function testModeratelySizedDocument() {
+    
+    $this->assertEquals(1, qp(MEDIUM_FILE)->size());
+    
+    $contents = file_get_contents(MEDIUM_FILE);
+    $this->assertEquals(1, qp($contents)->size());
+  }
+}
+
+/**
+ * Test the XMLish functions of QueryPath.
+ *
+ * This uses a testing harness, XMLishMock, to test
+ * a protected method of QueryPath.
+ */
+class XMLishTest extends PHPUnit_Framework_TestCase {
+  public function testXMLishMock() {
+    $tests = array(
+      'this/is/a/path' => FALSE,
+      "this is just some plain\ntext with a line break." => FALSE,
+      '2 > 1' => FALSE,
+      '1 < 2' => FALSE,
+      //'1 < 2 > 1' => FALSE,
+      '<html/>' => TRUE,
+      '<?xml version="1.0"?><root/>' => TRUE,
+      '<tag/><tag/><tag/>' => TRUE, // It's not valid, but HTML parser will try it.
+    );
+    foreach ($tests as $test => $correct) {
+      $mock = new XMLishMock();
+      $this->assertEquals($correct, $mock->exposedIsXMLish($test), "Testing $test");
+    }
+  }
+
+}
+
+/**
+ * A testing class for XMLish tests.
+ */
+class XMLishMock extends QueryPath {
+  public function exposedIsXMLish($str) {
+    return $this->isXMLish($str);
   }
 }
