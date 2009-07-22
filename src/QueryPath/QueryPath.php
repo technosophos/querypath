@@ -135,6 +135,9 @@ require_once 'QueryPathExtension.php';
  *    functions (before(), append(), etc.) will replace named entities with
  *    their decimal equivalent, and will replace un-escaped ampersands with 
  *    a numeric entity equivalent.
+ *  - QueryPath_class: (ADVANCED) Use this to set the actual classname that
+ *    {@link qp()} loads as a QueryPath instance. It is assumed that the 
+ *    class is either {@link QueryPath} or a subclass thereof.
  *
  * @example examples/simple_example.php Basic Example
  * @example examples/html.php Generating HTML
@@ -147,8 +150,10 @@ require_once 'QueryPathExtension.php';
  * @example examples/techniques.php Looping/Iteration techniques
  */
 function qp($document = NULL, $string = NULL, $options = array()) {
-  // Todo: Make this an abstract factory.
-  $qp = new QueryPath($document, $string, $options);
+  
+  $qpClass = isset($options['QueryPath_class']) ? $options['QueryPath_class'] : 'QueryPath';
+  
+  $qp = new $qpClass($document, $string, $options);
   return $qp;
 }
 
