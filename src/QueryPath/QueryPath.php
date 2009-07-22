@@ -137,7 +137,8 @@ require_once 'QueryPathExtension.php';
  *    a numeric entity equivalent.
  *  - QueryPath_class: (ADVANCED) Use this to set the actual classname that
  *    {@link qp()} loads as a QueryPath instance. It is assumed that the 
- *    class is either {@link QueryPath} or a subclass thereof.
+ *    class is either {@link QueryPath} or a subclass thereof. See the test 
+ *    cases for an example.
  *
  * @example examples/simple_example.php Basic Example
  * @example examples/html.php Generating HTML

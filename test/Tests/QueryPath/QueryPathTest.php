@@ -77,6 +77,13 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $this->assertTrue($qp->get(0) instanceof DOMNode);
   }
   
+  public function testQPAbstractFactory() {
+    $options = array('QueryPath_class' => 'QueryPathExtended');
+    $qp = qp(NULL, NULL, $options);
+    $this->assertTrue($qp instanceof QueryPathExtended, 'Is instance of extending class.');
+    $this->assertTrue($qp->foonator(), 'Has special foonator() function.');
+  }
+  
   /**
    * @expectedException QueryPathException
    */
@@ -1130,5 +1137,14 @@ class XMLishTest extends PHPUnit_Framework_TestCase {
 class XMLishMock extends QueryPath {
   public function exposedIsXMLish($str) {
     return $this->isXMLish($str);
+  }
+}
+
+/**
+ * A simple mock for testing qp()'s abstract factory.
+ */
+class QueryPathExtended extends QueryPath {
+  public function foonator() {
+    return TRUE;
   }
 }
