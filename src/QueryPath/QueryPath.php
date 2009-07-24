@@ -749,7 +749,7 @@ class QueryPath implements IteratorAggregate {
    */
   public function filter($selector) {
     $found = new SplObjectStorage();
-    foreach ($this->matches as $m) if (qp($m)->is($selector)) $found->attach($m);
+    foreach ($this->matches as $m) if (qp($m, NULL, $this->options)->is($selector)) $found->attach($m);
     $this->setMatches($found);
     return $this;
   }
@@ -850,7 +850,7 @@ class QueryPath implements IteratorAggregate {
       foreach ($this->matches as $m) if ($selector->contains($m)) $found->attach($m); 
     }
     else {
-      foreach ($this->matches as $m) if (!qp($m)->is($selector)) $found->attach($m);
+      foreach ($this->matches as $m) if (!qp($m, NULL, $this->options)->is($selector)) $found->attach($m);
     }
     $this->setMatches($found);
     return $this;
@@ -1623,7 +1623,7 @@ class QueryPath implements IteratorAggregate {
       $node = $document->importNode($node);
       $item->parentNode->replaceChild($node, $item);
     }
-    return qp($document);
+    return qp($document, NULL, $this->options);
   }
   /**
    * Add more elements to the current set of matches.
@@ -1646,7 +1646,7 @@ class QueryPath implements IteratorAggregate {
     // This is destructive, so we need to set $last:
     $this->last = $this->matches;
     
-    foreach (qp($this->document, $selector)->get() as $item)
+    foreach (qp($this->document, $selector, $this->options)->get() as $item)
       $this->matches->attach($item);
     return $this;
   }
@@ -1853,14 +1853,14 @@ class QueryPath implements IteratorAggregate {
     $found = new SplObjectStorage();
     foreach ($this->matches as $m) {
       
-      if (qp($m)->is($selector) > 0) {
+      if (qp($m, NULL, $this->options)->is($selector) > 0) {
         $found->attach($m);
       }
       else {
         while ($m->parentNode->nodeType !== XML_DOCUMENT_NODE) {
           $m = $m->parentNode;
           // Is there any case where parent node is not an element?
-          if ($m->nodeType === XML_ELEMENT_NODE && qp($m)->is($selector) > 0) {
+          if ($m->nodeType === XML_ELEMENT_NODE && qp($m, NULL, $this->options)->is($selector) > 0) {
             $found->attach($m);
             break;
           }
@@ -1893,7 +1893,7 @@ class QueryPath implements IteratorAggregate {
         // Is there any case where parent node is not an element?
         if ($m->nodeType === XML_ELEMENT_NODE) {
           if (!empty($selector)) {
-            if (qp($m)->is($selector) > 0) {
+            if (qp($m, NULL, $this->options)->is($selector) > 0) {
               $found->attach($m);
               break;
             }
@@ -1929,7 +1929,7 @@ class QueryPath implements IteratorAggregate {
         // Is there any case where parent node is not an element?
         if ($m->nodeType === XML_ELEMENT_NODE) {
           if (!empty($selector)) {
-            if (qp($m)->is($selector) > 0)
+            if (qp($m, NULL, $this->options)->is($selector) > 0)
               $found->attach($m);
           }
           else 
@@ -2365,7 +2365,7 @@ class QueryPath implements IteratorAggregate {
         $m = $m->nextSibling;
         if ($m->nodeType === XML_ELEMENT_NODE) {
           if (!empty($selector)) {
-            if (qp($m)->is($selector) > 0) {
+            if (qp($m, NULL, $this->options)->is($selector) > 0) {
               $found->attach($m);
               break;
             }
@@ -2403,7 +2403,7 @@ class QueryPath implements IteratorAggregate {
         $m = $m->nextSibling;
         if ($m->nodeType === XML_ELEMENT_NODE) {
           if (!empty($selector)) {
-            if (qp($m)->is($selector) > 0) {
+            if (qp($m, NULL, $this->options)->is($selector) > 0) {
               $found->attach($m);
             }
           }
@@ -2440,7 +2440,7 @@ class QueryPath implements IteratorAggregate {
         $m = $m->previousSibling;
         if ($m->nodeType === XML_ELEMENT_NODE) {
           if (!empty($selector)) {
-            if (qp($m)->is($selector)) {
+            if (qp($m, NULL, $this->options)->is($selector)) {
               $found->attach($m);
               break;
             }
@@ -2478,7 +2478,7 @@ class QueryPath implements IteratorAggregate {
         $m = $m->previousSibling;
         if ($m->nodeType === XML_ELEMENT_NODE) {
           if (!empty($selector)) {
-            if (qp($m)->is($selector)) {
+            if (qp($m, NULL, $this->options)->is($selector)) {
               $found->attach($m);
             }
           }
@@ -2500,7 +2500,7 @@ class QueryPath implements IteratorAggregate {
       foreach ($m->parentNode->childNodes as $kid) {
         if ($kid->nodeType == XML_ELEMENT_NODE && $m !== $kid) {
           if (!empty($selector)) {
-            if (qp($kid)->is($selector)) {
+            if (qp($kid, NULL, $this->options)->is($selector)) {
               $found->attach($kid);
             }
           }
@@ -2676,7 +2676,7 @@ class QueryPath implements IteratorAggregate {
    * @see find()
    */
   public function branch($selector = NULL) {
-    $temp = qp($this->matches);
+    $temp = qp($this->matches, NULL, $this->options);
     if (isset($selector)) $temp->find($selector);
     return $temp;
   }
@@ -3008,7 +3008,9 @@ class QueryPath implements IteratorAggregate {
    *  Returns an iterator.
    */
   public function getIterator() {
-    return new QueryPathIterator($this->matches);
+    $i = new QueryPathIterator($this->matches);
+    $i->options = $this->options;
+    return $i;
   }
 }
 
@@ -3168,8 +3170,10 @@ class QueryPathEntities {
  * method is called.
  */
 class QueryPathIterator extends IteratorIterator {
+  public $options = array();
+  
   public function current() {
-    return qp(parent::current());
+    return qp(parent::current(), NULL, $this->options);
   }
 }
 

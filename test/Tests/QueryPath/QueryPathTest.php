@@ -84,6 +84,15 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $this->assertTrue($qp->foonator(), 'Has special foonator() function.');
   }
   
+  public function testQPAbstractFactoryIterating() {
+    $xml = '<?xml version="1.0"?><l><i/><i/><i/><i/><i/></l>';
+    $options = array('QueryPath_class' => 'QueryPathExtended');
+    foreach(qp($xml, 'i', $options) as $item) {
+      $this->assertTrue($item instanceof QueryPathExtended, 'Is instance of extending class.');
+    }
+    
+  }
+  
   /**
    * @expectedException QueryPathException
    */
