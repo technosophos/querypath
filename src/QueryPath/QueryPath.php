@@ -69,6 +69,7 @@
  
 /**
  * Regular expression for checking whether a string looks like XML.
+ * @deprecated This is no longer used in QueryPath.
  */
 define('ML_EXP','/^[^<]*(<(.|\s)+>)[^>]*$/');
 
