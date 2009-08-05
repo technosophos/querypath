@@ -13,7 +13,7 @@ require_once 'QueryPathTest.php';
 /**
  * 
  */
-define('DATA_FILE', 'test/data.xml');
+//define('DATA_FILE', 'test/data.xml');
 
 /**
  * Run all of the usual tests, plus some extras, with some extensions loaded.
