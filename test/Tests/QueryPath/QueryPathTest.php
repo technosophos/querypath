@@ -194,6 +194,22 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     }
   }
   
+  public function testReplaceEntitiesOption() {
+    $path = '<?xml version="1.0"?><root/>';
+    $xml = qp($path, NULL, array('replace_entities' => TRUE))->xml('<foo>&</foo>')->xml();
+    $this->assertTrue(strpos($xml, '<foo>&amp;</foo>') !== FALSE);
+    
+    $xml = qp($path, NULL, array('replace_entities' => TRUE))->html('<foo>&</foo>')->xml();
+    $this->assertTrue(strpos($xml, '<foo>&amp;</foo>') !== FALSE);
+    
+    $xml = qp($path, NULL, array('replace_entities' => TRUE))->xhtml('<foo>&</foo>')->xml();
+    $this->assertTrue(strpos($xml, '<foo>&amp;</foo>') !== FALSE);
+    
+    QueryPathOptions::set(array('replace_entities' => TRUE));
+    $this->assertTrue(strpos($xml, '<foo>&amp;</foo>') !== FALSE);
+    QueryPathOptions::set(array());
+  }
+  
   public function testFind() {
     $file = DATA_FILE;
     $qp = qp($file)->find('#head');

@@ -1988,6 +1988,10 @@ class QueryPath implements IteratorAggregate {
   public function html($markup = NULL) {
     if (isset($markup)) {
       
+      if ($this->options['replace_entities']) {
+        $markup = QueryPathEntities::replaceAllEntities($markup);
+      }
+      
       // Parse the HTML and insert it into the DOM
       //$doc = DOMDocument::loadHTML($markup);
       $doc = $this->document->createDocumentFragment();
@@ -2240,6 +2244,9 @@ class QueryPath implements IteratorAggregate {
       $omit_xml_decl = TRUE;
     }
     elseif (isset($markup)) {
+      if ($this->options['replace_entities']) {
+        $markup = QueryPathEntities::replaceAllEntities($markup);
+      }
       $doc = $this->document->createDocumentFragment();
       $doc->appendXML($markup);
       $this->removeChildren();
