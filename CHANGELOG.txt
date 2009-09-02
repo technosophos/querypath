@@ -1,0 +1,763 @@
+
+Changes in QueryPath 2.0
+
+commit 91755a1d6a3d917538f57539a1b73702cf955d0c
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Wed Jul 29 08:42:57 2009 -0500
+
+    Added deprecation flags on QPList and ML_EXP.
+    
+    These items will likely be removed from QueryPath 3.x.
+
+commit 50de0bf0a81c8d8ee0bde49add175638ddb5e8b6
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Fri Jul 24 18:23:45 2009 -0500
+
+    Added options to internal qp() calls.
+    
+    With the abstract factory added, it is necessary to pass options
+    from the base qp() call to any other qp() calls within QueryPath.
+    Unit tests also added.
+
+commit 688d26a6044e0147f8a4c4898730ba5eadc88f80
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Wed Jul 22 12:30:33 2009 -0500
+
+    Added unit testing for QP abstract factory.
+    
+    Unit tests for loading classes whose base class is QueryPath. Also
+    made minor updates to docs.
+
+commit 6258dcaed05f077b210e49ab1138c65be6e8ceaa
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Wed Jul 22 11:09:54 2009 -0500
+
+    Made qp() an abstract factory.
+    
+    You can now construct different QueryPath implementations with
+    qp().
+
+commit fc5aa860a37d597e66ed6b879fd9c36965298264
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Fri Jul 10 12:17:14 2009 -0500
+
+    Fixed error in isXMLish().
+    
+    Fixed a bug in isXMLish() (issue #6) and updated unit tests to
+    make sure fix is successful.
+
+commit 80f29a5d1ebd3b40c2e6098125799c3a3fc8a532
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Thu Jul 9 20:49:50 2009 -0500
+
+    Added filter to top(), fixed isXMLish()
+    
+    The top() function now takes a selector. The isXMLish() function
+    no longer has memory exhausted by large files. Unit tests have
+    been updated, including a new larger XML file test to check for
+    memory exhuastion on moderately sized files.
+
+commit 9c814b007264ef0a2134d54518a35fa5f5382fda
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Thu Jul 9 20:48:37 2009 -0500
+
+    Revised build.xml.
+    
+    Build.xml now does not require lint for ftest, also runs docBuild
+    during a full build.
+
+commit 350910e305676968154649accda5c2cc2d873f3d
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Wed Jul 8 23:29:04 2009 -0500
+
+    Minor changes to tutorials and build XML.
+
+commit c00ebe01f6b842640bb9cbf26f11f4b475b72458
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Wed Jul 8 00:00:05 2009 -0500
+
+    Update to build. Update to docs.
+    
+    Docs have been modified slightly. Build has been modified to
+    include version information in generated documentation.
+
+commit fb568c4dad0c4120154efeb858a7e38121611cb3
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Tue Jul 7 22:08:07 2009 -0500
+
+    Minor doc changes. Build target for docs.
+    
+    New build target makes docmentation-only packages. Also updated
+    docs again.
+
+commit 9fcf13ab4db068639e46d96e69602a74f9fe097e
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Tue Jul 7 12:43:51 2009 -0500
+
+    Fixed ~ operator.
+    
+    The ~ operator was too greedy. Now it is restricted according to
+    the latest draft of the CSS 3 Selector specification. Also added
+    the appropriate unit tests.
+
+commit 6e4b431b6aece8b369be0802c3a60cb6c67110ab
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Tue Jul 7 11:26:46 2009 -0500
+
+    Added new method hasAttr().
+    
+    The hasAttr() method allows you to easily test whether an attr
+    exists. Since it uses low-level DOM, it is faster than higher-
+    level implementations. Unit tests added, too, of course.
+
+commit 8b0bbcde1d297949384346ac04af6a35cee6fb97
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Mon Jul 6 23:33:31 2009 -0500
+
+    Added XHTML_STUB, removed final, added closest.
+    
+    QueryPath is no longer final. Added new XHTML_STUB constant,
+    added closest() function to bring QueryPath closer to jQuery.
+    Made lots of minor changes to docs.
+
+commit 7655eb6659ec4eae16bf73308eeeda6ab6a61d2f
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Mon Jul 6 15:19:56 2009 -0500
+
+    Updated README.
+    
+    Added information about support and devel lists.
+
+commit a3a7285e93aec5288ef87317bd23771093dbf6bd
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Mon Jul 6 14:36:06 2009 -0500
+
+    3 new methods: innerHTML, innerXML, innerXHTML.
+    
+    Methods for retrieving child markup from an element. Also there
+    are unit tests for these.
+
+commit ee24b2ed750672ad6af78192bbf18682a50f3197
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Sat Jul 4 21:26:53 2009 -0500
+
+    Updated INSTALL and README docs.
+    
+    INSTALL now explains GitHub builds. README now points to GitHub.
+    Build file builds no-frames version and has a TextMate target.
+
+commit a1530152d1ccc23f5d6a3e95c5774c51ff0d06a6
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Sat Jul 4 15:56:30 2009 -0500
+
+    Updated build to include docs.
+    
+    Build now self-documents and contains an 'info' target which
+    explains use.
+
+commit 2748022d2621355eec8eeaf06ddf8c93103c629a
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Sat Jul 4 15:31:35 2009 -0500
+
+    Initial add of some additional PEAR package tools.
+    
+    These are currently untested, and may be removed in the future.
+
+commit f40fc3afa64bafd2d6776539bdbc297a8da6a54e
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Sat Jul 4 15:27:26 2009 -0500
+
+    Updated license, INSTALL, and README.
+    
+    MIT license was overwritten by a bogus version. Fixed. INSTALL
+    and README have been updated. Ignore settings added to mask
+    binary distribution directories. Build directory has been changed.
+
+commit 8a88538a75e179a539cf8ff58329b0bceaadcd34
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Sat Jul 4 15:15:59 2009 -0500
+
+    Continuing build script reworking.
+    
+    Builds are now generating tar archives correctly. Both minimal and
+    full builds are working. Vesrion now contains a timestamp for
+    default dev builds. Some of the old scripts have been added, as
+    have the rudiments of a PEAR package.
+
+commit 24c52fae72dd4c54bc8c3d7297926891e62c43c8
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Fri Jul 3 23:34:46 2009 -0500
+
+    Updated build.xml.
+    
+    Also add version const to QueryPath.
+
+commit b65a5e7aa14189a3dbc13a1b494c4d98a878c991
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Thu Jul 2 17:41:10 2009 -0500
+
+    Final cleanup after doc removal.
+    
+    Finished cleaning up documents directory.
+
+commit e739ac09c121bbfa338cb2654e52f1edc76ae875
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Thu Jul 2 17:38:56 2009 -0500
+
+    Removed docs.
+    
+    Including docs in the repository seems redundant. Docs have been
+    removed.
+
+commit e51bacc31f964d3a0d25841a059be872da5a3173
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Thu Jul 2 17:32:46 2009 -0500
+
+    New Phing-based build system.
+    
+    Massive updates to the build system. QueryPath now uses Phing
+    to build packages. Test and various scripts have been updated
+    accordingly.
+
+commit b0bb428757c15c03b768b11866be3edab500bf97
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Mon Jun 29 08:51:43 2009 -0500
+
+    Added xhtml() and writeXHTML() methods.
+    
+    New methods added for handling XHTML content. New unit tests
+    added to test these.
+
+commit b955c661a965b1722b99deef6bdc74810be5eccd
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Fri Jun 26 21:19:12 2009 -0500
+
+    Added file used for unit tests.
+
+commit 0d1b621856574e0e949f97e82fc01edcbb1e7eb4
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Fri Jun 26 21:18:04 2009 -0500
+
+    Added file-writing ability to writeHTML().
+    
+    writeHTML() and writeXML() can now write to files in addition to
+    writing to STDOUT. New unit tests for each of these. New unit test
+    for character encoding.
+
+commit e40928de7374847df139a5a659c668fef0ca8afa
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Fri Jun 26 08:35:44 2009 -0500
+
+    Added file writing to writeXML.
+    
+    writeXML() now takes an optional file argument. When given, the
+    file argument will be used as a path to the location of a new
+    file. writeXML() will clobber and write to that file.
+
+commit 0725bf7370efef4ff00a38a733aa196a7e838b70
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Thu Jun 25 00:35:51 2009 -0500
+
+    More unit tests to finish up coverage for CSS.
+    
+    All CSS Event Hanlder implementation is now covered. Some unused
+    methods have been removed. Several new tests are added.
+
+commit 4a9304f110556a130b89036fbba8a900f501cba3
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Thu Jun 25 00:24:01 2009 -0500
+
+    Fixed bug in elementNS() css event handler.
+    
+    Just as with the anyElementInNS issue, this event handler also did
+    not check the base node for matching. This too may need rolling
+    back (see previous commit).
+
+commit bdf99fe0680a74966927df5aa750f1b1521d3577
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Thu Jun 25 00:12:13 2009 -0500
+
+    Fixed bug in anyElementInNS. Added tests.
+    
+    Working through coverage tests. Fixed obscure bug in
+    anyElementInNS() that prevented it from selecting the base node of
+    a search. There is the possibility that this might need to be
+    rolled back, as the spec is not specific about whether the filter
+    ns|* should match the base node, or only its children. Currently
+    it matches the base node and descendants.
+
+commit 5d35bf62eea043ea118816c69460a49f6d7b48e1
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Wed Jun 24 21:36:29 2009 -0500
+
+    Fixed minor bugs in CSS parser.
+    
+    Fixed a few bugs with handling of rare cases, like attributes with
+    empty strings for values and elements with *|* for the name
+    specification. Updated unit tests.
+
+commit 4239ce1afc1b56c22adaa361b6b0792f179adecb
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Wed Jun 24 17:43:38 2009 -0500
+
+    Fixed minor bug in tokenizer.
+    
+    Fixed bug in tokenizer error reporting. Working on CSS parser
+    unit tests. Added coverage reports to ignore file.
+
+commit ff0a9f1aba60a2874a91a76c4c574e16b93d56a1
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Wed Jun 24 17:31:49 2009 -0500
+
+    Fixed bugs in wrap*, more unit testing.
+    
+    Continuing the unit testing. Added tests for extensions. Fixed
+    a few bugs in the wrap functions and the extension handler.
+
+commit ae198c724daeef0cdd96a2d561069c22465b4ec4
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Wed Jun 24 09:46:44 2009 -0500
+
+    Added new unit tests.
+    
+    Added new unit tests and made minor edits to QP.
+
+commit 07aa195e714ce9321243cda5cdd68c9bd044c9c9
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Wed Jun 24 08:08:15 2009 -0500
+
+    Fixed bug in html(), added tests.
+    
+    When adding additional tests, encountered a bug where html() does
+    not correctly handle non-DOMNode objects. That is now fixed, and
+    there are more tests.
+
+commit 700c3283fe5c592abb23640159a5c56511d71a40
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Wed Jun 24 07:56:06 2009 -0500
+
+    Fixed a unit test, fixed some comments.
+
+commit ab2a28b38ca1fabdcd0de4e514d6f286456d864c
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Wed Jun 24 00:56:44 2009 -0500
+
+    Fixed bug in replaceAll(). More unit tests.
+    
+    Continuing to improve coverage of QueryPath.php. Fixed a bug with
+    replaceAll() so that it now correctly replaces and correctly
+    returns the modified document (instead of the origin document).
+    Added more unit tests.
+
+commit 953d6d57e811e1b385931585d496dd503953be89
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Wed Jun 24 00:32:12 2009 -0500
+
+    Fixed exception thrown by each, added tests.
+    
+    Continuing to do coverage updates to unit tests. Adding new tests
+    to catch portions of QueryPath that were not fully tested.
+    Fixed each() to throw QueryPathException instead of Exception.
+
+commit ab41eb61a0c3a0b54e2215da34c5d618aa1947c8
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Wed Jun 24 00:20:43 2009 -0500
+
+    Added some comments, added more error tests.
+    
+    More unit tests, more comments in the code.
+
+commit ce26fb1452279faab154a067aee190babcb6df16
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Wed Jun 24 00:14:28 2009 -0500
+
+    Improved error handling for XML fragment inserts.
+    
+    append(), after(), before(), prepend() and so on use
+    prepareInsert() to handle importing fragments of XML. This has
+    now been modified to throw exceptions when parser errors are
+    generated by libxml.
+
+commit f275b885ad96f27a1c31f74f153dce39affce795
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Wed Jun 24 00:00:20 2009 -0500
+
+    Added coverage script.
+    
+    This script runs a coverage analysis of QueryPath.
+
+commit af1c0d3ed31719fecb0f42c5875385e67026504b
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Tue Jun 23 23:59:08 2009 -0500
+
+    Fixed bug in css(), added new unit tests.
+    
+    Fixed bug in css() that was causing arrays to not be handled
+    correctly. Added some new unit tests for items that coverage
+    analysis revealed was not being tested.
+
+commit bb21f2983af34731f273d93faa0aed8aefc0ca9c
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Tue Jun 23 23:44:55 2009 -0500
+
+    Fixed options overriding, added unit tests.
+    
+    Fixed QueryPathOptions to correctly merge overriding values over
+    existing values. Added unit tests for QueryPathOptions. Removed
+    a few commented sections of code.
+
+commit 0ac22a6472b3908bd27de29d4024ba9b14997260
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Tue Jun 23 23:31:04 2009 -0500
+
+    Fixed index() and val() bugs.
+    
+    Coverage analysis showed that index() and val() were not tested
+    in unit tests. Added unit tests, tested them, and fixed any found
+    bugs.
+
+commit 53de6e4ae584d8e4b61070ffc0e23991b13b493d
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Tue Jun 23 21:12:07 2009 -0500
+
+    Refactored tests, added better error handling.
+    
+    Changed the error handling significantly and rewrote unit tests to
+    test new error handling code. In most cases, parsing errors are
+    now captured and treated as exceptions, thrown for the implementor
+    to deal with.
+
+commit 05972e7118f40366af688bd19d76450d05f745d4
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Wed Jun 17 21:55:03 2009 -0500
+
+    Updates to error handling.
+    
+    Minor changes to the way error messages are handling. Minor re-
+    arrangements of function order so that constructor is first
+    non-static method.
+
+commit 70b0fef273c8c08b79aeb39a7cdb0ccd8d0411b0
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Mon Jun 15 19:47:47 2009 -0500
+
+    Added new argument to branch.
+    
+    Added an optional selector to branch(). Also fixed a bug (reported
+    by R. Mahoney) in the way the special-case #id selector is
+    handled.
+
+commit 342dd3f81974564df9cb846012a75cc44a2bf305
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Thu Jun 11 21:02:39 2009 -0500
+
+    Added query() method.
+    
+    QueryPath now has a new query() method, which does a branch()
+    followed by a find().
+
+commit e6588605e383b902574e1c0a61f4fd8cda96e1ce
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Wed Jun 10 10:39:32 2009 -0500
+
+    Comment clean-up.
+    
+    Moved inline comment to doc block in parser, updated URLs in
+    other comments.
+
+commit 4462641948cb82e1a627c17cacb853abfff3fe66
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Mon Jun 8 23:11:14 2009 -0500
+
+    Improved error handling.
+    
+    Failed stream loading now throws an exception instead of logging
+    an error. This should make exception handling much easier.
+
+commit 95fea98189255fbe13ce6c77720444639d2fa446
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Mon Jun 8 18:47:57 2009 -0500
+
+    Moved QueryPath implementation into QueryPath.php
+    
+    There is no more QueryPath interface. QueryPathImpl is now
+    the concrete class QueryPath.
+
+commit c0ac325f295ddfa42157a84c209c2b9c4d7345de
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Mon Jun 8 17:50:53 2009 -0500
+
+    Moved exceptions over.
+
+commit d88133c1ad726bd3d4bcea3fe2ab5023c4974a6f
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Mon Jun 8 17:47:47 2009 -0500
+
+    Migrating docs to new QueryPath file.
+    
+    QueryPath interface migration is now 80% of the way done. The
+    documentation has been relocated to the new QueryPath class, which
+    replaces QueryPathImpl and the QueryPath interface.
+
+commit a07462e5ea7adfd356eb209e2e8fbf605fb5bec6
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Mon Jun 8 12:13:44 2009 -0500
+
+    Partial interface removal.
+    
+    Working on removing QueryPathImpl and replacing QueryPath with
+    a class. Work is NOT COMPLETE. This checkin breaks the build.
+
+commit 0f1ed1c4906faee5e3470efd0bc4ce9ada9478e7
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Tue Jun 2 21:14:48 2009 -0500
+
+    Updated README with URLs.
+
+commit a9cb55b34511572bc034a5ca90bfa7353d7eeac8
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Mon Jun 1 08:52:29 2009 -0500
+
+    Added tests for comments and CDATA.
+    
+    New tests make sure that comments and CDATA sections do not cause
+    parse errors or output formatting errors.
+
+commit dbfbf4e29bcc64aa906fb9ef13aa8dd49e01cf0a
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Fri May 29 08:38:56 2009 -0500
+
+    After identifying the DB issue, fixed unit test.
+    
+    The unit test now correctly drops the table at the end of the
+    query.
+
+commit 17fd2102a59379d0e774c3d1785fdbc9bf4c3500
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Thu May 28 21:03:37 2009 -0500
+
+    Bug fixes turned up by more unit tests.
+    
+    Unit tests for extensions updated. A few bugfixes to QueryPathImpl
+    and QPDB. A few bug fixes to unit tests. Removal of one warning
+    message.
+
+commit b62da2545c9eaa04b61c4f15d4ee599e12dcf0c2
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Wed May 27 14:16:37 2009 -0500
+
+    Improved iterator.
+    
+    New QueryPathIterator makes use of SplObjectStorage. Also added
+    some tests for multiline text data with empty text nodes.
+
+commit abc728c77cb031d8b17b6d3a9bd37f83bbac95c2
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Wed May 27 08:34:26 2009 -0500
+
+    Fixed all unit tests, removed old class.
+    
+    The uniqueness checking class is now completely expunged from
+    QueryPath, as SplObjectStorage has made it obsolete.
+
+commit 6420f33237983fffe8ad6d2a3a50c56ae3fe52ac
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Wed May 27 08:26:12 2009 -0500
+
+    Fixed slice().
+
+commit ac984d5e153d487eee868ad019292c911660d312
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Wed May 27 08:22:30 2009 -0500
+
+    Fixed andSelf().
+
+commit 7d6625c56dba7619a9e451a9d357f57d50b3f88b
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Tue May 26 23:29:13 2009 -0500
+
+    Migrating QueryPath to SplObjectStorage.
+    
+    Moving the internal structure of QueryPathImpl to
+    SplObjectStorage. Almost done -- down to a few failing unit tests.
+
+commit 3308a55918d79fbb40582c550ef96299a71f4eab
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Tue May 26 23:28:57 2009 -0500
+
+    Minor fix.
+
+commit 99869dbeccb340d20775fdc22385c1fb5408825f
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Tue May 26 23:28:06 2009 -0500
+
+    Migration to SplObjectStorage.
+    
+    Made a few additions to improve integration with SplObjectStorage.
+
+commit b11e08c64d67d9c51db2bb29d7581bec9a153e5a
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Mon May 25 14:49:52 2009 -0500
+
+    Switched unit tests to run QueryPath tests.
+    
+    This change is temporary.
+
+commit 009e399a8e83d28050d6395d410d645245f9c652
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Mon May 25 00:00:38 2009 -0500
+
+    Performance improvements and docs.
+    
+    Cleaned up code for CSS event handler. Added more documentation
+    including a CSS reference (rough draft).
+
+commit e8dd6d3f2149583c9f8b17a2e9d489d4ce108e05
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Sun May 24 14:28:22 2009 -0500
+
+    All but one unit test now passing.
+    
+    The CSS Event Handler passes almost all unit tests, now, including
+    some that QP 1.2 did not correctly pass. Also adjusted some of the
+    behavior to comply with the current CSS 3 selector specification.
+    
+    This does make QP behave differently than jQuery 1.2. Have not
+    tested it against jQ 1.3.
+
+commit 3598545f4d0d1840f824b169d7695bb539b89a65
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Sat May 23 09:51:01 2009 -0500
+
+    added comments
+
+commit 48e1b8e996a01e07c60a2ed824c1e955a2dadc97
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Fri May 22 23:47:30 2009 -0500
+
+    Replaced arrays with SplObjectStorage.
+    
+    This should dramatically increase the speed. Not all unit tests
+    are passing, though.
+
+commit 9ef29c96ffb1b8d6c292a9987b5e28a5f045b03c
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Wed May 20 09:56:07 2009 -0500
+
+    Changed readme.
+
+commit ece29dd45ca2a0f062e4e157541f598f8245b029
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Wed May 20 09:49:10 2009 -0500
+
+    Cleaing up get tree.
+
+commit 91e1ef475036cfe6055df951dac9d8210dde63fb
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Wed May 20 09:40:24 2009 -0500
+
+    Added some examples files.
+
+commit 12c2fd889d2590f0c0d8a5c4d2020e1a78c53e86
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Tue May 19 17:51:46 2009 -0500
+
+    Updated unit tests.
+    
+    Made minor cleaning fixes to unit tests.
+
+commit 0b4444e2c4801ac129e832806dd604b891395052
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Tue May 19 17:50:50 2009 -0500
+
+    Updated callback functions to use a simpler construct.
+    
+    Most callbacks now use call_user_func_array() instead of dynamic
+    function calls.
+
+commit dce33b6d68ca7acad5d5b70f74d209729fda0c40
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Thu May 14 00:16:01 2009 -0500
+
+    Fixed entity encodeding, cleaned up unit test script.
+    
+    Entity encoding for hex values was not handled. Added code to
+    handle those. Also removed commented out code from runTests.sh.
+
+commit de104d45c01164c3e73500c72d1dc5955b76f1a9
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Wed May 13 23:06:51 2009 -0500
+
+    Reorganized test suite.
+    
+    Tests are now organized as suggested by the PHPUnit documentation.
+    Made minor changes to supporting files along the way.
+
+commit 70c17c7e6c0da0f8c8edbab3a4894ee53caa49d2
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Wed May 13 17:33:16 2009 -0500
+
+    Added getLastInsertID function to QPDB.
+    
+    Added a new convenience function to QPDB.
+
+commit 107eb61ce87aec0663ed9f2ccf76c868591803e5
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Mon May 11 17:46:49 2009 -0500
+
+    Another similar change.
+    
+    Repeated the same change from the last commit on another line of code.
+
+commit 642b60004ec3601641062bc290cfaae9cbe46707
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Mon May 11 17:42:31 2009 -0500
+
+    Relaxed requirements for wrap formatting.
+    
+    Relaxed the requirement that QPDB column-based wraps contain full
+    XML documents. Now they accept arbitrary well-formed XML instead.
+
+commit 410c959edaa8616bd87f5a80f349e199862ff1c0
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Thu May 7 11:07:02 2009 -0500
+
+    Added getOptions function to QueryPath interface.
+
+commit 2198013779f89cf76c267828bae87966925f5821
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Wed May 6 20:26:45 2009 -0500
+
+    Added global default options.
+    
+    A new class, QueryPathOptions, can be used to set global, request-
+    wide options for all QueryPath objects.
+
+commit 78cb2d8f860496e495b132f007773f2ce013ece1
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Tue May 5 10:54:00 2009 -0500
+
+    Support for XSLT, entity encoding.
+    
+    Added support for XSLT as an extension. Added support for automatic
+    entity encoding. Improved some testing and documentation.
+
+commit 7c533765434026bee7d7d51b16606d157e735b7c
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Thu Apr 23 08:35:12 2009 -0500
+
+    Changes to XML extension, xml() method, entity handling.
+    
+    XML extension now supports XSLT transformations. The xml()
+    and qp() methods both support args to omit the XML declaration.
+    Some work has been done on improving entity handling. Docs
+    and tests updated where appropriate.
+
+commit 0498df7d06a17a6db65cc9dd7f3dbfbbc06d6686
+Author: M Butcher <matt@aleph-null.tv>
+Date:   Mon Mar 23 17:11:43 2009 -0500
+
+    Added peers() function to QueryPath.
+    
+    Added the new peers() function to QueryPath. Also fixed a minor
+    bug in QueryPath's toXML() function.
