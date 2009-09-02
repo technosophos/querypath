@@ -1,0 +1,342 @@
+<?xml version="1.0"?>
+<project 
+  name="QueryPath" 
+  description="A simple, powerful, robust tool for working with XML, HTML, and HTTP"
+  default="ftest">
+<!--
+This is the Phing build file for QueryPath.
+
+Phing is a build tool. Learn more about it at http://phing.info.
+
+Copyright (c) 2009, Matt Butcher, some rights reserved.
+
+License:
+QueryPath is released under the GNU LGPL 2.1 or, at your preference,
+an MIT license. See COPYING-LGPL.txt and COPYING-MIT.txt for details.
+-->
+  <target name="info" description="Information on using the QueryPath Phing build.">
+    <echo>
+To build QueryPath, run:
+
+  phing build
+  
+This will create a generic dev release of QueryPath and copy the releasable files to the dist/ directory. All documentation will be generated, and both a minimal and full version of the code will be generated. The non-compressed files will be available for inspection in bin/build/.
+
+IMPORTANT: The full version of the package does not include build scripts (including this file). The only way to obtain the entire QueryPath development environment is to check it out from http://github.com/technosophos/querypath.
+
+A numbered release can be built with:
+
+  phing build -Dversion=2.0-Alpha1
+
+These are the basic tasks we anticipate performing with phing. However, the build script supports the running of several other tasks which may help you when debugging or developing QueryPath. Important ones are listed below. A complete list can be obtained by running 'phing -l' in this directory.
+
+To generate docs, do:
+
+  phing doc
+
+Documentation will be stored in docs/. You can start with docs/index.html.
+
+To run unit tests, do:
+
+  phing test
+
+The above will generate HTML test results which will be placed in test/reports/. If you wish to run the test and print the results directly the the command line, you should run 'phing ftest' instead.
+
+To run coverage analysis, do:
+
+  phing coverage
+  
+This will create HTML pages describing code coverage. The coverage analysis will be available in test/coverage
+  
+To print this message, do:
+
+  phing info
+
+    </echo>
+  </target>
+
+
+  <!-- Global properties -->
+  <property name="srcdir" value="./src"/>
+  <property name="testdir" value="./test"/>
+  <property name="builddir" value="./bin/build"/>
+  <property name="docsdir" value="./docs"/>
+  <property name="packagedir" value="./dist"/>
+  
+  <!-- Files that must be included in the release -->
+  <fileset id="licensefiles" dir=".">
+    <include name="README"/>
+    <include name="INSTALL"/>
+    <include name="LGPL-2.1.txt"/>
+    <include name="COPYING-LGPL.txt"/>
+    <include name="COPYING-MIT.txt"/>
+  </fileset>
+  
+  <!-- Files to be treated as source code -->
+  <fileset id="sourcecode" dir="${srcdir}">
+    <include name="**/*.php" />
+  </fileset>
+  
+  <!-- Unit tests and auxilliary files -->
+  <fileset id="unittests" dir="${testdir}/Tests">
+    <include name="**/*Test.php" />
+  </fileset>
+  
+  <!-- Examples -->
+  <fileset id="examplecode" dir="./examples">
+    <include name="**/*" />
+  </fileset>
+  
+  <!-- DocBook Tutorials -->
+  <fileset id="tutorials" dir="./tutorials">
+    <include name="**/*" />
+  </fileset>
+  
+  <!-- Documentation -->
+  <fileset id="docs" dir="./docs">
+    <include name="**/*" />
+  </fileset>
+  
+  <!-- BUILD: The primary build target. -->
+  <target name="build" depends="lint, setup, docBuild, minimalBuild, fullBuild"
+    description="Generate docs, minimal, and full builds and then creates packages."
+    ></target>
+  
+  <!-- Target that should be run always. -->
+  <target name="setup" description="Run required configuration for any build.">
+    <tstamp/>
+    <!-- Default version -->
+    <property name="version" value="dev-${DSTAMP}"/>
+  </target>
+  
+  <!-- Build just the minimal package -->
+  <target name="minimalBuild" description="Minimal QueryPath build." 
+    depends="setup">
+    <property name="releasedir" value="${builddir}/QueryPath-${version}-minimal" override="true"/>
+    <echo>${releasedir}</echo>
+    <delete dir="${releasedir}" />
+    <mkdir dir="${releasedir}"/>
+    <copy todir="${releasedir}">
+      <filterchain>
+        <stripphpcomments/>
+        <stripwhitespace/>
+        <replacetokens begintoken="@" endtoken="@">
+          <token key="UNSTABLE" value="${version}"/>
+        </replacetokens>
+      </filterchain>
+      <fileset dir="${srcdir}/QueryPath">
+        <include name="**/*"/>
+      </fileset>
+    </copy>
+    <copy todir="${releasedir}">
+      <fileset refid="licensefiles"/>
+    </copy>
+    <tar destfile="${packagedir}/QueryPath-${version}-minimal.tgz" 
+      compression="gzip">
+      <fileset dir="${builddir}">
+        <include name="QueryPath-${version}-minimal/**/*"/>
+      </fileset>
+    </tar>
+    <zip destfile="${packagedir}/QueryPath-${version}-minimal.zip" basedir="${releasedir}"/>
+  </target>
+  
+  <!-- Build the full package -->
+  <target name="fullBuild" description="Full QueryPath build, including docs."
+    depends="setup">
+    <property name="releasedir" value="${builddir}/QueryPath-${version}" override="true"/>
+    <delete dir="${releasedir}" />
+    
+    <!-- Make all necessary directories. -->
+    <mkdir dir="${releasedir}"/>
+    <mkdir dir="${releasedir}/src"/>
+    <mkdir dir="${releasedir}/examples"/>
+    <mkdir dir="${releasedir}/test"/>
+    <mkdir dir="${releasedir}/tutorials"/>
+    <mkdir dir="${releasedir}/docs"/>
+    
+    <!-- Copy license files. -->
+    <copy todir="${releasedir}">
+      <fileset refid="licensefiles"/>
+    </copy>
+    
+    <!-- Copy source code, doing token replacement on version. -->
+    <copy todir="${releasedir}/src">
+      <filterchain>
+        <replacetokens begintoken="@" endtoken="@">
+          <token key="UNSTABLE" value="${version}"/>
+        </replacetokens>
+      </filterchain>
+      <fileset refid="sourcecode"/>
+    </copy>
+
+    <!-- Copy examples. -->
+    <copy todir="${releasedir}/examples">
+      <fileset refid="examplecode"/>
+    </copy>
+    
+    <!-- Copy tests. -->
+    <copy todir="${releasedir}/test">
+      <fileset refid="unittests"/>
+    </copy>
+    
+    <!-- Copy tutorials -->
+    <copy todir="${releasedir}/tutorials">
+      <fileset refid="tutorials"/>
+    </copy>
+    
+    <!-- Copy documentation --> 
+    <copy todir="${releasedir}/docs">
+      <fileset refid="docs"/>
+    </copy>
+    
+    <!-- Create tgz and zip versions. -->
+    <tar destfile="${packagedir}/QueryPath-${version}.tgz" compression="gzip">
+      <fileset dir="${builddir}">
+        <include name="QueryPath-${version}/**/*"/>
+      </fileset>
+    </tar>
+    <zip destfile="${packagedir}/QueryPath-${version}.zip" basedir="${releasedir}"/>
+  </target>
+  
+  <!-- Check syntax -->
+  <target name="lint" description="Check syntax of source.">
+    <phplint>
+      <fileset refid="sourcecode" />
+    </phplint>
+  </target>
+  
+  <!-- Build documentation -->
+  <target name="doc" depends="lint,setup" description="Generate API docs.">
+    <delete dir="${docsdir}"/>
+    <phpdoc title="QueryPath ${version}"
+      sourcecode="yes"
+      destdir="${docsdir}"
+      output="HTML:Smarty:QueryPath" 
+      defaultcategoryname="QueryPath"
+      defaultpackagename="QueryPath"
+      examplesdir="examples"
+      quiet="true"
+      >
+      <!-- 
+        output="HTML:frames:phphtmllib"
+      -->
+      <fileset refid="sourcecode"/>
+      <fileset refid="tutorials"/>
+      <fileset refid="examplecode"/>
+      <projdocfileset dir=".">
+        <include name="README"/>
+        <include name="INSTALL"/>
+        <include name="COPYING-LGPL.txt"/>
+        <include name="COPYING-MIT.txt"/>
+        <include name="LGPL-2.1.txt"/>
+      </projdocfileset>
+    </phpdoc>
+    <!-- Need to replace version information in generated documentation -->
+    <reflexive>
+      <fileset refid="docs"/>
+      <filterchain>
+        <replacetokens begintoken="@" endtoken="@">
+          <token key="UNSTABLE" value="${version}"/>
+        </replacetokens>
+      </filterchain>
+    </reflexive>
+  </target>
+  
+  <!-- Run a fast test and print the results to the console -->
+  <target name="ftest" description="Run a quick unit test.">
+    <!-- Fast test. -->
+    <phpunit>
+      <formatter type="summary" usefile="no"/>
+      <batchtest>
+        <fileset refid="unittests"/>
+      </batchtest>
+    </phpunit>    
+    <delete file="./test/db/qpTest.db" />
+    <delete file="./test/db/qpTest2.db" />
+  </target>
+  
+  <!-- Run a fast test and print the results to the console -->
+  <target name="tmtest" description="Run test, optimized for TextMate output.">
+    <!-- Fast test. -->
+    <phpunit>
+      <formatter todir="test/reports" type="xml" usefile="yes"/>
+      <batchtest>
+        <fileset refid="unittests"/>
+      </batchtest>
+    </phpunit>
+     <phpunitreport 
+        infile="test/reports/testsuites.xml" 
+        format="noframes" 
+        todir="test/reports/html" 
+        />
+    <delete file="./test/db/qpTest.db" />
+    <delete file="./test/db/qpTest2.db" />
+  </target>
+  
+  <!-- Run a coverage report -->
+  <target name="coverage" depends="lint" description="Run a coverage analysis.">
+    <coverage-setup database="./test/db/coverage.db">
+      <fileset dir="src">
+        <include name="QueryPath/*.php"/>
+      </fileset>
+    </coverage-setup>
+    <phpunit codecoverage="true" haltonfailure="true">
+      <formatter type="plain" todir="test/reports" outfile="coverage.xml"/>
+      <batchtest>
+        <fileset dir="test/Tests">
+          <include name="**/*Test.php"/>
+        </fileset>
+      </batchtest>
+    </phpunit>
+    <coverage-report outfile="test/reports/coverage.xml">
+      <report todir="test/coverage"/>
+    </coverage-report>
+  </target>
+  
+  <!-- Run a full test and format an HTML report -->
+  <target name="test" depends="lint" description="Run full tests">
+    <phpunit>
+      <formatter todir="test/reports" type="xml"/>
+      <batchtest>
+        <fileset dir="test/Tests">
+          <include name="**/*Test.php"/>
+        </fileset>
+      </batchtest>
+    </phpunit>
+    <phpunitreport 
+      infile="test/reports/testsuites.xml" 
+      format="frames" 
+      todir="test/reports/html" 
+      />
+    <delete file="./test/db/qpTest.db" />
+    <delete file="./test/db/qpTest2.db" />
+  </target>
+  
+  <target name="docBuild" description="Build a package containing just docs." 
+    depends="setup,doc">
+    <property name="releasedir" value="${builddir}/QueryPath-${version}-docs"/>
+    <delete dir="${releasedir}" />
+    
+    <!-- Make all necessary directories. -->
+    <mkdir dir="${releasedir}"/>
+    
+    <!-- Copy license files. -->
+    <copy todir="${releasedir}">
+      <fileset refid="licensefiles"/>
+    </copy>
+        
+    <!-- Copy documentation --> 
+    <copy todir="${releasedir}/docs">
+      <fileset refid="docs"/>
+    </copy>
+    
+    <!-- Create tgz and zip versions. -->
+    <tar destfile="${packagedir}/QueryPath-${version}-docs.tgz" compression="gzip">
+      <fileset dir="${builddir}">
+        <include name="QueryPath-${version}-docs/**/*"/>
+      </fileset>
+    </tar>
+    <zip destfile="${packagedir}/QueryPath-${version}-docs.zip" basedir="${releasedir}"/>
+  </target>
+  
+</project>

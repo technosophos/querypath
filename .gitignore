@@ -1,3 +1,11 @@
-bin
+bin/build
+bin/local
+bin/*.tgz
+bin/*.zip
 *.tmproj
 releases
+dist
+test/coverage
+test/reports
+test/db
+docs/*

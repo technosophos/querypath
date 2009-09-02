@@ -200,7 +200,7 @@ final class CssToken {
       'colon', 'right parenthesis', 'left parenthesis', 'plus', 'tilde',
       'equals', 'vertical bar', 'comma', 'space', 'quote', 'single quote',
       'backslash', 'carat', 'dollar', 'at');
-    if (isset($a[$const_int])) {
+    if (isset($a[$const_int]) && is_numeric($const_int)) {
       return $a[$const_int];
     }
     elseif ($const_int == 99) {
@@ -250,8 +250,9 @@ class CssParser {
    * This begins an event-based parsing process that will 
    * fire events as the selector is handled. A CssEventHandler
    * implementation will be responsible for handling the events.
+   * @throws CssParseException
    */
-  public function parse() /* throws CSSParseException */ {
+  public function parse() {
     $this->scanner->nextToken();
     while ($this->scanner->token !== FALSE) {
       if ($this->DEBUG) {
@@ -266,7 +267,10 @@ class CssParser {
    * The pseudoClass handler for this parser will throw an 
    * exception if it encounters a pseudo-element or the
    * negation pseudo-class.
-   */
+   *
+   * @deprecated This is not used anywhere in QueryPath and
+   *  may be removed.
+   *//*
   public function parseSimpleSelector() {
     while ($this->scanner->token !== FALSE) {
       if ($this->DEBUG) print "SIMPLE SELECTOR\n";
@@ -279,7 +283,7 @@ class CssParser {
       
       // TODO: Need to add failure conditions here.
     }
-  }
+  }*/
   
   /**
    * Handle an entire CSS selector.
@@ -736,7 +740,7 @@ class CssParser {
       if (isset($ns)) {
         $this->handler->attributeNS($attrName, $ns, $attrVal, $op);
       }
-      elseif ($attrVal) {
+      elseif (isset($attrVal)) {
         $this->handler->attribute($attrName, $attrVal, $op);
       }
       else {
@@ -989,7 +993,9 @@ final class CssScanner {
    * This is a convenience function for getting a string of 
    * characters that are either alphanumber or whitespace. See
    * the CssToken::white and CssToken::char definitions.
-   */
+   *
+   * @deprecated This is not used anywhere in QueryPath.
+   *//*
   public function getStringPlusWhitespace() {
     $buf = '';
     if($this->token === FALSE) {return '';}
@@ -998,7 +1004,7 @@ final class CssScanner {
       $this->nextToken();
     }
     return $buf;
-  }
+  }*/
   
 }
 

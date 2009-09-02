@@ -18,7 +18,8 @@
  *  - All pseudo-elements require the double-colon (::) notation. This breaks 
  *    backward compatibility with the 2.1 spec, but it makes visible the issue
  *    that pseudo-elements cannot be effectively used with most of the present 
- *    library. They return strings instead of elements.
+ *    library. They return <b>stdClass objects with a text property</b> (QP > 1.3)
+ *    instead of elements.
  *  - The pseudo-classes first-of-type, nth-of-type and last-of-type may or may
  *    not conform to the specification. The spec is unclear.
  *  - pseudo-class filters of the form -an+b do not function as described in the
@@ -67,7 +68,7 @@ require_once 'CssParser.php';
 class QueryPathCssEventHandler implements CssEventHandler {
   protected $dom = NULL; // Always points to the top level.
   protected $matches = NULL; // The matches
-  protected $alreadyMatched = array(); // Matches found before current selector.
+  protected $alreadyMatched = NULL; // Matches found before current selector.
   protected $findAnyElement = TRUE;
   
   
@@ -75,43 +76,55 @@ class QueryPathCssEventHandler implements CssEventHandler {
    * Create a new event handler.
    */
   public function __construct($dom) {
+    $this->alreadyMatched = new SplObjectStorage();
+    $matches = new SplObjectStorage();
+    
     // Array of DOMElements
-    if (is_array($dom)) {
-      $matches = array();
+    if (is_array($dom) || $dom instanceof SplObjectStorage) {
+      //$matches = array();
       foreach($dom as $item) {
         if ($item instanceof DOMNode && $item->nodeType == XML_ELEMENT_NODE) {
-          $matches[] = $item;
+          //$matches[] = $item;
+          $matches->attach($item);
         }
       }
-      $this->dom = count($matches) > 0 ? $matches[0] : NULL;
+      //$this->dom = count($matches) > 0 ? $matches[0] : NULL;
+      if ($matches->count() > 0) {
+        $matches->rewind();
+        $this->dom = $matches->current();
+      }
+      else {
+        $this->dom = NULL;
+      }
       $this->matches = $matches;
     }
     // DOM Document -- we get the root element.
     elseif ($dom instanceof DOMDocument) {
       $this->dom = $dom->documentElement;
-      $this->matches = array($dom->documentElement);
+      $matches->attach($dom->documentElement);
     }
     // DOM Element -- we use this directly
     elseif ($dom instanceof DOMElement) {
       $this->dom = $dom;
-      $this->matches = array($dom);
+      $matches->attach($dom);
     }
     // NodeList -- We turn this into an array
     elseif ($dom instanceof DOMNodeList) {
-      $matches = array();
+      $a = array(); // Not sure why we are doing this....
       foreach ($dom as $item) {
         if ($item->nodeType == XML_ELEMENT_NODE) {
-          $matches[] = $item;
+          $matches->attach($item);
+          $a[] = $item; 
         }
       }
-      $this->dom = $matches;
-      $this->matches = $matches;
+      $this->dom = $a;
     }
     // FIXME: Handle SimpleXML!
     // Uh-oh... we don't support anything else.
     else {
       throw new Exception("Unhandled type: " . get_class($dom));
     }
+    $this->matches = $matches;
   }
   
   /**
@@ -141,7 +154,10 @@ class QueryPathCssEventHandler implements CssEventHandler {
    *  {@link DOMNode} objects.
    */
   public function getMatches() {
-    $result = array_merge($this->alreadyMatched, $this->matches);
+    //$result = array_merge($this->alreadyMatched, $this->matches);
+    $result = new SplObjectStorage();
+    foreach($this->alreadyMatched as $m) $result->attach($m);
+    foreach($this->matches as $m) $result->attach($m);
     return $result;
   }
   
@@ -155,12 +171,12 @@ class QueryPathCssEventHandler implements CssEventHandler {
    *  String ID for an element.
    */
   public function elementID($id) {
-    $found = array();
+    $found = new SplObjectStorage();
     $matches = $this->candidateList();
     foreach ($matches as $item) {
       // Check if any of the current items has the desired ID.
       if ($item->hasAttribute('id') && $item->getAttribute('id') === $id) {
-        $found = array($item);
+        $found->attach($item);
         break;
       }
     }
@@ -172,26 +188,26 @@ class QueryPathCssEventHandler implements CssEventHandler {
   public function element($name) {
     $matches = $this->candidateList();
     $this->findAnyElement = FALSE;
-    $found = array();
+    $found = new SplObjectStorage();
     foreach ($matches as $item) {
       // Should the existing item be included?
       // In some cases (e.g. element is root element)
       // it definitely should. But what about other cases?
       if ($item->tagName == $name) {
-        $found[] = $item;
+        $found->attach($item);
       }
       // Search for matching kids.
       //$nl = $item->getElementsByTagName($name);
       //$found = array_merge($found, $this->nodeListToArray($nl));
     }
     
-    $this->matches = UniqueElementList::get($found);
+    $this->matches = $found;
   }
   
   // Inherited
   public function elementNS($lname, $namespace = NULL) {
     $this->findAnyElement = FALSE;
-    $found = array();
+    $found = new SplObjectStorage();
     $matches = $this->candidateList();
     foreach ($matches as $item) {
       // Looking up NS URI only works if the XMLNS attributes are declared
@@ -202,10 +218,23 @@ class QueryPathCssEventHandler implements CssEventHandler {
       
       //$nsuri = $item->lookupNamespaceURI($namespace);
       $nsuri = $this->dom->lookupNamespaceURI($namespace);
+      
+      // XXX: Presumably the base item needs to be checked. Spec isn't
+      // too clear, but there are three possibilities:
+      // - base should always be checked (what we do here)
+      // - base should never be checked (only children)
+      // - base should only be checked if it is the root node
+      if ($item instanceof DOMNode 
+          && $item->namespaceURI == $nsuri 
+          && $lname == $item->localName) {
+        $found->attach($item);
+      }
+      
       if (!empty($nsuri)) {
         $nl = $item->getElementsByTagNameNS($nsuri, $lname);
         // If something is found, merge them:
-        if (!empty($nl)) $found = array_merge($found, $this->nodeListToArray($nl));
+        //if (!empty($nl)) $found = array_merge($found, $this->nodeListToArray($nl));
+        if (!empty($nl)) $this->attachNodeList($nl, $found);
       }
       else {
         //$nl = $item->getElementsByTagName($namespace . ':' . $lname);
@@ -214,76 +243,86 @@ class QueryPathCssEventHandler implements CssEventHandler {
         $nsmatches = array();
         foreach ($nl as $node) {
           if ($node->tagName == $tagname) {
-            $nsmatches[] = $node;
+            //$nsmatches[] = $node;
+            $found->attach($node);
           }
         }
         // If something is found, merge them:
-        if (!empty($nsmatches)) $found = array_merge($found, $nsmatches);
+        //if (!empty($nsmatches)) $found = array_merge($found, $nsmatches);
       }
     }
     $this->matches = $found;
   }
   
   public function anyElement() {
-    $found = array();
+    $found = new SplObjectStorage();
     $this->findAnyElement = TRUE;
     $matches = $this->candidateList();
     foreach ($matches as $item) {
-      $found[] = $item; // Add self
+      $found->attach($item); // Add self
       $nl = $item->getElementsByTagName('*');
-      $found = array_merge($found, $this->nodeListToArray($nl));
+      $this->attachNodeList($nl, $found);
     }
     
-    $this->matches = UniqueElementList::get($found);
+    $this->matches = $found;
     $this->findAnyElement = FALSE;
   }
   public function anyElementInNS($ns) {
     $this->findAnyElement = TRUE;
     $nsuri = $this->dom->lookupNamespaceURI($ns);
-    $found = array();
+    $found = new SplObjectStorage();
     if (!empty($nsuri)) {
       $matches = $this->candidateList();
       foreach ($matches as $item) {
+        // XXX: Presumably the base item needs to be checked. Spec isn't
+        // too clear, but there are three possibilities:
+        // - base should always be checked (what we do here)
+        // - base should never be checked (only children)
+        // - base should only be checked if it is the root node
+        if ($item instanceOf DOMNode && $nsuri == $item->namespaceURI) {
+          $found->attach($item);
+        }
         $nl = $item->getElementsByTagNameNS($nsuri, '*');
-        if (!empty($nl)) $found = array_merge($found, $this->nodeListToArray($nl));
+        //if (!empty($nl)) $found = array_merge($found, $this->nodeListToArray($nl));
+        $this->attachNodeList($nl, $found);
       }
     }
-    $this->matches = UniqueElementList::get($found);
+    $this->matches = $found;//UniqueElementList::get($found);
     $this->findAnyElement = FALSE;
   }
   public function elementClass($name) {
     
-    $found = array();
+    $found = new SplObjectStorage();
     $matches = $this->candidateList();
     foreach ($matches as $item) {
       if ($item->hasAttribute('class')) {
         $classes = explode(' ', $item->getAttribute('class'));
-        if (in_array($name, $classes)) $found[] = $item;
+        if (in_array($name, $classes)) $found->attach($item);
       }
     }
     
-    $this->matches = UniqueElementList::get($found);
+    $this->matches = $found;//UniqueElementList::get($found);
     $this->findAnyElement = FALSE;
   }
   
   public function attribute($name, $value = NULL, $operation = CssEventHandler::isExactly) {
-    $found = array();
+    $found = new SplObjectStorage();
     $matches = $this->candidateList();
     foreach ($matches as $item) {
       if ($item->hasAttribute($name)) {
         if (isset($value)) {
           // If a value exists, then we need a match.
           if($this->attrValMatches($value, $item->getAttribute($name), $operation)) {
-            $found[] = $item;
+            $found->attach($item);
           }
         }
         else {
           // If no value exists, then we consider it a match.
-          $found[] = $item;
+          $found->attach($item);
         }
       }
     }
-    $this->matches = UniqueElementList::get($found);
+    $this->matches = $found; //UniqueElementList::get($found);
     $this->findAnyElement = FALSE;
   }
 
@@ -293,17 +332,17 @@ class QueryPathCssEventHandler implements CssEventHandler {
    * @deprecated All use cases seem to be covered by attribute().
    */
   protected function searchForAttr($name, $value = NULL) {
-    $found = array();
+    $found = new SplObjectStorage();
     $matches = $this->candidateList();
     foreach ($matches as $candidate) {
       if ($candidate->hasAttribute($name)) {
         // If value is required, match that, too.
         if (isset($value) && $value == $candidate->getAttribute($name)) {
-          $found[] = $candidate;
+          $found->attach($candidate);
         }
         // Otherwise, it's a match on name alone.
         else {
-          $found[] = $candidate;
+          $found->attach($candidate);
         }
       }
     }
@@ -313,14 +352,17 @@ class QueryPathCssEventHandler implements CssEventHandler {
   
   public function attributeNS($lname, $ns, $value = NULL, $operation = CssEventHandler::isExactly) {
     $matches = $this->candidateList();
-    $found = array();
+    $found = new SplObjectStorage();
     if (count($matches) == 0) {
-      $this->matches = array();
+      $this->matches = $found;
       return;
     }
     
     // Get the namespace URI for the given label.
-    $uri = $matches[0]->lookupNamespaceURI($ns);
+    //$uri = $matches[0]->lookupNamespaceURI($ns);
+    $matches->rewind();
+    $e = $matches->current();
+    $uri = $e->lookupNamespaceURI($ns);
     
     foreach ($matches as $item) {
       //foreach ($item->attributes as $attr) {
@@ -329,15 +371,15 @@ class QueryPathCssEventHandler implements CssEventHandler {
       if ($item->hasAttributeNS($uri, $lname)) {
         if (isset($value)) {
           if ($this->attrValMatches($value, $item->getAttributeNS($uri, $lname), $operation)) {
-            $found[] = $item;
+            $found->attach($item);
           }
         }
         else {
-          $found[] = $item;
+          $found->attach($item);
         }
       }
     }
-    $this->matches = UniqueElementList::get($found);
+    $this->matches = $found;
     $this->findAnyElement = FALSE;
   }
   
@@ -360,7 +402,7 @@ class QueryPathCssEventHandler implements CssEventHandler {
         // These require a UA, which we don't have.
       case 'target':
         // This requires a location URL, which we don't have.
-        $this->matches = array();
+        $this->matches = new SplObjectStorage();
         break;
       case 'indeterminate':
         // The assumption is that there is a UA and the format is HTML.
@@ -378,21 +420,26 @@ class QueryPathCssEventHandler implements CssEventHandler {
         $this->searchForAttr('href');
         break;
       case 'root':
+        $found = new SplObjectStorage();
         if (empty($this->dom)) {
-          $this->matches = array();
+          $this->matches = $found;
         }
         elseif (is_array($this->dom)) {
-          $this->matches = array($this->dom[0]->ownerDocument->documentElement);
+          $found->attach($this->dom[0]->ownerDocument->documentElement);
+          $this->matches = $found;
         }
         elseif ($this->dom instanceof DOMNode) {
-          $this->matches = array($this->dom->ownerDocument->documentElement);
+          $found->attach($this->dom->ownerDocument->documentElement);
+          $this->matches = $found;
         }
         elseif ($this->dom instanceof DOMNodeList && $this->dom->length > 0) {
-          $this->matches = array($this->dom->item(0)->ownerDocument->documentElement);
+          $found->attach($this->dom->item(0)->ownerDocument->documentElement);
+          $this->matches = $found;
         }
         else {
           // Hopefully we never get here:
-          $this->matches = array($this->dom);
+          $found->attach($this->dom);
+          $this->matches = $found;
         }
         break;
       
@@ -400,7 +447,8 @@ class QueryPathCssEventHandler implements CssEventHandler {
       // the constructor.  
       case 'x-root':
       case 'x-reset':
-        $this->matches = array($this->dom);
+        $this->matches = new SplObjectStorage();
+        $this->matches->attach($this->dom);
         break;        
       
       // NON-STANDARD extensions for simple support of even and odd. These
@@ -469,13 +517,13 @@ class QueryPathCssEventHandler implements CssEventHandler {
         break;
       case 'parent':
         $matches = $this->candidateList();
-        $found = array();
+        $found = new SplObjectStorage();
         foreach ($matches as $match) {
           if (!empty($match->firstChild)) {
-            $found[] = $match;
+            $found->attach($match);
           }
         }
-        $this->matches = UniqueElementList::get($found);
+        $this->matches = $found;
         break;
       
       case 'enabled':  
@@ -498,15 +546,15 @@ class QueryPathCssEventHandler implements CssEventHandler {
 
       case 'header':
         $matches = $this->candidateList();
-        $found = array();
+        $found = new SplObjectStorage();
         foreach ($matches as $item) {
           $tag = $item->tagName;
           $f = strtolower(substr($tag, 0, 1));
           if ($f == 'h' && strlen($tag) == 2 && ctype_digit(substr($tag, 1, 1))) {
-            $found[] = $item;
+            $found->attach($item);
           }
         }
-        $this->matches = UniqueElementList::get($found);
+        $this->matches = $found;
         break;
       case 'has':
         $this->has($value);
@@ -514,10 +562,10 @@ class QueryPathCssEventHandler implements CssEventHandler {
       // Contains == text matches.
       case 'contains':
         $matches = $this->candidateList();
-        $found = array();
+        $found = new SplObjectStorage();
         foreach ($matches as $item) {
           if ($item->textContent == $value) {
-            $found[] = $item;
+            $found->attach($item);
           }
         }
         $this->matches = $found;
@@ -534,23 +582,39 @@ class QueryPathCssEventHandler implements CssEventHandler {
    */
   private function getByPosition($operator, $pos) {
     $matches = $this->candidateList();
-    $found = array();
-    if (empty($matches)) {
+    $found = new SplObjectStorage();
+    if ($matches->count() == 0) {
       return;
     }
     
     switch ($operator) {
       case 'nth':
       case 'eq':
-        if (count($matches) >= $pos) {
-          $found[] = $matches[$pos -1];
+        if ($matches->count() >= $pos) {
+          //$found[] = $matches[$pos -1];
+          foreach ($matches as $match) {
+            // CSS is 1-based, so we pre-increment.
+            if ($matches->key() + 1 == $pos) {
+              $found->attach($match);
+              break;
+            }
+          }
         }
         break;
       case 'first':
-        $found[] = $matches[0];
+        if ($matches->count() > 0) {
+          $matches->rewind(); // This is necessary to init.
+          $found->attach($matches->current());
+        }
         break;
       case 'last':
-        $found[] = $matches[count($matches) - 1];
+        if ($matches->count() > 0) {
+          
+          // Spin through iterator.
+          foreach ($matches as $item) {};
+         
+          $found->attach($item);
+        }
         break;
       // case 'even': 
       //         for ($i = 1; $i <= count($matches); ++$i) {
@@ -567,16 +631,18 @@ class QueryPathCssEventHandler implements CssEventHandler {
       //         }
       //         break;
       case 'lt':
-        for ($i = 1; $i <= count($matches); ++$i) {
-          if ($i < $pos) {
-            $found[] = $matches[$i];
+        $i = 0;
+        foreach ($matches as $item) {
+          if (++$i < $pos) {
+            $found->attach($item);
           }
         }
         break;
       case 'gt':
-        for ($i = 1; $i <= count($matches); ++$i) {
-          if ($i > $pos) {
-            $found[] = $matches[$i-1];
+        $i = 0;
+        foreach ($matches as $item) {
+          if (++$i > $pos) {
+            $found->attach($item);
           }
         }
         break;
@@ -617,243 +683,103 @@ class QueryPathCssEventHandler implements CssEventHandler {
     return array($aVal, $bVal);
   }
   
-  protected function nthChild($groupSize, $elementInGroup) {
-    // BEGIN implementing jQuery algo for this:
-    // This might be more compact, but it has at least one
-    // E_STRICT violation (creating object properties on the fly),
-    // and it may not be as fast in PHP, since most of the descent
-    // processing is handled in PHP instead of in C.
-    $merge = array();
-    $tmp = array();
-    $first = $groupSize;
-    $last = $elementInGroup;
-    $r = $this->matches;
+  /**
+   * Pseudo-class handler for nth-child and all related pseudo-classes.
+   *
+   * @param int $groupSize
+   *  The size of the group (in an+b, this is a).
+   * @param int $elementInGroup 
+   *  The offset in a group. (in an+b this is b).
+   * @param boolean $lastChild
+   *  Whether counting should begin with the last child. By default, this is false.
+   *  Pseudo-classes that start with the last-child can set this to true.
+   */
+  protected function nthChild($groupSize, $elementInGroup, $lastChild = FALSE) {
+    // EXPERIMENTAL: New in Quark. This should be substantially faster 
+    // than the old (jQuery-ish) version. It still has E_STRICT violations
+    // though.
+    $parents = new SplObjectStorage();
+    $matches = new SplObjectStorage();
     
-    for($i = 0; $i < count($r); $i++) {
-      $node = $r[$i];
-      $parentNode = $node->parentNode;
-      $id = md5(serialize($parentNode));
-      $nodeIndex = NULL;
+    $i = 0;
+    foreach ($this->matches as $item) {
+      $parent = $item->parentNode;
       
-      if (empty($merge[$id])) {
-        $c = 1;
+      // Build up an array of all of children of this parent, and store the 
+      // index of each element for reference later. We only need to do this 
+      // once per parent, though.
+      if (!$parents->contains($parent)) {
         
-        for ($n = $parentNode->firstChild; $n; $n = $n->nextSibling) {
-          if ($n->nodeType == XML_ELEMENT_NODE) {
-            $n->nodeIndex = $c++;
+        $c = 0;
+        foreach ($parent->childNodes as $child) {
+          // We only want nodes, and if this call is preceded by an element 
+          // selector, we only want to match elements with the same tag name.
+          // !!! This last part is a grey area in the CSS 3 Selector spec. It seems
+          // necessary to make the implementation match the examples in the spec. However,
+          // jQuery 1.2 does not do this.
+          if ($child->nodeType == XML_ELEMENT_NODE && ($this->findAnyElement || $child->tagName == $item->tagName)) {
+            // This may break E_STRICT.
+            $child->nodeIndex = ++$c;
           }
         }
-        
-        $merge[$id] = TRUE;
+        // This may break E_STRICT.
+        $parent->numElements = $c;
+        $parents->attach($parent);
       }
       
-      $add = FALSE;
-      
-      if ($first == 0) {
-        if ($node->nodeIndex == $last) {
-          $add = TRUE;
-        }
+      // If we are looking for the last child, we count from the end of a list.
+      // Note that we add 1 because CSS indices begin at 1, not 0.
+      if ($lastChild) {
+        $indexToMatch = $item->parentNode->numElements  - $item->nodeIndex + 1;
       }
-      elseif (($node->nodeIndex - $last) % $first == 0 && ($node->nodeIndex - $last) / $first >= 0) {
-        $add = TRUE;
-      }
-      
-      if ($add/* ^ $not*/) {
-        $tmp[] = $node;
-      }
-    }
-    
-    $this->matches = $tmp;
-    // END jQuery algo
-    return;
-    /*
-    // Orig:
-
-    // If findAnyElement is true, then we 
-    // know that there was no element selector
-    // preceding this.
-    $restrictToElement = !$this->findAnyElement;
-        
-    $found = array();
-    $groupSize = abs($groupSize);
-    if ($elementInGroup < 0) {
-      // in an-b, element in group is effectively a-b.
-      $elementInGroup = $groupSize + $elementInGroup;
-    }
-    if ($groupSize == 0) {
-      if ($elementInGroup == 0 ) {
-        // Both == 0 means no matches:
-        $this->matches = array();
-        return;
-      }
+      // Otherwise we count from the beginning of the list.
       else {
-        // Return only one element per list:
-        $matches = $this->candidateList();
-        foreach ($matches as $item) {
-          $kids = $this->listPeerElements($item, $restrictToElement);
-          if (count($kids) >= $elementInGroup) {
-            // Correct for offset: CSS spec says list begins with
-            // 1, not 0.
-            $found[] = $kids[$elementInGroup -1];
-          }
-        }
-        $this->matches = UniqueElementList::get($found);
-        return;
+        $indexToMatch = $item->nodeIndex;
       }
-    }
-    //print __FUNCTION__ . " size: $groupSize, $elementInGroup.\n";
-    
-    $matches = $this->candidateList();
-    $alreadyChecked = array();
-    
-    // Handle only the immediate elements
-    if ($restrictToElement) {
-      foreach($matches as $item) {
-        $parent = $item->parentNode;
-        $i = 1;
-        foreach ($parent->childNodes as $node) {
-          if ($node->nodeType == XML_ELEMENT_NODE && $node->tagName == $item->tagName) {
-            if ($i % $groupSize == $elementInGroup) {
-            //if ($node->nodeIndex - $elementInGroup % $groupSize == 0) {
-              print "Found " . $node->getAttribute('id') . PHP_EOL;
-              $found[] = $node;
-            }
-            ++$i; // Only increment for matches.
-          }
+      
+      // If group size is 0, then we return element at the right index.
+      if ($groupSize == 0) {
+        if ($indexToMatch == $elementInGroup) 
+          $matches->attach($item);
+      }
+      // If group size != 0, then we grab nth element from group offset by
+      // element in group.
+      else {
+        if (($indexToMatch - $elementInGroup) % $groupSize == 0 
+            && ($indexToMatch - $elementInGroup) / $groupSize >= 0) {
+          $matches->attach($item);
         }
       }
-      $found = UniqueElementList::get($found);
+      
+      // Iterate.
+      ++$i;
     }
-    // Handle any child elements. Since no element selector
-    // is effective, then elements of any tag name are considered
-    // to be matches.
-    else {
-      foreach ($matches as $item) {
-        $parent = $item->parentNode;
-        if (in_array($parent, $alreadyChecked)) {
-          // Skip this. It's been done already.
-          break;
-        }
-        $alreadyChecked[] = $parent;
-
-        $i = 1;
-        foreach ($parent->childNodes as $node) {
-          if ($node->nodeType == XML_ELEMENT_NODE) {
-            // Do an + b matching
-            if ($i % $groupSize == $elementInGroup) {
-              $found[] = $node;
-            }
-            ++$i;
-          }
-        }
-      }  
-    }
-    
-    
-    $this->matches = $found;
-    */
+    $this->matches = $matches;
   }
   
+  /**
+   * Reverse a set of matches.
+   *
+   * This is now necessary because internal matches are no longer represented
+   * as arrays.
+   * @since QueryPath 2.0
+   *//*
+  private function reverseMatches() {
+    // Reverse the candidate list. There must be a better way of doing
+    // this.
+    $arr = array();
+    foreach ($this->matches as $m) array_unshift($arr, $m);
+    
+    $this->found = new SplObjectStorage();
+    foreach ($arr as $item) $this->found->attach($item);
+  }*/
+  
+  /**
+   * Pseudo-class handler for :nth-last-child and related pseudo-classes.
+   */
   protected function nthLastChild($groupSize, $elementInGroup) {
-    // If findAnyElement is true, then we 
-    // know that there was no element selector
-    // preceding this.
-    $restrictToElement = !$this->findAnyElement;
-        
-    $found = array();
-    //$groupSize = abs($groupSize);
-    if ($elementInGroup < 0) {
-      // in an-b, element in group is effectively a-b.
-      $elementInGroup = $groupSize + $elementInGroup;
-    }
-    if ($groupSize == 0) {
-      if ($elementInGroup == 0 ) {
-        // Both == 0 means no matches:
-        $this->matches = array();
-        return;
-      }
-      else {
-        // Return only one element per list:
-        $matches = $this->candidateList();
-        foreach ($matches as $item) {
-          $kids = $this->listPeerElements($item, $restrictToElement);
-          $count = count($kids);
-          if ($count >= $elementInGroup) {
-            // Correct for offset: CSS spec says list begins with
-            // 1, not 0.
-            $found[] = $kids[$count - $elementInGroup];
-          }
-        }
-        $this->matches = UniqueElementList::get($found);
-        return;
-      }
-    }
-    //print __FUNCTION__ . " size: $groupSize, $elementInGroup.\n";
-    
-    $matches = $this->candidateList();
-    $alreadyChecked = array();
-    
-    /*
-     * The code below needs some cleaning. The original version
-     * only worked after an any-descendant operator, as it did 
-     * not adequately constrain element types. It still exists as-is
-     * in the else block. However, the optimization (checking parents)
-     * has not been tested. If it is not very effective, then we should
-     * figure out a more elegant way to handle this.
-     */
-    
-    // Start at the end and go backward.
-    $matches = array_reverse($matches);
-    
-    // Handle only the immediate elements
-    if ($restrictToElement) {
-      foreach($matches as $item) {
-        $parent = $item->parentNode;
-        $i = 1;
-        for ($j = $parent->childNodes->length - 1; $j > 0; --$j) {
-          $node = $parent->childNodes->item($j);
-          if ($node->nodeType == XML_ELEMENT_NODE && $node->tagName == $item->tagName) {
-            if ($i % $groupSize == $elementInGroup) {
-              $found[] = $node;
-            }
-            ++$i; // Only increment for matches.
-          }
-        }
-      }
-      // There are no notes that say whether what order the results
-      // shold be retrned in. Should this be reversed again?
-      $found = UniqueElementList::get($found);
-    }
-    // Handle any child elements. Since no element selector
-    // is effective, then elements of any tag name are considered
-    // to be matches.
-    else {
-      foreach ($matches as $item) {
-        $parent = $item->parentNode;
-        if (in_array($parent, $alreadyChecked)) {
-          // Skip this. It's been done already.
-          break;
-        }
-        $alreadyChecked[] = $parent;
-
-        $i = 1;
-        
-        for ($j = $parent->childNodes->length - 1; $j >= 0; ++$j) {
-          $node = $parent->childNodes->item($j);
-          if ($node->nodeType == XML_ELEMENT_NODE) {
-            // Do an + b matching
-            if ($i % $groupSize == $elementInGroup) {
-              $found[] = $node;
-            }
-            ++$i;
-          }
-        }
-      }  
-    }
-    
-    
-    $this->matches = $found;
-    
+    // New in Quark.
+    $this->nthChild($groupSize, $elementInGroup, TRUE);
   }
   
   /**
@@ -868,7 +794,7 @@ class QueryPathCssEventHandler implements CssEventHandler {
    *  element name (tagName) as $element.
    * @return
    *  Array of peer elements.
-   */
+   *//*
   protected function listPeerElements($element, $requireSameTag = FALSE) {
     $peers = array();
     $parent = $element->parentNode;
@@ -885,20 +811,23 @@ class QueryPathCssEventHandler implements CssEventHandler {
         }
       }
     }
-    // Return unique element list.
-    //return UniqueElementList::get($peers);
     return $peers;
   }
-  
+  */
   /**
    * Get the nth child (by index) from matching candidates.
    *
    * This is used by pseudo-class handlers.
    */
+   /*
   protected function childAtIndex($index, $tagName = NULL) {
     $restrictToElement = !$this->findAnyElement;
     $matches = $this->candidateList();
     $defaultTagName = $tagName;
+    
+    // XXX: Added in Quark: I believe this should return an empty
+    // match set if no child was found tat the index.
+    $this->matches = new SplObjectStorage();
     
     foreach ($matches as $item) {
       $parent = $item->parentNode;
@@ -930,7 +859,8 @@ class QueryPathCssEventHandler implements CssEventHandler {
           if ($child->tagName == $tagName) {
             // See if this is the index we are looking for.
             if ($i == $index) {
-              $this->matches = array($child);
+              //$this->matches = new SplObjectStorage();
+              $this->matches->attach($child);
               return;
             }
             // If it's not the one we are looking for, increment.
@@ -940,7 +870,7 @@ class QueryPathCssEventHandler implements CssEventHandler {
         // We don't care about type. Any tagName will match.
         else {
           if ($i == $index) {
-            $this->matches = array($child);
+            $this->matches->attach($child);
             return;
           }
           ++$i;
@@ -948,17 +878,83 @@ class QueryPathCssEventHandler implements CssEventHandler {
       } // End foreach
     }
     
+  }*/
+  
+  /**
+   * Pseudo-class handler for nth-of-type-child.
+   * Not implemented.
+   */
+  protected function nthOfTypeChild($groupSize, $elementInGroup, $lastChild) {
+    // EXPERIMENTAL: New in Quark. This should be substantially faster 
+    // than the old (jQuery-ish) version. It still has E_STRICT violations
+    // though.
+    $parents = new SplObjectStorage();
+    $matches = new SplObjectStorage();
     
+    $i = 0;
+    foreach ($this->matches as $item) {
+      $parent = $item->parentNode;
+      
+      // Build up an array of all of children of this parent, and store the 
+      // index of each element for reference later. We only need to do this 
+      // once per parent, though.
+      if (!$parents->contains($parent)) {
+        
+        $c = 0;
+        foreach ($parent->childNodes as $child) {
+          // This doesn't totally make sense, since the CSS 3 spec does not require that
+          // this pseudo-class be adjoined to an element (e.g. ' :nth-of-type' is allowed).
+          if ($child->nodeType == XML_ELEMENT_NODE && $child->tagName == $item->tagName) {
+            // This may break E_STRICT.
+            $child->nodeIndex = ++$c;
+          }
+        }
+        // This may break E_STRICT.
+        $parent->numElements = $c;
+        $parents->attach($parent);
+      }
+      
+      // If we are looking for the last child, we count from the end of a list.
+      // Note that we add 1 because CSS indices begin at 1, not 0.
+      if ($lastChild) {
+        $indexToMatch = $item->parentNode->numElements  - $item->nodeIndex + 1;
+      }
+      // Otherwise we count from the beginning of the list.
+      else {
+        $indexToMatch = $item->nodeIndex;
+      }
+      
+      // If group size is 0, then we return element at the right index.
+      if ($groupSize == 0) {
+        if ($indexToMatch == $elementInGroup) 
+          $matches->attach($item);
+      }
+      // If group size != 0, then we grab nth element from group offset by
+      // element in group.
+      else {
+        if (($indexToMatch - $elementInGroup) % $groupSize == 0 
+            && ($indexToMatch - $elementInGroup) / $groupSize >= 0) {
+          $matches->attach($item);
+        }
+      }
+      
+      // Iterate.
+      ++$i;
+    }
+    $this->matches = $matches;
   }
   
-  protected function nthOfTypeChild($groupSize, $elementInGroup) {
-    throw new Exception("Not implemented");
-  }
-  
+  /**
+   * Pseudo-class handler for nth-last-of-type-child.
+   * Not implemented.
+   */
   protected function nthLastOfTypeChild($groupSize, $elementInGroup) {
-    throw new Exception("Not implemented");    
+    $this->nthOfTypeChild($groupSize, $elementInGroup, TRUE);    
   }
   
+  /**
+   * Pseudo-class handler for :lang
+   */
   protected function lang($value) {
     // TODO: This checks for cases where an explicit language is
     // set. The spec seems to indicate that an element should inherit
@@ -968,7 +964,7 @@ class QueryPathCssEventHandler implements CssEventHandler {
     $orig = $this->matches;
     $origDepth = $this->findAnyElement;
     
-    // Do first pass
+    // Do first pass: attributes in default namespace
     $this->attribute('lang', $value, $operator);
     $lang = $this->matches; // Temp array for merging.
     
@@ -976,11 +972,16 @@ class QueryPathCssEventHandler implements CssEventHandler {
     $this->matches = $orig;
     $this->findAnyElement = $origDepth;
     
-    // Do second pass
+    // Do second pass: attributes in 'xml' namespace.
     $this->attributeNS('lang', 'xml', $value, $operator);
     
-    // Merge results
-    $this->matches = array_merge($lang, $this->matches);
+    
+    // Merge results. 
+    // FIXME: Note that we lose natural ordering in
+    // the document because we search for xml:lang separately
+    // from lang.
+    foreach ($this->matches as $added) $lang->attach($added);
+    $this->matches = $lang;
   }
   
   /**
@@ -995,12 +996,13 @@ class QueryPathCssEventHandler implements CssEventHandler {
    */
   protected function not($filter) {
     $matches = $this->candidateList();
-    $found = array();
+    //$found = array();
+    $found = new SplObjectStorage();
     foreach ($matches as $item) {
       $handler = new QueryPathCssEventHandler($item);
       $not_these = $handler->find($filter)->getMatches();
-      if (count($not_these) == 0) {
-        $found[] = $item;
+      if ($not_these->count() == 0) {
+        $found->attach($item);
       }
     }
     // No need to check for unique elements, since the list
@@ -1014,15 +1016,16 @@ class QueryPathCssEventHandler implements CssEventHandler {
    */
   public function has($filter) {
     $matches = $this->candidateList();
-    $found = array();
+    //$found = array();
+    $found = new SplObjectStorage();
     foreach ($matches as $item) {
       $handler = new QueryPathCssEventHandler($item);
       $these = $handler->find($filter)->getMatches();
       if (count($these) > 0) {
-        $found[] = $item;
+        $found->attach($item);
       }      
     }
-    $this->matches = UniqueElementList::get($found);
+    $this->matches = $found;
     return $this;
   }
   
@@ -1031,14 +1034,14 @@ class QueryPathCssEventHandler implements CssEventHandler {
    */
   protected function firstOfType() {
     $matches = $this->candidateList();
-    $found = array();
+    $found = new SplObjectStorage();
     foreach ($matches as $item) {
       $type = $item->tagName;
       $parent = $item->parentNode;
       foreach ($parent->childNodes as $kid) {
         if ($kid->nodeType == XML_ELEMENT_NODE && $kid->tagName == $type) {
-          if (!in_array($kid, $found)) {
-            $found[] = $kid;
+          if (!$found->contains($kid)) {
+            $found->attach($kid);
           }
           break;
         }
@@ -1052,15 +1055,15 @@ class QueryPathCssEventHandler implements CssEventHandler {
    */
   protected function lastOfType() {
     $matches = $this->candidateList();
-    $found = array();
+    $found = new SplObjectStorage();
     foreach ($matches as $item) {
       $type = $item->tagName;
       $parent = $item->parentNode;
       for ($i = $parent->childNodes->length - 1; $i >= 0; --$i) {
         $kid = $parent->childNodes->item($i);
         if ($kid->nodeType == XML_ELEMENT_NODE && $kid->tagName == $type) {
-          if (!in_array($kid, $found)) {
-            $found[] = $kid;
+          if (!$found->contains($kid)) {
+            $found->attach($kid);
           }
           break;
         }
@@ -1074,7 +1077,7 @@ class QueryPathCssEventHandler implements CssEventHandler {
    */
   protected function onlyChild() {
     $matches = $this->candidateList();
-    $found = array();
+    $found = new SplObjectStorage();
     foreach($matches as $item) {
       $parent = $item->parentNode;
       $kids = array();
@@ -1086,17 +1089,17 @@ class QueryPathCssEventHandler implements CssEventHandler {
       // There should be only one child element, and
       // it should be the one being tested.
       if (count($kids) == 1 && $kids[0] === $item) {
-        $found[] = $kids[0];
+        $found->attach($kids[0]);
       }
     }
-    $this->matches = UniqueElementList::get($found);
+    $this->matches = $found;
   }
   
   /**
    * Pseudo-class handler for :empty.
    */
   protected function emptyElement() {
-    $found = array();
+    $found = new SplObjectStorage();
     $matches = $this->candidateList();
     foreach ($matches as $item) {
       $empty = TRUE;
@@ -1109,7 +1112,7 @@ class QueryPathCssEventHandler implements CssEventHandler {
         }
       }
       if ($empty) {
-        $found[] = $item;
+        $found->attach($item);
       }
     }
     $this->matches = $found;
@@ -1120,19 +1123,27 @@ class QueryPathCssEventHandler implements CssEventHandler {
    */
   protected function onlyOfType() {
     $matches = $this->candidateList();
-    $found = array();
+    $found = new SplObjectStorage();
     foreach ($matches as $item) {
       if (!$item->parentNode) {
-        $this->matches = array();
+        $this->matches = new SplObjectStorage();
       }
       $parent = $item->parentNode;
+      $onlyOfType = TRUE;
+      
+      // See if any peers are of the same type
       foreach($parent->childNodes as $kid) {
-        if ($kid->nodeType == XML_ELEMENT_NODE && $kid->tagName == $item->tagName && $kid !== $item) {
-          $this->matches = array();
+        if ($kid->nodeType == XML_ELEMENT_NODE 
+            && $kid->tagName == $item->tagName 
+            && $kid !== $item) {
+          //$this->matches = new SplObjectStorage();
+          $onlyOfType = FALSE;
           break;
         }
       }
-      $found[] = $item;
+      
+      // If no others were found, attach this one.
+      if ($onlyOfType) $found->attach($item);
     }
     $this->matches = $found;
   }
@@ -1174,27 +1185,36 @@ class QueryPathCssEventHandler implements CssEventHandler {
   public function pseudoElement($name) {
     // process the pseudoElement
     switch ($name) {
+      // XXX: Should this return an array -- first line of 
+      // each of the matched elements?
       case 'first-line':
         $matches = $this->candidateList();
-        $found = array();
+        $found = new SplObjectStorage();
+        $o = new stdClass();
         foreach ($matches as $item) {
           $str = $item->textContent;
           $lines = explode("\n", $str);
           if (!empty($lines)) {
             $line = trim($lines[0]);
             if (!empty($line))
-              $found[] = $line;//trim($lines[0]);
+              $o->textContent = $line;
+              $found->attach($o);//trim($lines[0]);
           }
         }
         $this->matches = $found;
         break;
+      // XXX: Should this return an array -- first letter of each
+      // of the matched elements?
       case 'first-letter':
         $matches = $this->candidateList();
-        $found = array();
+        $found = new SplObjectStorage();
+        $o = new stdClass();
         foreach ($matches as $item) {
           $str = $item->textContent;
           if (!empty($str)) {
-            $found[] = substr($str,0, 1);
+            $str = substr($str,0, 1);
+            $o->textContent = $str;
+            $found->attach($o);
           }
         }
         $this->matches = $found;
@@ -1213,16 +1233,16 @@ class QueryPathCssEventHandler implements CssEventHandler {
   public function directDescendant() {
     $this->findAnyElement = FALSE;
         
-    $kids = array();
+    $kids = new SplObjectStorage();
     foreach ($this->matches as $item) {
       $kidsNL = $item->childNodes;
       foreach ($kidsNL as $kidNode) {
         if ($kidNode->nodeType == XML_ELEMENT_NODE) {
-          $kids[] = $kidNode;
+          $kids->attach($kidNode);
         }
       }
     }
-    $this->matches = UniqueElementList::get($kids);
+    $this->matches = $kids;
   }
   /**
    * For an element to be adjacent to another, it must be THE NEXT NODE
@@ -1242,26 +1262,28 @@ class QueryPathCssEventHandler implements CssEventHandler {
   public function adjacent() {
     $this->findAnyElement = FALSE;
     // List of nodes that are immediately adjacent to the current one.
-    $found = array();
+    //$found = array();
+    $found = new SplObjectStorage();
     foreach ($this->matches as $item) {
       if (isset($item->nextSibling) && $item->nextSibling->nodeType === XML_ELEMENT_NODE) {
-        $found[] = $item->nextSibling;
+        $found->attach($item->nextSibling);
       }
     }
-    $this->matches = UniqueElementList::get($found);
+    $this->matches = $found;
   }
   
   public function anotherSelector() {
     $this->findAnyElement = FALSE;
     // Copy old matches into buffer.
-    if (!empty($this->matches)) {
-      //$this->alreadyMatched[] = $this->matches;
-      $this->alreadyMatched = array_merge($this->alreadyMatched, $this->matches);
+    if ($this->matches->count() > 0) {
+      //$this->alreadyMatched = array_merge($this->alreadyMatched, $this->matches);
+      foreach ($this->matches as $item) $this->alreadyMatched->attach($item);
     }
     
     // Start over at the top of the tree.
     $this->findAnyElement = TRUE; // Reset depth flag.
-    $this->matches = array($this->dom);
+    $this->matches = new SplObjectStorage();
+    $this->matches->attach($this->dom);
   }
   
   /**
@@ -1275,18 +1297,22 @@ class QueryPathCssEventHandler implements CssEventHandler {
     $this->findAnyElement = FALSE;
     // Get the nodes at the same level.
     
-    if (!empty($this->matches)) {
-      $sibs = array();
+    if ($this->matches->count() > 0) {
+      $sibs = new SplObjectStorage();
       foreach ($this->matches as $item) {
-        $candidates = $item->parentNode->childNodes;
+        /*$candidates = $item->parentNode->childNodes;
         foreach ($candidates as $candidate) {
           if ($candidate->nodeType === XML_ELEMENT_NODE && $candidate !== $item) {
-            $sibs[] = $candidate;
+            $sibs->attach($candidate);
           }
         }
+        */
+        while ($item->nextSibling != NULL) {
+          $item = $item->nextSibling;
+          if ($item->nodeType === XML_ELEMENT_NODE) $sibs->attach($item);
+        }
       }
-      // Do we need to remove duplicates for any reason?
-      $this->matches = UniqueElementList::get($sibs);
+      $this->matches = $sibs;
     }
   }
   
@@ -1295,12 +1321,13 @@ class QueryPathCssEventHandler implements CssEventHandler {
    */
   public function anyDescendant() {
     // Get children:
-    $found = array();
+    $found = new SplObjectStorage();
     foreach ($this->matches as $item) {
       $kids = $item->getElementsByTagName('*');
-      $found = array_merge($found, $this->nodeListToArray($kids));
+      //$found = array_merge($found, $this->nodeListToArray($kids));
+      $this->attachNodeList($kids, $found);
     }
-    $this->matches = UniqueElementList::get($found);
+    $this->matches = $found;
     
     // Set depth flag:
     $this->findAnyElement = TRUE;
@@ -1333,15 +1360,16 @@ class QueryPathCssEventHandler implements CssEventHandler {
    *  A list of all candidate elements.
    */
   private function getAllCandidates($elements) {
-    $found = array();
+    $found = new SplObjectStorage();
     foreach ($elements as $item) {
-      $found[] = $item; // put self in
+      $found->attach($item); // put self in
       $nl = $item->getElementsByTagName('*');
-      foreach ($nl as $node) $found[] = $node;
+      //foreach ($nl as $node) $found[] = $node;
+      $this->attachNodeList($nl, $found);
     }
-    return UniqueElementList::get($found);
+    return $found;
   }
-  
+  /*
   public function nodeListToArray($nodeList) {
     $array = array();
     foreach ($nodeList as $node) {
@@ -1351,97 +1379,15 @@ class QueryPathCssEventHandler implements CssEventHandler {
     }
     return $array;
   }
-  
-}
-
-/**
- * Specialized handler for only parsing the contents of a negation
- * selector.
- *
- * According to the CSS 3 selector specification, the negation pseudo-class
- * (:not()) can only contain a simple selector with no negation handler and 
- * no pseudo-elements. To meet this requirement, this class implements a 
- * restricted version of the CssEventHandler that will only parse simple 
- * selectors.
- *
- * @deprecated This has been replaced by a full CssEventHandler implementation.
- */
-class NegationCssEventHandler extends QueryPathCssEventHandler {
-  public function find($filter) {
-    $parser = new CssParser($filter, $this);
-    $parser->parseSimpleSelector();
-    return $this;
-  }
-}
-
-/**
- * Utility class to winnow a list of Elements down to unique ones.
- * This uses strong equality.
- *
- * Why not use array_unique()? Because that requires a cast to a string,
- * which doesn't work well for elements (loses idempotence).
- */
-class UniqueElementList {
-  var $result;
+  */
   
   /**
-   * Given an array of elements, return an array of unique elements.
-   * Static utility method.
-   *
-   * @param array $list
-   *  An array of objects.
-   * @return 
-   *  An array of objects with all duplicates removed.
+   * Attach all nodes in a node list to the given SplObjectStorage.
    */
-  public static function get($list) {
-    $uel = new UniqueElementList($list);
-    return $uel->toArray();
+  public function attachNodeList(DOMNodeList $nodeList, SplObjectStorage $splos) {
+    foreach ($nodeList as $item) $splos->attach($item);
   }
   
-  /**
-   * Construct a new list and filter it.
-   */
-  public function __construct($list) {
-    $this->result = array();
-    foreach ($list as $item) {
-      $this->compare($item);
-    }
-  }
-  
-  /**
-   * Get the list as an array.
-   */
-  public function toArray() {
-    return $this->result;
-  }
-  
-  /**
-   * Compare the current element to previous elements in the list.
-   * If it is unique, it is kept. If it is not, it is discarded from
-   * the list.
-   */
-  protected function compare($element) {
-    if (!in_array($element, $this->result, TRUE)) {
-      $this->result[] = $element;
-    }
-  }
-}
-
-class NamespaceMap {
-  protected $map = array();
-  
-  public function __construct($dom) {
-    $all = $dom->getElementsByName('*');
-    foreach ($all as $e) {
-      $attrs = $e->getAttributeNS('xmlns');
-    }
-  }
-  
-  public function getNSURI($name) {
-    if (array_key_exists($this->map, $name)) {
-      return $this->map[$name];
-    }
-  }
 }
 
 /**

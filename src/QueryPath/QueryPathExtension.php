@@ -130,7 +130,7 @@ class QueryPathExtensionRegistry {
    *  TRUE if the class is registered, FALSE otherwise.
    */
   public static function hasExtension($name) {
-    return isset(self::$extensionRegistry[$name]);
+    return in_array($name, self::$extensionRegistry);
   }
   
   /**
