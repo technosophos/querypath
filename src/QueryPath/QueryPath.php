@@ -127,6 +127,8 @@ require_once 'QueryPathExtension.php';
  *  An associative array of options. Currently supported options are:
  *  - context: A stream context object. This is used to pass context info
  *    to the underlying file IO subsystem.
+ *  - encoding: A valid character encoding, such as 'utf-8' or 'ISO-8859-1'.
+ *    The default is system-dependant, typically UTF-8.
  *  - parser_flags: An OR-combined set of parser flags. The flags supported
  *    by the DOMDocument PHP class are all supported here.
  *  - omit_xml_declaration: Boolean. If this is TRUE, then certain output
@@ -301,7 +303,7 @@ class QueryPath implements IteratorAggregate {
     
     // Empty: Just create an empty QP.
     if (empty($document)) {
-      $this->document = new DOMDocument();
+      $this->document = isset($this->options['encoding']) ? new DOMDocument('1.0', $this->options['encoding']) : new DOMDocument();
       $this->setMatches(new SplObjectStorage());
     }
     // Figure out if document is DOM, HTML/XML, or a filename
