@@ -128,7 +128,8 @@ require_once 'QueryPathExtension.php';
  *  - context: A stream context object. This is used to pass context info
  *    to the underlying file IO subsystem.
  *  - encoding: A valid character encoding, such as 'utf-8' or 'ISO-8859-1'.
- *    The default is system-dependant, typically UTF-8.
+ *    The default is system-dependant, typically UTF-8. Note that this is 
+ *    only used when creating new documents, not when reading existing content.
  *  - parser_flags: An OR-combined set of parser flags. The flags supported
  *    by the DOMDocument PHP class are all supported here.
  *  - omit_xml_declaration: Boolean. If this is TRUE, then certain output

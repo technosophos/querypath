@@ -85,6 +85,14 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     
     $iso_found = preg_match('/utf-8/', $xml) == 1;
     $this->assertFalse($iso_found, 'Encoding should not be utf-8 in ' . $xml);
+    
+    $xml = qp('<?xml version="1.0" encoding="utf-8"?><test/>', NULL, array('encoding' => 'iso-8859-1'))->xml();
+    $iso_found = preg_match('/utf-8/', $xml) == 1;
+    $this->assertTrue($iso_found, 'Encoding should be utf-8 in ' . $xml);
+    
+    $iso_found = preg_match('/iso-8859-1/', $xml) == 1;
+    $this->assertFalse($iso_found, 'Encoding should not be utf-8 in ' . $xml);
+    
   }
   
   public function testQPAbstractFactory() {
