@@ -259,7 +259,10 @@ class QueryPath implements IteratorAggregate {
   //const IGNORE_ERRORS = 1544; //E_NOTICE | E_USER_WARNING | E_USER_NOTICE;
   private $errTypes = 771; //E_ERROR; | E_USER_ERROR;
   
-  private $document = NULL;
+  /**
+   * The base DOMDocument.
+   */
+  protected $document = NULL;
   private $options = array(
     'parser_flags' => NULL,
     'omit_xml_declaration' => FALSE,
@@ -267,8 +270,14 @@ class QueryPath implements IteratorAggregate {
     'exception_level' => 771, // E_ERROR | E_USER_ERROR | E_USER_WARNING | E_WARNING
     'ignore_parser_warnings' => FALSE,
   );
-  private $matches = array();
-  private $last = array(); // Last set of matches.
+  /**
+   * The array of matches.
+   */
+  protected $matches = array();
+  /**
+   * The last array of matches.
+   */
+  protected $last = array(); // Last set of matches.
   private $ext = array(); // Extensions array.
   
   
