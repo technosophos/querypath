@@ -1497,6 +1497,7 @@ class CssEventParserTests extends PHPUnit_Framework_TestCase {
       'element[attr]' => 'attr',
       '*[attr]' => 'attr',
       'element[attr]:class' => 'attr',
+      'element[attr2]' => 'attr2', // Issue #
     );
     foreach ($selectors as $filter => $expected) {
       $mock = $this->getMock('TestCssEventHandler', array('attribute'));

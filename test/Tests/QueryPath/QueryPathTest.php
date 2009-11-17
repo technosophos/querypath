@@ -184,6 +184,9 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     QueryPathOptions::merge(array('ignore_parser_warnings' => TRUE));
     $qp = @qp('<html><body><b><i>BAD!</b></i></body>');
     $this->assertTrue(strpos($qp->html(), '<i>BAD!</i>') !== FALSE);
+    
+    $qp = @qp('<html><body><blarg>BAD!</blarg></body>');
+    $this->assertTrue(strpos($qp->html(), '<blarg>BAD!</blarg>') !== FALSE, $qp->html());
     QueryPathOptions::set(array()); // Reset to empty options.
   }
   /**
