@@ -1,10 +1,19 @@
-QueryPath: Find your way.
+# QueryPath: Find your way.
+
 Author: Matt Butcher
 Website: http://querypath.org
 API Docs: http://api.querypath.org
 VCS and Issue Tracking: http://github.com/technosophos/querypath
 Support List: http://groups.google.com/group/support-querypath
 Developer List: http://groups.google.com/group/devel-querypath
+
+## About the Quasar Branch
+
+The Quasar branch of QueryPath is likely to become QueryPath 3.x. It is focused 
+on providing features specific to PHP 5.3.x, including support for anonymous 
+functions and closures, improved usage of SPL, and support for Phar archives.
+
+## About the License
 
 This package is licensed under the GNU LGPL 2.1 or, at your choice, an MIT-style
 license. The licenses should have been distributed with this library.
