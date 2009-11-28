@@ -1,4 +1,5 @@
 <?php
+namespace QueryPath;
 /**
  * This file contains the Query Path extension tools.
  *

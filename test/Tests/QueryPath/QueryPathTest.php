@@ -356,6 +356,13 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals(2, qp($file, 'li')->filterCallback($cb)->size());
   }
   
+  public function testFilterCallbackAnon() {
+    // Test an anonymous function as a callback.
+    $file = DATA_FILE;
+    $cb = function ($index, $item) {return (($index + 1) % 2 == 0);};
+    $this->assertEquals(2, qp($file, 'li')->filterCallback($cb)->size());
+  }
+  
   /**
    * @expectedException QueryPathException
    */
@@ -435,6 +442,21 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals(7, qp($file, 'li')->map(array($this, $fn))->size());
   }
   
+  public function testMapAnon() {
+    // Test using an anonymous map function.
+    $file = DATA_FILE;
+    $fn = function ($index, $item) {
+      if ($index == 1) {
+        return FALSE;
+      }
+      if ($index == 2) {
+        return array(1, 2, 3);
+      }
+      return $index;
+    };
+    $this->assertEquals(7, qp($file, 'li')->map($fn)->size());
+  }
+  
   public function eachCallbackFunction($index, $item) {
     if ($index < 2) {
       qp($item)->attr('class', 'test');
@@ -455,6 +477,25 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     // Test when each runs out of things to test before returning.
     $res = qp($file, '#one')->each(array($this, $fn));
     $this->assertEquals(1, $res->size());
+  }
+  
+  public function testEachAnon() {
+    // Test using anonymous functions in an each.
+    $file = DATA_FILE;
+    
+    // Anonymous function.
+    $fn = function ($index, $item) {
+      if ($index < 2) {
+        qp($item)->attr('class', 'test');
+      }
+      else {
+        return FALSE;
+      }
+    };
+    $res = qp($file, 'li')->each($fn);
+    $this->assertEquals(5, $res->size());
+    $this->assertFalse($res->get(4)->getAttribute('class') === NULL);
+    $this->assertEquals('test', $res->eq(1)->attr('class'));
   }
   
   /**

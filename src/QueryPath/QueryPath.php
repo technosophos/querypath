@@ -1,4 +1,9 @@
 <?php
+namespace {
+// There are two namespaces declared in this document:
+// 1. A global one, with the qp functio
+// 2. The QueryPath namespace.
+  
 /**
  * The Query Path package provides tools for manipulating a Document Object Model.
  * The two major DOMs are the XML DOM and the HTML DOM. Using Query Path, you can 
@@ -72,15 +77,6 @@
  * @deprecated This is no longer used in QueryPath.
  */
 define('ML_EXP','/^[^<]*(<(.|\s)+>)[^>]*$/');
-
-/**
- * The CssEventHandler interfaces with the CSS parser.
- */
-require_once 'CssEventHandler.php';
-/**
- * The extender is used to provide support for extensions.
- */
-require_once 'QueryPathExtension.php';
 
 /**
  * Build a new Query Path.
@@ -162,11 +158,24 @@ require_once 'QueryPathExtension.php';
  */
 function qp($document = NULL, $string = NULL, $options = array()) {
   
-  $qpClass = isset($options['QueryPath_class']) ? $options['QueryPath_class'] : 'QueryPath';
+  $qpClass = isset($options['QueryPath_class']) ? $options['QueryPath_class'] : 'QueryPath\QueryPath';
   
   $qp = new $qpClass($document, $string, $options);
   return $qp;
 }
+}
+namespace QueryPath {
+/**
+ * The CssEventHandler interfaces with the CSS parser.
+ */
+require_once 'CSS/QueryPathCssEventHandler.php';
+/**
+ * The extender is used to provide support for extensions.
+ */
+require_once 'QueryPathExtension.php';
+
+
+//use QueryPath\CSS;  
 
 /**
  * The Query Path object is the primary tool in this library.
@@ -184,7 +193,15 @@ function qp($document = NULL, $string = NULL, $options = array()) {
  * @see qp()
  * @see QueryPath.php
  */
-class QueryPath implements IteratorAggregate {
+class QueryPath implements \IteratorAggregate {
+  
+  public static function with($document = NULL, $string = NULL, $options = array()) {
+
+    $qpClass = isset($options['QueryPath_class']) ? $options['QueryPath_class'] : 'QueryPath\QueryPath';
+
+    $qp = new $qpClass($document, $string, $options);
+    return $qp;
+  }
   
   /**
    * The version string for this version of QueryPath.
@@ -313,8 +330,8 @@ class QueryPath implements IteratorAggregate {
     
     // Empty: Just create an empty QP.
     if (empty($document)) {
-      $this->document = isset($this->options['encoding']) ? new DOMDocument('1.0', $this->options['encoding']) : new DOMDocument();
-      $this->setMatches(new SplObjectStorage());
+      $this->document = isset($this->options['encoding']) ? new \DOMDocument('1.0', $this->options['encoding']) : new DOMDocument();
+      $this->setMatches(new \SplObjectStorage());
     }
     // Figure out if document is DOM, HTML/XML, or a filename
     elseif (is_object($document)) {
@@ -324,23 +341,23 @@ class QueryPath implements IteratorAggregate {
         if ($this->matches->count() > 0)
           $this->document = $this->getFirstMatch()->ownerDocument;
       }
-      elseif ($document instanceof DOMDocument) {
+      elseif ($document instanceof \DOMDocument) {
         $this->document = $document;
         //$this->matches = $this->matches($document->documentElement);
         $this->setMatches($document->documentElement);
       }
-      elseif ($document instanceof DOMNode) {
+      elseif ($document instanceof \DOMNode) {
         $this->document = $document->ownerDocument;
         //$this->matches = array($document);
         $this->setMatches($document);
       }
-      elseif ($document instanceof SimpleXMLElement) {
+      elseif ($document instanceof \SimpleXMLElement) {
         $import = dom_import_simplexml($document);
         $this->document = $import->ownerDocument;
         //$this->matches = array($import);
         $this->setMatches($import);
       }
-      elseif ($document instanceof SplObjectStorage) {
+      elseif ($document instanceof \SplObjectStorage) {
         $this->matches = $document;
         $this->document = $this->getFirstMatch()->ownerDocument;
       }
@@ -350,8 +367,8 @@ class QueryPath implements IteratorAggregate {
     }
     elseif (is_array($document)) {
       //trigger_error('Detected deprecated array support', E_USER_NOTICE);
-      if (!empty($document) && $document[0] instanceof DOMNode) {
-        $found = new SplObjectStorage();
+      if (!empty($document) && $document[0] instanceof \DOMNode) {
+        $found = new \SplObjectStorage();
         foreach ($document as $item) $found->attach($item);
         //$this->matches = $found;
         $this->setMatches($found);
@@ -474,7 +491,7 @@ class QueryPath implements IteratorAggregate {
       else {
         //$this->xpath("//*[@class='{$ids[2]}']");
         $xpath = new DOMXPath($this->document);
-        $found = new SplObjectStorage();
+        $found = new \SplObjectStorage();
         foreach ($this->matches as $item) {
           $nl = $xpath->query("//*[@class]", $item);
           for ($i = 0; $i < $nl->length; ++$i) {
@@ -488,7 +505,7 @@ class QueryPath implements IteratorAggregate {
       return $this;
     }
     
-    $query = new QueryPathCssEventHandler($this->matches);
+    $query = new CSS\QueryPathCssEventHandler($this->matches);
     $query->find($selector);
     //$this->matches = $query->getMatches();
     $this->setMatches($query->getMatches());
@@ -515,7 +532,7 @@ class QueryPath implements IteratorAggregate {
    */
   public function xpath($query) {
     $xpath = new DOMXPath($this->document);
-    $found = new SplObjectStorage();
+    $found = new \SplObjectStorage();
     foreach ($this->matches as $item) {
       $nl = $xpath->query($query, $item);
       if ($nl->length > 0) {
@@ -780,7 +797,7 @@ class QueryPath implements IteratorAggregate {
    * @see is()
    */
   public function filter($selector) {
-    $found = new SplObjectStorage();
+    $found = new \SplObjectStorage();
     foreach ($this->matches as $m) if (qp($m, NULL, $this->options)->is($selector)) $found->attach($m);
     $this->setMatches($found);
     return $this;
@@ -810,10 +827,12 @@ class QueryPath implements IteratorAggregate {
    * @see map()
    * @see mapLambda()
    * @see filterCallback()
+   * @deprecated This is deprecated in favor of anonymous functions and closures.
+   *  It will be removed in future versions.
    */
   public function filterLambda($fn) {
     $function = create_function('$index, $item', $fn);
-    $found = new SplObjectStorage();
+    $found = new \SplObjectStorage();
     $i = 0;
     foreach ($this->matches as $item)
       if ($function($i++, $item) !== FALSE) $found->attach($item);
@@ -846,7 +865,7 @@ class QueryPath implements IteratorAggregate {
    * @see find()
    */
   public function filterCallback($callback) {
-    $found = new SplObjectStorage();
+    $found = new \SplObjectStorage();
     $i = 0;
     if (is_callable($callback)) {
       foreach($this->matches as $item) 
@@ -869,7 +888,7 @@ class QueryPath implements IteratorAggregate {
    * @see find()
    */
   public function not($selector) {
-    $found = new SplObjectStorage();
+    $found = new \SplObjectStorage();
     if ($selector instanceof DOMElement) {
       foreach ($this->matches as $m) if ($m !== $selector) $found->attach($m); 
     }
@@ -942,7 +961,7 @@ class QueryPath implements IteratorAggregate {
    * @see find()
    */
   public function map($callback) {
-    $found = new SplObjectStorage();
+    $found = new \SplObjectStorage();
     
     if (is_callable($callback)) {
       $i = 0;
@@ -990,7 +1009,7 @@ class QueryPath implements IteratorAggregate {
    * @see array_slice()
    */
   public function slice($start, $end = 0) {
-    $found = new SplObjectStorage();
+    $found = new \SplObjectStorage();
     if ($start >= $this->size()) {
       $this->setMatches($found);
       return $this;
@@ -1011,8 +1030,12 @@ class QueryPath implements IteratorAggregate {
     $this->setMatches($found);
     return $this;
   }
+  
   /**
    * Run a callback on each item in the list of items.
+   *
+   * A callback can be an anonymous function, a closure, or any of the
+   * callback types supported by PHP.
    *
    * Rules of the callback:
    * - A callback is passed two variables: $index and $item. (There is no 
@@ -1056,6 +1079,8 @@ class QueryPath implements IteratorAggregate {
    * @see filterLambda()
    * @see filterCallback()
    * @see map()
+   * @deprecated Support for eachLambda is deprecated in favor of 
+   *  closures and anonymous functions. This function will be removed.
    */
   public function eachLambda($lambda) {
     $index = 0;
@@ -1095,7 +1120,7 @@ class QueryPath implements IteratorAggregate {
       if (empty($this->document->documentElement) && $this->matches->count() == 0) {
         // Then we assume we are writing to the doc root
         $this->document->appendChild($data);
-        $found = new SplObjectStorage();
+        $found = new \SplObjectStorage();
         $found->attach($this->document->documentElement);
         $this->setMatches($found);
       }
@@ -1302,7 +1327,7 @@ class QueryPath implements IteratorAggregate {
    */
   public function replaceWith($new) {
     $data = $this->prepareInsert($new);
-    $found = new SplObjectStorage();
+    $found = new \SplObjectStorage();
     foreach ($this->matches as $m) {
       $parent = $m->parentNode;
       $parent->insertBefore($data->cloneNode(TRUE), $m);
@@ -1454,14 +1479,14 @@ class QueryPath implements IteratorAggregate {
    */
   public function deepest() {
     $deepest = 0;
-    $winner = new SplObjectStorage();
+    $winner = new \SplObjectStorage();
     foreach ($this->matches as $m) {
       $local_deepest = 0;
       $local_ele = $this->deepestNode($m, 0, NULL, $local_deepest);
       
       // Replace with the new deepest.
       if ($local_deepest > $deepest) {
-        $winner = new SplObjectStorage();
+        $winner = new \SplObjectStorage();
         foreach ($local_ele as $lele) $winner->attach($lele);
         $deepest = $local_deepest;
       }
@@ -1611,7 +1636,7 @@ class QueryPath implements IteratorAggregate {
     if(!empty($selector))
       $this->find($selector);
     
-    $found = new SplObjectStorage();
+    $found = new \SplObjectStorage();
     foreach ($this->matches as $item) {
       // The item returned is (according to docs) different from 
       // the one passed in, so we have to re-store it.
@@ -1718,7 +1743,7 @@ class QueryPath implements IteratorAggregate {
     // Note that this does not use setMatches because it must set the previous
     // set of matches to empty array.
     $this->matches = $this->last;
-    $this->last = new SplObjectStorage();
+    $this->last = new \SplObjectStorage();
     return $this;
   }
   /**
@@ -1783,7 +1808,7 @@ class QueryPath implements IteratorAggregate {
    * @see prev()
    */
   public function children($selector = NULL) {
-    $found = new SplObjectStorage();
+    $found = new \SplObjectStorage();
     foreach ($this->matches as $m) {
       foreach($m->childNodes as $c) {
         if ($c->nodeType == XML_ELEMENT_NODE) $found->attach($c);
@@ -1817,7 +1842,7 @@ class QueryPath implements IteratorAggregate {
    * @see innerXML()
    */
   public function contents() {
-    $found = new SplObjectStorage();
+    $found = new \SplObjectStorage();
     foreach ($this->matches as $m) {
       foreach ($m->childNodes as $c) {
         $found->attach($c);
@@ -1849,7 +1874,7 @@ class QueryPath implements IteratorAggregate {
    * @see parents()
    */
   public function siblings($selector = NULL) {
-    $found = new SplObjectStorage();
+    $found = new \SplObjectStorage();
     foreach ($this->matches as $m) {
       $parent = $m->parentNode;
       foreach ($parent->childNodes as $n) {
@@ -1882,7 +1907,7 @@ class QueryPath implements IteratorAggregate {
    * @since 2.0
    */
   public function closest($selector) {
-    $found = new SplObjectStorage();
+    $found = new \SplObjectStorage();
     foreach ($this->matches as $m) {
       
       if (qp($m, NULL, $this->options)->is($selector) > 0) {
@@ -1918,7 +1943,7 @@ class QueryPath implements IteratorAggregate {
    * @see parents()
    */
   public function parent($selector = NULL) {
-    $found = new SplObjectStorage();
+    $found = new \SplObjectStorage();
     foreach ($this->matches as $m) {
       while ($m->parentNode->nodeType !== XML_DOCUMENT_NODE) {
         $m = $m->parentNode;
@@ -1954,7 +1979,7 @@ class QueryPath implements IteratorAggregate {
    * @see children()
    */
   public function parents($selector = NULL) {
-    $found = new SplObjectStorage();
+    $found = new \SplObjectStorage();
     foreach ($this->matches as $m) {
       while ($m->parentNode->nodeType !== XML_DOCUMENT_NODE) {
         $m = $m->parentNode;
@@ -2398,7 +2423,7 @@ class QueryPath implements IteratorAggregate {
    * @see parents()
    */
   public function next($selector = NULL) {
-    $found = new SplObjectStorage();
+    $found = new \SplObjectStorage();
     foreach ($this->matches as $m) {
       while (isset($m->nextSibling)) {
         $m = $m->nextSibling;
@@ -2436,7 +2461,7 @@ class QueryPath implements IteratorAggregate {
    * @see siblings()
    */
   public function nextAll($selector = NULL) {
-    $found = new SplObjectStorage();
+    $found = new \SplObjectStorage();
     foreach ($this->matches as $m) {
       while (isset($m->nextSibling)) {
         $m = $m->nextSibling;
@@ -2473,7 +2498,7 @@ class QueryPath implements IteratorAggregate {
    * @see children()
    */
   public function prev($selector = NULL) {
-    $found = new SplObjectStorage();
+    $found = new \SplObjectStorage();
     foreach ($this->matches as $m) {
       while (isset($m->previousSibling)) {
         $m = $m->previousSibling;
@@ -2511,7 +2536,7 @@ class QueryPath implements IteratorAggregate {
    * @see children()
    */
   public function prevAll($selector = NULL) {
-    $found = new SplObjectStorage();
+    $found = new \SplObjectStorage();
     foreach ($this->matches as $m) {
       while (isset($m->previousSibling)) {
         $m = $m->previousSibling;
@@ -2534,7 +2559,7 @@ class QueryPath implements IteratorAggregate {
    * @deprecated Use {@link siblings()}.
    */
   public function peers($selector = NULL) {
-    $found = new SplObjectStorage();
+    $found = new \SplObjectStorage();
     foreach ($this->matches as $m) {
       foreach ($m->parentNode->childNodes as $kid) {
         if ($kid->nodeType == XML_ELEMENT_NODE && $m !== $kid) {
@@ -2734,7 +2759,7 @@ class QueryPath implements IteratorAggregate {
    * @return QueryPath
    */
   public function cloneAll() {
-    $found = new SplObjectStorage();
+    $found = new \SplObjectStorage();
     foreach ($this->matches as $m) $found->attach($m->cloneNode(TRUE));
     $this->setMatches($found, FALSE);
     return $this;
@@ -2789,10 +2814,10 @@ class QueryPath implements IteratorAggregate {
   
   private function parseXMLString($string, $flags = NULL) {
     
-    $document = new DOMDocument();
+    $document = new \DOMDocument();
     $lead = strtolower(substr($string, 0, 5)); // <?xml
     try {
-      set_error_handler(array('QueryPathParseException', 'initializeFromError'), $this->errTypes);
+      set_error_handler(array('\QueryPath\QueryPathParseException', 'initializeFromError'), $this->errTypes);
       if ($lead == '<?xml') {
         //print htmlentities($string);
         if ($this->options['replace_entities']) {
@@ -2827,20 +2852,20 @@ class QueryPath implements IteratorAggregate {
     $this->last = $this->matches;
     
     // Just set current matches.
-    if ($matches instanceof SplObjectStorage) {
+    if ($matches instanceof \SplObjectStorage) {
       $this->matches = $matches;
     }
     // This is likely legacy code that needs conversion.
     elseif (is_array($matches)) {
       trigger_error('Legacy array detected.');
-      $tmp = new SplObjectStorage();
+      $tmp = new \SplObjectStorage();
       foreach ($matches as $m) $tmp->attach($m);
       $this->matches = $tmp;
     }
     // For non-arrays, try to create a new match set and 
     // add this object.
     else {
-      $found = new SplObjectStorage();
+      $found = new \SplObjectStorage();
       if (isset($matches)) $found->attach($matches);
       $this->matches = $found;
     }
@@ -2920,7 +2945,7 @@ class QueryPath implements IteratorAggregate {
     // two steps:
     if (!empty($context)) {
       try {
-        set_error_handler(array('QueryPathParseException', 'initializeFromError'), $this->errTypes);
+        set_error_handler(array('\QueryPath\QueryPathParseException', 'initializeFromError'), $this->errTypes);
         $contents = file_get_contents($filename, FALSE, $context);
         
       }
@@ -3035,7 +3060,7 @@ class QueryPath implements IteratorAggregate {
     // Note that an empty ext registry indicates that extensions are disabled.
     if (!empty($this->ext) && QueryPathExtensionRegistry::hasMethod($name)) {
       $owner = QueryPathExtensionRegistry::getMethodClass($name);
-      $method = new ReflectionMethod($owner, $name);
+      $method = new \ReflectionMethod($owner, $name);
       return $method->invokeArgs($this->ext[$owner], $arguments);
     }
     throw new QueryPathException("No method named $name found. Possibly missing an extension.");
@@ -3208,7 +3233,7 @@ class QueryPathEntities {
  * a QueryPathIterator. QueryPath does this when its {@link QueryPath::getIterator()}
  * method is called.
  */
-class QueryPathIterator extends IteratorIterator {
+class QueryPathIterator extends \IteratorIterator {
   public $options = array();
   
   public function current() {
@@ -3300,7 +3325,7 @@ class QueryPathOptions {
 /**
  * Exception indicating that a problem has occured inside of a QueryPath object.
  */
-class QueryPathException extends Exception {}
+class QueryPathException extends \Exception {}
 
 /**
  * Exception indicating that a parser has failed to parse a file.
@@ -3343,4 +3368,5 @@ class QueryPathIOException extends QueryPathParseException {
     throw new $class($str, $code, $file, $line);
   }
   
+}
 }

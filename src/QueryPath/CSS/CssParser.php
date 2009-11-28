@@ -1,4 +1,5 @@
 <?php
+namespace QueryPath\CSS;
 /**
  * CSS selector parsing classes.
  *
@@ -14,9 +15,6 @@
  * @author M Butcher <matt@aleph-null.tv>
  * @license http://opensource.org/licenses/lgpl-2.1.php The GNU Lesser GPL (LGPL) or an MIT-like license. 
  */
-
-require_once 'CssEventHandler.php';
-
 
 /**
  * An event handler for handling CSS 3 Selector parsing.
@@ -1055,4 +1053,4 @@ class CssInputStream {
 /**
  * Exception indicating an error in CSS parsing.
  */
-class CSSParseException extends EXCEPTION {}
+class CSSParseException extends \Exception {}
