@@ -52,8 +52,9 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $this->assertTrue($qp->get(0) instanceof DOMNode);
     
     // Test from DOMDocument
-    $doc = new DOMDocument('1.0');
-    $qp = qp($doc->loadXML($str));
+    $doc = new DOMDocument();
+    $doc->loadXML($str);
+    $qp = qp($doc);
     $this->assertEquals(1, count($qp->get()));
     $this->assertTrue($qp->get(0) instanceof DOMNode);
     
@@ -115,7 +116,7 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
   }
   
   /**
-   * @expectedException QueryPathException
+   * @expectedException QueryPath\QueryPathException
    */
   public function testFailedCall() {
     // This should hit __call() and then fail.
@@ -123,27 +124,27 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
   }
   
   /**
-   * @expectedException QueryPathException
+   * @expectedException QueryPath\QueryPathException
    */
   public function testFailedObjectConstruction() {
     qp(new stdClass());
   }
   
   /**
-   * @expectedException QueryPathParseException
+   * @expectedException \QueryPath\QueryPathParseException
    */
   public function testFailedHTTPLoad() {
     try {
       qp('http://localhost:8877/no_such_file.xml');
     }
     catch (Exception $e) {
-      //print $e->getMessage();
+      //print $e->getMessage() . PHP_EOL . PHP_EOL;
       throw $e;
     }
   }
   
   /**
-   * @expectedException QueryPathParseException
+   * @expectedException QueryPath\QueryPathParseException
    */
   public function testFailedHTTPLoadWithContext() {
     try {
@@ -156,7 +157,7 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
   }
   
   /**
-   * @expectedException QueryPathParseException
+   * @expectedException QueryPath\QueryPathParseException
    */
   public function testFailedParseHTMLElement() {
     try {
@@ -169,7 +170,7 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
-   * @expectedException QueryPathParseException
+   * @expectedException QueryPath\QueryPathParseException
    */
   public function testFailedParseXMLElement() {
     try {
@@ -193,7 +194,7 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     \QueryPath\Options::set(array()); // Reset to empty options.
   }
   /**
-   * @expectedException QueryPathParseException
+   * @expectedException QueryPath\QueryPathParseException
    */  
   public function testFailedParseNonMarkup() {
     try {
@@ -206,7 +207,7 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
   }
   
   /**
-   * @expectedException QueryPathParseException
+   * @expectedException QueryPath\QueryPathParseException
    */
   public function testFailedParseEntity() {
     try {
@@ -367,7 +368,7 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
   }
   
   /**
-   * @expectedException QueryPathException
+   * @expectedException QueryPath\QueryPathException
    */
   public function testFailedFilterCallback() {
     $file = DATA_FILE;
@@ -376,7 +377,7 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
-   * @expectedException QueryPathException
+   * @expectedException QueryPath\QueryPathException
    */
   public function testFailedMapCallback() {
     $file = DATA_FILE;
@@ -502,7 +503,7 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
   }
   
   /**
-   * @expectedException QueryPathException
+   * @expectedException QueryPath\QueryPathException
    */
   public function testEachOnInvalidCallback() {
     $file = DATA_FILE;
@@ -577,11 +578,11 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('<p>»</p>', $qp->find('p')->html());
     
     // Test with empty, mainly to make sure it doesn't explode.
-    $this->assertTrue(qp($file)->append('') instanceof QueryPath);
+    $this->assertTrue(qp($file)->append('') instanceof QP);
   }
   
   /**
-   * @expectedException QueryPathParseException
+   * @expectedException QueryPath\QueryPathParseException
    */
   public function testAppendBadMarkup() {
     $file = DATA_FILE;
@@ -595,7 +596,7 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
   }
   
   /**
-    * @expectedException QueryPathException
+    * @expectedException QueryPath\QueryPathException
     */
    public function testAppendBadObject() {
      $file = DATA_FILE;
@@ -953,7 +954,7 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
   }
   
   /**
-   * @expectedException QueryPathIOException
+   * @expectedException QueryPath\QueryPathIOException
    */
   public function testFailWriteXML() {
     try {
@@ -967,7 +968,7 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
   }
   
   /**
-   * @expectedException QueryPathIOException
+   * @expectedException QueryPath\QueryPathIOException
    */
   public function testFailWriteXHTML() {
     try {
@@ -981,7 +982,7 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
   }
   
   /**
-   * @expectedException QueryPathIOException
+   * @expectedException QueryPath\QueryPathIOException
    */
   public function testFailWriteHTML() {
     try {

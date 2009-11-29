@@ -2343,7 +2343,7 @@ class QueryPath implements \IteratorAggregate {
         set_error_handler(array('\QueryPath\QueryPathIOException', 'initializeFromError'));
         $this->document->save($path);
       }
-      catch (Exception $e) {
+      catch (\Exception $e) {
         restore_error_handler();
         throw $e;
       }
@@ -2379,7 +2379,7 @@ class QueryPath implements \IteratorAggregate {
         set_error_handler(array('\QueryPath\QueryPathParseException', 'initializeFromError'));
         $this->document->saveHTMLFile($path);
       }
-      catch (Exception $e) {
+      catch (\Exception $e) {
         restore_error_handler();
         throw $e;
       }
@@ -2837,7 +2837,7 @@ class QueryPath implements \IteratorAggregate {
       }
     }
     // Emulate 'finally' behavior.
-    catch (Exception $e) {
+    catch (\Exception $e) {
       restore_error_handler();
       throw $e;
     }
@@ -2958,7 +2958,7 @@ class QueryPath implements \IteratorAggregate {
       }
       // Apparently there is no 'finally' in PHP, so we have to restore the error
       // handler this way:
-      catch(Exception $e) {
+      catch(\Exception $e) {
         restore_error_handler();
         throw $e;
       }
@@ -3007,7 +3007,7 @@ class QueryPath implements \IteratorAggregate {
       
     }
     // Emulate 'finally' behavior.
-    catch (Exception $e) {
+    catch (\Exception $e) {
       restore_error_handler();
       throw $e;
     }
