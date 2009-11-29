@@ -9,6 +9,9 @@
 require_once 'PHPUnit/Framework.php';
 require_once 'src/QueryPath/QueryPath.php';
 
+use \QueryPath\QueryPath as QP;
+use \QueryPath\Options as QueryPathOptions;
+
 class QueryPathOptionsTest extends PHPUnit_Framework_TestCase {
   
   public function testQueryPathOptions() {

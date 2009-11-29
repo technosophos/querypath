@@ -538,7 +538,7 @@ class QueryPath implements \IteratorAggregate {
    * @see find()
    */
   public function xpath($query) {
-    $xpath = new DOMXPath($this->document);
+    $xpath = new \DOMXPath($this->document);
     $found = new \SplObjectStorage();
     foreach ($this->matches as $item) {
       $nl = $xpath->query($query, $item);

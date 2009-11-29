@@ -52,7 +52,8 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $this->assertTrue($qp->get(0) instanceof DOMNode);
     
     // Test from DOMDocument
-    $qp = qp(DOMDocument::loadXML($str));
+    $doc = new DOMDocument('1.0');
+    $qp = qp($doc->loadXML($str));
     $this->assertEquals(1, count($qp->get()));
     $this->assertTrue($qp->get(0) instanceof DOMNode);
     
@@ -1171,7 +1172,7 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
   }
   
   public function testStub() {
-    $this->assertEquals(1, qp(\QueryPath\QP::HTML_STUB)->find('title')->size());
+    $this->assertEquals(1, qp(QP::HTML_STUB)->find('title')->size());
     $this->assertEquals(1, qp(QP::HTML_STUB)->find('title')->size());
   }
   
