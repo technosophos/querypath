@@ -1,4 +1,6 @@
 <?php
+namespace QueryPath\Extension;
+use \QueryPath\QueryPath as QP;
 /**
  * Provide QueryPath with XSLT support using the PHP libxslt module.
  *
@@ -38,11 +40,11 @@
  * is written to XML using {@link QueryPath::writeXML()}.
  * </code>
  */
-class QPXSL implements QueryPathExtension {
+class QPXSL implements \QueryPath\Extension {
   
   protected $src = NULL;
   
-  public function __construct(QueryPath $qp) {
+  public function __construct(\QueryPath\QueryPath $qp) {
     $this->src = $qp;
   }
   
@@ -62,14 +64,14 @@ class QPXSL implements QueryPathExtension {
    *  the original source document will remain unchanged.)
    */
   public function xslt($style) {
-    if (!($style instanceof QueryPath)) {
+    if (!($style instanceof \QueryPath\QueryPath)) {
       $style = qp($style);
     }
     $sourceDoc = $this->src->top()->get(0)->ownerDocument;
     $styleDoc = $style->get(0)->ownerDocument;
-    $processor = new XSLTProcessor();
+    $processor = new \XSLTProcessor();
     $processor->importStylesheet($styleDoc);
     return qp($processor->transformToDoc($sourceDoc));
   }
 }
-QueryPathExtensionRegistry::extend('QPXSL');
+\QueryPath\ExtensionRegistry::extend('\QueryPath\Extension\QPXSL');

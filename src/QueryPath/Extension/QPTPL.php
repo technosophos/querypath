@@ -1,4 +1,6 @@
 <?php
+namespace QueryPath\Extension;
+use \QueryPath\QueryPath as QP;
 /**
  * QPTPL is a template library for QueryPath.
  *
@@ -28,9 +30,9 @@
  * @see https://fedorahosted.org/querypath/wiki/QueryPathTemplate
  */
 
-class QPTPL implements QueryPathExtension {
+class QPTPL implements \QueryPath\Extension {
   protected $qp;
-  public function __construct(QueryPath $qp) {
+  public function __construct(\QueryPath\QueryPath $qp) {
     $this->qp = $qp;
   }
   
@@ -72,9 +74,9 @@ class QPTPL implements QueryPathExtension {
     // Handle default options here.
 
     //$tqp = ($template instanceof QueryPath) ? clone $template: qp($template);
-    $tqp = qp($template);
+    $tqp = QP::with($template);
     
-    if (is_array($object) || $object instanceof Traversable) 
+    if (is_array($object) || $object instanceof \Traversable) 
       $this->tplArrayR($tqp, $object, $options);
     elseif (is_object($object)) 
       $this->tplObject($tqp, $object, $options);
@@ -100,7 +102,7 @@ class QPTPL implements QueryPathExtension {
    *  Returns the QueryPath object.
    */
   public function tplAll($template, $objects, $options = array()) {
-    $tqp = qp($template, ':root');
+    $tqp = QP::with($template, ':root');
     foreach ($objects as $object) {
       if (is_array($object)) 
         $tqp = $this->tplArrayR($tqp, $object, $options);
@@ -165,7 +167,7 @@ class QPTPL implements QueryPathExtension {
    * Introspect objects to map their functions to CSS classes in a template.
    */
   protected function tplObject($tqp, $object, $options = array()) {
-    $ref = new ReflectionObject($object);
+    $ref = new \ReflectionObject($object);
     $methods = $ref->getMethods();
     foreach ($methods as $method) {
       if (strpos($method->getName(), 'get') === 0) {
@@ -187,7 +189,7 @@ class QPTPL implements QueryPathExtension {
    * Recursively merge array data into a template.
    */
   public function tplArrayR($qp, $array, $options = NULL) {
-    if (!is_array($array) && !($array instanceof Traversable)) {
+    if (!is_array($array) && !($array instanceof \Traversable)) {
       $qp->append($array);
     }
     elseif ($this->isAssoc($array)) {
@@ -253,4 +255,4 @@ class QPTPL implements QueryPathExtension {
     return '.' . substr($mname, 3);
   }
 }
-QueryPathExtensionRegistry::extend('QPTPL');
+\QueryPath\ExtensionRegistry::extend('\QueryPath\Extension\QPTPL');

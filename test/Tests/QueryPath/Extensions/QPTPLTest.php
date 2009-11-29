@@ -10,6 +10,9 @@ require_once 'PHPUnit/Framework.php';
 require_once 'src/QueryPath/QueryPath.php';
 require_once 'src/QueryPath/Extension/QPTPL.php';
 
+use \QueryPath\QueryPath as QP;
+use \QueryPath\Extension\QPTPL as QPTPL;
+
 class QPTPLTest extends PHPUnit_Framework_TestCase {
   
   public function testIsAssoc() {
@@ -105,7 +108,7 @@ class QPTPLTest extends PHPUnit_Framework_TestCase {
       '.cell1' => 'Cell Five',
       '.cell2' => 'Cell Six',
     );
-    $qp = qp(QueryPath::HTML_STUB, 'body')->tpl($tpl, $data);
+    $qp = qp(QP::HTML_STUB, 'body')->tpl($tpl, $data);
     $this->assertEquals('Cell Six', $qp->top()->find('.table-row:last .cell2')->text());
     $this->assertEquals(6, $qp->top()->find('td')->size());
     
@@ -122,14 +125,14 @@ class QPTPLTest extends PHPUnit_Framework_TestCase {
     $data['.item'][] = 'Three';
     $data['.item'][] = 'Four';
     
-    $qp = qp(QueryPath::HTML_STUB, 'body')->tpl($tpl, $data);
+    $qp = qp(QP::HTML_STUB, 'body')->tpl($tpl, $data);
   }
   
   public function testTplTraversable() {
     // Test that a Traversable will work.
     $tpl = '<?xml version="1.0"?><data><item class="classb myclass classc"/><item id="one"/></data>';
     $data = new ArrayIterator(array('.myclass' => 'VALUE', '#one' => '<b>OTHER VALUE</b>'));
-    $qp = qp(QueryPath::HTML_STUB, 'body')->tpl($tpl, $data);
+    $qp = qp(QP::HTML_STUB, 'body')->tpl($tpl, $data);
     $this->assertEquals('VALUE', $qp->top()->find('.myclass')->text());
   }
   

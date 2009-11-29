@@ -3,6 +3,11 @@
  * @package Tests
  */
  
+use \QueryPath\CSS\CssToken as CssToken;
+use \QueryPath\CSS\CssParser as CssParser;
+use \QueryPath\CSS\CssEventHandler as CssEventHandler;
+use \QueryPath\CSS\QueryPathCssEventHandler as QueryPathCssEventHandler;
+ 
 require_once 'PHPUnit/Framework.php';
 //require_once 'src/QueryPath/CssEventHandler.php';
 require_once 'src/QueryPath/QueryPath.php';
@@ -1669,7 +1674,7 @@ class CssEventParserTests extends PHPUnit_Framework_TestCase {
 /**
  * Testing harness for the CssEventHandler.
  */
-class TestCssEventHandler implements CssEventHandler {
+class TestCssEventHandler implements \QueryPath\CSS\CssEventHandler {
   var $stack = NULL;
   var $expect = array();
   

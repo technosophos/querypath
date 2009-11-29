@@ -1,4 +1,6 @@
 <?php
+namespace QueryPath\Extension;
+use \QueryPath\QueryPath as QP;
 /**
  * This package contains classes for handling database transactions from
  * within QueryPath.
@@ -224,7 +226,7 @@
  * Typical starting methods for this class are {@link QPDB::baseDB()}, 
  * {@link QPDB::query()}, and {@link QPDB::queryInto()}. 
  */
-class QPDB implements QueryPathExtension {
+class QPDB implements \QueryPath\Extension {
   protected $qp;
   protected $dsn;
   protected $db;
@@ -274,16 +276,16 @@ class QPDB implements QueryPathExtension {
     $opts = $options + array(
       'username' => NULL,
       'password' => NULL,
-      'db params' => array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION),
+      'db params' => array(\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION),
     );
     
     // Allow this to handle the case where an outside
     // connection does the initialization.
-    if ($dsn instanceof PDO) {
+    if ($dsn instanceof \PDO) {
       self::$con = $dsn;
       return;
     }
-    self::$con = new PDO($dsn, $opts['username'], $opts['password'], $opts['db params']);
+    self::$con = new \PDO($dsn, $opts['username'], $opts['password'], $opts['db params']);
   }
   
   /**
@@ -301,7 +303,7 @@ class QPDB implements QueryPathExtension {
   /**
    * Construct a new QPDB object. This is usually done by QueryPath itself.
    */
-  public function __construct(QueryPath $qp) {
+  public function __construct(\QueryPath\QueryPath $qp) {
     $this->qp = $qp;
     // By default, we set it up to use the base DB.
     $this->db = self::$con;
@@ -344,10 +346,10 @@ class QPDB implements QueryPathExtension {
     $this->opts = $options + array(
       'username' => NULL,
       'password' => NULL,
-      'db params' => array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION),
+      'db params' => array(\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION),
     );
     $this->dsn = $dsn;
-    $this->db = new PDO($dsn);
+    $this->db = new \PDO($dsn);
     foreach ($this->opts['db params'] as $key => $val)
       $this->db->setAttribute($key, $val);
     
@@ -376,7 +378,7 @@ class QPDB implements QueryPathExtension {
    * Here is a simple example:
    * <code>
    * <?php
-   * QPQDB::baseDB($someDSN);
+   * \QueryPath\Extension\QPQDB::baseDB($someDSN);
    * 
    * $args = array(':something' => 'myColumn');
    * qp()->query('SELECT :something FROM foo', $args)->doneWithQuery();
@@ -441,7 +443,7 @@ class QPDB implements QueryPathExtension {
    */
   public function queryInto($sql, $args = array(), $template = NULL) {
     $stmt = $this->db->prepare($sql);
-    $stmt->setFetchMode(PDO::FETCH_ASSOC);
+    $stmt->setFetchMode(\PDO::FETCH_ASSOC);
     $stmt->execute($args);
     
     // If no template, put all values in together.
@@ -473,7 +475,7 @@ class QPDB implements QueryPathExtension {
    *  The QueryPath object.
    */
   public function doneWithQuery() {
-    if (isset($this->stmt) && $this->stmt instanceof PDOStatement) {
+    if (isset($this->stmt) && $this->stmt instanceof \PDOStatement) {
       // Some drivers choke if results haven't been iterated.
       //while($this->stmt->fetch()) {}
       $this->stmt->closeCursor();
@@ -519,7 +521,7 @@ class QPDB implements QueryPathExtension {
    *  The QueryPath object.
    */
   public function nextRow() {
-    $this->row = $this->stmt->fetch(PDO::FETCH_ASSOC);
+    $this->row = $this->stmt->fetch(\PDO::FETCH_ASSOC);
     return $this->qp;
   }
   
@@ -558,12 +560,12 @@ class QPDB implements QueryPathExtension {
     $columns = is_array($columnName) ? $columnName : array($columnName);
     $hasWrap = !empty($wrap);
     if ($this->cycleRows) {
-      while (($row = $this->stmt->fetch(PDO::FETCH_ASSOC)) !== FALSE) {
+      while (($row = $this->stmt->fetch(\PDO::FETCH_ASSOC)) !== FALSE) {
         foreach ($columns as $col) {
           if (isset($row[$col])) {
             $data = $row[$col];
             if ($hasWrap) 
-              $data = qp()->append($wrap)->deepest()->append($data)->top();
+              $data = QP::with()->append($wrap)->deepest()->append($data)->top();
             $this->qp->$qpFunc($data);
           }
         }
@@ -577,7 +579,7 @@ class QPDB implements QueryPathExtension {
           if (isset($this->row[$col])) {
             $data = $this->row[$col];
             if ($hasWrap) 
-              $data = qp()->append($wrap)->deepest()->append($data)->top();
+              $data = QP::with()->append($wrap)->deepest()->append($data)->top();
             $this->qp->$qpFunc($data);
           }
         }
@@ -695,4 +697,4 @@ class QPDB implements QueryPathExtension {
 
 // The define allows another class to extend this.
 if (!defined('QPDB_OVERRIDE'))
-  QueryPathExtensionRegistry::extend('QPDB');
+  \QueryPath\ExtensionRegistry::extend('\QueryPath\Extension\QPDB');

@@ -7,6 +7,8 @@
  * @license The GNU Lesser GPL (LGPL) or an MIT-like license.
  */
 
+use \QueryPath\QueryPath as QP;
+
 /** */
 require_once 'PHPUnit/Framework.php';
 require_once 'src/QueryPath/QueryPath.php';
@@ -181,13 +183,13 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $qp = @qp('<html><body><b><i>BAD!</b></i></body>', NULL, array('ignore_parser_warnings' => TRUE));
     $this->assertTrue(strpos($qp->html(), '<i>BAD!</i>') !== FALSE);
     
-    QueryPathOptions::merge(array('ignore_parser_warnings' => TRUE));
+    \QueryPath\Options::merge(array('ignore_parser_warnings' => TRUE));
     $qp = @qp('<html><body><b><i>BAD!</b></i></body>');
     $this->assertTrue(strpos($qp->html(), '<i>BAD!</i>') !== FALSE);
     
     $qp = @qp('<html><body><blarg>BAD!</blarg></body>');
     $this->assertTrue(strpos($qp->html(), '<blarg>BAD!</blarg>') !== FALSE, $qp->html());
-    QueryPathOptions::set(array()); // Reset to empty options.
+    \QueryPath\Options::set(array()); // Reset to empty options.
   }
   /**
    * @expectedException QueryPathParseException
@@ -226,9 +228,9 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $xml = qp($path, NULL, array('replace_entities' => TRUE))->xhtml('<foo>&</foo>')->xml();
     $this->assertTrue(strpos($xml, '<foo>&amp;</foo>') !== FALSE);
     
-    QueryPathOptions::set(array('replace_entities' => TRUE));
+    \QueryPath\Options::set(array('replace_entities' => TRUE));
     $this->assertTrue(strpos($xml, '<foo>&amp;</foo>') !== FALSE);
-    QueryPathOptions::set(array());
+    \QueryPath\Options::set(array());
   }
   
   public function testFind() {
@@ -681,7 +683,7 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
   public function testWrap() {
     $file = DATA_FILE;
     $xml = qp($file,'unary')->wrap('');
-    $this->assertTrue($xml instanceof QueryPath);
+    $this->assertTrue($xml instanceof QP);
     
     $xml = qp($file,'unary')->wrap('<test id="testWrap"></test>')->get(0)->ownerDocument->saveXML();
     $this->assertEquals(1, qp($xml, '#testWrap')->get(0)->childNodes->length);
@@ -697,7 +699,7 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $file = DATA_FILE;
     
     $xml = qp($file,'unary')->wrapAll('');
-    $this->assertTrue($xml instanceof QueryPath);
+    $this->assertTrue($xml instanceof QP);
     
     $xml = qp($file,'unary')->wrapAll('<test id="testWrap"></test>')->get(0)->ownerDocument->saveXML();
     $this->assertEquals(1, qp($xml, '#testWrap')->get(0)->childNodes->length);
@@ -710,7 +712,7 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
   public function testWrapInner() {
     $file = DATA_FILE;
     
-    $this->assertTrue(qp($file,'#inner-one')->wrapInner('') instanceof QueryPath);
+    $this->assertTrue(qp($file,'#inner-one')->wrapInner('') instanceof QP);
     
     $xml = qp($file,'#inner-one')->wrapInner('<test class="testWrap"></test>')->get(0)->ownerDocument->saveXML();
     // FIXME: 9 includes text nodes. Should fix this.
@@ -910,7 +912,7 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $name = './' . __FUNCTION__ . '.xml';
     qp($xml)->writeXML($name);
     $this->assertTrue(file_exists($name));
-    $this->assertTrue(qp($name) instanceof QueryPath);
+    $this->assertTrue(qp($name) instanceof QP);
     unlink($name);
   }
   
@@ -945,7 +947,7 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $name = './' . __FUNCTION__ . '.xml';
     qp($xml)->writeXHTML($name);
     $this->assertTrue(file_exists($name));
-    $this->assertTrue(qp($name) instanceof QueryPath);
+    $this->assertTrue(qp($name) instanceof QP);
     unlink($name);
   }
   
@@ -970,7 +972,7 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     try {
       qp()->writeXHTML('./test/no-writing.xml');
     }
-    catch (QueryPathIOException $e) {
+    catch (\QueryPath\QueryPathIOException $e) {
       //print $e->getMessage();
       throw $e;
     }
@@ -1034,7 +1036,7 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $name = './' . __FUNCTION__ . '.html';
     qp($xml)->writeXML($name);
     $this->assertTrue(file_exists($name));
-    $this->assertTrue(qp($name) instanceof QueryPath);
+    $this->assertTrue(qp($name) instanceof QP);
     unlink($name);
   }
   
@@ -1137,14 +1139,14 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
   }
   
   public function testBranch() {
-    $qp = qp(QueryPath::HTML_STUB);
+    $qp = qp(QP::HTML_STUB);
     $branch = $qp->branch();
     $branch->find('title')->text('Title');
     $qp->find('body')->text('This is the body');
     
     $this->assertEquals($qp->top()->find('title')->text(), $branch->top()->find('title')->text());
     
-    $qp = qp(QueryPath::HTML_STUB);
+    $qp = qp(QP::HTML_STUB);
     $branch = $qp->branch('title');
     $branch->find('title')->text('Title');
     $qp->find('body')->text('This is the body');
@@ -1169,12 +1171,13 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
   }
   
   public function testStub() {
-    $this->assertEquals(1, qp(QueryPath::HTML_STUB)->find('title')->size());
+    $this->assertEquals(1, qp(\QueryPath\QP::HTML_STUB)->find('title')->size());
+    $this->assertEquals(1, qp(QP::HTML_STUB)->find('title')->size());
   }
   
   public function testIterator() {
     
-    $qp = qp(QueryPath::HTML_STUB, 'body')->append('<li/><li/><li/><li/>');
+    $qp = qp(QP::HTML_STUB, 'body')->append('<li/><li/><li/><li/>');
     
     $this->assertEquals(4, $qp->find('li')->size());
     $i = 0;
@@ -1230,7 +1233,7 @@ class XMLishTest extends PHPUnit_Framework_TestCase {
 /**
  * A testing class for XMLish tests.
  */
-class XMLishMock extends QueryPath {
+class XMLishMock extends \QueryPath\QueryPath {
   public function exposedIsXMLish($str) {
     return $this->isXMLish($str);
   }
@@ -1239,7 +1242,7 @@ class XMLishMock extends QueryPath {
 /**
  * A simple mock for testing qp()'s abstract factory.
  */
-class QueryPathExtended extends QueryPath {
+class QueryPathExtended extends \QueryPath\QueryPath {
   public function foonator() {
     return TRUE;
   }

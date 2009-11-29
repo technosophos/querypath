@@ -1,4 +1,6 @@
 <?php
+namespace QueryPath\Extension;
+use \QueryPath\QueryPath as QP;
 /**
  * Provide QueryPath with additional XML tools.
  *
@@ -14,11 +16,11 @@
 /**
  * Provide additional tools for working with XML content.
  */
-class QPXML implements QueryPathExtension {
+class QPXML implements \QueryPath\Extension {
   
   protected $qp;
   
-  public function __construct(QueryPath $qp) {
+  public function __construct(\QueryPath\QueryPath $qp) {
     $this->qp = $qp;
   }
   
@@ -26,7 +28,7 @@ class QPXML implements QueryPathExtension {
     $doc = $this->qp->branch()->top()->get(0)->ownerDocument;
     
     if (!$doc->schemaValidate($file)) {
-      throw new QueryPathException('Document did not validate against the schema.');
+      throw new \QueryPath\QueryPathException('Document did not validate against the schema.');
     }
   }
   
@@ -139,4 +141,4 @@ class QPXML implements QueryPathExtension {
     } // foreach
   }
 }
-QueryPathExtensionRegistry::extend('QPXML');
+\QueryPath\ExtensionRegistry::extend('\QueryPath\Extension\QPXML');

@@ -1,4 +1,6 @@
 <?php
+namespace QueryPath\Extension;
+use \QueryPath\QueryPath as QP;
 /**
  * This extension provides support for common HTML list operations.
  * @package QueryPath
@@ -14,13 +16,13 @@
  * @deprecated This will be removed from a subsequent version of QueryPath. It will
  *  be released as a stand-alone extension.
  */ 
-class QPList implements QueryPathExtension {
+class QPList implements \QueryPath\Extension {
   const UL = 'ul';
   const OL = 'ol';
   const DL = 'dl';
   
   protected $qp = NULL;
-  public function __construct(QueryPath $qp) {
+  public function __construct(\QueryPath\QueryPath $qp) {
     $this->qp = $qp;
   }
   
@@ -35,12 +37,12 @@ class QPList implements QueryPathExtension {
     </tbody>
     </table>';
     
-    $qp = qp($base, 'table')->addClass($opts['table class'])->find('tr');
+    $qp = QP::with($base, 'table')->addClass($opts['table class'])->find('tr');
     if ($items instanceof TableAble) {
       $headers = $items->getHeaders();
       $rows = $items->getRows();
     }
-    elseif ($items instanceof Traversable) {
+    elseif ($items instanceof \Traversable) {
       $headers = array();
       $rows = $items;
     }
@@ -89,7 +91,7 @@ class QPList implements QueryPathExtension {
       'list class' => 'qplist',
     );
     if ($type == self::DL) {
-      $q = qp('<?xml version="1.0"?><dl></dl>', 'dl')->addClass($opts['list class']);
+      $q = QP::with('<?xml version="1.0"?><dl></dl>', 'dl')->addClass($opts['list class']);
       foreach ($items as $dt => $dd) {
         $q->append('<dt>' . $dt . '</dt><dd>' . $dd . '</dd>');
       }
@@ -109,13 +111,13 @@ class QPList implements QueryPathExtension {
   protected function listImpl($items, $type, $opts, $q = NULL) {
     $ele = '<' . $type . '/>';
     if (!isset($q))
-      $q = qp()->append($ele)->addClass($opts['list class']);
+      $q = QP::with()->append($ele)->addClass($opts['list class']);
           
     foreach ($items as $li) {
-      if ($li instanceof QueryPath) {
+      if ($li instanceof \QueryPath\QueryPath) {
         $q = $this->listImpl($li->get(), $type, $opts, $q);
       }
-      elseif (is_array($li) || $li instanceof Traversable) {
+      elseif (is_array($li) || $li instanceof \Traversable) {
         $q->append('<li><ul/></li>')->find('li:last > ul');
         $q = $this->listImpl($li, $type, $opts, $q);
         $q->parent();
@@ -135,7 +137,7 @@ class QPList implements QueryPathExtension {
     return count(array_diff_key($array, range(0, count($array) - 1))) != 0; 
   }
 }
-QueryPathExtensionRegistry::extend('QPList');
+\QueryPath\ExtensionRegistry::extend('\QueryPath\Extension\QPList');
 
 /**
  * A TableAble object represents tabular data and can be converted to a table.
@@ -165,7 +167,7 @@ interface TableAble {
  * Data in the headers or rows may contain markup. If you want to 
  * disallow markup, use a {@see QPTableTextData} object instead.
  */
-class QPTableData implements TableAble, IteratorAggregate {
+class QPTableData implements TableAble, \IteratorAggregate {
   
   protected $headers;
   protected $rows;
@@ -178,7 +180,7 @@ class QPTableData implements TableAble, IteratorAggregate {
   public function getRows() {return $this->rows;}
   public function size() {return count($this->rows);}
   public function getIterator() {
-    return new ArrayIterator($rows);
+    return new \ArrayIterator($rows);
   }
 }
 

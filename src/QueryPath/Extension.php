@@ -68,7 +68,7 @@ namespace QueryPath;
  * specific value should return the QueryPath object. Between that and the 
  * extension registry, this will provide the best developer experience.
  */
-interface QueryPathExtension {
+interface Extension {
   public function __construct(QueryPath $qp);
 }
 
@@ -80,7 +80,7 @@ interface QueryPathExtension {
  * uses this information to determine what QueryPath extensions should be loaded and
  * executed.
  */
-class QueryPathExtensionRegistry {
+class ExtensionRegistry {
   /**
    * Internal flag indicating whether or not the registry should
    * be used for automatic extension loading. If this is false, then
@@ -98,7 +98,7 @@ class QueryPathExtensionRegistry {
    */
   public static function extend($classname) {
     self::$extensionRegistry[] = $classname;
-    $class = new ReflectionClass($classname);
+    $class = new \ReflectionClass($classname);
     $methods = $class->getMethods();
     foreach ($methods as $method) {
       self::$extensionMethodRegistry[$method->getName()] = $classname;

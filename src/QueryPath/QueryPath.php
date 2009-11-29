@@ -80,6 +80,17 @@ define('ML_EXP','/^[^<]*(<(.|\s)+>)[^>]*$/');
 
 /**
  * Build a new Query Path.
+ *
+ * <b>UPDATE FOR QueryPath 3.x</b>: We are looking at changing the best practices
+ * to suggest that QueryPath should be constructed using the new factory:
+ *
+ * <code>
+ * <?php
+ * use \QueryPath\QueryPath as QP;
+ * QP::with(); // <-- Works *exactly* the same as the qp() function.
+ * ?>
+ * </code>
+ *
  * This builds a new Query Path object. The new object can be used for 
  * reading, search, and modifying a document.
  *
@@ -157,11 +168,7 @@ define('ML_EXP','/^[^<]*(<(.|\s)+>)[^>]*$/');
  * @example examples/techniques.php Looping/Iteration techniques
  */
 function qp($document = NULL, $string = NULL, $options = array()) {
-  
-  $qpClass = isset($options['QueryPath_class']) ? $options['QueryPath_class'] : 'QueryPath\QueryPath';
-  
-  $qp = new $qpClass($document, $string, $options);
-  return $qp;
+  return \QueryPath\QueryPath::with($document, $string, $options);
 }
 }
 namespace QueryPath {
@@ -172,7 +179,7 @@ require_once 'CSS/QueryPathCssEventHandler.php';
 /**
  * The extender is used to provide support for extensions.
  */
-require_once 'QueryPathExtension.php';
+require_once 'Extension.php';
 
 
 //use QueryPath\CSS;  
@@ -314,7 +321,7 @@ class QueryPath implements \IteratorAggregate {
    */
   public function __construct($document = NULL, $string = NULL, $options = array()) {
     $string = trim($string);
-    $this->options = $options + QueryPathOptions::get() + $this->options;
+    $this->options = $options + Options::get() + $this->options;
     
     $parser_flags = isset($options['parser_flags']) ? $options['parser_flags'] : self::DEFAULT_PARSER_FLAGS;
     if (!empty($this->options['ignore_parser_warnings'])) {
@@ -330,7 +337,7 @@ class QueryPath implements \IteratorAggregate {
     
     // Empty: Just create an empty QP.
     if (empty($document)) {
-      $this->document = isset($this->options['encoding']) ? new \DOMDocument('1.0', $this->options['encoding']) : new DOMDocument();
+      $this->document = isset($this->options['encoding']) ? new \DOMDocument('1.0', $this->options['encoding']) : new \DOMDocument();
       $this->setMatches(new \SplObjectStorage());
     }
     // Figure out if document is DOM, HTML/XML, or a filename
@@ -399,12 +406,12 @@ class QueryPath implements \IteratorAggregate {
    * This returns an associative array of all of the options as set
    * for the current QueryPath object. This includes default options,
    * options directly passed in via {@link qp()} or the constructor,
-   * an options set in the {@link QueryPathOptions} object.
+   * an options set in the {@link Options} object.
    *
    * The order of merging options is this:
    *  - Options passed in using {@link qp()} are highest priority, and will
    *    override other options.
-   *  - Options set with {@link QueryPathOptions} will override default options,
+   *  - Options set with {@link Options} will override default options,
    *    but can be overridden by options passed into {@link qp()}.
    *  - Default options will be used when no overrides are present.
    *
@@ -415,8 +422,8 @@ class QueryPath implements \IteratorAggregate {
    *  An associative array of options, calculated from defaults and overridden 
    *  options. 
    * @see qp()
-   * @see QueryPathOptions::set()
-   * @see QueryPathOptions::merge()
+   * @see Options::set()
+   * @see Options::merge()
    * @since 2.0
    */
   public function getOptions() {
@@ -473,7 +480,7 @@ class QueryPath implements \IteratorAggregate {
     if (preg_match($regex, $selector, $ids) === 1) {
       // If $1 is a match, we have an ID.
       if (!empty($ids[1])) {
-        $xpath = new DOMXPath($this->document);
+        $xpath = new \DOMXPath($this->document);
         foreach ($this->matches as $item) {
           $nl = $xpath->query("//*[@id='{$ids[1]}']", $item);
           if ($nl->length > 0) {
@@ -490,7 +497,7 @@ class QueryPath implements \IteratorAggregate {
       // all, it is faster than doing a recusive node search.
       else {
         //$this->xpath("//*[@class='{$ids[2]}']");
-        $xpath = new DOMXPath($this->document);
+        $xpath = new \DOMXPath($this->document);
         $found = new \SplObjectStorage();
         foreach ($this->matches as $item) {
           $nl = $xpath->query("//*[@class]", $item);
@@ -774,7 +781,7 @@ class QueryPath implements \IteratorAggregate {
    */
   public function is($selector) {
     foreach ($this->matches as $m) {
-      $q = new QueryPathCssEventHandler($m);
+      $q = new CSS\QueryPathCssEventHandler($m);
       if ($q->find($selector)->getMatches()->count()) {
         return TRUE;
       }
@@ -889,7 +896,7 @@ class QueryPath implements \IteratorAggregate {
    */
   public function not($selector) {
     $found = new \SplObjectStorage();
-    if ($selector instanceof DOMElement) {
+    if ($selector instanceof \DOMElement) {
       foreach ($this->matches as $m) if ($m !== $selector) $found->attach($m); 
     }
     elseif (is_array($selector)) {
@@ -968,10 +975,10 @@ class QueryPath implements \IteratorAggregate {
       foreach ($this->matches as $item) {
         $c = call_user_func($callback, $i, $item);
         if (isset($c)) {
-          if (is_array($c) || $c instanceof Iterable) {
+          if (is_array($c) || $c instanceof \Iterable) {
             foreach ($c as $retval) {
               if (!is_object($retval)) {
-                $tmp = new stdClass();
+                $tmp = new \stdClass();
                 $tmp->textContent = $retval;
                 $retval = $tmp;
               }
@@ -980,7 +987,7 @@ class QueryPath implements \IteratorAggregate {
           }
           else {
             if (!is_object($c)) {
-              $tmp = new stdClass();
+              $tmp = new \stdClass();
               $tmp->textContent = $c;
               $c = $tmp;
             }
@@ -1130,7 +1137,7 @@ class QueryPath implements \IteratorAggregate {
         foreach ($this->matches as $m) { 
           // DOMDocumentFragments are even more troublesome, as they don't
           // always clone correctly. So we have to clone their children.
-          if ($data instanceof DOMDocumentFragment) {
+          if ($data instanceof \DOMDocumentFragment) {
             foreach ($data->childNodes as $n)
               $m->appendChild($n->cloneNode(TRUE));
           }
@@ -1515,7 +1522,7 @@ class QueryPath implements \IteratorAggregate {
    * @return array
    *  Returns an array of DOM nodes.
    */
-  protected function deepestNode(DOMNode $ele, $depth = 0, $current = NULL, &$deepest = NULL) {
+  protected function deepestNode(\DOMNode $ele, $depth = 0, $current = NULL, &$deepest = NULL) {
     // FIXME: Should this use SplObjectStorage?
     if (!isset($current)) $current = array($ele);
     if (!isset($deepest)) $deepest = $depth;
@@ -1562,16 +1569,16 @@ class QueryPath implements \IteratorAggregate {
     elseif (is_string($item)) {
       // If configured to do so, replace all entities.
       if ($this->options['replace_entities']) {
-        $item = QueryPathEntities::replaceAllEntities($item);
+        $item = Entities::replaceAllEntities($item);
       }
       
       $frag = $this->document->createDocumentFragment();
       try {
-        set_error_handler(array('QueryPathParseException', 'initializeFromError'), $this->errTypes);
+        set_error_handler(array('\QueryPath\QueryPathParseException', 'initializeFromError'), $this->errTypes);
         $frag->appendXML($item);
       }
       // Simulate a finally block.
-      catch (Exception $e) {
+      catch (\Exception $e) {
         restore_error_handler();
         throw $e;
       }
@@ -1584,14 +1591,14 @@ class QueryPath implements \IteratorAggregate {
         
       return $this->prepareInsert($item->get(0));
     }
-    elseif ($item instanceof DOMNode) {
+    elseif ($item instanceof \DOMNode) {
       if ($item->ownerDocument !== $this->document) {
         // Deep clone this and attach it to this document
         $item = $this->document->importNode($item, TRUE);
       }
       return $item;
     }
-    elseif ($item instanceof SimpleXMLElement) {
+    elseif ($item instanceof \SimpleXMLElement) {
       $element = dom_import_simplexml($item);
       return $this->document->importNode($element, TRUE);
     }
@@ -1669,10 +1676,10 @@ class QueryPath implements \IteratorAggregate {
    * @see remove()
    * @see replaceWith()
    */
-  public function replaceAll($selector, DOMDocument $document) {
+  public function replaceAll($selector, \DOMDocument $document) {
     $replacement = $this->size() > 0 ? $this->getFirstMatch() : $this->document->createTextNode('');
     
-    $c = new QueryPathCssEventHandler($document);
+    $c = new CSS\QueryPathCssEventHandler($document);
     $c->find($selector);
     $temp = $c->getMatches();
     foreach ($temp as $item) {
@@ -2026,11 +2033,11 @@ class QueryPath implements \IteratorAggregate {
     if (isset($markup)) {
       
       if ($this->options['replace_entities']) {
-        $markup = QueryPathEntities::replaceAllEntities($markup);
+        $markup = Entities::replaceAllEntities($markup);
       }
       
       // Parse the HTML and insert it into the DOM
-      //$doc = DOMDocument::loadHTML($markup);
+      //$doc = \DOMDocument::loadHTML($markup);
       $doc = $this->document->createDocumentFragment();
       $doc->appendXML($markup);
       $this->removeChildren();
@@ -2045,11 +2052,11 @@ class QueryPath implements \IteratorAggregate {
     $first = $this->getFirstMatch();
 
     // Catch cases where first item is not a legit DOM object.
-    if (!($first instanceof DOMNode)) {
+    if (!($first instanceof \DOMNode)) {
       return NULL;
     }
     
-    if ($first instanceof DOMDocument || $first->isSameNode($first->ownerDocument->documentElement)) {
+    if ($first instanceof \DOMDocument || $first->isSameNode($first->ownerDocument->documentElement)) {
       return $this->document->saveHTML();
     }
     // saveHTML cannot take a node and serialize it.
@@ -2130,7 +2137,7 @@ class QueryPath implements \IteratorAggregate {
     $first = $this->getFirstMatch();
 
     // Catch cases where first item is not a legit DOM object.
-    if (!($first instanceof DOMNode)) {
+    if (!($first instanceof \DOMNode)) {
       return NULL;
     }
     elseif (!$first->hasChildNodes()) {
@@ -2282,7 +2289,7 @@ class QueryPath implements \IteratorAggregate {
     }
     elseif (isset($markup)) {
       if ($this->options['replace_entities']) {
-        $markup = QueryPathEntities::replaceAllEntities($markup);
+        $markup = Entities::replaceAllEntities($markup);
       }
       $doc = $this->document->createDocumentFragment();
       $doc->appendXML($markup);
@@ -2298,11 +2305,11 @@ class QueryPath implements \IteratorAggregate {
     $first = $this->getFirstMatch();
     
     // Catch cases where first item is not a legit DOM object.
-    if (!($first instanceof DOMNode)) {
+    if (!($first instanceof \DOMNode)) {
       return NULL;
     }
     
-    if ($first instanceof DOMDocument || $first->isSameNode($first->ownerDocument->documentElement)) {
+    if ($first instanceof \DOMDocument || $first->isSameNode($first->ownerDocument->documentElement)) {
       
       return  ($omit_xml_decl ? $this->document->saveXML($first->ownerDocument->documentElement) : $this->document->saveXML());
     }
@@ -2333,7 +2340,7 @@ class QueryPath implements \IteratorAggregate {
     }
     else {
       try {
-        set_error_handler(array('QueryPathIOException', 'initializeFromError'));
+        set_error_handler(array('\QueryPath\QueryPathIOException', 'initializeFromError'));
         $this->document->save($path);
       }
       catch (Exception $e) {
@@ -2369,7 +2376,7 @@ class QueryPath implements \IteratorAggregate {
     }
     else {
       try {
-        set_error_handler(array('QueryPathParseException', 'initializeFromError'));
+        set_error_handler(array('\QueryPath\QueryPathParseException', 'initializeFromError'));
         $this->document->saveHTMLFile($path);
       }
       catch (Exception $e) {
@@ -2821,7 +2828,7 @@ class QueryPath implements \IteratorAggregate {
       if ($lead == '<?xml') {
         //print htmlentities($string);
         if ($this->options['replace_entities']) {
-          $string = QueryPathEntities::replaceAllEntities($string);
+          $string = Entities::replaceAllEntities($string);
         }
         $document->loadXML($string, $flags);
       }
@@ -2985,11 +2992,11 @@ class QueryPath implements \IteratorAggregate {
       return $this->parseXMLString($contents, $flags);
     }
     
-    $document = new DOMDocument();
+    $document = new \DOMDocument();
     $lastDot = strrpos($filename, '.');
     
     try {
-      set_error_handler(array('QueryPathParseException', 'initializeFromError'), $this->errTypes);
+      set_error_handler(array('\QueryPath\QueryPathParseException', 'initializeFromError'), $this->errTypes);
       if ($lastDot !== FALSE && strtolower(substr($filename, $lastDot)) == '.html') {
         // Try parsing it as HTML.
         $r = $document->loadHTMLFile($filename);
@@ -3038,7 +3045,7 @@ class QueryPath implements \IteratorAggregate {
    */
   public function __call($name, $arguments) {
     
-    if (!QueryPathExtensionRegistry::$useRegistry) {
+    if (!ExtensionRegistry::$useRegistry) {
       throw new QueryPathException("No method named $name found (Extensions disabled).");      
     }
     
@@ -3054,12 +3061,12 @@ class QueryPath implements \IteratorAggregate {
     // Also, this will at least limit the number of circular references.
     if (empty($this->ext)) {
       // Load the registry
-      $this->ext = QueryPathExtensionRegistry::getExtensions($this);
+      $this->ext = ExtensionRegistry::getExtensions($this);
     }
     
     // Note that an empty ext registry indicates that extensions are disabled.
-    if (!empty($this->ext) && QueryPathExtensionRegistry::hasMethod($name)) {
-      $owner = QueryPathExtensionRegistry::getMethodClass($name);
+    if (!empty($this->ext) && ExtensionRegistry::hasMethod($name)) {
+      $owner = ExtensionRegistry::getMethodClass($name);
       $method = new \ReflectionMethod($owner, $name);
       return $method->invokeArgs($this->ext[$owner], $arguments);
     }
@@ -3078,7 +3085,7 @@ class QueryPath implements \IteratorAggregate {
   }
 }
 
-class QueryPathEntities {
+class Entities {
   
   /**
    * This is three regexes wrapped into 1. The | divides them.
@@ -3106,7 +3113,7 @@ class QueryPathEntities {
    *  all entity replacements made.
    */
   public static function replaceAllEntities($string) {
-    return preg_replace_callback(self::$regex, 'QueryPathEntities::doReplacement', $string);
+    return preg_replace_callback(self::$regex, '\QueryPath\Entities::doReplacement', $string);
   }
   
   /**
@@ -3255,13 +3262,13 @@ class QueryPathIterator extends \IteratorIterator {
  * following order:
  *
  * - Options passed into {@link qp()} have highest priority.
- * - Options in {@link QueryPathOptions} (this class) have the next highest priority.
+ * - Options in {@link Options} (this class) have the next highest priority.
  * - If the option is not specified elsewhere, QueryPath will use its own defaults.
  *
  * @see qp()
- * @see QueryPathOptions::set()
+ * @see Options::set()
  */
-class QueryPathOptions {
+class Options {
   
   /**
    * This is the static options array.

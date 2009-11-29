@@ -9,6 +9,8 @@
 require_once 'PHPUnit/Framework.php';
 require_once 'src/QueryPath/QueryPath.php';
 
+use \QueryPath\Entities as QueryPathEntities;
+
 class QueryPathEntitiesTest extends PHPUnit_Framework_TestCase {
   public function testReplaceEntity() {
     $entity = 'amp';

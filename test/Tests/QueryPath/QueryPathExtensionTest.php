@@ -25,7 +25,7 @@ class QueryPathExtensionTest extends QueryPathTest {
  }
  
  public function testHasExtension() {
-   $this->assertTrue(QueryPathExtensionRegistry::hasExtension('StubExtensionOne'));
+   $this->assertTrue(\QueryPath\ExtensionRegistry::hasExtension('StubExtensionOne'));
  }
  
  public function testStubToe() {
@@ -40,21 +40,21 @@ class QueryPathExtensionTest extends QueryPathTest {
   * @expectedException QueryPathException
   */
  public function testNoRegistry() {
-   QueryPathExtensionRegistry::$useRegistry = FALSE;
+   \QueryPath\ExtensionRegistry::$useRegistry = FALSE;
    try {
     qp(DATA_FILE)->stuble('arg1', 'arg2'); 
    }
-   catch (QueryPathException $e) {
-     QueryPathExtensionRegistry::$useRegistry = TRUE;
+   catch (\QueryPath\QueryPathException $e) {
+     \QueryPath\ExtensionRegistry::$useRegistry = TRUE;
      throw $e;
    }
    
  }
  
  public function testExtend() {
-   $this->assertFalse(QueryPathExtensionRegistry::hasExtension('StubExtensionThree'));
-   QueryPathExtensionRegistry::extend('StubExtensionThree');
-   $this->assertTrue(QueryPathExtensionRegistry::hasExtension('StubExtensionThree'));
+   $this->assertFalse(\QueryPath\ExtensionRegistry::hasExtension('StubExtensionThree'));
+   \QueryPath\ExtensionRegistry::extend('StubExtensionThree');
+   $this->assertTrue(\QueryPath\ExtensionRegistry::hasExtension('StubExtensionThree'));
  }
  
  /**
@@ -62,12 +62,12 @@ class QueryPathExtensionTest extends QueryPathTest {
   */
  public function testAutoloadExtensions() {
    // FIXME: This isn't really much of a test.
-   QueryPathExtensionRegistry::autoloadExtensions(FALSE);
+   \QueryPath\ExtensionRegistry::autoloadExtensions(FALSE);
    try {
     qp()->stubToe();
    }
    catch (Exception $e) {
-     QueryPathExtensionRegistry::autoloadExtensions(TRUE);
+     \QueryPath\ExtensionRegistry::autoloadExtensions(TRUE);
      throw $e;
    }
  }
@@ -89,9 +89,9 @@ class QueryPathExtensionTest extends QueryPathTest {
  
 }
 // Create a stub extension:
-class StubExtensionOne implements QueryPathExtension {
+class StubExtensionOne implements \QueryPath\Extension {
   private $qp = NULL;
-  public function __construct(QueryPath $qp) {
+  public function __construct(\QueryPath\QueryPath $qp) {
     $this->qp = $qp;
   }
   
@@ -100,9 +100,9 @@ class StubExtensionOne implements QueryPathExtension {
     return $this->qp;
   }
 }
-class StubExtensionTwo implements QueryPathExtension {
+class StubExtensionTwo implements \QueryPath\Extension {
   private $qp = NULL;
-  public function __construct(QueryPath $qp) {
+  public function __construct(\QueryPath\QueryPath $qp) {
     $this->qp = $qp;
   }
   public function stuble($arg1, $arg2) {
@@ -110,9 +110,9 @@ class StubExtensionTwo implements QueryPathExtension {
   }
 }
 
-class StubExtensionThree implements QueryPathExtension {
+class StubExtensionThree implements \QueryPath\Extension {
   private $qp = NULL;
-  public function __construct(QueryPath $qp) {
+  public function __construct(\QueryPath\QueryPath $qp) {
     $this->qp = $qp;
   }
   public function stuble($arg1, $arg2) {
@@ -120,5 +120,5 @@ class StubExtensionThree implements QueryPathExtension {
   }
 }
 
-QueryPathExtensionRegistry::extend('StubExtensionOne');
-QueryPathExtensionRegistry::extend('StubExtensionTwo');
+\QueryPath\ExtensionRegistry::extend('StubExtensionOne');
+\QueryPath\ExtensionRegistry::extend('StubExtensionTwo');
