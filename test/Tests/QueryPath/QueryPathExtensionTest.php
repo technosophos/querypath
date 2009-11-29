@@ -37,7 +37,7 @@ class QueryPathExtensionTest extends QueryPathTest {
  }
  
  /**
-  * @expectedException QueryPathException
+  * @expectedException \QueryPath\QueryPathException
   */
  public function testNoRegistry() {
    \QueryPath\ExtensionRegistry::$useRegistry = FALSE;
@@ -58,7 +58,7 @@ class QueryPathExtensionTest extends QueryPathTest {
  }
  
  /**
-  * @expectedException QueryPathException
+  * @expectedException \QueryPath\QueryPathException
   */
  public function testAutoloadExtensions() {
    // FIXME: This isn't really much of a test.
@@ -73,7 +73,7 @@ class QueryPathExtensionTest extends QueryPathTest {
  }
  
  /**
-  * @expectedException QueryPathException
+  * @expectedException \QueryPath\QueryPathException
   */
  public function testCallFailure() {
    qp()->foo();

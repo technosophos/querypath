@@ -1480,7 +1480,7 @@ class CssEventParserTests extends PHPUnit_Framework_TestCase {
   }
   
   /**
-   * @expectedException CSSParseException
+   * @expectedException \QueryPath\CSS\CSSParseException
    */
   public function testIllegalAttribute() {
     
@@ -1568,7 +1568,7 @@ class CssEventParserTests extends PHPUnit_Framework_TestCase {
   // Test things that should break...
   
   /**
-   * @expectedException CssParseException
+   * @expectedException \QueryPath\CSS\CssParseException
    */
   public function testIllegalCombinators1() {
     $handler = new TestCssEventHandler();
@@ -1577,7 +1577,7 @@ class CssEventParserTests extends PHPUnit_Framework_TestCase {
   }
   
   /**
-   * @expectedException CssParseException
+   * @expectedException QueryPath\CSS\CssParseException
    */
   public function testIllegalCombinators2() {
     $handler = new TestCssEventHandler();
@@ -1586,7 +1586,7 @@ class CssEventParserTests extends PHPUnit_Framework_TestCase {
   }
   
   /**
-   * @expectedException CssParseException
+   * @expectedException QueryPath\CSS\CssParseException
    */
   public function testIllegalID() {
     $handler = new TestCssEventHandler();
