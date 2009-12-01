@@ -13,6 +13,11 @@ The Quasar branch of QueryPath is likely to become QueryPath 3.x. It is focused
 on providing features specific to PHP 5.3.x, including support for anonymous 
 functions and closures, improved usage of SPL, and support for Phar archives.
 
+It already supports the following PHP 5.3 features:
+
+- closures and functions (see each()). http://technosophos.com/content/iteration-techniques-and-performance-querypath
+- namespaces. \QueryPath is the namespace.
+
 ## About the License
 
 This package is licensed under the GNU LGPL 2.1 or, at your choice, an MIT-style

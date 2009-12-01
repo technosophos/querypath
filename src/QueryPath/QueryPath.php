@@ -73,12 +73,6 @@ namespace {
  */
  
 /**
- * Regular expression for checking whether a string looks like XML.
- * @deprecated This is no longer used in QueryPath.
- */
-define('ML_EXP','/^[^<]*(<(.|\s)+>)[^>]*$/');
-
-/**
  * Build a new Query Path.
  *
  * <b>UPDATE FOR QueryPath 3.x</b>: We are looking at changing the best practices
@@ -170,6 +164,8 @@ define('ML_EXP','/^[^<]*(<(.|\s)+>)[^>]*$/');
 function qp($document = NULL, $string = NULL, $options = array()) {
   return \QueryPath\QueryPath::with($document, $string, $options);
 }
+
+// END GLOBAL NAMESPACE
 }
 namespace QueryPath {
 /**
@@ -202,6 +198,14 @@ require_once 'Extension.php';
  */
 class QueryPath implements \IteratorAggregate {
   
+  /**
+   * QueryPath factory function.
+   *
+   * EXPERIMENTAL. This can be used instead of {@link qp()}. It behaves identically,
+   * but works better when using namespaces.
+   *
+   * @since QueryPath 3.0
+   */
   public static function with($document = NULL, $string = NULL, $options = array()) {
 
     $qpClass = isset($options['QueryPath_class']) ? $options['QueryPath_class'] : 'QueryPath\QueryPath';
@@ -287,7 +291,10 @@ class QueryPath implements \IteratorAggregate {
    * The base DOMDocument.
    */
   protected $document = NULL;
-  private $options = array(
+  /**
+   * The default options.
+   */
+  protected $options = array(
     'parser_flags' => NULL,
     'omit_xml_declaration' => FALSE,
     'replace_entities' => FALSE,
@@ -302,7 +309,13 @@ class QueryPath implements \IteratorAggregate {
    * The last array of matches.
    */
   protected $last = array(); // Last set of matches.
-  private $ext = array(); // Extensions array.
+  
+  /**
+   * The array of loaded extensions.
+   * Note that since extensions are loaded lazily, this will be empty until the
+   * last possible instant (e.g. when an extension is invoked).
+   */
+  protected $ext = array(); // Extensions array.
   
   
   /**
@@ -342,11 +355,10 @@ class QueryPath implements \IteratorAggregate {
     }
     // Figure out if document is DOM, HTML/XML, or a filename
     elseif (is_object($document)) {
-      
-      if ($document instanceof QueryPath) {
-        $this->matches = $document->get(NULL, TRUE);
-        if ($this->matches->count() > 0)
-          $this->document = $this->getFirstMatch()->ownerDocument;
+      // This is first to expedite clone/branch/iterator
+      if ($document instanceof \SplObjectStorage) {
+        $this->matches = $document;
+        $this->document = $this->getFirstMatch()->ownerDocument;
       }
       elseif ($document instanceof \DOMDocument) {
         $this->document = $document;
@@ -358,15 +370,16 @@ class QueryPath implements \IteratorAggregate {
         //$this->matches = array($document);
         $this->setMatches($document);
       }
+      elseif ($document instanceof QueryPath) {
+        $this->matches = $document->get(NULL, TRUE);
+        if ($this->matches->count() > 0)
+          $this->document = $this->getFirstMatch()->ownerDocument;
+      }
       elseif ($document instanceof \SimpleXMLElement) {
         $import = dom_import_simplexml($document);
         $this->document = $import->ownerDocument;
         //$this->matches = array($import);
         $this->setMatches($import);
-      }
-      elseif ($document instanceof \SplObjectStorage) {
-        $this->matches = $document;
-        $this->document = $this->getFirstMatch()->ownerDocument;
       }
       else {
         throw new QueryPathException('Unsupported class type: ' . get_class($document));
@@ -2816,7 +2829,6 @@ class QueryPath implements \IteratorAggregate {
     // grab a representative string.
     $test = substr($string, 0, 255);
     return (strpos($string, '<') !== FALSE && strpos($string, '>') !== FALSE);
-    //return preg_match(ML_EXP, $test) > 0;
   }
   
   private function parseXMLString($string, $flags = NULL) {
@@ -2850,12 +2862,21 @@ class QueryPath implements \IteratorAggregate {
   }
   
   /**
+   * EXPERT: Set the internal match list.
+   *
+   * This is very dangerous, and should be used with extreme care. It is 
+   * exposed to make it possible to write very fast outer iterators.
+   *
    * A utility function for setting the current set of matches.
    * It makes sure the last matches buffer is set (for end() and andSelf()).
+   *
+   * (While this function has been around since QueryPath 1.0, it was not 
+   * exposed as public until 3.0)
+   * @param SplObjectStorage $matches
+   *  Object containing matches.
+   * @since 3.0
    */
-  private function setMatches($matches, $unique = TRUE) {
-    // This causes a lot of overhead....
-    //if ($unique) $matches = self::unique($matches);
+  public function setMatches($matches) {
     $this->last = $this->matches;
     
     // Just set current matches.
@@ -2893,7 +2914,7 @@ class QueryPath implements \IteratorAggregate {
    * A utility function for retriving a match by index.
    *
    * The internal data structure used in QueryPath does not have
-   * strong random access support, so we suppliment it with this method.
+   * strong index-based access support, so we suppliment it with this method.
    */
   private function getNthMatch($index) {
     if ($index > $this->matches->count()) return;
@@ -3376,4 +3397,6 @@ class QueryPathIOException extends QueryPathParseException {
   }
   
 }
+
+// END QueryPath NAMESPACE
 }
