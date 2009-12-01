@@ -3263,9 +3263,18 @@ class Entities {
  */
 class QueryPathIterator extends \IteratorIterator {
   public $options = array();
+  private $qp = NULL;
   
   public function current() {
-    return qp(parent::current(), NULL, $this->options);
+    if (!isset($this->qp)) {
+      $this->qp = qp(parent::current(), NULL, $this->options);
+      
+    }
+    else {
+      $this->qp->setMatches(parent::current());
+    }
+    return $this->qp;
+
   }
 }
 
