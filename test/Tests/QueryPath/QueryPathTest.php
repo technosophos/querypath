@@ -1179,7 +1179,7 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
   
   public function testIterator() {
     
-    $qp = qp(QP::HTML_STUB, 'body')->append('<li/><li/><li/><li/>');
+    $qp = qp(QP::HTML_STUB, 'body')->append('<li id="a"/><li id="b"/><li id="c"/><li id="d"/>');
     
     $this->assertEquals(4, $qp->find('li')->size());
     $i = 0;

@@ -2883,13 +2883,6 @@ class QueryPath implements \IteratorAggregate {
     if ($matches instanceof \SplObjectStorage) {
       $this->matches = $matches;
     }
-    // This is likely legacy code that needs conversion.
-    elseif (is_array($matches)) {
-      trigger_error('Legacy array detected.');
-      $tmp = new \SplObjectStorage();
-      foreach ($matches as $m) $tmp->attach($m);
-      $this->matches = $tmp;
-    }
     // For non-arrays, try to create a new match set and 
     // add this object.
     else {
@@ -3266,15 +3259,17 @@ class QueryPathIterator extends \IteratorIterator {
   private $qp = NULL;
   
   public function current() {
+    // Re-using the QueryPath object cuts of 4/5 of the iteration time
+    // on large sets.
     if (!isset($this->qp)) {
       $this->qp = qp(parent::current(), NULL, $this->options);
-      
     }
     else {
-      $this->qp->setMatches(parent::current());
+      $splos = new \SplObjectStorage();
+      $splos->attach(parent::current());
+      $this->qp->setMatches($splos);
     }
     return $this->qp;
-
   }
 }
 

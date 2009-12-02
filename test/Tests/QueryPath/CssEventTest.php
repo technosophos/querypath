@@ -1095,6 +1095,22 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $this->assertEquals('two', $this->firstMatch($matches)->getAttribute('id'));
   }
   
+  public function testPseudoClassContainsEscaping() {
+    $xml = '<?xml version="1.0" ?>
+    <test>
+      <p id="one">)</p>
+      <p id="two"><i>More text</i></p>
+    </test>';
+    $doc = new DomDocument();
+    $doc->loadXML($xml);
+    
+    $handler = new QueryPathCssEventHandler($doc);
+    $handler->find(':contains(\))');
+    $matches = $handler->getMatches();
+    $this->assertEquals(1, $matches->count());
+    $this->assertEquals('one', $this->firstMatch($matches)->getAttribute('id'));
+  }
+  
   public function testPseudoClassHas() {
     $xml = '<?xml version="1.0" ?>
     <test>
