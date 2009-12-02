@@ -2818,10 +2818,12 @@ class QueryPath implements IteratorAggregate {
   }
   
   /**
+   * EXPERT: Be very, very careful using this.
    * A utility function for setting the current set of matches.
    * It makes sure the last matches buffer is set (for end() and andSelf()).
+   * @since 2.0
    */
-  private function setMatches($matches, $unique = TRUE) {
+  public function setMatches($matches, $unique = TRUE) {
     // This causes a lot of overhead....
     //if ($unique) $matches = self::unique($matches);
     $this->last = $this->matches;
