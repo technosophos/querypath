@@ -3212,9 +3212,18 @@ class QueryPathEntities {
  */
 class QueryPathIterator extends IteratorIterator {
   public $options = array();
+  private $qp = NULL;
   
   public function current() {
-    return qp(parent::current(), NULL, $this->options);
+    if (!isset($this->qp)) {
+      $this->qp = qp(parent::current(), NULL, $this->options);
+    }
+    else {
+      $splos = new SplObjectStorage();
+      $splos->attach(parent::current());
+      $this->qp->setMatches($splos);
+    }
+    return $this->qp;
   }
 }
 
