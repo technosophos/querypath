@@ -963,9 +963,10 @@ final class CssScanner {
       // The second conjunct is probably not necessary.
       while ($this->token !== FALSE && $this->token > -1) {
         //print "Char: $this->value \n";
-        if ($this->token == CssToken::bslash) {
+        if ($this->token == CssToken::bslash && !$escape) {
+          // XXX: The backslash (\) is removed here.
           // Turn on escaping.
-          $buf .= $this->value;
+          //$buf .= $this->value;
           $escape = TRUE;
         }
         elseif ($escape) {
