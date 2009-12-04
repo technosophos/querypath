@@ -1093,6 +1093,20 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $matches = $handler->getMatches();
     $this->assertEquals(2, $matches->count());
     $this->assertEquals('two', $this->firstMatch($matches)->getAttribute('id'));
+    
+    $handler = new QueryPathCssEventHandler($doc);
+    $handler->find(':contains("This is text.")');
+    $matches = $handler->getMatches();
+    $this->assertEquals(1, $matches->count(), 'Quoted text matches unquoted pcdata');
+    $this->assertEquals('one', $this->firstMatch($matches)->getAttribute('id'));
+    
+    $handler = new QueryPathCssEventHandler($doc);
+    $handler->find(':contains(\\\'This is text.\\\')');
+    $matches = $handler->getMatches();
+    $this->assertEquals(1, $matches->count(), 'One match for quoted string.');
+    $this->assertEquals('one', $this->firstMatch($matches)->getAttribute('id'));
+    
+    
   }
   
   public function testPseudoClassContainsEscaping() {
@@ -1546,7 +1560,11 @@ class CssEventParserTests extends PHPUnit_Framework_TestCase {
       '*[attr=value]' => array('attr','value',CssEventHandler::isExactly),
       
       // Should be able to escape chars using backslash.
-      '*[attr="\.value"]' => array('attr','\.value',CssEventHandler::isExactly),
+      '*[attr="\.value"]' => array('attr','.value',CssEventHandler::isExactly),
+      '*[attr="\.\]\]\]"]' => array('attr','.]]]',CssEventHandler::isExactly),
+      
+      // Backslash-backslash should resolve to single backslash.
+      '*[attr="\\\c"]' => array('attr','\\c',CssEventHandler::isExactly),
       
       // Should return an empty value. It seems, though, that a value should be
       // passed here.

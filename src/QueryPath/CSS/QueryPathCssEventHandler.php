@@ -555,6 +555,8 @@ class QueryPathCssEventHandler implements CssEventHandler {
         break;
       // Contains == text matches.
       case 'contains':
+        $value = $this->removeQuotes($value);
+      
         $matches = $this->candidateList();
         $found = new \SplObjectStorage();
         foreach ($matches as $item) {
@@ -568,6 +570,18 @@ class QueryPathCssEventHandler implements CssEventHandler {
         throw new CssParseException("Unknown Pseudo-Class: " . $name);
     }
     $this->findAnyElement = FALSE;
+  }
+  
+  /**
+   * Remove leading and trailing quotes.
+   */
+  private function removeQuotes($str) {
+    $f = $str[0];
+    if ($f == '"' || $f == "'") {
+      //XXX: we just do a very fast-n-dirty kill here.
+      $str = substr($str, 1, strlen($str) - 2);
+    }
+    return $str;
   }
   
   /**
