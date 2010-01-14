@@ -384,7 +384,8 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     
     // Test with DOM Element
     $qp = qp($file, 'li');
-    $el = $qp->branch()->find('#one')->get(0);
+    $el = $qp->branch()->filter('#one')->get(0);
+    $this->assertTrue($el instanceof DOMElement, "Is DOM element.");
     $this->assertEquals(4, $qp->not($el)->size());
     
     // Test with array of DOM Elements

@@ -454,6 +454,7 @@ class QueryPath implements IteratorAggregate {
     // Optimize for ID/Class searches. These two take a long time
     // when a rdp is used. Using an XPath pushes work to C code.
     $ids = array();
+    
     $regex = '/^#([\w-]+)$|^\.([\w-]+)$/'; // $1 is ID, $2 is class.
     //$regex = '/^#([\w-]+)$/';
     if (preg_match($regex, $selector, $ids) === 1) {
@@ -461,7 +462,8 @@ class QueryPath implements IteratorAggregate {
       if (!empty($ids[1])) {
         $xpath = new DOMXPath($this->document);
         foreach ($this->matches as $item) {
-          $nl = $xpath->query("//*[@id='{$ids[1]}']", $item);
+          //$nl = $xpath->query("//*[@id='{$ids[1]}']", $item);
+          $nl = $xpath->query(".//*[@id='{$ids[1]}']", $item);
           if ($nl->length > 0) {
             $this->setMatches($nl->item(0));
             break;
@@ -479,7 +481,7 @@ class QueryPath implements IteratorAggregate {
         $xpath = new DOMXPath($this->document);
         $found = new SplObjectStorage();
         foreach ($this->matches as $item) {
-          $nl = $xpath->query("//*[@class]", $item);
+          $nl = $xpath->query(".//*[@class]", $item);
           for ($i = 0; $i < $nl->length; ++$i) {
             $vals = explode(' ', $nl->item($i)->getAttribute('class'));
             if (in_array($ids[2], $vals)) $found->attach($nl->item($i));
@@ -490,6 +492,7 @@ class QueryPath implements IteratorAggregate {
       
       return $this;
     }
+    
     
     $query = new QueryPathCssEventHandler($this->matches);
     $query->find($selector);
