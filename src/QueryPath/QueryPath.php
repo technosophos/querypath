@@ -428,6 +428,9 @@ class QueryPath implements IteratorAggregate {
    */
   public function top($selector = NULL) {
     $this->setMatches($this->document->documentElement);
+    // print '=====================' . PHP_EOL;
+    // var_dump($this->document);
+    // print '=====================' . PHP_EOL;
     return !empty($selector) ? $this->find($selector) : $this;
   }
   

@@ -94,6 +94,7 @@ class QueryPathCssEventHandler implements CssEventHandler {
         $this->dom = $matches->current();
       }
       else {
+        //throw new Exception("Setting DOM to Null");
         $this->dom = NULL;
       }
       $this->matches = $matches;

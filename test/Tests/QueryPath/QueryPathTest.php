@@ -1152,6 +1152,32 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $contents = file_get_contents(MEDIUM_FILE);
     $this->assertEquals(1, qp($contents)->size());
   }
+  
+  /**
+   * Regression test for issue #14.
+   */
+  public function testRegressionFindOptimizations() {
+    $xml = '<?xml version="1.0"?><root>
+      <item id="outside">
+        <item>
+          <item id="inside">Test</item>
+        </item>
+      </item>
+    </root>';
+    
+    // From inside, should not be able to find outside.
+    $this->assertEquals(0, qp($xml, '#inside')->find('#outside')->size());
+    
+    $xml = '<?xml version="1.0"?><root>
+      <item class="outside">
+        <item>
+          <item class="inside">Test</item>
+        </item>
+      </item>
+    </root>';
+    // From inside, should not be able to find outside.
+    $this->assertEquals(0, qp($xml, '.inside')->find('.outside')->size());
+  }
 }
 
 /**
