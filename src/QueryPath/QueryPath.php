@@ -130,6 +130,7 @@ require_once 'QueryPathExtension.php';
  *  - encoding: A valid character encoding, such as 'utf-8' or 'ISO-8859-1'.
  *    The default is system-dependant, typically UTF-8. Note that this is 
  *    only used when creating new documents, not when reading existing content.
+ *    (See convert_to_encoding below.)
  *  - parser_flags: An OR-combined set of parser flags. The flags supported
  *    by the DOMDocument PHP class are all supported here.
  *  - omit_xml_declaration: Boolean. If this is TRUE, then certain output
@@ -145,6 +146,15 @@ require_once 'QueryPathExtension.php';
  *    badly mangled HTML, or when failure to find files should not result in 
  *    an exception. By default, this is FALSE -- that is, parsing warnings and 
  *    IO warnings throw exceptions.
+ *  - convert_to_encoding: Use the MB library to convert the document to the 
+ *    named encoding before parsing. This is useful for old HTML (set it to
+ *    iso-8859-1 for best results). If this is not supplied, no character set 
+ *    conversion will be performed. See {@link mb_convert_encoding()}.
+ *    (QueryPath 1.3 and later)
+ *  - convert_from_encoding: If 'convert_to_encoding' is set, this option can be
+ *    used to explicitly define what character set the source document is using.
+ *    By default, QueryPath will allow the MB library to guess the encoding.
+ *    (QueryPath 1.3 and later)
  *  - QueryPath_class: (ADVANCED) Use this to set the actual classname that
  *    {@link qp()} loads as a QueryPath instance. It is assumed that the 
  *    class is either {@link QueryPath} or a subclass thereof. See the test 
@@ -166,6 +176,39 @@ function qp($document = NULL, $string = NULL, $options = array()) {
   
   $qp = new $qpClass($document, $string, $options);
   return $qp;
+}
+
+/**
+ * A special-purpose version of {@link qp()} designed specifically for HTML.
+ *
+ * XHTML (if valid) can be easily parsed by {@link qp()} with no problems. However,
+ * because of the way that libxml handles HTML, there are several common steps that
+ * need to be taken to reliably parse non-XML HTML documents. This function is
+ * a convenience tool for configuring QueryPath to parse HTML.
+ *
+ * The following options are automatically set unless overridden:
+ *  - ignore_parser_warnings: TRUE
+ *  - convert_to_encoding: ISO-8859-1 (the best for the HTML parser).
+ *  - convert_from_encoding: auto (autodetect encoding)
+ *
+ * Parser warning messages are also suppressed, so if the parser emits a warning,
+ * the application will not be notified. This is equivalent to 
+ * calling <code>@qp()</code>.
+ *
+ * Warning: Character set conversions will only work if the Multi-Byte (mb) library
+ * is installed and enabled. This is usually enabled, but not always.
+ *
+ * @see qp()
+ */
+function htmlqp($document = NULL, $selector = NULL, $options = array()) {
+  
+  $options += array(
+    'ignore_parser_warnings' => TRUE,
+    'convert_to_encoding' => 'ISO-8859-1',
+    'convert_from_encoding' => 'auto',
+    //'replace_entities' => TRUE,
+  );
+  return @qp($document, $selector, $options);
 }
 
 /**
@@ -364,6 +407,7 @@ class QueryPath implements IteratorAggregate {
       $this->setMatches($this->document->documentElement);
     }
     else {
+      
       // $document is a filename
       $context = empty($options['context']) ? NULL : $options['context'];
       $this->document = $this->parseXMLFile($document, $parser_flags, $context);
@@ -2795,11 +2839,25 @@ class QueryPath implements IteratorAggregate {
   
   private function parseXMLString($string, $flags = NULL) {
     
-    $document = new DOMDocument();
+    $document = new DOMDocument('1.0');
     $lead = strtolower(substr($string, 0, 5)); // <?xml
     try {
       set_error_handler(array('QueryPathParseException', 'initializeFromError'), $this->errTypes);
+      
+      if (isset($this->options['convert_to_encoding'])) {
+        // Is there another way to do this?
+        
+        $from_enc = isset($this->options['convert_from_encoding']) ? $this->options['convert_from_encoding'] : 'auto';
+        $to_enc = $this->options['convert_to_encoding'];
+        
+        if (function_exists('mb_convert_encoding')) {
+          $string = mb_convert_encoding($string, $to_encoding, $from_encoding);
+        }
+        
+      }
+      
       if ($lead == '<?xml') {
+        
         //print htmlentities($string);
         if ($this->options['replace_entities']) {
           $string = QueryPathEntities::replaceAllEntities($string);
