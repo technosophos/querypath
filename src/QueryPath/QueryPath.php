@@ -155,6 +155,10 @@ require_once 'QueryPathExtension.php';
  *    used to explicitly define what character set the source document is using.
  *    By default, QueryPath will allow the MB library to guess the encoding.
  *    (QueryPath 1.3 and later)
+ *  - use_parser: If 'xml', Parse the document as XML. If 'html', parse the 
+ *    document as HTML. Note that the XML parser is very strict, while the 
+ *    HTML parser is more lenient, but does enforce some of the DTD/Schema.
+ *    <i>By default, QueryPath autodetects the type.</i>
  *  - QueryPath_class: (ADVANCED) Use this to set the actual classname that
  *    {@link qp()} loads as a QueryPath instance. It is assumed that the 
  *    class is either {@link QueryPath} or a subclass thereof. See the test 
@@ -190,6 +194,7 @@ function qp($document = NULL, $string = NULL, $options = array()) {
  *  - ignore_parser_warnings: TRUE
  *  - convert_to_encoding: ISO-8859-1 (the best for the HTML parser).
  *  - convert_from_encoding: auto (autodetect encoding)
+ *  - use_parser: html
  *
  * Parser warning messages are also suppressed, so if the parser emits a warning,
  * the application will not be notified. This is equivalent to 
@@ -211,6 +216,7 @@ function htmlqp($document = NULL, $selector = NULL, $options = array()) {
     'convert_to_encoding' => 'ISO-8859-1',
     'convert_from_encoding' => 'auto',
     //'replace_entities' => TRUE,
+    'use_parser' => 'html',
   );
   return @qp($document, $selector, $options);
 }
@@ -2879,14 +2885,26 @@ class QueryPath implements IteratorAggregate {
         
       }
       
-      if ($lead == '<?xml') {
-        
-        //print htmlentities($string);
+      // Allow users to override parser settings.
+      if (empty($this->options['use_parser'])) {
+        $useParser = '';
+      }
+      else {
+        $useParser = strtolower($this->options['use_parser']);
+      }
+      
+      // If HTML parser is requested, we use it.
+      if ($useParser == 'html') {
+        $document->loadHTML($string);
+      }
+      // Parse as XML if it looks like XML, or if XML parser is requested.
+      elseif ($lead == '<?xml' || $useParser == 'xml') {
         if ($this->options['replace_entities']) {
           $string = QueryPathEntities::replaceAllEntities($string);
         }
         $document->loadXML($string, $flags);
       }
+      // In all other cases, we try the HTML parser.
       else {
         $document->loadHTML($string);
       }
@@ -3052,12 +3070,34 @@ class QueryPath implements IteratorAggregate {
     $document = new DOMDocument();
     $lastDot = strrpos($filename, '.');
     
+    $htmlExtensions = array(
+      '.html' => 1,
+      '.htm' => 1,
+    );
+    
+    // Allow users to override parser settings.
+    if (empty($this->options['use_parser'])) {
+      $useParser = '';
+    }
+    else {
+      $useParser = strtolower($this->options['use_parser']);
+    }
+    
+    $ext = $lastDot !== FALSE ? strtolower(substr($filename, $lastDot)) : '';
+    
     try {
       set_error_handler(array('QueryPathParseException', 'initializeFromError'), $this->errTypes);
-      if ($lastDot !== FALSE && strtolower(substr($filename, $lastDot)) == '.html') {
+      
+      // If the parser is explicitly set to XML, use that parser.
+      if ($useParser == 'xml') {
+        $r = $document->load($filename, $flags);
+      }
+      // Otherwise, see if it looks like HTML.
+      elseif (isset($htmlExtensions[$ext]) || $useParser == 'html') {
         // Try parsing it as HTML.
         $r = $document->loadHTMLFile($filename);
       }
+      // Default to XML.
       else {
         $r = $document->load($filename, $flags);
       }

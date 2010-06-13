@@ -15,6 +15,7 @@ define('DATA_FILE', 'test/data.xml');
 define('DATA_HTML_FILE', 'test/data.html');
 define('NO_WRITE_FILE', 'test/no-write.xml');
 define('MEDIUM_FILE', 'test/amplify.xml');
+define('HTML_IN_XML_FILE', 'test/html.xml');
 
 /**
  * Tests for DOM Query. Primarily, this is focused on the DomQueryImpl
@@ -73,6 +74,32 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     // Test from array of DOMNodes
     $array = $qp->get();
     $qp = qp($array);
+    $this->assertEquals(1, count($qp->get()));
+    $this->assertTrue($qp->get(0) instanceof DOMNode);
+    
+  }
+  /**
+   * Test alternate constructors.
+   */
+  public function testQueryPathHtmlConstructors() {
+    $qp = htmlqp(QueryPath::HTML_STUB);
+    $this->assertEquals(1, count($qp->get()));
+    $this->assertTrue($qp->get(0) instanceof DOMNode);
+    
+    // Bad BR tag.
+    $borken = '<html><head></head><body><br></body></html>';
+    $qp = htmlqp($borken);
+    $this->assertEquals(1, count($qp->get()));
+    $this->assertTrue($qp->get(0) instanceof DOMNode);
+    
+    // XHTML Faker
+    $borken = '<?xml version="1.0"?><html><head></head><body><br></body></html>';
+    $qp = htmlqp($borken);
+    $this->assertEquals(1, count($qp->get()));
+    $this->assertTrue($qp->get(0) instanceof DOMNode);
+    
+    // HTML in a file that looks like XML.
+    $qp = htmlqp(HTML_IN_XML_FILE);
     $this->assertEquals(1, count($qp->get()));
     $this->assertTrue($qp->get(0) instanceof DOMNode);
   }
