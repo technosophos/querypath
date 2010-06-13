@@ -64,7 +64,7 @@ class QPTPLTest extends PHPUnit_Framework_TestCase {
     
     $this->assertEquals('FOOFOO', $qp->find('.MyClass')->text());
     $this->assertEquals(1, $qp->find(':root #baz')->size());
-    $this->assertEquals(1, $qp->find('#baz')->size());
+    $this->assertTrue($qp->is('#baz'));
   }
   
   public function testTplMultiClass() {
