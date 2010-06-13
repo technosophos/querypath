@@ -347,9 +347,11 @@ class QPDB implements QueryPathExtension {
       'db params' => array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION),
     );
     $this->dsn = $dsn;
-    $this->db = new PDO($dsn);
+    $this->db = new PDO($dsn, $this->opts['username'], $this->opts['password'], $this->opts['db params']);
+    /*
     foreach ($this->opts['db params'] as $key => $val)
       $this->db->setAttribute($key, $val);
+    */
     
     return $this->qp;
   }

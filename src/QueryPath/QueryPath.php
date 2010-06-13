@@ -201,6 +201,10 @@ function qp($document = NULL, $string = NULL, $options = array()) {
  * @see qp()
  */
 function htmlqp($document = NULL, $selector = NULL, $options = array()) {
+
+  // Need a way to force an HTML parse instead of an XML parse when the 
+  // doctype is XHTML, since many XHTML documents are not valid XML
+  // (because of coding errors, not by design).
   
   $options += array(
     'ignore_parser_warnings' => TRUE,
