@@ -510,8 +510,20 @@ class QueryPath implements IteratorAggregate {
       if (!empty($ids[1])) {
         $xpath = new DOMXPath($this->document);
         foreach ($this->matches as $item) {
+          
+          // For whatever reasons, the .// does not work correctly
+          // if the selected element is the root element. So we have
+          // an awful hack.
+          if ($item->isSameNode($this->document->documentElement) ) {
+            $xpathQuery = "//*[@id='{$ids[1]}']";
+          }
+          // This is the correct XPath query.
+          else {
+            $xpathQuery = ".//*[@id='{$ids[1]}']";
+          }
           //$nl = $xpath->query("//*[@id='{$ids[1]}']", $item);
-          $nl = $xpath->query(".//*[@id='{$ids[1]}']", $item);
+          //$nl = $xpath->query(".//*[@id='{$ids[1]}']", $item);
+          $nl = $xpath->query($xpathQuery, $item);
           if ($nl->length > 0) {
             $this->setMatches($nl->item(0));
             break;
@@ -525,11 +537,18 @@ class QueryPath implements IteratorAggregate {
       // Quick search for class values. While the XPath can't do it
       // all, it is faster than doing a recusive node search.
       else {
-        //$this->xpath("//*[@class='{$ids[2]}']");
         $xpath = new DOMXPath($this->document);
         $found = new SplObjectStorage();
         foreach ($this->matches as $item) {
-          $nl = $xpath->query(".//*[@class]", $item);
+          // See comments on this in the #id code above.
+          if ($item->isSameNode($this->document->documentElement) ) {
+            $xpathQuery = "//*[@class]";
+          }
+          // This is the correct XPath query.
+          else {
+            $xpathQuery = ".//*[@class]";
+          }
+          $nl = $xpath->query($xpathQuery, $item);
           for ($i = 0; $i < $nl->length; ++$i) {
             $vals = explode(' ', $nl->item($i)->getAttribute('class'));
             if (in_array($ids[2], $vals)) $found->attach($nl->item($i));
@@ -2836,7 +2855,7 @@ class QueryPath implements IteratorAggregate {
   protected function isXMLish($string) {
     // Long strings will exhaust the regex engine, so we
     // grab a representative string.
-    $test = substr($string, 0, 255);
+    // $test = substr($string, 0, 255);
     return (strpos($string, '<') !== FALSE && strpos($string, '>') !== FALSE);
     //return preg_match(ML_EXP, $test) > 0;
   }

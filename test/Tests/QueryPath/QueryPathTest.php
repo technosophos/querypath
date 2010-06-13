@@ -238,6 +238,11 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($qp->get(0)->tagName, 'head');
     
     $this->assertEquals('inner', qp($file)->find('.innerClass')->tag());
+    
+    $string = '<?xml version="1.0"?><root class="findme">Test</root>';
+    $qp = qp($string)->find('.findme');
+    $this->assertEquals(1, count($qp->get()), 'Check class.');
+    $this->assertEquals($qp->get(0)->tagName, 'root');
   }
   
   public function testTop() {
@@ -774,25 +779,29 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
   }
   
   public function testInnerXML() {
-    $html = '<?xml version="1.0"?><div id="me">Test<p>Again</p></div>';
-    $test = 'Test<p>Again</p>';
+    $html = '<?xml version="1.0"?><root><div id="me">Test<p>Again1</p></div></root>';
+    $test = 'Test<p>Again1</p>';
     
-    $this->assertEquals($test, qp($html,'#me')->innerHTML());
+    $this->assertEquals($test, qp($html,'#me')->innerXML());
     
-    $html = '<?xml version="1.0"?><div id="me">Test<p>Again<br/></p><![CDATA[Hello]]><?pi foo ?></div>';
-    $test = 'Test<p>Again<br/></p><![CDATA[Hello]]><?pi foo ?>';
+    $html = '<?xml version="1.0"?><root><div id="me">Test<p>Again2<br/></p><![CDATA[Hello]]><?pi foo ?></div></root>';
+    $test = 'Test<p>Again2<br/></p><![CDATA[Hello]]><?pi foo ?>';
     
-    $this->assertEquals($test, qp($html,'#me')->innerHTML());
+    $this->assertEquals($test, qp($html,'#me')->innerXML());
     
-    $html = '<?xml version="1.0"?><div id="me"/>';
+    $html = '<?xml version="1.0"?><root><div id="me"/></root>';
     $test = '';
-    $this->assertEquals($test, qp($html,'#me')->innerHTML());    
+    $this->assertEquals($test, qp($html,'#me')->innerXML());
+    
+    $html = '<?xml version="1.0"?><root id="me">test</root>';
+    $test = 'test';
+    $this->assertEquals($test, qp($html,'#me')->innerXML());
   }
   
   public function testInnerXHTML() {
     $html = '<?xml version="1.0"?><html><head></head><body><div id="me">Test<p>Again</p></div></body></html>';
     
-    $this->assertEquals('Test<p>Again</p>', qp($html,'#me')->innerHTML());
+    $this->assertEquals('Test<p>Again</p>', qp($html,'#me')->innerXHTML());
   }
   
   public function testXML() {
