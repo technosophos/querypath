@@ -682,6 +682,38 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
     $this->setMatches($found);
     return $this;
   }
+  /**
+   * Detach any items from the list if they match the selector.
+   *
+   * In other words, each item that matches the selector will be remove
+   * from the DOM document. The returned QueryPath wraps the list of
+   * removed elements.
+   *
+   * If no selector is specified, this will remove all current matches from
+   * the document.
+   *
+   * @param string $selector
+   *  A CSS Selector.
+   * @return QueryPath
+   *  The Query path wrapping a list of removed items.
+   * @see replaceAll()
+   * @see replaceWith()
+   * @see removeChildren()
+   */
+  public function detach($selector = NULL) {
+
+    if(!empty($selector))
+    $this->find($selector);
+
+    $found = new SplObjectStorage();
+    foreach ($this->matches as $item) {
+      // The item returned is (according to docs) different from
+      // the one passed in, so we have to re-store it.
+      $found->attach($item->parentNode->removeChild($item));
+    }
+    $this->setMatches($found);
+    return $this;
+  }
   
   public function replaceAll($selector, DOMDocument $document) {
     $replacement = $this->size() > 0 ? $this->matches[0] : $this->document->createTextNode('');
@@ -722,6 +754,28 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
     }
     return $this;
   }
+
+  /**
+   * Empty everything within the specified element.
+   *
+   * This begins the new query at the top of the DOM again. The results found
+   * when running this selector are then merged into the existing results. In
+   * this way, you can add additional elements to the existing set.
+   *
+   *  A valid selector.
+   * @return QueryPath
+   *  The QueryPath object with the newly emptied elements.
+   * @see removeChildren()
+   * @see text()
+   */
+  public function emptyElement() {
+     
+    $this->removeChildren();
+
+    // I need to clear the text and I'm not totally sure how...
+     
+    return $this;
+  }
   
   public function children($selector = NULL) {
     $found = array();
@@ -737,6 +791,159 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
       $this->matches = $found; // Don't buffer this. It is temporary.
       $this->filter($selector);
     }
+    return $this;
+  }
+
+  /**
+   * Get the even elements, so counter-intuitively 1, 3, 5, etc.
+   *
+   *
+   *
+   * @return QueryPath
+   *  A QueryPath wrapping all of the children.
+   * @see removeChildren()
+   * @see parent()
+   * @see parents()
+   * @see next()
+   * @see prev()
+   */
+  public function even() {
+    $found = new SplObjectStorage();
+    $even = false;
+    foreach ($this->matches as $m) {
+      if ($even && $m->nodeType == XML_ELEMENT_NODE) $found->attach($m);
+      $even = ($even) ? false : true;
+    }
+    $this->setMatches($found);
+    $this->matches = $found; // Don't buffer this. It is temporary.
+    return $this;
+  }
+
+  /**
+   * Get the odd elements, so counter-intuitively 0, 2, 4, etc.
+   *
+   *
+   *
+   * @return QueryPath
+   *  A QueryPath wrapping all of the children.
+   * @see removeChildren()
+   * @see parent()
+   * @see parents()
+   * @see next()
+   * @see prev()
+   */
+  public function odd() {
+    $found = new SplObjectStorage();
+    $odd = true;
+    foreach ($this->matches as $m) {
+      if ($odd && $m->nodeType == XML_ELEMENT_NODE) $found->attach($m);
+      $odd = ($odd) ? false : true;
+    }
+    $this->setMatches($found);
+    $this->matches = $found; // Don't buffer this. It is temporary.
+    return $this;
+  }
+
+  /**
+   * Get the first matching element.
+   *
+   *
+   * @return QueryPath
+   *  A QueryPath wrapping all of the children.
+   * @see next()
+   * @see prev()
+   */
+  public function first() {
+    $found = new SplObjectStorage();
+    foreach ($this->matches as $m) {
+      if ($m->nodeType == XML_ELEMENT_NODE) {
+        $found->attach($m);
+        break;
+      }
+    }
+    $this->setMatches($found);
+    $this->matches = $found; // Don't buffer this. It is temporary.
+    return $this;
+  }
+
+  /**
+   * Get the first child of the matching element.
+   *
+   *
+   * @return QueryPath
+   *  A QueryPath wrapping all of the children.
+   * @see next()
+   * @see prev()
+   */
+  public function firstChild() {
+    // Could possibly use $m->firstChild http://theserverpages.com/php/manual/en/ref.dom.php
+    $found = new SplObjectStorage();
+    $flag = false;
+    foreach ($this->matches as $m) {
+      foreach($m->childNodes as $c) {
+        if ($c->nodeType == XML_ELEMENT_NODE) {
+          $found->attach($c);
+          $flag = true;
+          break;
+        }
+      }
+      if($flag) break;
+    }
+    $this->setMatches($found);
+    $this->matches = $found; // Don't buffer this. It is temporary.
+    return $this;
+  }
+
+  /**
+   * Get the last matching element.
+   *
+   *
+   * @return QueryPath
+   *  A QueryPath wrapping all of the children.
+   * @see next()
+   * @see prev()
+   */
+  public function last() {
+    $found = new SplObjectStorage();
+    $item = null;
+    foreach ($this->matches as $m) {
+      if ($m->nodeType == XML_ELEMENT_NODE) {
+        $item = $m;
+      }
+    }
+    if ($item) {
+      $found->attach($item);
+    }
+    $this->setMatches($found);
+    $this->matches = $found; // Don't buffer this. It is temporary.
+    return $this;
+  }
+
+  /**
+   * Get the last child of the matching element.
+   *
+   *
+   * @return QueryPath
+   *  A QueryPath wrapping all of the children.
+   * @see next()
+   * @see prev()
+   */
+  public function lastChild() {
+    $found = new SplObjectStorage();
+    $item = null;
+    foreach ($this->matches as $m) {
+      foreach($m->childNodes as $c) {
+        if ($c->nodeType == XML_ELEMENT_NODE) {
+          $item = $c;
+        }
+      }
+      if ($item) {
+        $found->attach($item);
+        $item = null;
+      }
+    }
+    $this->setMatches($found);
+    $this->matches = $found; // Don't buffer this. It is temporary.
     return $this;
   }
   
@@ -808,6 +1015,40 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
           }
           else 
             $found[] = $m;
+        }
+      }
+    }
+    $this->setMatches($found);
+    return $this;
+  }
+  /**
+   * Get all ancestors of each element in the QueryPath until the selector is reached.
+   *
+   * If a selector is present, only matching ancestors will be retrieved.
+   *
+   * @see parent()
+   * @param string $selector
+   *  A valid CSS 3 Selector.
+   * @return QueryPath
+   *  A QueryPath object containing the matching ancestors.
+   * @see siblings()
+   * @see children()
+   */
+  public function parentsUntil($selector = NULL) {
+    $found = new SplObjectStorage();
+    foreach ($this->matches as $m) {
+      while ($m->parentNode->nodeType !== XML_DOCUMENT_NODE) {
+        $m = $m->parentNode;
+        // Is there any case where parent node is not an element?
+        if ($m->nodeType === XML_ELEMENT_NODE) {
+          if (!empty($selector)) {
+            if (qp($m, NULL, $this->options)->is($selector) > 0)
+            break;
+            else
+            $found->attach($m);
+          }
+          else
+          $found->attach($m);
         }
       }
     }
@@ -932,6 +1173,46 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
     $this->setMatches($found);
     return $this;
   }
+
+  /**
+   * Get all siblings after an element until the selector is reached.
+   *
+   * For each element in the QueryPath, get all siblings that appear after
+   * it. If a selector is passed in, then only siblings that match the
+   * selector will be included.
+   *
+   * @param string $selector
+   *  A valid CSS 3 selector.
+   * @return QueryPath
+   *  The QueryPath object, now containing the matching siblings.
+   * @see next()
+   * @see prevAll()
+   * @see children()
+   * @see siblings()
+   */
+  public function nextUntil($selector = NULL) {
+    $found = new SplObjectStorage();
+    foreach ($this->matches as $m) {
+      while (isset($m->nextSibling)) {
+        $m = $m->nextSibling;
+        if ($m->nodeType === XML_ELEMENT_NODE) {
+          if (!empty($selector)) {
+            if (qp($m, NULL, $this->options)->is($selector) > 0) {
+              break;
+            }
+            else {
+              $found->attach($m);
+            }
+          }
+          else {
+            $found->attach($m);
+          }
+        }
+      }
+    }
+    $this->setMatches($found);
+    return $this;
+  }
   
   public function prev($selector = NULL) {
     $found = array();
@@ -975,7 +1256,40 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
     $this->setMatches($found);
     return $this;
   }
-  
+
+  /**
+   * Get the previous siblings for each element in the QueryPath
+   * until the selector is reached.
+   *
+   * For each element in the QueryPath, get all previous siblings. If a
+   * selector is provided, only matching siblings will be retrieved.
+   *
+   * @param string $selector
+   *  A valid CSS 3 selector.
+   * @return QueryPath
+   *  The QueryPath object, now wrapping previous sibling elements.
+   * @see prev()
+   * @see nextAll()
+   * @see siblings()
+   * @see contents()
+   * @see children()
+   */
+  public function prevUntil($selector = NULL) {
+    $found = new SplObjectStorage();
+    foreach ($this->matches as $m) {
+      while (isset($m->previousSibling)) {
+        $m = $m->previousSibling;
+        if ($m->nodeType === XML_ELEMENT_NODE) {
+          if (!empty($selector) && qp($m, NULL, $this->options)->is($selector))
+          break;
+          else
+          $found->attach($m);
+        }
+      }
+    }
+    $this->setMatches($found);
+    return $this;
+  }
   public function addClass($class) {
     foreach ($this->matches as $m) {
       if ($m->hasAttribute('class')) {
@@ -1015,7 +1329,23 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
     }
     return FALSE;
   }
-
+  
+  public function has($selector) {
+    $found = new SplObjectStorage();
+    $flag = false;
+    foreach ($this->matches as $m) {
+      foreach($m->childNodes as $c) {
+        if ($c->nodeType == XML_ELEMENT_NODE) {
+          if ($selector instanceOf DOMNode && is_string($selector) && qp($c, $selector, $this->options)->size() > 0)
+            $flag = true;
+        }
+      }
+      if($flag) $found->attach($m);
+      $flag = false;
+    }
+    $this->matches = $found; // Don't buffer this. It is temporary.
+    return $this;
+  }
 
   public function branch() {
     return qp($this->matches);

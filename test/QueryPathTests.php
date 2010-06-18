@@ -9,6 +9,7 @@
 require_once 'PHPUnit/Framework.php';
 require_once '../src/QueryPath/QueryPath.php';
 
+define('DATA_FILE', './data.xml');
 /**
  * Tests for DOM Query. Primarily, this is focused on the DomQueryImpl
  * class which is exposed through the DomQuery interface and the dq() 
@@ -352,10 +353,32 @@ class QueryPathTests extends PHPUnit_Framework_TestCase {
     $this->assertEquals($start, $finish);
     $this->assertEquals(0, $qp->find(':root li')->size());
   }
+
+  public function testDetach() {
+    $file = DATA_FILE;
+    $qp = qp($file, 'li');
+    $start = $qp->size();
+    $finish = $qp->detach()->size();
+    $this->assertEquals($start, $finish);
+    $this->assertEquals(0, $qp->find(':root li')->size());
+    $this->assertEquals(1, $qp->append(':root')->size());
+  }  
+ 
+  public function testEmptyElement() {
+    $file = DATA_FILE;
+    $this->assertEquals(0, qp($file, '#inner-two')->emptyElement()->find('li')->size());
+    $this->assertEquals('<inner id="inner-two"/>', qp($file, '#inner-two')->emptyElement()->html());
+  }
   
   public function testHasClass() {
     $file = './data.xml';
     $this->assertTrue(qp($file, '#inner-one')->hasClass('innerClass'));
+  }
+  
+  public function testHas() {
+    $file = './hastest.xml';
+    $this->assertEquals(null, qp($file, '#inner-one')->has('div'));
+    $this->assertEquals(null, qp($file, 'root')->has('li'));
   }
   
   public function testAddClass() {
@@ -478,10 +501,52 @@ class QueryPathTests extends PHPUnit_Framework_TestCase {
     $this->assertEquals(3, qp($file, '#one')->nextAll()->size());
     $this->assertEquals(2, qp($file, 'unary')->nextAll('inner')->size());
   }
+  public function testNextUntil() {
+    $file = DATA_FILE;
+    $this->assertEquals(3, qp($file, '#one')->nextUntil()->size());
+    $this->assertEquals(2, qp($file, 'li')->nextUntil('#three')->size());
+  }
   public function testPrevAll() {
     $file = './data.xml';
     $this->assertEquals(3, qp($file, '#four')->prevAll()->size());
     $this->assertEquals(2, qp($file, 'foot')->prevAll('inner')->size());
+  }
+  public function testPrevUntil() {
+    $file = DATA_FILE;
+    $this->assertEquals(3, qp($file, '#four')->prevUntil()->size());
+    $this->assertEquals(2, qp($file, 'foot')->prevUntil('unary')->size());
+  }
+  public function testEven() {
+    $file = DATA_FILE;
+    $this->assertEquals(1, qp($file, 'inner')->even()->size());
+    $this->assertEquals(2, qp($file, 'li')->even()->size());
+  }
+  public function testOdd() {
+    $file = DATA_FILE;
+    $this->assertEquals(1, qp($file, 'inner')->odd()->size());
+    $this->assertEquals(3, qp($file, 'li')->odd()->size());
+  }
+  public function testFirst() {
+    $file = DATA_FILE;
+    $this->assertEquals(1, qp($file, 'inner')->first()->size());
+    $this->assertEquals(1, qp($file, 'li')->first()->size());
+    $this->assertEquals("Hello", qp($file, 'li')->first()->text());
+  }
+  public function testFirstChild() {
+    $file = DATA_FILE;
+    $this->assertEquals(1, qp($file, '#inner-one')->firstChild()->size());
+    $this->assertEquals("Hello", qp($file, '#inner-one')->firstChild()->text());
+  }
+  public function testLast() {
+    $file = DATA_FILE;
+    $this->assertEquals(1, qp($file, 'inner')->last()->size());
+    $this->assertEquals(1, qp($file, 'li')->last()->size());
+    $this->assertEquals('', qp($file, 'li')->last()->text());
+  }
+  public function testLastChild() {
+    $file = DATA_FILE;
+    $this->assertEquals(1, qp($file, '#inner-one')->lastChild()->size());
+    $this->assertEquals("Last", qp($file, '#inner-one')->lastChild()->text());
   }
   public function testParent() {
     $file = './data.xml';
@@ -489,13 +554,19 @@ class QueryPathTests extends PHPUnit_Framework_TestCase {
     $this->assertEquals('root', qp($file, 'li')->parent('root')->tag());
     $this->assertEquals(2, qp($file, 'li')->parent()->size());
   }
-  
   public function testParents() {
     $file = './data.xml';
     
     // Three: two inners and a root.
     $this->assertEquals(3, qp($file, 'li')->parents()->size());
     $this->assertEquals('root', qp($file, 'li')->parents('root')->tag());
+  }
+  public function testParentsUntil() {
+    $file = DATA_FILE;
+
+    // Three: two inners and a root.
+    $this->assertEquals(3, qp($file, 'li')->parentsUntil()->size());
+    $this->assertEquals(2, qp($file, 'li')->parentsUntil('root')->size());
   }
   
   public function testCloneAll() {
