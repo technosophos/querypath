@@ -706,12 +706,18 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
     $this->find($selector);
 
     $found = new SplObjectStorage();
+    $this->last = $this->matches;
     foreach ($this->matches as $item) {
       // The item returned is (according to docs) different from
       // the one passed in, so we have to re-store it.
       $found->attach($item->parentNode->removeChild($item));
     }
     $this->setMatches($found);
+    return $this;
+  }
+  
+  public function attach(QueryPath $dest) {
+    foreach ($this->last as $m) $dest->append($m);
     return $this;
   }
   
@@ -1330,20 +1336,21 @@ final class QueryPathImpl implements QueryPath, IteratorAggregate {
     return FALSE;
   }
   
-  public function has($selector) {
-    $found = new SplObjectStorage();
+  public function has($contained) {
+    $found = array();
     $flag = false;
     foreach ($this->matches as $m) {
       foreach($m->childNodes as $c) {
         if ($c->nodeType == XML_ELEMENT_NODE) {
-          if ($selector instanceOf DOMNode && is_string($selector) && qp($c, $selector, $this->options)->size() > 0)
+          if ($selector instanceOf DOMNode 
+              && $c->isSameNode($selector))
             $flag = true;
         }
       }
-      if($flag) $found->attach($m);
+      if($flag) $found[] = $m;
       $flag = false;
     }
-    $this->matches = $found; // Don't buffer this. It is temporary.
+    $this->setMatches($found);
     return $this;
   }
 

@@ -9,7 +9,7 @@
  * @license LGPL The GNU Lesser GPL (LGPL) or an MIT-like license.
  */
  
-require_once 'src/QueryPath/QueryPath.php';
+require_once '../src/QueryPath/QueryPath.php';
 
 // Begin with an HTML stub document (XHTML, actually), and navigate to the title.
 qp(QueryPath::HTML_STUB, 'title')

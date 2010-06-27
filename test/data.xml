@@ -3,10 +3,10 @@
   <head id="head"></head>
   <unary id="unary"/>
   <inner id="inner-one" class="innerClass">
-    <li id="one"></li>
+    <li id="one">Hello</li>
     <li id="two"></li>
     <li id="three"></li>
-    <li id="four"></li>
+    <li id="four">Last</li>
   </inner>
   <inner id="inner-two">
     <li id="five"/>
