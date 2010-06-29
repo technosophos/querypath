@@ -40,7 +40,7 @@ foreach ($qp->get() as $li_ele) {
 
 // Iterate over elements as QueryPath objects
 foreach ($qp as $li_qp) {
-  print $li->tag() . PHP_EOL; // Prints 'li' five times
+  print $li_qp->tag() . PHP_EOL; // Prints 'li' five times
 }
 
 function callbackFunction($index, $element) {

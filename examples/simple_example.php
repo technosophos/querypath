@@ -22,6 +22,6 @@
  * @see html.php
  * @see https://fedorahosted.org/querypath/wiki/QueryPathTutorial The Official Tutorial
  */
-require_once 'src/QueryPath/QueryPath.php';
+require_once '../src/QueryPath/QueryPath.php';
 qp(QueryPath::HTML_STUB)->find('body')->text('Hello World')->writeHTML();
 ?>
