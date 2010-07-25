@@ -26,7 +26,7 @@ IMPORTANT: The full version of the package does not include build scripts (inclu
 
 A numbered release can be built with:
 
-  phing build -Dversion=2.0-Alpha1
+  phing build -Dversion=2.1-Alpha1
 
 These are the basic tasks we anticipate performing with phing. However, the build script supports the running of several other tasks which may help you when debugging or developing QueryPath. Important ones are listed below. A complete list can be obtained by running 'phing -l' in this directory.
 
@@ -98,7 +98,7 @@ To print this message, do:
   </fileset>
   
   <!-- BUILD: The primary build target. -->
-  <target name="build" depends="lint, setup, docBuild, minimalBuild, fullBuild"
+  <target name="build" depends="lint, setup, prebuild, docBuild, minimalBuild, fullBuild"
     description="Generate docs, minimal, and full builds and then creates packages."
     ></target>
   
@@ -109,9 +109,14 @@ To print this message, do:
     <property name="version" value="dev-${DSTAMP}"/>
   </target>
   
+  <!-- tasks to do before any build. -->
+  <target name="prebuild">
+    <mkdir dir="./dist"/>
+  </target>
+  
   <!-- Build just the minimal package -->
   <target name="minimalBuild" description="Minimal QueryPath build." 
-    depends="setup">
+    depends="setup,prebuild">
     <property name="releasedir" value="${builddir}/QueryPath-${version}-minimal" override="true"/>
     <echo>${releasedir}</echo>
     <delete dir="${releasedir}" />
@@ -142,7 +147,7 @@ To print this message, do:
   
   <!-- Build the full package -->
   <target name="fullBuild" description="Full QueryPath build, including docs."
-    depends="setup">
+    depends="setup,prebuild">
     <property name="releasedir" value="${builddir}/QueryPath-${version}" override="true"/>
     <delete dir="${releasedir}" />
     
@@ -206,12 +211,16 @@ To print this message, do:
   </target>
   
   <!-- Build documentation -->
+  <!--
+  output="HTML:Smarty:QueryPath" 
+  -->
+  
   <target name="doc" depends="lint,setup" description="Generate API docs.">
     <delete dir="${docsdir}"/>
     <phpdoc title="QueryPath ${version}"
       sourcecode="yes"
       destdir="${docsdir}"
-      output="HTML:Smarty:QueryPath" 
+      output="HTML:frames:phpedit" 
       defaultcategoryname="QueryPath"
       defaultpackagename="QueryPath"
       examplesdir="examples"
@@ -327,7 +336,7 @@ To print this message, do:
   </target>
   
   <target name="docBuild" description="Build a package containing just docs." 
-    depends="setup,doc">
+    depends="setup,prebuild,doc">
     <property name="releasedir" value="${builddir}/QueryPath-${version}-docs"/>
     <delete dir="${releasedir}" />
     
