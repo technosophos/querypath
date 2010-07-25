@@ -563,7 +563,7 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     
     // Test with replace entities turned on:
     $qp = qp($file, 'root', array('replace_entities' => TRUE))->append('<p>&raquo;</p>');
-    $this->assertEquals('<p>Â»</p>', $qp->find('p')->html());
+    $this->assertEquals('<p>»</p>', $qp->find('p')->html());
     
     // Test with empty, mainly to make sure it doesn't explode.
     $this->assertTrue(qp($file)->append('') instanceof QueryPath);
@@ -1188,6 +1188,94 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     
     $contents = file_get_contents(MEDIUM_FILE);
     $this->assertEquals(1, qp($contents)->size());
+  }
+  
+  public function testDetach() {
+    $file = DATA_FILE;
+    $qp = qp($file, 'li');
+    $start = $qp->size();
+    $finish = $qp->detach()->size();
+    $this->assertEquals($start, $finish);
+    $this->assertEquals(0, $qp->find(':root li')->size());
+    $dest = qp('<?xml version="1.0"?><root><dest/></root>', 'dest');
+    $qp = $qp->attach($dest);
+    $this->assertEquals(5, $dest->find(':root li')->size());
+  }
+
+  public function testAttach() {
+    $this->assertEquals("Not going to work", "Start/Finish this test.");
+  }
+
+  public function testEmptyElement() {
+    $file = DATA_FILE;
+    $this->assertEquals(0, qp($file, '#inner-two')->emptyElement()->find('li')->size());
+    $this->assertEquals('<inner id="inner-two"/>', qp($file, '#inner-two')->emptyElement()->html());
+  }
+
+  public function testHas() {
+    $file = DATA_FILE;
+    $selector = qp($file, 'foot');
+    $this->assertEquals(qp($file, '#one')->children(), qp($file, '#inner-one')->has($selector));
+    $qp = qp($file, 'root')->children("inner");
+    $this->assertEquals(qp($file, 'root'), qp($file, 'root')->has($selector), "Should both have 1 element - root");
+  }
+
+  public function testNextUntil() {
+    $file = DATA_FILE;
+    $this->assertEquals(3, qp($file, '#one')->nextUntil()->size());
+    $this->assertEquals(2, qp($file, 'li')->nextUntil('#three')->size());
+  }
+
+  public function testPrevUntil() {
+    $file = DATA_FILE;
+    $this->assertEquals(3, qp($file, '#four')->prevUntil()->size());
+    $this->assertEquals(2, qp($file, 'foot')->prevUntil('unary')->size());
+  }
+
+  public function testEven() {
+    $file = DATA_FILE;
+    $this->assertEquals(1, qp($file, 'inner')->even()->size());
+    $this->assertEquals(2, qp($file, 'li')->even()->size());
+  }
+  
+  public function testOdd() {
+    $file = DATA_FILE;
+    $this->assertEquals(1, qp($file, 'inner')->odd()->size());
+    $this->assertEquals(3, qp($file, 'li')->odd()->size());
+  }
+  
+  public function testFirst() {
+    $file = DATA_FILE;
+    $this->assertEquals(1, qp($file, 'inner')->first()->size());
+    $this->assertEquals(1, qp($file, 'li')->first()->size());
+    $this->assertEquals("Hello", qp($file, 'li')->first()->text());
+  }
+  
+  public function testFirstChild() {
+    $file = DATA_FILE;
+    $this->assertEquals(1, qp($file, '#inner-one')->firstChild()->size());
+    $this->assertEquals("Hello", qp($file, '#inner-one')->firstChild()->text());
+  }
+  
+  public function testLast() {
+    $file = DATA_FILE;
+    $this->assertEquals(1, qp($file, 'inner')->last()->size());
+    $this->assertEquals(1, qp($file, 'li')->last()->size());
+    $this->assertEquals('', qp($file, 'li')->last()->text());
+  }
+  
+  public function testLastChild() {
+    $file = DATA_FILE;
+    $this->assertEquals(1, qp($file, '#inner-one')->lastChild()->size());
+    $this->assertEquals("Last", qp($file, '#inner-one')->lastChild()->text());
+  }
+  
+  public function testParentsUntil() {
+    $file = DATA_FILE;
+
+    // Three: two inners and a root.
+    $this->assertEquals(3, qp($file, 'li')->parentsUntil()->size());
+    $this->assertEquals(2, qp($file, 'li')->parentsUntil('root')->size());
   }
   
   /**
