@@ -242,8 +242,11 @@ To print this message, do:
     </reflexive>
   </target>
   
+  <!-- tmtarget for textmate phing -->
+  <target name="tmtarget" depends="ftest" description="Target for textmate"/>
+  
   <!-- Run a fast test and print the results to the console -->
-  <target name="ftest" description="Run a quick unit test.">
+  <target name="ftest" description="Run a quick unit test." depends="pretest">
     <!-- Fast test. -->
     <phpunit>
       <formatter type="summary" usefile="no"/>
@@ -255,8 +258,17 @@ To print this message, do:
     <delete file="./test/db/qpTest2.db" />
   </target>
   
+  <target name="pretest" description="tasks done before any unit testing.">
+    <mkdir dir="test/reports"/>
+    <mkdir dir="test/reports/html"/>
+    <mkdir dir="test/db"/>
+    <!-- touch file="./test/no-writing.xml" / -->
+    <chmod mode="444" file="./test/no-writing.xml"/>
+  </target>
+  
   <!-- Run a fast test and print the results to the console -->
-  <target name="tmtest" description="Run test, optimized for TextMate output.">
+  <target name="tmtest" description="Run test, optimized for TextMate output." depends="pretest">
+    
     <!-- Fast test. -->
     <phpunit>
       <formatter todir="test/reports" type="xml" usefile="yes"/>
@@ -294,7 +306,9 @@ To print this message, do:
   </target>
   
   <!-- Run a full test and format an HTML report -->
-  <target name="test" depends="lint" description="Run full tests">
+  <target name="test" depends="lint,pretest" description="Run full tests">
+    <mkdir dir="test/reports/html"/>
+    <mkdir dir="test/db"/>
     <phpunit>
       <formatter todir="test/reports" type="xml"/>
       <batchtest>
