@@ -829,6 +829,12 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $html = '<?xml version="1.0"?><html><head></head><body><div id="me">Test<p>Again</p></div></body></html>';
     
     $this->assertEquals('Test<p>Again</p>', qp($html,'#me')->innerXHTML());
+    
+    // Regression for issue #10: Tags should not be unary (e.g. we want <script></script>, not <script/>)
+    $xml = '<html><head><title>foo</title></head><body><div id="me">Test<p>Again<br/></p></div></body></html>';
+    // Look for a closing </br> tag
+    $regex = '/<\/br>/';
+    $this->assertRegExp($regex, qp($xml, '#me')->innerXHTML(), 'BR should have a closing tag.');
   }
   
   public function testXML() {
@@ -873,6 +879,13 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     // Non-DOMNodes should not be rendered:
     $fn = 'mapCallbackFunction';
     $this->assertNull(qp($file, 'li')->map(array($this, $fn))->xhtml());
+    
+    // Regression for issue #10: Tags should not be unary (e.g. we want <script></script>, not <script/>)
+    $xml = '<html><head><title>foo</title></head><body>bar<br/></body></html>';
+    // Look for a closing </br> tag
+    $regex = '/<\/br>/';
+    $this->assertRegExp($regex, qp($xml)->xhtml(), 'BR should have a closing tag.');
+    
   }
   
   public function testWriteXML() {
@@ -930,7 +943,7 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     <title>foo</title></head><body>bar</body></html>';
     
     if (!ob_start()) die ("Could not start OB.");
-    qp($xml, 'tml')->writeXHTML();
+    qp($xml, 'html')->writeXHTML();
     $out = ob_get_contents();
     ob_end_clean();
     
@@ -943,6 +956,19 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $this->assertTrue(file_exists($name));
     $this->assertTrue(qp($name) instanceof QueryPath);
     unlink($name);
+    
+    // Regression for issue #10 (keep closing tags in XHTML)
+    $xhtml = '<?xml version="1.0"?><html><head><title>foo</title><script></script><br/></head><body>bar</body></html>';
+    if (!ob_start()) die ("Could not start OB.");
+    qp($xhtml, 'html')->writeXHTML();
+    $out = ob_get_contents();
+    ob_end_clean();
+    
+    $pattern = '/<\/script>/';
+    $this->assertRegExp($pattern, $out, 'Should be closing script tag.');
+    
+    $pattern = '/<\/br>/';
+    $this->assertRegExp($pattern, $out, 'Should be closing br tag.');
   }
   
   /**

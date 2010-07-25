@@ -2159,7 +2159,27 @@ class QueryPath implements IteratorAggregate {
    * @since 2.0
    */
   public function innerXHTML() {
-    return $this->innerXML();
+    $length = $this->size();
+    if ($length == 0) {
+      return NULL;
+    }
+    // Only return the first item -- that's what JQ does.
+    $first = $this->getFirstMatch();
+
+    // Catch cases where first item is not a legit DOM object.
+    if (!($first instanceof DOMNode)) {
+      return NULL;
+    }
+    elseif (!$first->hasChildNodes()) {
+      return '';
+    }
+    
+    $buffer = '';
+    foreach ($first->childNodes as $child) {
+      $buffer .= $this->document->saveXML($child, LIBXML_NOEMPTYTAG);
+    }
+    
+    return $buffer;
   }
   
   /**
@@ -2301,7 +2321,38 @@ class QueryPath implements IteratorAggregate {
    * @see innerXHTML()
    */
   public function xhtml($markup = NULL) {
-    return $this->xml($markup);
+    
+    // XXX: This is a minor reworking of the original xml() method.
+    // This should be refactored, probably.
+    // See http://github.com/technosophos/querypath/issues#issue/10
+   
+    $omit_xml_decl = $this->options['omit_xml_declaration'];
+    if ($markup === TRUE) {
+      // Basically, we handle the special case where we don't
+      // want the XML declaration to be displayed.
+      $omit_xml_decl = TRUE;
+    }
+    elseif (isset($markup)) {
+      return $this->xml($markup);
+    }
+    
+    $length = $this->size();
+    if ($length == 0) {
+      return NULL;
+    }
+    
+    // Only return the first item -- that's what JQ does.
+    $first = $this->getFirstMatch();
+    // Catch cases where first item is not a legit DOM object.
+    if (!($first instanceof DOMNode)) {
+      return NULL;
+    }
+    
+    if ($first instanceof DOMDocument || $first->isSameNode($first->ownerDocument->documentElement)) {
+      
+      return  ($omit_xml_decl ? $this->document->saveXML($first->ownerDocument->documentElement, LIBXML_NOEMPTYTAG) : $this->document->saveXML(NULL, LIBXML_NOEMPTYTAG));
+    }
+    return $this->document->saveXML($first, LIBXML_NOEMPTYTAG);
   }
   /**
    * Set or get the XML markup for an element or elements.
@@ -2374,21 +2425,24 @@ class QueryPath implements IteratorAggregate {
    *  The path to the file into which the XML should be written. if 
    *  this is NULL, data will be written to STDOUT, which is usually
    *  sent to the remote browser.
+   * @param int $options
+   *  (As of QueryPath 2.1) Pass libxml options to the saving mechanism.
    * @return QueryPath
    *  The QueryPath object, unmodified.
    * @see xml()
    * @see innerXML()
+   * @see writeXHTML()
    * @throws Exception 
    *  In the event that a file cannot be written, an Exception will be thrown.
    */
-  public function writeXML($path = NULL) {
+  public function writeXML($path = NULL, $options = NULL) {
     if ($path == NULL) {
-      print $this->document->saveXML();
+      print $this->document->saveXML(NULL, $options);
     }
     else {
       try {
         set_error_handler(array('QueryPathIOException', 'initializeFromError'));
-        $this->document->save($path);
+        $this->document->save($path, $options);
       }
       catch (Exception $e) {
         restore_error_handler();
@@ -2440,8 +2494,10 @@ class QueryPath implements IteratorAggregate {
    *
    * Typically, you should use this instead of {@link writeHTML()}.
    *
-   * Currently, this functions identically to {@link toXML()}. It will
-   * write the file as well-formed XML. No XML schema validation is done.
+   * Currently, this functions identically to {@link toXML()} <i>except that</i>
+   * it always uses closing tags (e.g. always <code><script></script></code>, 
+   * never <code><script/></code>). It will
+   * write the file as well-formed XML. No XHTML schema validation is done.
    *
    * @see writeXML()
    * @see xml()
@@ -2458,7 +2514,24 @@ class QueryPath implements IteratorAggregate {
    * @since 2.0
    */
   public function writeXHTML($path = NULL) {
-    return $this->writeXML($path);
+    return $this->writeXML($path, LIBXML_NOEMPTYTAG);
+    /*
+    if ($path == NULL) {
+      print $this->document->saveXML(NULL, LIBXML_NOEMPTYTAG);
+    }
+    else {
+      try {
+        set_error_handler(array('QueryPathIOException', 'initializeFromError'));
+        $this->document->save($path, LIBXML_NOEMPTYTAG);
+      }
+      catch (Exception $e) {
+        restore_error_handler();
+        throw $e;
+      }
+      restore_error_handler();
+    }
+    return $this;
+    */
   }
   /**
    * Get the next sibling of each element in the QueryPath.
@@ -2851,6 +2924,8 @@ class QueryPath implements IteratorAggregate {
    * @see replaceAll()
    * @see replaceWith()
    * @see removeChildren()
+   * @since 2.1
+   * @author eabrand
    */
   public function detach($selector = NULL) {
 
@@ -2881,12 +2956,20 @@ class QueryPath implements IteratorAggregate {
    * @see replaceAll()
    * @see replaceWith()
    * @see removeChildren()
+   * @since 2.1
+   * @author eabrand
    */
   public function attach(QueryPath $dest) {
     foreach ($this->last as $m) $dest->append($m);
     return $this;
   }
   
+  /**
+   * Test to see if the current {@link QueryPath} object contains $contained.
+   * 
+   * @since 2.1
+   * @author eabrand
+   */
   public function has($contained) {
     $found = array();
     $flag = false;
@@ -2917,6 +3000,8 @@ class QueryPath implements IteratorAggregate {
    *  The QueryPath object with the newly emptied elements.
    * @see removeChildren()
    * @see text()
+   * @since 2.1
+   * @author eabrand
    */
   public function emptyElement() {
      
@@ -2939,6 +3024,8 @@ class QueryPath implements IteratorAggregate {
    * @see parents()
    * @see next()
    * @see prev()
+   * @since 2.1
+   * @author eabrand
    */
   public function even() {
     $found = new SplObjectStorage();
@@ -2964,6 +3051,8 @@ class QueryPath implements IteratorAggregate {
    * @see parents()
    * @see next()
    * @see prev()
+   * @since 2.1
+   * @author eabrand
    */
   public function odd() {
     $found = new SplObjectStorage();
@@ -2985,6 +3074,8 @@ class QueryPath implements IteratorAggregate {
    *  A QueryPath wrapping all of the children.
    * @see next()
    * @see prev()
+   * @since 2.1
+   * @author eabrand
    */
   public function first() {
     $found = new SplObjectStorage();
@@ -3007,6 +3098,8 @@ class QueryPath implements IteratorAggregate {
    *  A QueryPath wrapping all of the children.
    * @see next()
    * @see prev()
+   * @since 2.1
+   * @author eabrand
    */
   public function firstChild() {
     // Could possibly use $m->firstChild http://theserverpages.com/php/manual/en/ref.dom.php
@@ -3035,6 +3128,8 @@ class QueryPath implements IteratorAggregate {
    *  A QueryPath wrapping all of the children.
    * @see next()
    * @see prev()
+   * @since 2.1
+   * @author eabrand
    */
   public function last() {
     $found = new SplObjectStorage();
@@ -3060,6 +3155,8 @@ class QueryPath implements IteratorAggregate {
    *  A QueryPath wrapping all of the children.
    * @see next()
    * @see prev()
+   * @since 2.1
+   * @author eabrand
    */
   public function lastChild() {
     $found = new SplObjectStorage();
@@ -3095,6 +3192,8 @@ class QueryPath implements IteratorAggregate {
    * @see prevAll()
    * @see children()
    * @see siblings()
+   * @since 2.1
+   * @author eabrand
    */
   public function nextUntil($selector = NULL) {
     $found = new SplObjectStorage();
@@ -3136,6 +3235,8 @@ class QueryPath implements IteratorAggregate {
    * @see siblings()
    * @see contents()
    * @see children()
+   * @since 2.1
+   * @author eabrand
    */
   public function prevUntil($selector = NULL) {
     $found = new SplObjectStorage();
@@ -3166,6 +3267,8 @@ class QueryPath implements IteratorAggregate {
    *  A QueryPath object containing the matching ancestors.
    * @see siblings()
    * @see children()
+   * @since 2.1
+   * @author eabrand
    */
   public function parentsUntil($selector = NULL) {
     $found = new SplObjectStorage();
