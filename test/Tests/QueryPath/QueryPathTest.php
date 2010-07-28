@@ -7,15 +7,17 @@
  * @license The GNU Lesser GPL (LGPL) or an MIT-like license.
  */
 
+$basedir = dirname(__FILE__);
+
 /** */
 require_once 'PHPUnit/Framework.php';
-require_once 'C:/xampp/htdocs/querypath/src/QueryPath/QueryPath.php';
+require_once $basedir . '/../../../src/QueryPath/QueryPath.php';
 
-define('DATA_FILE', 'C:/xampp/htdocs/querypath/test/data.xml');
-define('DATA_HTML_FILE', 'C:/xampp/htdocs/querypath/test/data.html');
-define('NO_WRITE_FILE', 'C:/xampp/htdocs/querypath/test/no-write.xml');
-define('MEDIUM_FILE', 'C:/xampp/htdocs/querypath/test/amplify.xml');
-define('HTML_IN_XML_FILE', 'C:/xampp/htdocs/querypath/test/html.xml');
+define('DATA_FILE', $basedir . '/../../data.xml');
+define('DATA_HTML_FILE', $basedir . '/../../data.html');
+define('NO_WRITE_FILE', $basedir . '/../../no-write.xml');
+define('MEDIUM_FILE', $basedir . '/../../amplify.xml');
+define('HTML_IN_XML_FILE', $basedir . '/../../html.xml');
 
 /**
  * Tests for DOM Query. Primarily, this is focused on the DomQueryImpl
