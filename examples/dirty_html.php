@@ -1,0 +1,19 @@
+<?php
+/**
+ * Urban Dictionary Random Word Generator
+ *
+ * @package Examples
+ * @author Emily Brand
+ * @license LGPL The GNU Lesser GPL (LGPL) or an MIT-like license.
+ * @see http://musicbrainz.org
+ */
+require_once '../src/QueryPath/QueryPath.php';
+
+print '<h3>Urban Dictionary Random Word Generator</h3>';
+
+$page = rand(0, 288);
+$qp = htmlqp('http://www.urbandictionary.com/?page='.$page, '#home');
+
+$rand = rand(0, 7);
+print $qp->find('.word')->getNthElement($rand)->text().'<br />';
+print $qp->top()->find('.definition')->getNthElement($rand)->text();

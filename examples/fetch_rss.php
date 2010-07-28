@@ -18,7 +18,7 @@
 require_once '../src/QueryPath/QueryPath.php';
 
 // The URL of the remote RSS feed.
-$remote = 'http://aleph-null.tv/rss.xml';
+$remote = 'http://querypath.org/aggregator/rss/2/rss.xml';
 
 // We will write the results into this document.
 $out = qp(QueryPath::HTML_STUB, 'title')

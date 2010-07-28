@@ -7,6 +7,8 @@
  *
  * This does two HTTP requests -- one to get information about a band, and another
  * to get a list of albums put out by that band.
+ * 
+ * TODO: Fix the output.
  *
  * @package Examples
  * @author M Butcher <matt@aleph-null.tv>
@@ -21,10 +23,10 @@ try {
   $artist = qp($artist_url, 'artist:first');
   if ($artist->size() > 0) {
     $id = $artist->attr('id');
-    print 'The best match we found was for ' . $artist->children('name')->text() . PHP_EOL;
-    print 'Artist ID: ' . $id . PHP_EOL;
-    print 'Albums for this artist' . PHP_EOL;
-    print $album_url . urlencode($id);
+    print '<p>The best match we found was for ' . $artist->children('name')->text() . PHP_EOL;
+    print '</p><p>Artist ID: ' . $id . PHP_EOL;
+    print '</p><p>Albums for this artist' . PHP_EOL;
+    print '</p><p><a href="'.$album_url . urlencode($id).'">'.$album_url.'</a></p>';
     $albums = qp($album_url . urlencode($id))->writeXML();
     
     foreach ($albums as $album) {

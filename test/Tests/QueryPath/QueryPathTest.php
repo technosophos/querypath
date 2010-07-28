@@ -1294,6 +1294,14 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals("Hello", qp($file, '#inner-one')->firstChild()->text());
   }
   
+  public function testGetNthElement() {
+    $file = DATA_FILE;
+    $this->assertEquals(1, qp($file, 'inner')->getNthElement(0)->size());
+    $this->assertEquals(1, qp($file, 'li')->getNthElement(0)->size());
+    $this->assertEquals("Hello", qp($file, 'li')->getNthElement(0)->text());
+    $this->assertEquals("Last", qp($file, 'li')->getNthElement(4)->text());
+  }
+  
   public function testLast() {
     $file = DATA_FILE;
     $this->assertEquals(1, qp($file, 'inner')->last()->size());

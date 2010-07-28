@@ -3067,6 +3067,34 @@ class QueryPath implements IteratorAggregate {
   }
 
   /**
+   * Get the matching element of the index.
+   *
+   *
+   * @return QueryPath
+   *  A QueryPath wrapping all of the children.
+   * @see next()
+   * @see prev()
+   * @since 2.1
+   * @author eabrand
+   */
+  public function getNthElement($i = 0) {
+    $found = new SplObjectStorage();
+    $j = 0;
+    foreach ($this->matches as $m) {
+      if ($m->nodeType == XML_ELEMENT_NODE) {
+        if($j == $i) {
+          $found->attach($m);
+          break;
+        }
+        $j++;
+      }
+    }
+    $this->setMatches($found);
+    $this->matches = $found; // Don't buffer this. It is temporary.
+    return $this;
+  }
+  
+  /**
    * Get the first matching element.
    *
    *
