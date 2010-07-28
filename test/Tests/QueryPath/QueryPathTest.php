@@ -9,13 +9,13 @@
 
 /** */
 require_once 'PHPUnit/Framework.php';
-require_once 'src/QueryPath/QueryPath.php';
+require_once 'C:/xampp/htdocs/querypath/src/QueryPath/QueryPath.php';
 
-define('DATA_FILE', 'test/data.xml');
-define('DATA_HTML_FILE', 'test/data.html');
-define('NO_WRITE_FILE', 'test/no-write.xml');
-define('MEDIUM_FILE', 'test/amplify.xml');
-define('HTML_IN_XML_FILE', 'test/html.xml');
+define('DATA_FILE', 'C:/xampp/htdocs/querypath/test/data.xml');
+define('DATA_HTML_FILE', 'C:/xampp/htdocs/querypath/test/data.html');
+define('NO_WRITE_FILE', 'C:/xampp/htdocs/querypath/test/no-write.xml');
+define('MEDIUM_FILE', 'C:/xampp/htdocs/querypath/test/amplify.xml');
+define('HTML_IN_XML_FILE', 'C:/xampp/htdocs/querypath/test/html.xml');
 
 /**
  * Tests for DOM Query. Primarily, this is focused on the DomQueryImpl
@@ -1216,6 +1216,12 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals(1, qp($contents)->size());
   }
   
+  public function testSize() {
+    $file = DATA_FILE;
+    $qp = qp($file, 'li');
+    $this->assertEquals(5, $qp->size());
+  }
+  
   public function testDetach() {
     $file = DATA_FILE;
     $qp = qp($file, 'li');
@@ -1223,13 +1229,16 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $finish = $qp->detach()->size();
     $this->assertEquals($start, $finish);
     $this->assertEquals(0, $qp->find(':root li')->size());
-    $dest = qp('<?xml version="1.0"?><root><dest/></root>', 'dest');
-    $qp = $qp->attach($dest);
-    $this->assertEquals(5, $dest->find(':root li')->size());
   }
 
   public function testAttach() {
-    $this->assertEquals("Not going to work", "Start/Finish this test.");
+    $file = DATA_FILE;
+    $qp = qp($file, 'li');
+    $start = $qp->size();
+    $finish = $qp->detach()->size();
+    $dest = qp('<?xml version="1.0"?><root><dest/></root>', 'dest');
+    $qp = $qp->attach($dest);
+    $this->assertEquals(5, $dest->find(':root li')->size());
   }
 
   public function testEmptyElement() {
@@ -1241,8 +1250,10 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
   public function testHas() {
     $file = DATA_FILE;
     $selector = qp($file, 'foot');
-    $this->assertEquals(qp($file, '#one')->children(), qp($file, '#inner-one')->has($selector));
+    $this->assertEquals(qp($file, '#one')->children(), qp($file, '#inner-one')->has($selector), "Both should be empty/false");
     $qp = qp($file, 'root')->children("inner");
+    $selector = qp($file, '#two');
+    $this->assertNotEquals(qp($file, '#head'), qp($file, '#inner-one')->has($selector));
     $this->assertEquals(qp($file, 'root'), qp($file, 'root')->has($selector), "Should both have 1 element - root");
   }
 
