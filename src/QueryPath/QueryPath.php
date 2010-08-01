@@ -2965,12 +2965,57 @@ class QueryPath implements IteratorAggregate {
   }
   
   /**
-   * Test to see if the current {@link QueryPath} object contains $contained.
+   * Reduce the elements matched by QueryPath to only those which contain the given item.
+   *
+   * There are two ways in which this is different from jQuery's implementation:
+   * - We allow ANY DOMNode, not just DOMElements. That means this will work on 
+   *   processor instructions, text nodes, comments, etc.
+   * - Unlike jQuery, this implementation of has() follows QueryPath standard behavior
+   *   and modifies the existing object. It does not create a brand new object.
    * 
+   * @param mixed $contained
+   *   - If $contained is a CSS selector (e.g. '#foo'), this will test to see
+   *     if the current QueryPath has any elements that contain items that match
+   *     the selector.
+   *   - If $contained is a DOMNode, then this will test to see if THE EXACT DOMNode
+   *     exists in the currently matched elements.
    * @since 2.1
    * @author eabrand
    */
   public function has($contained) {
+    $found = new SplObjectStorage();
+    
+    // MPB: We need to support both a CSS selector and a DOMNode object.
+    
+    
+    // If it's a selector, we just get all of the DomNodes that match the selector.
+    $nodes = array();
+    if (is_string($contained)) {
+      // Get the list of nodes, and then pass them into has() again
+      $nodes = $this->branch($contained)->get();
+    }
+    elseif ($contained instanceof DOMNode) {
+      $nodes = array($contained);
+    }
+    
+    // MPB: The latter case is a little harder. The easiest
+    // way to do this is to *start with the given node* and then
+    // see if any of its ancestors are in our current QueryPath object.
+    foreach ($nodes as $original_node) {
+      $node = $original_node;
+      while ($node != $node->ownerDocument) {
+        if ($this->matches->contains($node)) {
+          $found->attach($node);
+        }
+        $node = $node->parentNode;
+      }
+    }
+    
+    $this->setMatches($found);
+    return $this;
+    
+    /*
+    
     $found = array();
     $flag = false;
     foreach ($this->matches as $m) {
@@ -2986,6 +3031,7 @@ class QueryPath implements IteratorAggregate {
     }
     $this->setMatches($found);
     return $this;
+    */
   }
 
   /**
