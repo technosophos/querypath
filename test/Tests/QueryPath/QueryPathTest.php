@@ -565,7 +565,11 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     
     // Test with replace entities turned on:
     $qp = qp($file, 'root', array('replace_entities' => TRUE))->append('<p>&raquo;</p>');
-    $this->assertEquals('<p>�</p>', $qp->find('p')->html());
+    // Note that we are using a UTF-8 » character, not an ASCII 187. This seems to cause
+    // problems on some Windows IDEs. So here we do it the ugly way.
+    $utf8raquo = '<p>' . mb_convert_encoding(chr(187), 'utf-8', 'iso8859-1') . '</p>';
+    //$this->assertEquals('<p>»</p>', $qp->find('p')->html(), 'Entities are decoded to UTF-8 correctly.');
+    $this->assertEquals($utf8raquo, $qp->find('p')->html(), 'Entities are decoded to UTF-8 correctly.');
     
     // Test with empty, mainly to make sure it doesn't explode.
     $this->assertTrue(qp($file)->append('') instanceof QueryPath);
