@@ -3099,7 +3099,10 @@ class QueryPath implements IteratorAggregate {
    * @author eabrand
    */
   public function getNthElement($i = 0) {
+    // MPB: This appears to be the same as the eq() method.
     $found = new SplObjectStorage();
+    $found->attach($this->getNthMatch($i));
+    /* MPB: This is the same code as is in getNthMatch().
     $j = 0;
     foreach ($this->matches as $m) {
       if ($m->nodeType == XML_ELEMENT_NODE) {
@@ -3110,8 +3113,9 @@ class QueryPath implements IteratorAggregate {
         $j++;
       }
     }
+    */
     $this->setMatches($found);
-    $this->matches = $found; // Don't buffer this. It is temporary.
+    //$this->matches = $found; // Don't buffer this. It is temporary.
     return $this;
   }
   
@@ -3341,10 +3345,7 @@ class QueryPath implements IteratorAggregate {
     return $this;
   }
   
-  /////// PRIVATE FUNCTIONS ////////
-  // Functions are declared private because nothing can subclass QueryPathImpl.
-  // (It is, after all, final). Instead of extending this class, you 
-  // should create a decorator for the class.
+  /////// INTERNAL FUNCTIONS ////////
   
   
   /**
