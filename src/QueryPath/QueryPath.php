@@ -2978,32 +2978,31 @@ class QueryPath implements IteratorAggregate {
    *     if the current QueryPath has any elements that contain items that match
    *     the selector.
    *   - If $contained is a DOMNode, then this will test to see if THE EXACT DOMNode
-   *     exists in the currently matched elements.
+   *     exists in the currently matched elements. (Note that you cannot match across DOM trees, even if it is the same document.)
    * @since 2.1
    * @author eabrand
+   * @todo It would be trivially easy to add support for iterating over an array or Iterable of DOMNodes.
    */
   public function has($contained) {
     $found = new SplObjectStorage();
     
-    // MPB: We need to support both a CSS selector and a DOMNode object.
-    
-    
-    // If it's a selector, we just get all of the DomNodes that match the selector.
+    // If it's a selector, we just get all of the DOMNodes that match the selector.
     $nodes = array();
     if (is_string($contained)) {
-      // Get the list of nodes, and then pass them into has() again
+      // Get the list of nodes.
       $nodes = $this->branch($contained)->get();
     }
     elseif ($contained instanceof DOMNode) {
+      // Make a list with one node.
       $nodes = array($contained);
     }
     
-    // MPB: The latter case is a little harder. The easiest
-    // way to do this is to *start with the given node* and then
-    // see if any of its ancestors are in our current QueryPath object.
+    // Now we go through each of the nodes that we are testing. We want to find
+    // ALL PARENTS that are in our existing QueryPath matches. Those are the
+    // ones we add to our new matches.
     foreach ($nodes as $original_node) {
       $node = $original_node;
-      while ($node != $node->ownerDocument) {
+      while (!empty($node)/* && $node != $node->ownerDocument*/) {
         if ($this->matches->contains($node)) {
           $found->attach($node);
         }
@@ -3013,48 +3012,24 @@ class QueryPath implements IteratorAggregate {
     
     $this->setMatches($found);
     return $this;
-    
-    /*
-    
-    $found = array();
-    $flag = false;
-    foreach ($this->matches as $m) {
-      foreach($m->childNodes as $c) {
-        if ($c->nodeType == XML_ELEMENT_NODE) {
-          if ($selector instanceOf DOMNode 
-              && $c->isSameNode($selector))
-            $flag = true;
-        }
-      }
-      if($flag) $found[] = $m;
-      $flag = false;
-    }
-    $this->setMatches($found);
-    return $this;
-    */
   }
 
   /**
    * Empty everything within the specified element.
    *
-   * This begins the new query at the top of the DOM again. The results found
-   * when running this selector are then merged into the existing results. In
-   * this way, you can add additional elements to the existing set.
+   * A convenience function for {@see removeChildren()}. This is equivalent to jQuery's 
+   * empty() function. However, `empty` is a built-in in PHP, and cannot be used as a 
+   * function name.
    *
-   *  A valid selector.
    * @return QueryPath
    *  The QueryPath object with the newly emptied elements.
    * @see removeChildren()
-   * @see text()
    * @since 2.1
    * @author eabrand
+   * @deprecated The removeChildren() function is the preferred method.
    */
   public function emptyElement() {
-     
     $this->removeChildren();
-
-    // I need to clear the text and I'm not totally sure how...
-     
     return $this;
   }
   

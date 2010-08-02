@@ -1251,16 +1251,42 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $file = DATA_FILE;
     $this->assertEquals(0, qp($file, '#inner-two')->emptyElement()->find('li')->size());
     $this->assertEquals('<inner id="inner-two"/>', qp($file, '#inner-two')->emptyElement()->html());
+    
+    // Make sure text children get wiped out, too.
+    $this->assertEquals('', qp($file, 'foot')->emptyElement()->text());
   }
 
   public function testHas() {
     $file = DATA_FILE;
-    $selector = qp($file, 'foot');
-    $this->assertEquals(qp($file, '#one')->children(), qp($file, '#inner-one')->has($selector), "Both should be empty/false");
+    
+    // Test with DOMNode object
+    $qp = qp($file, 'foot');
+    $selector = $qp->get(0);
+    $qp->top('root')->has($selector);
+    
+    // This should have one element named 'root'.
+    $this->assertEquals(1, $qp->size(), 'One element is a parent of foot');
+    $this->assertEquals('root', $qp->tag(), 'Root has foot.');
+        
+    // Test with CSS selector
+    $qp = qp($file, 'root')->has('foot');
+    
+    // This should have one element named 'root'.
+    $this->assertEquals(1, $qp->size(), 'One element is a parent of foot');
+    $this->assertEquals('root', $qp->tag(), 'Root has foot.');
+    
+    // Test multiple matches.
+    $qp = qp($file, '#docRoot, #inner-two')->has('#five');
+    $this->assertEquals(2, $qp->size(), 'Two elements are parents of #five');
+    $this->assertEquals('inner', $qp->get(0)->tagName, 'Inner has li.');
+    
+    /*
+    $this->assertEquals(qp($file, '#one')->children()->get(), qp($file, '#inner-one')->has($selector)->get(), "Both should be empty/false");
     $qp = qp($file, 'root')->children("inner");
     $selector = qp($file, '#two');
     $this->assertNotEquals(qp($file, '#head'), qp($file, '#inner-one')->has($selector));
     $this->assertEquals(qp($file, 'root'), qp($file, 'root')->has($selector), "Should both have 1 element - root");
+    */
   }
 
   public function testNextUntil() {
