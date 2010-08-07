@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entries>
+	<entry name="add">
+		<jquery>
+			<code>
+				<html>
+					<head>
+						<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+					</head>
+					<body>
+						<p>Hello</p>
+						<span>Hello Again</span>
+						<script>$("p").add("span").css("background", "yellow");</script>
+					</body>
+				</html>
+			</code>
+		</jquery>
+		<querypath>
+			<code>
+				<html>
+					<head></head>
+					<body>
+						<p>Hello</p>
+						<span>Hello Again</span>
+					</body>
+				</html>
+			</code>
+      <?php
+      require_once 'QueryPath.php';
+
+      htmlqp('test.html')
+        ->appendItem('span')            // Apend Item to the document
+        ->children('span')              // Point querypath to the new element
+        ->css('background', 'yellow')   // Add the CSS
+        ->top()                         // Point QueryPath to the top of the document
+        ->writeHTML();                  // Write HTML, notice it does not use print
+	    ?>
+		</querypath>
+	</entry>
+</entries>

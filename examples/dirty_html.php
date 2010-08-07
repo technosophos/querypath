@@ -5,7 +5,7 @@
  * @package Examples
  * @author Emily Brand
  * @license LGPL The GNU Lesser GPL (LGPL) or an MIT-like license.
- * @see http://musicbrainz.org
+ * @see http://www.urbandictionary.com/
  */
 require_once '../src/QueryPath/QueryPath.php';
 
