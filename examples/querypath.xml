@@ -1,40 +1,87 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <entries>
-	<entry name="add">
-		<jquery>
-			<code>
-				<html>
-					<head>
-						<script src="http://code.jquery.com/jquery-latest.min.js"></script>
-					</head>
-					<body>
-						<p>Hello</p>
-						<span>Hello Again</span>
-						<script>$("p").add("span").css("background", "yellow");</script>
-					</body>
-				</html>
-			</code>
-		</jquery>
-		<querypath>
-			<code>
-				<html>
-					<head></head>
-					<body>
-						<p>Hello</p>
-						<span>Hello Again</span>
-					</body>
-				</html>
-			</code>
-      <?php
+  <entry name="add">
+    <desc>
+      Add a yellow background to a span and to all of the children of an element.
+    </desc>
+    <jquery>
+      <code>
+        <html>
+          <head>
+            <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+            <script>
+              // Add yellow background to span.
+              $("p").add("span").css("background", "yellow");   
+              // Add yellow background to children.    
+              $('ul.level-2').children().css('background-color', 'yellow');
+            </script>
+          </head>
+          <body>
+            <p>Hello</p>
+            <span>Hello Again</span>
+            <ul class="level-1">
+              <li class="item-i">I</li>
+              <li class="item-ii">II
+                <ul class="level-2">
+                  <li class="item-a">A</li>
+                  <li class="item-b">B
+                    <ul class="level-3">
+                      <li class="item-1">1</li>
+                      <li class="item-2">2</li>
+                      <li class="item-3">3</li>
+                    </ul>
+                  </li>
+                  <li class="item-c">C</li>
+                </ul>
+              </li>
+              <li class="item-iii">III</li>
+            </ul>
+          </body>
+        </html>
+      </code>
+    </jquery>
+    <querypath>
+      test.html
+      <code>
+        <html>
+          <head></head>
+          <body>
+            <p>Hello</p>
+            <span>Hello Again</span>
+          </body>
+        </html>
+      </code>
+      
+      test.php
+      <code>
       require_once 'QueryPath.php';
 
       htmlqp('test.html')
-        ->appendItem('span')            // Apend Item to the document
-        ->children('span')              // Point querypath to the new element
+        ->find('span')                  // Point querypath to the span
         ->css('background', 'yellow')   // Add the CSS
-        ->top()                         // Point QueryPath to the top of the document
-        ->writeHTML();                  // Write HTML, notice it does not use print
-	    ?>
-		</querypath>
-	</entry>
+        ->top()                         // Point QueryPath to the top of the page
+        ->writeXHTML();                  // Write HTML, notice it does not use print
+      </code>
+    </querypath>
+  </entry>
+  <entry name="">
+    <desc>
+      
+    </desc>
+    <jquery>
+      
+      <code>
+        
+      </code>
+    </jquery>
+    <querypath>
+      
+      <code>
+      </code>
+
+      <code>
+      
+      </code>
+    </querypath>
+  </entry>
 </entries>

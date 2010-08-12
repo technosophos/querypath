@@ -8,7 +8,8 @@
  * @see http://api.jquery.com/api/
  * 
  * TODO: make the page match querypath.org
- * TODO: the code the doesn't show up from querypath.xml
+ * TODO: figure out how to add new lines to printing of xml files
+ * TODO: add to the xml file
  */
 
 require_once '../src/QueryPath/QueryPath.php';
@@ -37,15 +38,16 @@ $qpnames = array();
 // Search through the xml file to find any entries of jQuery entities
 foreach(qp('querypath.xml', 'entry') as $entry) {
   $qpnames[$entry->attr('name')] =  
-      array('jquery' => $entry->find('jquery')->text(), 
-            'querypath' => $entry->parent()->find('querypath')->text());
+      array('desc' => $entry->find('desc')->innerXML(), 
+            'jquery' => $entry->parent()->find('jquery')->innerXML(), 
+            'querypath' => $entry->parent()->find('querypath')->innerXML());
 }
 
 // Search through the xml file to find all entries of jQuery entities
 foreach(qp('http://api.jquery.com/api/', 'entry') as $entry) {
   if(array_search($entry->find('category')->attr('name'), $qparray)) {
     $jqnames[$entry->parent()->attr('name')] =  
-      array('longdesc' => $entry->find('longdesc')->text(), 
+      array('longdesc' => $entry->find('longdesc')->innerXML(), 
             'name' => $entry->parent()->find('category')->attr('name'));
   }
 }
@@ -63,14 +65,19 @@ foreach($jqkeys as $k => $v) {
 
 // Add the description to the main window if the key exists
 if(array_key_exists($key, $jqnames)) {
-  $qpdoc->parent()->find('#rightbody');
   if(array_key_exists($key, $qpnames)) {
-    
-    $qpdoc->append(htmlspecialchars($qpnames[$key]['jquery']));
-    $qpdoc->append(htmlentities($qpnames[$key]['querypath'], TRUE));
+    $qpdoc->top()->find('#rightdesc')->text($qpnames[$key]['desc']);
+    $qpdoc->top()->find('#righttitle')->text('How it\'s done in jQuery');
+    $qpdoc->top()->find('#righttext')->text($qpnames[$key]['jquery']);
+    $qpdoc->top()->find('#righttitle2')->text('How it\'s done in QueryPath');
+    $qpdoc->top()->find('#righttext2')->text($qpnames[$key]['querypath']);
   }
-  else
-    $qpdoc->append(htmlentities($jqnames[$key]['longdesc']));
+  else {
+    $qpdoc->top()->find('#rightfunction')->text('Function: '.ucfirst($key));
+    $qpdoc->top()->find('#rightdesc')->remove();
+    $qpdoc->top()->find('#righttitle')->text('jQuery Documentation');
+    $qpdoc->top()->find('#righttext')->append($jqnames[$key]['longdesc']);
+  }
 }
 
 // Write the document
