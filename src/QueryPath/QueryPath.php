@@ -663,6 +663,8 @@ class QueryPath implements IteratorAggregate {
   }
   /**
    * Get/set an attribute.
+   * - If no parameters are specified, this returns an associative array of all 
+   *   name/value pairs.
    * - If both name and value are set, then this will set the attribute name/value
    *   pair for all items in this object. 
    * - If name is set, and is an array, then
@@ -684,7 +686,22 @@ class QueryPath implements IteratorAggregate {
    * @see hasAttr()
    * @see hasClass()
    */
-  public function attr($name, $value = NULL) {
+  public function attr($name = NULL, $value = NULL) {
+    
+    // Default case: Return all attributes as an assoc array.
+    if (is_null($name)) {
+      if ($this->matches->count() == 0) return NULL;
+      $ele = $this->getFirstMatch();
+      $buffer = array();
+      
+      // This does not appear to be part of the DOM
+      // spec. Nor is it documented. But it works.
+      foreach ($ele->attributes as $name => $attrNode) {
+        $buffer[$name] = $attrNode->value;
+      }
+      return $buffer;
+    }
+    
     // multi-setter
     if (is_array($name)) {
       foreach ($name as $k => $v) {

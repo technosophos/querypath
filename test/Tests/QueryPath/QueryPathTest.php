@@ -303,6 +303,12 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     // Check magic nodeType attribute:
     $this->assertEquals(XML_ELEMENT_NODE, qp($file)->find('#head')->attr('nodeType'));
     
+    // Since QP 2.1
+    $xml = '<?xml version="1.0"?><root><one a1="1" a2="2" a3="3"/></root>';
+    $qp = qp($xml, 'one');
+    $attrs = $qp->attr();
+    $this->assertEquals(3, count($attrs), 'Three attributes');
+    $this->assertEquals('1', $attrs['a1'], 'Attribute a1 has value 1.');
   }
   
   public function testHasAttr() {
