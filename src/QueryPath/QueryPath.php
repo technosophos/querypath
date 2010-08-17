@@ -662,6 +662,17 @@ class QueryPath implements IteratorAggregate {
     return $this->matches;
   }
   /**
+   * Get all current elements wrapped in an array.
+   * Compatibility function for jQuery 1.4, but identical to calling {@link get()}
+   * with no parameters.
+   *
+   * @return array
+   *  An array of DOMNodes (typically DOMElements).
+   */
+  public function toArray() {
+    return $this->get();
+  }
+  /**
    * Get/set an attribute.
    * - If no parameters are specified, this returns an associative array of all 
    *   name/value pairs.
@@ -1405,6 +1416,20 @@ class QueryPath implements IteratorAggregate {
       $found->attach($parent->removeChild($m));
     }
     $this->setMatches($found);
+    return $this;
+  }
+  /**
+   * Remove the parent element from the selected node or nodes.
+   *
+   * This is the opposite of {@link wrap()}.
+   *
+   * @return QueryPath
+   *  The QueryPath object, with the same element(s) selected.
+   * @see wrap()
+   * @since 2.1
+   * @author mbutcher
+   */
+  public function unwrap() {
     return $this;
   }
   /**

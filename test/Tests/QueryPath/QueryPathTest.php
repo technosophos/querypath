@@ -682,6 +682,14 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals(2, $qp2->top()->find('l')->size());
   }
   
+  public function testUnwrap() {
+    
+    $xml = '<?xml version="1.0"?><root><wrapper><center/></wrapper></root>';
+    $qp = qp($xml, 'center')->unwrap();
+    $this->assertEquals('root', $qp->top('center')->parent()->tag());
+    
+  }
+  
   public function testWrap() {
     $file = DATA_FILE;
     $xml = qp($file,'unary')->wrap('');
