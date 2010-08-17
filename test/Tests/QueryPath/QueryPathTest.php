@@ -684,10 +684,40 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
   
   public function testUnwrap() {
     
-    $xml = '<?xml version="1.0"?><root><wrapper><center/></wrapper></root>';
+    // Unwrap center, and make sure junk goes away.
+    $xml = '<?xml version="1.0"?><root><wrapper><center/><junk/></wrapper></root>';
     $qp = qp($xml, 'center')->unwrap();
     $this->assertEquals('root', $qp->top('center')->parent()->tag());
+    $this->assertEquals(0, $qp->top('junk')->size());
     
+    // Make sure it works on two nodes in the same parent.
+    $xml = '<?xml version="1.0"?><root><wrapper><center id="1"/><center id="2"/></wrapper></root>';
+    $qp = qp($xml, 'center')->unwrap();
+    
+    // Make sure they were unwrapped
+    $this->assertEquals('root', $qp->top('center')->parent()->tag());
+    
+    // Make sure both get copied.
+    $this->assertEquals(2, $qp->top('center')->size());
+
+    // Make sure they are in order.
+    $this->assertEquals('2', $qp->top('center:last')->attr('id'));
+    
+    // Test on root element.
+    $xml = '<?xml version="1.0"?><root><center/></root>';
+    $qp = qp($xml, 'center')->unwrap();
+    $this->assertEquals('center', $qp->top()->tag());
+    
+  }
+  
+  /**
+   * @expectedException QueryPathException
+   */
+  public function testFailedUnwrap() {
+    // Cannot unwrap the root element.
+    $xml = '<?xml version="1.0"?><root></root>';
+    $qp = qp($xml, 'root')->unwrap();
+    $this->assertEquals('center', $qp->top()->tag());
   }
   
   public function testWrap() {
