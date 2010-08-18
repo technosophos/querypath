@@ -662,6 +662,17 @@ class QueryPath implements IteratorAggregate {
     return $this->matches;
   }
   /**
+   * Get all current elements wrapped in an array.
+   * Compatibility function for jQuery 1.4, but identical to calling {@link get()}
+   * with no parameters.
+   *
+   * @return array
+   *  An array of DOMNodes (typically DOMElements).
+   */
+  public function toArray() {
+    return $this->get();
+  }
+  /**
    * Get/set an attribute.
    * - If no parameters are specified, this returns an associative array of all 
    *   name/value pairs.
@@ -1405,6 +1416,73 @@ class QueryPath implements IteratorAggregate {
       $found->attach($parent->removeChild($m));
     }
     $this->setMatches($found);
+    return $this;
+  }
+  /**
+   * Remove the parent element from the selected node or nodes.
+   *
+   * This takes the given list of nodes and "unwraps" them, moving them out of their parent
+   * node, and then deleting the parent node.
+   *
+   * For example, consider this:
+   *
+   * <code>
+   *   <root><wrapper><content/></wrapper></root>
+   * </code>
+   * 
+   * Now we can run this code:
+   * <code>
+   *   qp($xml, 'content')->unwrap();
+   * </code>
+   *
+   * This will result in:
+   *
+   * <code>
+   *   <root><content/></root>
+   * </code>
+   * This is the opposite of {@link wrap()}.
+   *
+   * <b>The root element cannot be unwrapped.</b> It has no parents.
+   * If you attempt to use unwrap on a root element, this will throw a QueryPathException.
+   * (You can, however, "Unwrap" a child that is a direct descendant of the root element. This
+   * will remove the root element, and replace the child as the root element. Be careful, though.
+   * You cannot set more than one child as a root element.)
+   *
+   * @return QueryPath
+   *  The QueryPath object, with the same element(s) selected.
+   * @throws QueryPathException
+   *  An exception is thrown if one attempts to unwrap a root element.
+   * @see wrap()
+   * @since 2.1
+   * @author mbutcher
+   */
+  public function unwrap() {
+    
+    // We do this in two loops in order to
+    // capture the case where two matches are
+    // under the same parent. Othwerwise we might
+    // remove a match before we can move it.
+    $parents = new SplObjectStorage();
+    foreach ($this->matches as $m) {
+      
+      // Cannot unwrap the root element.
+      if ($m->isSameNode($m->ownerDocument->documentElement)) {
+        throw new QueryPathException('Cannot unwrap the root element.');
+      }
+      
+      // Move children to peer of parent.
+      $parent = $m->parentNode;
+      $old = $parent->removeChild($m);
+      $parent->parentNode->insertBefore($old, $parent);
+      $parents->attach($parent);
+    }
+    
+    // Now that all the children are moved, we 
+    // remove all of the parents.
+    foreach ($parents as $ele) {
+      $ele->parentNode->removeChild($ele);
+    }
+    
     return $this;
   }
   /**
