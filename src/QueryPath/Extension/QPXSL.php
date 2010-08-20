@@ -56,7 +56,7 @@ class QPXSL implements QueryPathExtension {
    *  This takes a QueryPath object or <em>any</em> of the types that the 
    *  {@link qp()} function can take.
    * @return QueryPath
-   *  A QueryPath object wrapping the transformed document. Not that this is a 
+   *  A QueryPath object wrapping the transformed document. Note that this is a 
    *  <i>different</em> document than the original. As such, it has no history.
    *  You cannot call {@link QueryPath::end()} to undo a transformation. (However,
    *  the original source document will remain unchanged.)
