@@ -1140,6 +1140,19 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('foot', qp($file, 'inner')->next()->eq(1)->tag());
     
     $this->assertEquals('foot', qp($file, 'unary')->next('foot')->tag());
+    
+    // Regression test for issue eabrand identified:
+    
+    $qp = qp(QueryPath::HTML_STUB)->append('<div></div><p>Hello</p><p>Goodbye</p>')
+      ->children('p')
+      ->after('<p>new paragraph</p>');
+      
+    //throw new Exception($qp->top()->xml());
+      
+    $this->assertEquals('Hello', $qp->top('p:first')->text(), "Test First P");
+    $this->assertEquals('new paragraph', $qp->next()->text(), "Test Newly Added P");
+    $this->assertEquals('Goodbye', $qp->next()->text(), "Test third P");
+    $this->assertEquals('new paragraph', $qp->next()->text(), "Test Other Newly Added P");
   }
   public function testPrev() {
     $file = DATA_FILE;
