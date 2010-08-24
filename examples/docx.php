@@ -1,6 +1,8 @@
 <?php
 /**
  * DocX Parser
+ * 
+ * For namespaces use | instead of :
  *
  * @package Examples
  * @author Emily Brand
@@ -15,6 +17,6 @@ $path = 'docx_document.xml';
 
 // http://www.php.net/manual/en/function.zip-open.php - For how to find the document.xml file
 
-$qp = qp($path, 'w:body');
+$qp = qp($path, 'w|body');
 
-print $qp->firstChild('w:t')->text();
+print $qp->firstChild('w|t')->text();
