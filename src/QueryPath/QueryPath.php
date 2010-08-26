@@ -431,6 +431,43 @@ class QueryPath implements IteratorAggregate {
   }
   
   /**
+   * A static function for transforming data into a Data URL.
+   *
+   * This can be used to create Data URLs for injection into CSS, JavaScript, or other 
+   * non-XML/HTML content. If you are working with QP objects, you may want to use
+   * {@link dataURL()} instead.
+   *
+   * @param mixed $data
+   *  The contents to inject as the data. The value can be any one of the following:
+   *  - A URL: If this is given, then the subsystem will read the content from that URL. THIS 
+   *    MUST BE A FULL URL, not a relative path.
+   *  - A string of data: If this is given, then the subsystem will encode the string.
+   *  - A stream or file handle: If this is given, the stream's contents will be encoded
+   *    and inserted as data.
+   *  (Note that we make the assumption here that you would never want to set data to be
+   *  a URL. If this is an incorrect assumption, file a bug.)
+   * @param string $mime
+   *  The MIME type of the document.
+   * @param resource $context
+   *  A valid context. Use this only if you need to pass a stream context. This is only necessary
+   *  if $data is a URL. (See {@link stream_context_create()}).
+   * @return 
+   *  An encoded data URL.
+   */
+  public static function encodeDataURL($data, $mime = 'application/octet-stream', $context = NULL) {
+    if (is_resource($data)) {
+      $data = stream_get_contents($data);
+    }
+    elseif (filter_var($data, FILTER_VALIDATE_URL)) {
+      $data = file_get_contents($data, FALSE, $context);
+    }
+    
+    $encoded = base64_encode($data);
+    
+    return 'data:' . $mime . ';base64,' . $encoded;
+  }
+  
+  /**
    * Get the effective options for the current QueryPath object.
    *
    * This returns an associative array of all of the options as set
@@ -870,20 +907,14 @@ class QueryPath implements IteratorAggregate {
     }
     else {
       
-      if (is_resource($data)) {
-        $data = stream_get_contents($data);
-      }
-      elseif (filter_var($data, FILTER_VALIDATE_URL)) {
-        $data = file_get_contents($data, FALSE, $context);
-      }
+      $attVal = self::encodeDataURL($data, $mime, $context);
       
-      $encoded = base64_encode($data);
-      
-      $attVal = 'data:' . $mime . ';base64,' . $encoded;
       return $this->attr($attr, $attVal);
       
     }
   }
+  
+
   
   /**
    * Remove the named attribute from all elements in the current QueryPath.
