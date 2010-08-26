@@ -1437,6 +1437,23 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     // From inside, should not be able to find outside.
     $this->assertEquals(0, qp($xml, '.inside')->find('.outside')->size());
   }
+  
+  public function testDataURL() {
+    
+    $text = 'Hi!'; // Base-64 encoded value would be SGkh
+    $xml = '<?xml version="1.0"?><root><item/></root>';
+    
+    $qp = qp($xml, 'item')->dataURL('secret', $text, 'text/plain');
+    
+    $this->assertEquals(1, $qp->top('item[secret]')->size(), 'One attr should be added.');
+    
+    $this->assertEquals('data:text/plain;base64,SGkh', $qp->attr('secret'), 'Attr value should be data URL.');
+    
+    $result = $qp->dataURL('secret');
+    $this->assertEquals(2, count($result), 'Should return two-array.');
+    $this->assertEquals($text, $result['data'] , 'Should return original data, decoded.');
+    $this->assertEquals('text/plain', $result['mime'], 'Should return the original MIME');
+  }
 }
 
 /**

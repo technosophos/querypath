@@ -864,7 +864,7 @@ class QueryPath implements IteratorAggregate {
         $result = array(
           'mime' => $matches[1] . '/' . $matches[2],
           'data' => base64_decode($matches[3]),
-        )
+        );
         return $result;
       }
     }
