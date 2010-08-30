@@ -431,6 +431,43 @@ class QueryPath implements IteratorAggregate {
   }
   
   /**
+   * A static function for transforming data into a Data URL.
+   *
+   * This can be used to create Data URLs for injection into CSS, JavaScript, or other 
+   * non-XML/HTML content. If you are working with QP objects, you may want to use
+   * {@link dataURL()} instead.
+   *
+   * @param mixed $data
+   *  The contents to inject as the data. The value can be any one of the following:
+   *  - A URL: If this is given, then the subsystem will read the content from that URL. THIS 
+   *    MUST BE A FULL URL, not a relative path.
+   *  - A string of data: If this is given, then the subsystem will encode the string.
+   *  - A stream or file handle: If this is given, the stream's contents will be encoded
+   *    and inserted as data.
+   *  (Note that we make the assumption here that you would never want to set data to be
+   *  a URL. If this is an incorrect assumption, file a bug.)
+   * @param string $mime
+   *  The MIME type of the document.
+   * @param resource $context
+   *  A valid context. Use this only if you need to pass a stream context. This is only necessary
+   *  if $data is a URL. (See {@link stream_context_create()}).
+   * @return 
+   *  An encoded data URL.
+   */
+  public static function encodeDataURL($data, $mime = 'application/octet-stream', $context = NULL) {
+    if (is_resource($data)) {
+      $data = stream_get_contents($data);
+    }
+    elseif (filter_var($data, FILTER_VALIDATE_URL)) {
+      $data = file_get_contents($data, FALSE, $context);
+    }
+    
+    $encoded = base64_encode($data);
+    
+    return 'data:' . $mime . ';base64,' . $encoded;
+  }
+  
+  /**
    * Get the effective options for the current QueryPath object.
    *
    * This returns an associative array of all of the options as set
@@ -809,6 +846,76 @@ class QueryPath implements IteratorAggregate {
     $this->attr('style', $css);
     return $this;
   }
+  
+  /**
+   * Insert or retrieve a Data URL.
+   *
+   * When called with just $attr, it will fetch the result, attempt to decode it, and
+   * return an array with the MIME type and the application data.
+   *
+   * When called with both $attr and $data, it will inject the data into all selected elements
+   * So <code>$qp->dataURL('src', file_get_contents('my.png'), 'image/png')</code> will inject 
+   * the given PNG image into the selected elements.
+   *
+   * The current implementation only knows how to encode and decode Base 64 data.
+   *
+   * Note that this is known *not* to work on IE 6, but should render fine in other browsers.
+   *
+   * @param string $attr
+   *  The name of the attribute.
+   * @param mixed $data
+   *  The contents to inject as the data. The value can be any one of the following:
+   *  - A URL: If this is given, then the subsystem will read the content from that URL. THIS 
+   *    MUST BE A FULL URL, not a relative path.
+   *  - A string of data: If this is given, then the subsystem will encode the string.
+   *  - A stream or file handle: If this is given, the stream's contents will be encoded
+   *    and inserted as data.
+   *  (Note that we make the assumption here that you would never want to set data to be
+   *  a URL. If this is an incorrect assumption, file a bug.)
+   * @param string $mime
+   *  The MIME type of the document.
+   * @param resource $context
+   *  A valid context. Use this only if you need to pass a stream context. This is only necessary
+   *  if $data is a URL. (See {@link stream_context_create()}).
+   * @return
+   *  If this is called as a setter, this will return a QueryPath object. Otherwise, it
+   *  will attempt to fetch data out of the attribute and return that.
+   * @see http://en.wikipedia.org/wiki/Data:_URL
+   * @see attr()
+   * @since 2.1
+   */
+  public function dataURL($attr, $data = NULL, $mime = 'application/octet-stream', $context = NULL) {
+    if (is_null($data)) {
+      // Attempt to fetch the data
+      $data = $this->attr($attr);
+      if (empty($data) || is_array($data) || strpos($data, 'data:') !== 0) {
+        return;
+      }
+      
+      // So 1 and 2 should be MIME types, and 3 should be the base64-encoded data.
+      $regex = '/^data:([a-zA-Z0-9]+)\/([a-zA-Z0-9]+);base64,(.*)$/';
+      $matches = array();
+      preg_match($regex, $data, $matches);
+      
+      if (!empty($matches)) {
+        $result = array(
+          'mime' => $matches[1] . '/' . $matches[2],
+          'data' => base64_decode($matches[3]),
+        );
+        return $result;
+      }
+    }
+    else {
+      
+      $attVal = self::encodeDataURL($data, $mime, $context);
+      
+      return $this->attr($attr, $attVal);
+      
+    }
+  }
+  
+
+  
   /**
    * Remove the named attribute from all elements in the current QueryPath.
    *
