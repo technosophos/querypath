@@ -43,7 +43,7 @@ foreach(qp('querypath.xml', 'entry') as $entry) {
 }
 
 // Search through the xml file to find all entries of jQuery entities
-foreach(qp('http://api.jquery.com/api/', 'entry') as $entry) {
+foreach(htmlqp('http://api.jquery.com/api/', 'entry') as $entry) {
   $category = false;
   $category = array_search($entry->find('category:first')->attr('name'), $qparray);
   while($entry->next('category')->html() != null) {
