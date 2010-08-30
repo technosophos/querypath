@@ -362,4 +362,54 @@ To print this message, do:
     <zip destfile="${packagedir}/QueryPath-${version}-docs.zip" basedir="${releasedir}"/>
   </target>
   
+  <target name="pharBuild" depends="setup,prebuild">
+    <pharpackage 
+      destfile="${packagedir}/QueryPath-${version}.phar" 
+      basedir="${srcdir}/QueryPath"
+      alias="QueryPath">
+      <fileset dir="${srcdir}/QueryPath">
+        <include name="**/**"/>
+      </fileset>
+      <metadata>
+          <element name="version" value="${version}" />
+          <element name="authors">
+            <element name="M Butcher">
+              <element name="e-mail" value="technosophos@gmail.com" />
+            </element>
+          </element>
+      </metadata>
+    </pharpackage>
+  </target>
+  <!--
+  <target name="pearBuild" depends="setup,prebuild">
+    <pearpkg2 name="QueryPath" dir="./">
+       <option name="packagefile" value="package2.xml"/>
+       <option name="channel" value="pear.technosophos.com"/>
+       
+       <option name="baseinstalldir" value="QueryPath"/>
+
+       <option name="summary" value="The QueryPath XML/HTML library"/>
+       <option name="description" value="QueryPath is a simple, powerful, robust library for working with XML, HTML, and HTTP. It is like jQuery for PHP."/>
+       <option name="apiversion" value="${version}"/>
+       <option name="apistability" value="stable"/>
+       <option name="releaseversion" value="${version}"/>
+       <option name="releasestability" value="stable"/>
+       <option name="license" value="LGPL 2 or MIT"/>
+       <option name="phpdep" value="5.0.0"/>
+       <option name="pearinstallerdep" value="1.4.6"/>
+       <option name="packagetype" value="php"/>
+       <option name="notes" value="README"/>
+       <option name="outputdirectory" value="./build"/>
+       <option name="packagedirectory" value="./${packagedir}"/>
+       <mapping name="maintainers">
+        <element>
+         <element key="handle" value="technosophos"/>
+         <element key="name" value="M Butcher"/>
+         <element key="email" value="mbutcher@technosophos.com"/>
+         <element key="role" value="lead"/>
+        </element>
+       </mapping>
+    </pearpkg2>
+  </target>
+  -->
 </project>
