@@ -106,6 +106,20 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $this->assertTrue($qp->get(0) instanceof DOMNode);
   }
   
+  public function testForTests() {
+    $qp_methods = get_class_methods('QueryPath');
+    $test_methods = get_class_methods('QueryPathTest');
+    
+    $ignore = array("__construct", "__call", "__clone", "get", "getOptions", "setMatches", "toArray", "getIterator");
+    
+    $test_methods = array_map('strtolower', $test_methods);
+     
+    foreach($qp_methods as $q) {
+      if(in_array($q, $ignore)) continue;
+      $this->assertTrue(in_array(strtolower("test".$q), $test_methods), $q . ' does not have a test method.');
+    }
+  }
+  
   public function testOptionXMLEncoding() {
     $xml = qp(NULL, NULL, array('encoding' => 'iso-8859-1'))->append('<test/>')->xml();
     $iso_found = preg_match('/iso-8859-1/', $xml) == 1;
@@ -356,6 +370,10 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $qp = qp($file)->find('li')->eq(0);
     $this->assertEquals(1, $qp->size());
     $this->assertEquals($qp->attr('id'), 'one');
+    $this->assertEquals(1, qp($file, 'inner')->eq(0)->size());
+    $this->assertEquals(1, qp($file, 'li')->eq(0)->size());
+    $this->assertEquals("Hello", qp($file, 'li')->eq(0)->text());
+    $this->assertEquals("Last", qp($file, 'li')->eq(3)->text());
   }
   
   public function testIs() {
@@ -1147,12 +1165,20 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
       ->children('p')
       ->after('<p>new paragraph</p>');
       
+    $testarray = array('new paragraph', 'Goodbye', 'new paragraph');   
+      
     //throw new Exception($qp->top()->xml());
       
     $this->assertEquals('Hello', $qp->top('p:first')->text(), "Test First P");
-    $this->assertEquals('new paragraph', $qp->next()->text(), "Test Newly Added P");
-    $this->assertEquals('Goodbye', $qp->next()->text(), "Test third P");
-    $this->assertEquals('new paragraph', $qp->next()->text(), "Test Other Newly Added P");
+    $i = 0;
+    while($qp->next('p')->html() != null) {
+      $this->assertEquals($testarray[$i], $qp->text(), $i." didn't match");
+      $i++;
+    }
+    $this->assertEquals(3, $i);
+//    $this->assertEquals('new paragraph', $qp->next()->text(), "Test Newly Added P");
+//    $this->assertEquals('Goodbye', $qp->next()->text(), "Test third P");
+//    $this->assertEquals('new paragraph', $qp->next()->text(), "Test Other Newly Added P");
   }
   public function testPrev() {
     $file = DATA_FILE;
@@ -1381,14 +1407,6 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $file = DATA_FILE;
     $this->assertEquals(1, qp($file, '#inner-one')->firstChild()->size());
     $this->assertEquals("Hello", qp($file, '#inner-one')->firstChild()->text());
-  }
-  
-  public function testGetNthElement() {
-    $file = DATA_FILE;
-    $this->assertEquals(1, qp($file, 'inner')->getNthElement(0)->size());
-    $this->assertEquals(1, qp($file, 'li')->getNthElement(0)->size());
-    $this->assertEquals("Hello", qp($file, 'li')->getNthElement(0)->text());
-    $this->assertEquals("Last", qp($file, 'li')->getNthElement(3)->text());
   }
   
   public function testLast() {
