@@ -7,8 +7,6 @@
  * @license LGPL The GNU Lesser GPL (LGPL) or an MIT-like license.
  * @see http://api.jquery.com/api/
  * 
- * TODO: make the page match querypath.org
- * TODO: figure out how to add new lines to printing of xml files
  * TODO: add to the xml file
  */
 
@@ -30,7 +28,8 @@ $key = $_GET['key'];
 
 // The jQuery categories that are used in QueryPath
 $qparray = array('Tree Traversal', 'Child Filter', 'Attribute', 'Content Filter', 'Basic Filter', 
-'Hierarchy', 'Basic', 'Filtering', 'Miscellaneous Traversing', 'DOM Insertion, Outside', 'DOM Insertion, Inside', 'Attributes');
+'Hierarchy', 'Basic', 'Filtering', 'Miscellaneous Traversing', 'DOM Insertion, Outside', 
+'DOM Insertion, Inside', 'Attributes', 'Style Properties');
 
 $jqnames = array();
 $qpnames = array();
@@ -45,7 +44,13 @@ foreach(qp('querypath.xml', 'entry') as $entry) {
 
 // Search through the xml file to find all entries of jQuery entities
 foreach(qp('http://api.jquery.com/api/', 'entry') as $entry) {
-  if(array_search($entry->find('category')->attr('name'), $qparray)) {
+  $category = false;
+  $category = array_search($entry->find('category:first')->attr('name'), $qparray);
+  while($entry->next('category')->html() != null) {
+    $category = (array_search($entry->attr('name'), $qparray)) ? true : $category;
+    if($category) break;
+  }
+  if($category) {
     $jqnames[$entry->parent()->attr('name')] =  
       array('longdesc' => $entry->find('longdesc')->innerXML(), 
             'name' => $entry->parent()->find('category')->attr('name'));
@@ -66,6 +71,7 @@ foreach($jqkeys as $k => $v) {
 // Add the description to the main window if the key exists
 if(array_key_exists($key, $jqnames)) {
   if(array_key_exists($key, $qpnames)) {
+    $qpdoc->top()->find('#rightfunction')->text('Function: '.ucfirst($key));
     $qpdoc->top()->find('#rightdesc')->text($qpnames[$key]['desc']);
     $qpdoc->top()->find('#righttitle')->text('How it\'s done in jQuery');
     $qpdoc->top()->find('#righttext')->text($qpnames[$key]['jquery']);

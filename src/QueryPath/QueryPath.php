@@ -164,6 +164,8 @@ require_once 'QueryPathExtension.php';
  *    class is either {@link QueryPath} or a subclass thereof. See the test 
  *    cases for an example.
  *
+ * @return QueryPath qp
+ *
  * @example examples/simple_example.php Basic Example
  * @example examples/html.php Generating HTML
  * @example examples/xml.php Using XML
@@ -2198,6 +2200,11 @@ class QueryPath implements IteratorAggregate {
       return NULL;
     }
     
+    // Added by eabrand.
+    if(!$first->ownerDocument->documentElement) {
+      return NULL;
+    }
+    
     if ($first instanceof DOMDocument || $first->isSameNode($first->ownerDocument->documentElement)) {
       return $this->document->saveHTML();
     }
@@ -3181,38 +3188,6 @@ class QueryPath implements IteratorAggregate {
     $this->matches = $found; // Don't buffer this. It is temporary.
     return $this;
   }
-
-  /**
-   * Get the matching element of the index.
-   *
-   *
-   * @return QueryPath
-   *  A QueryPath wrapping all of the children.
-   * @see next()
-   * @see prev()
-   * @since 2.1
-   * @author eabrand
-   */
-  public function getNthElement($i = 0) {
-    // MPB: This appears to be the same as the eq() method.
-    $found = new SplObjectStorage();
-    $found->attach($this->getNthMatch($i));
-    /* MPB: This is the same code as is in getNthMatch().
-    $j = 0;
-    foreach ($this->matches as $m) {
-      if ($m->nodeType == XML_ELEMENT_NODE) {
-        if($j == $i) {
-          $found->attach($m);
-          break;
-        }
-        $j++;
-      }
-    }
-    */
-    $this->setMatches($found);
-    //$this->matches = $found; // Don't buffer this. It is temporary.
-    return $this;
-  }
   
   /**
    * Get the first matching element.
@@ -3574,7 +3549,7 @@ class QueryPath implements IteratorAggregate {
    * strong random access support, so we suppliment it with this method.
    */
   private function getNthMatch($index) {
-    if ($index > $this->matches->count()) return;
+    if ($index > $this->matches->count() || $index < 0) return;
     
     $i = 0;
     foreach ($this->matches as $m) {
