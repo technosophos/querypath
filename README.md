@@ -23,7 +23,7 @@ The following packages of QueryPath are available:
     Generally, this is useful to install as a complement to the minimal package.
   * Phar (QueryPath-VERSION.phar): This is a Phar package which can be used as-is. Its size has been
     minimized by stripping comments. It is designed for direct inclusion in PHP 5.3 applications.
-  * PEAR package (pear install QueryPath): If you have added the QueryPath channel to your pear
+  * PEAR package (pear install QueryPath) *coming soon (2.1 release)*: If you have added the QueryPath channel to your pear
     repository, you can install the full version of QueryPath with pear.
     
 If in doubt, you probably want the PEAR version or the Full package.
