@@ -1,7 +1,7 @@
 # QueryPath: Find your way.
 
-* Author: Matt Butcher
-* Website: http://querypath.org
+* Authors: Matt Butcher (lead), Emily Brand, and others
+* Website: [http://querypath.org]
 * API Docs: http://api.querypath.org
 * VCS and Issue Tracking: http://github.com/technosophos/querypath
 * Support List: http://groups.google.com/group/support-querypath
