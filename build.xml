@@ -372,10 +372,10 @@ To print this message, do:
     <copy todir="${releasedir}">
       <filterchain>
         <stripphpcomments/>
-        <!-- stripwhitespace/ -->
+        <stripwhitespace/>
         <replacetokens begintoken="@" endtoken="@">
           <token key="UNSTABLE" value="${version}"/>
-          <token key="PHAR_FILENAME" value="QueryPath-${version}.phar"/>
+          <token key="PHAR_FILENAME" value="QueryPath.phar"/>
         </replacetokens>
       </filterchain>
       <fileset dir="${srcdir}/QueryPath">
@@ -392,7 +392,11 @@ To print this message, do:
     <pharpackage 
       destfile="${packagedir}/QueryPath-${version}.phar" 
       basedir="${releasedir}"
-      alias="QueryPath">
+      stub="${releasedir}/basic_loader.php"
+      alias="QueryPath.phar">
+      <fileset dir="${releasedir}">
+        <include name="**/**"/>
+      </fileset>
       <metadata>
           <element name="version" value="${version}" />
           <element name="authors">
