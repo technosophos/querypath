@@ -1,11 +1,12 @@
 # QueryPath: Find your way.
 
-* Authors: Matt Butcher (lead), Emily Brand, and others
-* Website: [http://querypath.org]
-* API Docs: http://api.querypath.org
-* VCS and Issue Tracking: http://github.com/technosophos/querypath
-* Support List: http://groups.google.com/group/support-querypath
-* Developer List: http://groups.google.com/group/devel-querypath
+Authors: Matt Butcher (lead), Emily Brand, and others
+
+[Website](http://querypath.org) | 
+[API Docs](http://api.querypath.org) |
+[VCS and Issue Tracking](http://github.com/technosophos/querypath) |
+[Support List](http://groups.google.com/group/support-querypath) |
+[Developer List](http://groups.google.com/group/devel-querypath) |
 
 This package is licensed under the GNU LGPL 2.1 (COPYING-LGPL.txt) or, at your choice, an MIT-style
 license (COPYING-MIT.txt). The licenses should have been distributed with this library.
