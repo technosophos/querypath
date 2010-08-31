@@ -62,6 +62,7 @@ To print this message, do:
   <property name="builddir" value="./bin/build"/>
   <property name="docsdir" value="./docs"/>
   <property name="packagedir" value="./dist"/>
+  <property name="phardir" value="./phar"/>
   
   <!-- Files that must be included in the release -->
   <fileset id="licensefiles" dir=".">
@@ -363,11 +364,37 @@ To print this message, do:
   </target>
   
   <target name="pharBuild" depends="setup,prebuild">
+    
+    <property name="releasedir" value="${builddir}/QueryPath-${version}-phar" override="true"/>
+    <echo>${releasedir}</echo>
+    <delete dir="${releasedir}" />
+    <mkdir dir="${releasedir}"/>
+    <copy todir="${releasedir}">
+      <filterchain>
+        <stripphpcomments/>
+        <stripwhitespace/>
+        <replacetokens begintoken="@" endtoken="@">
+          <token key="UNSTABLE" value="${version}"/>
+          <token key="PHAR_FILENAME" value="QueryPath.phar"/>
+        </replacetokens>
+      </filterchain>
+      <fileset dir="${srcdir}/QueryPath">
+        <include name="**/*"/>
+      </fileset>
+      <fileset dir="${phardir}">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
+    <copy todir="${releasedir}">
+      <fileset refid="licensefiles"/>
+    </copy>
+    
     <pharpackage 
       destfile="${packagedir}/QueryPath-${version}.phar" 
-      basedir="${srcdir}/QueryPath"
-      alias="QueryPath">
-      <fileset dir="${srcdir}/QueryPath">
+      basedir="${releasedir}"
+      stub="${releasedir}/basic_loader.php"
+      alias="QueryPath.phar">
+      <fileset dir="${releasedir}">
         <include name="**/**"/>
       </fileset>
       <metadata>
