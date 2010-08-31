@@ -24,4 +24,14 @@
  */
 require_once '../src/QueryPath/QueryPath.php';
 qp(QueryPath::HTML_STUB)->find('body')->text('Hello World')->writeHTML();
-?>
+
+$qp = htmlqp(QueryPath::HTML_STUB, 'body');
+
+
+   $qp->append('<div></div><p id="cool">Hello</p><p id="notcool">Goodbye</p>')
+      ->children('p')
+      ->after('<p id="new">new paragraph</p>');
+
+         echo ($qp->find('p')->children('p')->html()) ? 'print' : 'dont print';;
+         
+//         ->writeHTML();
