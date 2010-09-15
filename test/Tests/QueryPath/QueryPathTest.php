@@ -1472,6 +1472,11 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($text, $result['data'] , 'Should return original data, decoded.');
     $this->assertEquals('text/plain', $result['mime'], 'Should return the original MIME');
   }
+  
+  public function testEncodeDataURL() {
+    $data = QueryPath::encodeDataURL('Hi!', 'text/plain');
+    $this->assertEquals('data:text/plain;base64,SGkh', $data);
+  }
 }
 
 /**

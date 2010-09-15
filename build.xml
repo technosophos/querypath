@@ -407,11 +407,48 @@ To print this message, do:
       </metadata>
     </pharpackage>
   </target>
-  <!--
+  <!-- Requires PEAR_PackageFileManager2 -->
   <target name="pearBuild" depends="setup,prebuild">
+    <property name="stability" value="stable"/>
+    <!-- Follow the pear naming conventions for builds -->
+    <if>
+      <equals arg1="${version}" arg2="dev-${DSTAMP}"/>
+      <then>
+        <property name="stability" value="devel" override="true"/>
+        <property name="version" value="2.1dev${DSTAMP}" override="true"/>
+        <echo>Setting version string to ${version}.</echo>
+      </then>
+    </if>
+    
+    <!-- Create PEAR release directory -->
+    <property name="releasedir" value="${builddir}/QueryPath-${version}-pear" override="true"/>
+    <echo>${releasedir}</echo>
+    <delete dir="${releasedir}" />
+    <mkdir dir="${releasedir}"/>
+    <copy todir="${releasedir}">
+      <filterchain>
+        <stripphpcomments/>
+        <stripwhitespace/>
+        <replacetokens begintoken="@" endtoken="@">
+          <token key="UNSTABLE" value="${version}"/>
+        </replacetokens>
+      </filterchain>
+      <fileset dir="${srcdir}">
+        <include name="**/*"/>
+      </fileset>
+    </copy>
+    <copy todir="${releasedir}">
+      <fileset refid="licensefiles"/>
+    </copy>
+    
+    <!-- Generate PEAR package. -->
     <pearpkg2 name="QueryPath" dir="./">
+       <fileset dir="${releasedir}">
+         <include name="**/**"/>
+       </fileset>
+       <option name="uri" value="http://querypath.org"/>
        <option name="packagefile" value="package2.xml"/>
-       <option name="channel" value="pear.technosophos.com"/>
+       <option name="channel" value="pear.querypath.org"/>
        
        <option name="baseinstalldir" value="QueryPath"/>
 
@@ -425,9 +462,9 @@ To print this message, do:
        <option name="phpdep" value="5.0.0"/>
        <option name="pearinstallerdep" value="1.4.6"/>
        <option name="packagetype" value="php"/>
-       <option name="notes" value="README"/>
-       <option name="outputdirectory" value="./build"/>
-       <option name="packagedirectory" value="./${packagedir}"/>
+       <option name="notes" value="Latest info is available at http://github.com/technosophos/querypath"/>
+       <option name="outputdirectory" value="./${builddir}"/>
+       <option name="packagedirectory" value="./${releasedir}"/>
        <mapping name="maintainers">
         <element>
          <element key="handle" value="technosophos"/>
@@ -438,5 +475,4 @@ To print this message, do:
        </mapping>
     </pearpkg2>
   </target>
-  -->
 </project>
