@@ -475,4 +475,15 @@ To print this message, do:
        </mapping>
     </pearpkg2>
   </target>
+  
+  <!--
+  -- This is an attempt to use the Pyrus builder to create a full package.
+  -- Let's see if it works.
+  -->
+  <!--
+  <target name="pyrusBuild" depends="setup,prebuild">
+    <property name="pyrusPath" value="~/Code/pyrus.phar"/>
+    <exec command="php ${pyrusPath}"/>
+  </target>
+  -->
 </project>
