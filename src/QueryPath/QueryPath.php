@@ -155,6 +155,9 @@ require_once 'QueryPathExtension.php';
  *    used to explicitly define what character set the source document is using.
  *    By default, QueryPath will allow the MB library to guess the encoding.
  *    (QueryPath 1.3 and later)
+ *  - strip_low_ascii: If this is set to TRUE then markup will have all low ASCII
+ *    characters (<32) stripped out before parsing. This is good in cases where 
+ *    icky HTML has (illegal) low characters in the document.
  *  - use_parser: If 'xml', Parse the document as XML. If 'html', parse the 
  *    document as HTML. Note that the XML parser is very strict, while the 
  *    HTML parser is more lenient, but does enforce some of the DTD/Schema.
@@ -219,6 +222,7 @@ function htmlqp($document = NULL, $selector = NULL, $options = array()) {
     'convert_from_encoding' => 'auto',
     //'replace_entities' => TRUE,
     'use_parser' => 'html',
+    'strip_low_ascii' => TRUE,
   );
   return @qp($document, $selector, $options);
 }
@@ -3568,6 +3572,12 @@ class QueryPath implements IteratorAggregate {
           $string = mb_convert_encoding($string, $to_encoding, $from_encoding);
         }
         
+      }
+      
+      // This is to avoid cases where low ascii digits have slipped into HTML.
+      // AFAIK, it should not adversly effect UTF-8 documents.
+      if (!empty($this->options['strip_low_ascii'])) {
+        $string = filter_var($string, FILTER_UNSAFE_RAW, FILTER_FLAG_ENCODE_LOW);
       }
       
       // Allow users to override parser settings.
