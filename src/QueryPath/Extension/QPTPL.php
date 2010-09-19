@@ -74,10 +74,14 @@ class QPTPL implements QueryPathExtension {
     //$tqp = ($template instanceof QueryPath) ? clone $template: qp($template);
     $tqp = qp($template);
     
-    if (is_array($object) || $object instanceof Traversable) 
+    if (is_array($object) || $object instanceof Traversable) {
       $this->tplArrayR($tqp, $object, $options);
-    elseif (is_object($object)) 
+      print 'FINAL APPEND' . PHP_EOL;
+      return $this->qp->append($tqp->top());
+    }
+    elseif (is_object($object)) {
       $this->tplObject($tqp, $object, $options);
+    }
     
     return $this->qp->append($tqp->top());
   }
@@ -188,6 +192,7 @@ class QPTPL implements QueryPathExtension {
    */
   public function tplArrayR($qp, $array, $options = NULL) {
     if (!is_array($array) && !($array instanceof Traversable)) {
+      print 'Appending ' . $array . PHP_EOL;
       $qp->append($array);
     }
     elseif ($this->isAssoc($array)) {
@@ -199,11 +204,14 @@ class QPTPL implements QueryPathExtension {
         if ($first != '.' && $first != '#') $k = '.' . $k;
         
         // If value is an array, recurse.
-        if (is_array($v))
+        if (is_array($v)) {
+          print 'r1' . PHP_EOL;
           $this->tplArrayR($qp->find($k), $v, $options);
-        else 
-          // Otherwise, try to append value.
+        }
+        // Otherwise, try to append value.
+        else {
           $qp->branch()->children($k)->append($v);
+        }
       }
     }
     else {
@@ -217,10 +225,16 @@ class QPTPL implements QueryPathExtension {
           $template = $ele->cloneNode(TRUE);
         }
         $tpl = qp($template);
+                print 'TEMPLATE1' . $tpl->top()->xml() . '/TEMPLATE1';
+                $tpl->end();
+        print 'r2 for ' . $entry . PHP_EOL;
         $tpl = $this->tplArrayR($tpl, $entry, $options);
+        print 'TEMPLATE' . $tpl->top()->xml() . '/TEMPLATE'; $tpl->end();
         $qp->before($tpl);
       }
-      $qp->remove(); // Remove the original template.
+      $dead = $qp->branch();
+      $qp->parent();
+      $dead->remove(); // Remove the original template.
     }
     return $qp;
   }

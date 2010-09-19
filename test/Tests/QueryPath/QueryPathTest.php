@@ -105,6 +105,10 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals(1, count($qp->get()));
     $this->assertTrue($qp->get(0) instanceof DOMNode);
     
+    // Stripping #13 (CR) from HTML.
+    $borken = '<html><head></head><body><p>' . chr(13) . '</p><div id="after"/></body></html>';
+    $this->assertFalse(strpos('&#13;', htmlqp($borken)->html()));
+    
     // Low ASCII in a file
     $borken = '<html><head></head><body><p>' . chr(27) . '</p><div id="after"/></body></html>';
     $this->assertEquals(1, htmlqp($borken, '#after')->size());
