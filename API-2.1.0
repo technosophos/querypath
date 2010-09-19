@@ -1,0 +1,33 @@
+Changes in 2.1
+
+All changes are documented in their respective doc blocks. So take a 
+look at http://api.querypath.org to learn more.
+
+New Functions
+  * The `htmlqp()` method has been added for parsing icky HTML. Use
+    this for web scraping.
+
+Altered Functions
+  * The qp() function now supports the following new options:
+    - convert_to_encoding
+    - convert_from_encoding
+    - strip_low_ascii
+    - use_parser
+
+New Methods
+  * attach()/detach()
+  * has()
+  * emptyElement()
+  * even()/odd()
+  * first()/last()
+  * firstChild()/lastChild()
+  * nextUntil()/prevUntil()
+  * parentsUntil()
+  * encodeDataURL()
+  * dataURL()
+
+Altered Methods
+  * css() has been changed to allow subsequent calls
+    to modify the style attribute (issue #28)
+  * attr() has been changed. If it is called with no 
+    arguments, it now returns all attributes.

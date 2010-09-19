@@ -1,0 +1,21 @@
+RELEASE NOTES
+
+Big Changes:
+
+1. There is now an `htmlqp()` function that parses crufty HTML in a far
+more reliable way than `qp()`. Use this instead of any variant of 
+the older `@qp()` setup.
+
+2. The API has been brought into alignment with jQuery 1.4. See 
+API-2.1.0 for details.
+
+3. This release was driven substantially by eabrand's GSOC 2010 
+contributions. Thanks, Emily!
+
+4. There are now Phar and PEAR packages available.
+
+5. The minimal QP distribution is no longer minified, as it reportedly
+causes XDebug to crash.
+
+7. Data URs are now supported. QueryPath can now embed images directly
+into HTML and XML this way.
