@@ -477,8 +477,8 @@ To print this message, do:
   </target>
   
   <!--
-  -- This is an attempt to use the Pyrus builder to create a full package.
-  -- Let's see if it works.
+ This is an attempt to use the Pyrus builder to create a full package.
+ Let's see if it works.
   -->
   <!--
   <target name="pyrusBuild" depends="setup,prebuild">

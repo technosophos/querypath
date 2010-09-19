@@ -800,6 +800,7 @@ class QueryPath implements IteratorAggregate {
     }
     return TRUE;
   }
+  
   /**
    * Set/get a CSS value for the current element(s).
    * This sets the CSS value for each element in the QueryPath object.
@@ -828,6 +829,10 @@ class QueryPath implements IteratorAggregate {
    * background-color: red
    * </code>
    *
+   * As of QueryPath 2.1, existing style attributes will be merged with new attributes.
+   * (In previous versions of QueryPath, a call to css() overwrite the existing style
+   * values).
+   *
    * @param mixed $name
    *  If this is a string, it will be used as a CSS name. If it is an array,
    *  this will assume it is an array of name/value pairs of CSS rules. It will
@@ -838,18 +843,42 @@ class QueryPath implements IteratorAggregate {
     if (empty($name)) {
       return $this->attr('style');
     }
-    $format = '%s: %s';
-    if (is_array($name)) {
-      $buf = array();
-      foreach ($name as $key => $val) {
-        $buf[] = sprintf($format, $key, $val);
+    
+    // Get any existing CSS.
+    $css = array();
+    foreach ($this->matches as $match) {
+      $style = $match->getAttribute('style');
+      if (!empty($style)) {
+        // XXX: Is this sufficient?
+        $style_array = explode(';', $style);
+        foreach ($style_array as $item) {
+          $item = trim($item);
+          
+          // Skip empty attributes.
+          if (strlen($item) == 0) continue;
+          
+          list($css_att, $css_val) = explode(':',$item, 2);
+          $css[$css_att] = trim($css_val);
+        }
       }
-      $css = implode(';', $buf);
+    }
+    
+    if (is_array($name)) {
+      // Use array_merge instead of + to preserve order.
+      $css = array_merge($css, $name);
     }
     else {
-      $css = sprintf($format, $name, $value);
+      $css[$name] = $value;
     }
-    $this->attr('style', $css);
+    
+    // Collapse CSS into a string.
+    $format = '%s: %s;';
+    $css_string = '';
+    foreach ($css as $n => $v) {
+      $css_string .= sprintf($format, $n, trim($v));
+    }
+    
+    $this->attr('style', $css_string);
     return $this;
   }
   

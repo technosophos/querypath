@@ -355,9 +355,25 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
   
   public function testCss() {
     $file = DATA_FILE;
-    $this->assertEquals('foo: bar', qp($file, 'unary')->css('foo', 'bar')->attr('style'));
-    $this->assertEquals('foo: bar', qp($file, 'unary')->css('foo', 'bar')->css());
-    $this->assertEquals('foo: bar', qp($file, 'unary')->css(array('foo' =>'bar'))->css()); 
+    $this->assertEquals('foo: bar;', qp($file, 'unary')->css('foo', 'bar')->attr('style'));
+    $this->assertEquals('foo: bar;', qp($file, 'unary')->css('foo', 'bar')->css());
+    $this->assertEquals('foo: bar;', qp($file, 'unary')->css(array('foo' =>'bar'))->css()); 
+    
+    // Issue #28: Setting styles in sequence should not result in the second
+    // style overwriting the first style:
+    $qp = qp($file, 'unary')->css('color', 'blue')->css('background-color', 'white');
+    
+    $expects = 'color: blue;background-color: white;';
+    $actual = $qp->css();
+    $this->assertEquals(bin2hex($expects), bin2hex($actual), 'Two css calls should result in two attrs.');
+    
+    // Make sure array merges work.
+    $qp = qp($file, 'unary')->css('a','a')->css(array('b'=>'b', 'c'=>'c'));
+    $this->assertEquals('a: a;b: b;c: c;', $qp->css());
+    
+    // Make sure that second assignment overrides first assignment.
+    $qp = qp($file, 'unary')->css('a','a')->css(array('b'=>'b', 'a'=>'c'));
+    $this->assertEquals('a: c;b: b;', $qp->css());
   }
   
   public function testRemoveAttr() {
