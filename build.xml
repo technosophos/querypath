@@ -125,7 +125,8 @@ To print this message, do:
     <copy todir="${releasedir}">
       <filterchain>
         <stripphpcomments/>
-        <stripwhitespace/>
+        <!-- Removed per issue #20 -->
+        <!-- stripwhitespace/ -->
         <replacetokens begintoken="@" endtoken="@">
           <token key="UNSTABLE" value="${version}"/>
         </replacetokens>
