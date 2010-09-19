@@ -400,6 +400,9 @@ class QueryPath implements IteratorAggregate {
         $this->setMatches($import);
       }
       elseif ($document instanceof SplObjectStorage) {
+        if ($document->count() == 0) {
+          throw new QueryPathException('Cannot initialize QueryPath from an empty SplObjectStore');
+        }
         $this->matches = $document;
         $this->document = $this->getFirstMatch()->ownerDocument;
       }

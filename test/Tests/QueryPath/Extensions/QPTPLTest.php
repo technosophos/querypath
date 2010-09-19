@@ -109,6 +109,8 @@ class QPTPLTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('Cell Six', $qp->top()->find('.table-row:last .cell2')->text());
     $this->assertEquals(6, $qp->top()->find('td')->size());
     
+    // Test with class substitution for multiple items
+    // and same class.
     $tpl = '<?xml version="1.0"?>
     <div>
     <ul class="list">
@@ -123,6 +125,20 @@ class QPTPLTest extends PHPUnit_Framework_TestCase {
     $data['.item'][] = 'Four';
     
     $qp = qp(QueryPath::HTML_STUB, 'body')->tpl($tpl, $data);
+    $this->assertEquals(4, $qp->top('.item')->size());
+    
+    // Same test as before, but with one item set to NULL.
+    $data = array();
+    $data['.item'][] = 'One';
+    $data['.item'][] = 'Two';
+    $data['.item'][] = NULL;
+    $data['.item'][] = 'Four';
+    
+    $qp = qp(QueryPath::HTML_STUB, 'body')->tpl($tpl, $data);
+    $this->assertEquals(4, $qp->top('.item')->size());
+    $this->assertEquals('One', $qp->eq(0)->text());
+    $this->assertEquals('', $qp->eq(2)->text());
+    
   }
   
   public function testTplTraversable() {

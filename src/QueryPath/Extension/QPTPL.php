@@ -76,7 +76,6 @@ class QPTPL implements QueryPathExtension {
     
     if (is_array($object) || $object instanceof Traversable) {
       $this->tplArrayR($tqp, $object, $options);
-      print 'FINAL APPEND' . PHP_EOL;
       return $this->qp->append($tqp->top());
     }
     elseif (is_object($object)) {
@@ -191,10 +190,12 @@ class QPTPL implements QueryPathExtension {
    * Recursively merge array data into a template.
    */
   public function tplArrayR($qp, $array, $options = NULL) {
+    // If the value looks primitive, append it.
     if (!is_array($array) && !($array instanceof Traversable)) {
-      print 'Appending ' . $array . PHP_EOL;
       $qp->append($array);
     }
+    // If we are dealing with an associative array, traverse it
+    // and merge as we go.
     elseif ($this->isAssoc($array)) {
       // Do key/value substitutions
       foreach ($array as $k => $v) {
@@ -205,8 +206,10 @@ class QPTPL implements QueryPathExtension {
         
         // If value is an array, recurse.
         if (is_array($v)) {
-          print 'r1' . PHP_EOL;
-          $this->tplArrayR($qp->find($k), $v, $options);
+          // XXX: Not totally sure that starting at the 
+          // top is right. Perhaps it should start
+          // at some other context?
+          $this->tplArrayR($qp->top($k), $v, $options);
         }
         // Otherwise, try to append value.
         else {
@@ -214,6 +217,8 @@ class QPTPL implements QueryPathExtension {
         }
       }
     }
+    // Otherwise we have an indexed array, and we iterate through
+    // it.
     else {
       // Get a copy of the current template and then recurse.
       foreach ($array as $entry) {
@@ -225,16 +230,15 @@ class QPTPL implements QueryPathExtension {
           $template = $ele->cloneNode(TRUE);
         }
         $tpl = qp($template);
-                print 'TEMPLATE1' . $tpl->top()->xml() . '/TEMPLATE1';
-                $tpl->end();
-        print 'r2 for ' . $entry . PHP_EOL;
         $tpl = $this->tplArrayR($tpl, $entry, $options);
-        print 'TEMPLATE' . $tpl->top()->xml() . '/TEMPLATE'; $tpl->end();
         $qp->before($tpl);
       }
+      // Remove the original template without loosing a handle to the
+      // newly injected one.
       $dead = $qp->branch();
       $qp->parent();
-      $dead->remove(); // Remove the original template.
+      $dead->remove();
+      unset($dead);
     }
     return $qp;
   }
