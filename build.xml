@@ -60,9 +60,15 @@ To print this message, do:
   <property name="srcdir" value="./src"/>
   <property name="testdir" value="./test"/>
   <property name="builddir" value="./bin/build"/>
-  <property name="docsdir" value="./docs"/>
+  <property name="docsdir" value="./doc"/>
   <property name="packagedir" value="./dist"/>
   <property name="phardir" value="./phar"/>
+  
+  <!-- Too hard to link to, nav is very difficult. -->
+  <!-- property name="phpdoc.style" value="HTML:frames:phpedit"/ -->
+  
+  <property name="phpdoc.style" value="HTML:frames:earthli"/>
+  
   
   <!-- Files that must be included in the release -->
   <fileset id="licensefiles" dir=".">
@@ -94,7 +100,7 @@ To print this message, do:
   </fileset>
   
   <!-- Documentation -->
-  <fileset id="docs" dir="./docs">
+  <fileset id="docs" dir="${docsdir}">
     <include name="**/*" />
   </fileset>
   
@@ -157,9 +163,9 @@ To print this message, do:
     <mkdir dir="${releasedir}"/>
     <mkdir dir="${releasedir}/src"/>
     <mkdir dir="${releasedir}/examples"/>
-    <mkdir dir="${releasedir}/test"/>
+    <mkdir dir="${releasedir}/tests"/>
     <mkdir dir="${releasedir}/tutorials"/>
-    <mkdir dir="${releasedir}/docs"/>
+    <mkdir dir="${releasedir}/doc"/>
     
     <!-- Copy license files. -->
     <copy todir="${releasedir}">
@@ -182,7 +188,7 @@ To print this message, do:
     </copy>
     
     <!-- Copy tests. -->
-    <copy todir="${releasedir}/test">
+    <copy todir="${releasedir}/tests">
       <fileset refid="unittests"/>
     </copy>
     
@@ -192,7 +198,7 @@ To print this message, do:
     </copy>
     
     <!-- Copy documentation --> 
-    <copy todir="${releasedir}/docs">
+    <copy todir="${releasedir}/doc">
       <fileset refid="docs"/>
     </copy>
     
@@ -235,11 +241,14 @@ To print this message, do:
       <fileset refid="tutorials"/>
       <fileset refid="examplecode"/>
       <projdocfileset dir=".">
+        <include name="README.md"/>
         <include name="README"/>
         <include name="INSTALL"/>
         <include name="COPYING-LGPL.txt"/>
         <include name="COPYING-MIT.txt"/>
         <include name="LGPL-2.1.txt"/>
+        <include name="RELEASE-*"/>
+        <include name="API-*"/>
       </projdocfileset>
     </phpdoc>
     <!-- Need to replace version information in generated documentation -->
@@ -351,7 +360,7 @@ To print this message, do:
     </copy>
         
     <!-- Copy documentation --> 
-    <copy todir="${releasedir}/docs">
+    <copy todir="${releasedir}/doc">
       <fileset refid="docs"/>
     </copy>
     
