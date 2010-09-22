@@ -228,7 +228,7 @@ To print this message, do:
     <phpdoc title="QueryPath ${version}"
       sourcecode="yes"
       destdir="${docsdir}"
-      output="HTML:frames:phpedit" 
+      output="${phpdoc.style}" 
       defaultcategoryname="QueryPath"
       defaultpackagename="QueryPath"
       examplesdir="examples"
@@ -417,6 +417,17 @@ To print this message, do:
       </metadata>
     </pharpackage>
   </target>
+  
+  <!-- Use Pyrus to generate package.xml files. -->
+  <target name="pyrusMake" depends="setup,prebuild">
+    
+  </target>
+  
+  <!-- Use Pyrus to create a PEAR package. -->
+  <target name="pyrusPackage" depends="setup,prebuild">
+    
+  </target>
+  
   <!-- Requires PEAR_PackageFileManager2 -->
   <target name="pearBuild" depends="setup,prebuild">
     <property name="stability" value="stable"/>
@@ -435,10 +446,11 @@ To print this message, do:
     <echo>${releasedir}</echo>
     <delete dir="${releasedir}" />
     <mkdir dir="${releasedir}"/>
+    <mkdir dir="${releasedir}/doc"/>
     <copy todir="${releasedir}">
       <filterchain>
-        <stripphpcomments/>
-        <stripwhitespace/>
+        <!-- stripphpcomments/ -->
+        <!-- stripwhitespace/ -->
         <replacetokens begintoken="@" endtoken="@">
           <token key="UNSTABLE" value="${version}"/>
         </replacetokens>
@@ -449,6 +461,11 @@ To print this message, do:
     </copy>
     <copy todir="${releasedir}">
       <fileset refid="licensefiles"/>
+    </copy>
+    <copy todir="${releasedir}/doc">
+      <fileset dir="${docsdir}">
+        <include name="**/*"/>
+      </fileset>
     </copy>
     
     <!-- Generate PEAR package. -->
@@ -463,7 +480,7 @@ To print this message, do:
        <option name="baseinstalldir" value="QueryPath"/>
 
        <option name="summary" value="The QueryPath XML/HTML library"/>
-       <option name="description" value="QueryPath is a simple, powerful, robust library for working with XML, HTML, and HTTP. It is like jQuery for PHP."/>
+       <option name="description" value="QueryPath is a simple, powerful, robust library for working with XML, HTML, and HTTP. It is like jQuery for PHP. http://querypath.org"/>
        <option name="apiversion" value="${version}"/>
        <option name="apistability" value="stable"/>
        <option name="releaseversion" value="${version}"/>
@@ -479,11 +496,26 @@ To print this message, do:
         <element>
          <element key="handle" value="technosophos"/>
          <element key="name" value="M Butcher"/>
-         <element key="email" value="mbutcher@technosophos.com"/>
+         <element key="email" value="matt@aleph-null.tv"/>
          <element key="role" value="lead"/>
+        </element>
+        <element>
+         <element key="handle" value="eabrand"/>
+         <element key="name" value="Emily Brand"/>
+         <element key="email" value="unknown@example.com"/>
+         <element key="role" value="developer"/>
         </element>
        </mapping>
     </pearpkg2>
+    
+    <!-- Copy the package.xml -->
+    <move file="${builddir}/package2.xml" tofile="${releasedir}/package.xml"/>
+    
+    <tar destfile="${packagedir}/QueryPath-${version}.tgz" compression="gzip">
+      <fileset dir="./${releasedir}">
+        <include name="**/*"/>
+      </fileset>
+    </tar>
   </target>
   
   <!--
