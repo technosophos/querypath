@@ -1121,7 +1121,7 @@ class QueryPathCssEventHandler implements CssEventHandler {
       foreach($item->childNodes as $kid) {
         // From the spec: Elements and Text nodes are the only ones to
         // affect emptiness.
-        if ($kid->nodeType == XML_ELEMENT_NODE || $kid->nodType == XML_TEXT_NODE) {
+        if ($kid->nodeType == XML_ELEMENT_NODE || $kid->nodeType == XML_TEXT_NODE) {
           $empty = FALSE;
           break;
         }
