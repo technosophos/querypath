@@ -54,6 +54,11 @@ To print this message, do:
 
     </echo>
   </target>
+  
+  <!-- This is used for Pirum tasks. -->
+  <includepath classpath="../Phing-Pirum/src"/>
+  <taskdef classname="PhingPirum.Task.PirumBuildTask" name="pirumbuild"/>
+  <taskdef classname="PhingPirum.Task.PirumAddTask" name="pirumadd"/>
 
 
   <!-- Global properties -->
@@ -442,7 +447,8 @@ To print this message, do:
     </if>
     
     <!-- Create PEAR release directory -->
-    <property name="releasedir" value="${builddir}/QueryPath-${version}-pear" override="true"/>
+    <property name="peardir" value="${builddir}/pear"/>
+    <property name="releasedir" value="${peardir}/QueryPath-${version}" override="true"/>
     <echo>${releasedir}</echo>
     <delete dir="${releasedir}" />
     <mkdir dir="${releasedir}"/>
@@ -509,13 +515,22 @@ To print this message, do:
     </pearpkg2>
     
     <!-- Copy the package.xml -->
-    <move file="${builddir}/package2.xml" tofile="${releasedir}/package.xml"/>
+    <move file="${builddir}/package2.xml" tofile="${peardir}/package.xml"/>
     
     <tar destfile="${packagedir}/QueryPath-${version}.tgz" compression="gzip">
-      <fileset dir="./${releasedir}">
-        <include name="**/*"/>
+      <fileset dir="./${peardir}">
+        <include name="QueryPath-${version}/**/*"/>
+        <include name="package.xml"/>
       </fileset>
     </tar>
+    
+  </target>
+  
+  <target name="pearPkg" depends="pearBuild">
+    <echo>${packagedir}/QueryPath-${version}.tgz</echo>
+    <property name="pirumdir" value="${testdir}/fakepear"/>
+    <pirumbuild targetdir="${pirumdir}"/>
+    <pirumadd targetdir="${pirumdir}" packagefile="${packagedir}/QueryPath-${version}.tgz"/>
   </target>
   
   <!--
