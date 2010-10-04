@@ -68,6 +68,7 @@ To print this message, do:
   <property name="docsdir" value="./doc"/>
   <property name="packagedir" value="./dist"/>
   <property name="phardir" value="./phar"/>
+  <property name="pearchannel" value="../pear.querypath.org/pear"/>
   
   <!-- Too hard to link to, nav is very difficult. -->
   <!-- property name="phpdoc.style" value="HTML:frames:phpedit"/ -->
@@ -528,7 +529,8 @@ To print this message, do:
   
   <target name="pearPkg" depends="pearBuild">
     <echo>${packagedir}/QueryPath-${version}.tgz</echo>
-    <property name="pirumdir" value="${testdir}/fakepear"/>
+    <!--property name="pirumdir" value="${testdir}/fakepear"/-->
+    <property name="pirumdir" value="${pearchannel}"/>
     <pirumbuild targetdir="${pirumdir}"/>
     <pirumadd targetdir="${pirumdir}" packagefile="${packagedir}/QueryPath-${version}.tgz"/>
   </target>
