@@ -257,12 +257,14 @@ class QueryPathCssEventHandler implements CssEventHandler {
   
   public function anyElement() {
     $found = new SplObjectStorage();
-    $this->findAnyElement = TRUE;
+    //$this->findAnyElement = TRUE;
     $matches = $this->candidateList();
     foreach ($matches as $item) {
       $found->attach($item); // Add self
-      $nl = $item->getElementsByTagName('*');
-      $this->attachNodeList($nl, $found);
+      // See issue #20 or section 6.2 of this:
+      // http://www.w3.org/TR/2009/PR-css3-selectors-20091215/#universal-selector
+      //$nl = $item->getElementsByTagName('*');
+      //$this->attachNodeList($nl, $found);
     }
     
     $this->matches = $found;
