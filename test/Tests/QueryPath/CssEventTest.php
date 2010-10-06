@@ -206,6 +206,24 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $this->assertEquals(3, $matches->count());
     $match = $this->firstMatch($matches);
     $this->assertEquals('ns1:test', $match->tagName);
+    
+    // Test Issue #30:
+    $xml = '<?xml version="1.0" ?>
+    <ns1:test xmlns:ns1="urn:foo/bar">
+      <ns1:inside/>
+        <ns1:insideInside>Test</ns1:insideInside>
+      <ns1:inside/>
+    </ns1:test>';
+    $doc = new DomDocument();
+    $doc->loadXML($xml);
+    
+    $handler = new QueryPathCssEventHandler($doc);
+    $handler->find('ns1|test>*');
+    $matches = $handler->getMatches();
+    
+    $this->assertEquals(1, $matches->count());
+    $match = $this->firstMatch($matches);
+    $this->assertEquals('ns1:inside', $match->tagName);
   }
   
   public function testAnyElement() {
@@ -237,7 +255,7 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('#one>*');
     $matches = $handler->getMatches();
-    //    throw new Exception(print_r($matches, TRUE));
+    
     $this->assertEquals(1, $matches->count(), 'Should match just top div.');
     $match = $this->firstMatch($matches);
     $this->assertEquals('two', $match->getAttribute('id'), 'Should match ID #two');
