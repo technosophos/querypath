@@ -1129,6 +1129,11 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $this->assertEquals(1, $matches->count(), 'One match for quoted string.');
     $this->assertEquals('one', $this->firstMatch($matches)->getAttribute('id'));
     
+    $handler = new QueryPathCssEventHandler($doc);
+    $handler->find(':contains("More")');
+    $matches = $handler->getMatches();
+    $this->assertEquals(1, $matches->count(), 'One match for quoted string.');
+    $this->assertEquals('two', $this->firstMatch($matches)->getAttribute('id'));
     
   }
   
