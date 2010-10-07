@@ -271,7 +271,7 @@ class QueryPathCssEventHandler implements CssEventHandler {
     $this->findAnyElement = FALSE;
   }
   public function anyElementInNS($ns) {
-    $this->findAnyElement = TRUE;
+    //$this->findAnyElement = TRUE;
     $nsuri = $this->dom->lookupNamespaceURI($ns);
     $found = new SplObjectStorage();
     if (!empty($nsuri)) {
@@ -285,9 +285,9 @@ class QueryPathCssEventHandler implements CssEventHandler {
         if ($item instanceOf DOMNode && $nsuri == $item->namespaceURI) {
           $found->attach($item);
         }
-        $nl = $item->getElementsByTagNameNS($nsuri, '*');
+        //$nl = $item->getElementsByTagNameNS($nsuri, '*');
         //if (!empty($nl)) $found = array_merge($found, $this->nodeListToArray($nl));
-        $this->attachNodeList($nl, $found);
+        //$this->attachNodeList($nl, $found);
       }
     }
     $this->matches = $found;//UniqueElementList::get($found);

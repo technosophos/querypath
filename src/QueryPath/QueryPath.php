@@ -1086,6 +1086,9 @@ class QueryPath implements IteratorAggregate {
    *  - $index: The index position of the object in the array.
    *  - $item: The item to be operated upon.
    *
+   * If the callback function returns FALSE, the item will be removed from the 
+   * set of matches. Otherwise the item will be considered a match and left alone.
+   *
    * @param $callback.
    *   A callback either as a string (function) or an array (object, method OR 
    *   classname, method).
