@@ -585,10 +585,10 @@ class QueryPathCssEventHandler implements CssEventHandler {
    * Remove leading and trailing quotes.
    */
   private function removeQuotes($str) {
-    $f = $str[0];
-    if ($f == '"' || $f == "'") {
-      //XXX: we just do a very fast-n-dirty kill here.
-      $str = substr($str, 1, strlen($str) - 2);
+    $f = substr($str, 0, 1);
+    $l = substr($str, -1);
+    if ($f === $l && ($f == '"' || $f == "'")) {
+      $str = substr($str, 1, -1);
     }
     return $str;
   }
