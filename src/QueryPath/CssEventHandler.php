@@ -569,7 +569,7 @@ class QueryPathCssEventHandler implements CssEventHandler {
         $matches = $this->candidateList();
         $found = new SplObjectStorage();
         foreach ($matches as $item) {
-          if ($item->textContent == $value) {
+          if (strpos($item->textContent, $value)) {
             $found->attach($item);
           }
         }
