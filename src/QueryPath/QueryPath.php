@@ -3604,7 +3604,7 @@ class QueryPath implements IteratorAggregate {
         $to_enc = $this->options['convert_to_encoding'];
         
         if (function_exists('mb_convert_encoding')) {
-          $string = mb_convert_encoding($string, $to_encoding, $from_encoding);
+          $string = mb_convert_encoding($string, $to_enc, $from_enc);
         }
         
       }
