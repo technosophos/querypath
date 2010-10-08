@@ -8,6 +8,10 @@
  * to match just part of the contents of an element. This example
  * illustrates how to accomplish this with a filter callback.
  *
+ * As of QueryPath 2.1beta2, `:contains()` performs a substring match instead of 
+ * and exact match, so the method outline below is roughly the same as merely
+ * using `:contains(Release)`.
+ *
  * @package Examples
  * @author M Butcher <matt@aleph-null.tv>
  * @license LGPL The GNU Lesser GPL (LGPL) or an MIT-like license.

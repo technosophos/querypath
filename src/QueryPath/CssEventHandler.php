@@ -563,7 +563,22 @@ class QueryPathCssEventHandler implements CssEventHandler {
         $this->has($value);
         break;
       // Contains == text matches.
+      // In QP 2.1, this was changed.
       case 'contains':
+        $value = $this->removeQuotes($value);
+    
+        $matches = $this->candidateList();
+        $found = new SplObjectStorage();
+        foreach ($matches as $item) {
+          if (strpos($item->textContent, $value) !== FALSE) {
+            $found->attach($item);
+          }
+        }
+        $this->matches = $found;
+        break;
+        
+      // Since QP 2.1
+      case 'contains-exactly':
         $value = $this->removeQuotes($value);
       
         $matches = $this->candidateList();

@@ -1106,7 +1106,7 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $doc->loadXML($xml);
     
     $handler = new QueryPathCssEventHandler($doc);
-    $handler->find(':contains(This is text.)');
+    $handler->find('p:contains(This is text.)');
     $matches = $handler->getMatches();
     $this->assertEquals(1, $matches->count());
     $this->assertEquals('one', $this->firstMatch($matches)->getAttribute('id'));
@@ -1114,22 +1114,62 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('* :contains(More text)');
     $matches = $handler->getMatches();
-    $this->assertEquals(2, $matches->count());
+    $this->assertEquals(2, $matches->count(), 'Matches two instance of same text?');
     $this->assertEquals('two', $this->firstMatch($matches)->getAttribute('id'));
     
     $handler = new QueryPathCssEventHandler($doc);
-    $handler->find(':contains("This is text.")');
+    $handler->find('p:contains("This is text.")');
     $matches = $handler->getMatches();
     $this->assertEquals(1, $matches->count(), 'Quoted text matches unquoted pcdata');
     $this->assertEquals('one', $this->firstMatch($matches)->getAttribute('id'));
     
     $handler = new QueryPathCssEventHandler($doc);
-    $handler->find(':contains(\\\'This is text.\\\')');
+    $handler->find('p:contains(\\\'This is text.\\\')');
     $matches = $handler->getMatches();
     $this->assertEquals(1, $matches->count(), 'One match for quoted string.');
     $this->assertEquals('one', $this->firstMatch($matches)->getAttribute('id'));
     
+    // Test for issue #32
+    $handler = new QueryPathCssEventHandler($doc);
+    $handler->find('p:contains(text)');
+    $matches = $handler->getMatches();
+    $this->assertEquals(2, $matches->count(), 'Two matches for fragment of string.');
+    $this->assertEquals('one', $this->firstMatch($matches)->getAttribute('id'));
     
+  }
+  
+  public function testPseudoClassContainsExactly() {
+    $xml = '<?xml version="1.0" ?>
+    <test>
+      <p id="one">This is text.</p>
+      <p id="two"><i>More text</i></p>
+    </test>';
+    $doc = new DomDocument();
+    $doc->loadXML($xml);
+    
+    $handler = new QueryPathCssEventHandler($doc);
+    $handler->find('p:contains(This is text.)');
+    $matches = $handler->getMatches();
+    $this->assertEquals(1, $matches->count());
+    $this->assertEquals('one', $this->firstMatch($matches)->getAttribute('id'));
+    
+    $handler = new QueryPathCssEventHandler($doc);
+    $handler->find('* :contains(More text)');
+    $matches = $handler->getMatches();
+    $this->assertEquals(2, $matches->count(), 'Matches two instance of same text.');
+    $this->assertEquals('two', $this->firstMatch($matches)->getAttribute('id'));
+    
+    $handler = new QueryPathCssEventHandler($doc);
+    $handler->find('p:contains("This is text.")');
+    $matches = $handler->getMatches();
+    $this->assertEquals(1, $matches->count(), 'Quoted text matches unquoted pcdata');
+    $this->assertEquals('one', $this->firstMatch($matches)->getAttribute('id'));
+    
+    $handler = new QueryPathCssEventHandler($doc);
+    $handler->find('p:contains(\\\'This is text.\\\')');
+    $matches = $handler->getMatches();
+    $this->assertEquals(1, $matches->count(), 'One match for quoted string.');
+    $this->assertEquals('one', $this->firstMatch($matches)->getAttribute('id'));
   }
   
   public function testPseudoClassHas() {

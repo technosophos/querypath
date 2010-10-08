@@ -36,7 +36,7 @@
         <listitem>:root()</listitem>
         <listitem>:nth-child(an + b) </listitem>
         <listitem>:nth-last-child(an + b)</listitem>
-        <listitem>:nth-of-type(an + b) -- as of QuerPath 'quark'</listitem>
+        <listitem>:nth-of-type(an + b) -- as of QuerPath 'quark' (2.0)</listitem>
         <listitem>:nth-last-of-type(an + b)  -- as of QuerPath 'quark'</listitem>
         <listitem>:first-child</listitem>
         <listitem>:last-child</listitem>
@@ -85,7 +85,8 @@
            <listitem>:reset -- element is reset button (HTML only)</listitem>
            <listitem>:header -- elements that are HTML headers (h1 - hN)</listitem>
            <listitem>:has(some filter) -- elements that have children that match the supplied filter</listitem>
-           <listitem>:contains(some text) -- elements that have text which matches the supplied value</listitem>
+           <listitem>:contains(some text) -- elements that have text of which some substring matches the supplied value (Prior to QueryPath 2.1, this behaved identically to :contains-exactly)</listitem>
+           <listitem>:contains-exactly(some text) -- elements that have text which exactly matches the supplied value (QueryPath 2.1)</listitem>
         </itemizedlist>
        </para>
       </refsect2>
