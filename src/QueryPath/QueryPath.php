@@ -1075,10 +1075,29 @@ class QueryPath implements IteratorAggregate {
   }
   
   /**
-   * Filter matches based on a regular expression.
+   * Use regular expressions to filter based on the text content of matched elements.
+   *
+   * Only items that match the given regular expression will be kept. All others will
+   * be removed.
    *
    * The regular expression is run against the <i>text content</i> (the PCDATA) of the 
-   * elements. This is a way of filtering elements based on their content.
+   * elements. This is a way of filtering elements based on their content. 
+   *
+   * Example:
+   * <code>
+   *  <?xml version="1.0"?>
+   *  <div>Hello <i>World</i></div>
+   * </code>
+   *
+   * <code>
+   *  <?php
+   *    // This will be 1.
+   *    qp($xml, 'div')->filterPreg('/World/')->size();
+   *  ?>
+   * </code>
+   *
+   * The return value above will be 1 because the text content of <code>qp($xml, 'div')</code> is
+   * <code>Hello World</code>.
    *
    * Compare this to the behavior of the <em>:contains()</em> CSS3 pseudo-class.
    * 
@@ -1087,8 +1106,19 @@ class QueryPath implements IteratorAggregate {
    * @return QueryPath
    * @see filter()
    * @see filterCallback()
+   * @see preg_match()
    */
   public function filterPreg($regex) {
+    
+    $found = new SplObjectStorage();
+    
+    foreach ($this->matches as $item) {
+      if (preg_match($regex, $item->textContent) > 0) {
+        $found->attach($item);
+      }
+    }
+    $this->setMatches($found);
+    
     return $this;
   }
   /**

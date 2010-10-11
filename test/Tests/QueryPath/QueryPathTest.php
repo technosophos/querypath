@@ -421,6 +421,19 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('inner-two', qp($file, 'inner')->filter('li')->eq(1)->attr('id'));
   }
   
+  public function testFilterPreg() {
+    $xml = '<?xml version="1.0"?><root><div id="one">Foo</div><div>Moo</div></root>';
+    $qp = qp($xml, 'div')->filterPreg('/Foo/');
+    
+    $this->assertEquals(1, $qp->Size());
+    
+    // Check to make sure textContent is collected correctly.
+    $xml = '<?xml version="1.0"?><root><div>Hello <i>World</i></div></root>';
+    $qp = qp($xml, 'div')->filterPreg('/Hello\sWorld/');
+    
+    $this->assertEquals(1, $qp->Size());
+  }
+  
   public function testFilterLambda() {
     $file = DATA_FILE;
     // Get all evens:
@@ -432,12 +445,6 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     return (($index + 1) % 2 == 0);
   }
   
-  public function testFilterPreg() {
-    $xml = '<?xml version="1.0"?><root><div id="one">Foo</div><div>Moo</div></root>';
-    $qp = qp($xml, 'div')->filterPreg('/Foo/');
-    
-    $this->assertEquals(1, $qp->Size());
-  }
   
   public function testFilterCallback() {
     $file = DATA_FILE;
