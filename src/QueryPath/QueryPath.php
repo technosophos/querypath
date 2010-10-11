@@ -339,6 +339,12 @@ class QueryPath implements IteratorAggregate {
   protected $last = array(); // Last set of matches.
   private $ext = array(); // Extensions array.
   
+  /**
+   * The number of current matches.
+   *
+   * @see size()
+   */
+  public $length = 0;
   
   /**
    * Constructor.
@@ -3729,6 +3735,9 @@ class QueryPath implements IteratorAggregate {
       if (isset($matches)) $found->attach($matches);
       $this->matches = $found;
     }
+    
+    // EXPERIMENTAL: Support for qp()->length.
+    $this->length = $this->matches->count();
   }
   
   /**
@@ -3957,6 +3966,7 @@ class QueryPath implements IteratorAggregate {
    * Currently defined properties:
    *   - length: Alias of {@link size()}.
    */
+   /*
   public function __get($name) {
     switch ($name) {
       case 'length':
@@ -3965,6 +3975,7 @@ class QueryPath implements IteratorAggregate {
         throw new QueryPathException('Unknown or inaccessible property "' . $name . '" (via __get())');
     }
   }
+  */
   
   /**
    * Get an iterator for the matches in this object.

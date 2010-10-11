@@ -1359,6 +1359,7 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     
   }
   
+  /*
   public function test__get() {
     // Test that other properties are not interferred with by __get().
     $file = DATA_FILE;
@@ -1367,14 +1368,17 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     
     $this->assertEquals('bar', $foo);
   }
+  */
   
   /**
-   * @expectedException QueryPathException
+   * @  expectedException QueryPathException
    */
+   /*
   public function testFailed__get() {
     // This should generate an error because 'last' is protected.
     qp(DATA_FILE)->last;
   }
+  */
   
   public function testDetach() {
     $file = DATA_FILE;
