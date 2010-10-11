@@ -16,7 +16,7 @@ license (COPYING-MIT.txt). The licenses should have been distributed with this l
 
 The following packages of QueryPath are available:
 
-  * PEAR package (`pear install QueryPath`): If you have added the QueryPath channel to your pear tool you can install the full QueryPath.
+  * PEAR package (`pear install querypath/QueryPath`): Installs the library and documentation.
   * Phar (QueryPath-VERSION.phar): This is a Phar package which can be used as-is. Its size has been
     minimized by stripping comments. It is designed for direct inclusion in PHP 5.3 applications.
   * Minimal (QueryPath-VERSION-minimal.tgz): This contains *only* the QueryPath library, with no
