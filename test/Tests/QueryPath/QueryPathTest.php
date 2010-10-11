@@ -1349,6 +1349,33 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals(5, $qp->size());
   }
   
+  public function testLength() {
+    
+    // Test that the length attribute works exactly the same as size.
+    $file = DATA_FILE;
+    $qp = qp($file, 'li');
+    $this->assertEquals(5, $qp->length);
+    
+    
+  }
+  
+  public function test__get() {
+    // Test that other properties are not interferred with by __get().
+    $file = DATA_FILE;
+    $options = array('QueryPath_class' => 'QueryPathExtended');
+    $foo = qp($file,'li', $options)->foo;
+    
+    $this->assertEquals('bar', $foo);
+  }
+  
+  /**
+   * @expectedException QueryPathException
+   */
+  public function testFailed__get() {
+    // This should generate an error because 'last' is protected.
+    qp(DATA_FILE)->last;
+  }
+  
   public function testDetach() {
     $file = DATA_FILE;
     $qp = qp($file, 'li');
@@ -1562,6 +1589,7 @@ class XMLishMock extends QueryPath {
  * A simple mock for testing qp()'s abstract factory.
  */
 class QueryPathExtended extends QueryPath {
+  public $foo = 'bar';
   public function foonator() {
     return TRUE;
   }

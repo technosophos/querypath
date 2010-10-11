@@ -3949,6 +3949,24 @@ class QueryPath implements IteratorAggregate {
   }
   
   /**
+   * Dynamically generate certain properties.
+   *
+   * This is used primarily to increase jQuery compatibility by providing property-like
+   * behaviors.
+   *
+   * Currently defined properties:
+   *   - length: Alias of {@link size()}.
+   */
+  public function __get($name) {
+    switch ($name) {
+      case 'length':
+        return $this->size();
+      default:
+        throw new QueryPathException('Unknown or inaccessible property "' . $name . '" (via __get())');
+    }
+  }
+  
+  /**
    * Get an iterator for the matches in this object.
    * @return Iterable
    *  Returns an iterator.
