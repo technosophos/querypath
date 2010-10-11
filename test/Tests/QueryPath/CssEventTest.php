@@ -210,9 +210,9 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     // Test Issue #30:
     $xml = '<?xml version="1.0" ?>
     <ns1:test xmlns:ns1="urn:foo/bar">
-      <ns1:inside/>
+      <ns1:inside>
         <ns1:insideInside>Test</ns1:insideInside>
-      <ns1:inside/>
+      </ns1:inside>
     </ns1:test>';
     $doc = new DomDocument();
     $doc->loadXML($xml);
