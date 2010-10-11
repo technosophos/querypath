@@ -12,7 +12,8 @@ API-2.1.0 for details.
 3. This release was driven substantially by eabrand's GSOC 2010 
 contributions. Thanks, Emily!
 
-4. There are now Phar and PEAR packages available.
+4. There are now Phar and PEAR packages available. Got to 
+http://pear.querypath.org for PEAR packages.
 
 5. The minimal QP distribution is no longer minified, as it reportedly
 causes XDebug to crash.
