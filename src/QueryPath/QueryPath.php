@@ -1073,6 +1073,24 @@ class QueryPath implements IteratorAggregate {
     $this->setMatches($found);
     return $this;
   }
+  
+  /**
+   * Filter matches based on a regular expression.
+   *
+   * The regular expression is run against the <i>text content</i> (the PCDATA) of the 
+   * elements. This is a way of filtering elements based on their content.
+   *
+   * Compare this to the behavior of the <em>:contains()</em> CSS3 pseudo-class.
+   * 
+   * @param string $regex
+   *  A regular expression.
+   * @return QueryPath
+   * @see filter()
+   * @see filterCallback()
+   */
+  public function filterPreg($regex) {
+    return $this;
+  }
   /**
    * Filter based on a callback function.
    *

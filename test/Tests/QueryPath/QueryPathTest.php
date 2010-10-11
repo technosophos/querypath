@@ -432,6 +432,13 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     return (($index + 1) % 2 == 0);
   }
   
+  public function testFilterPreg() {
+    $xml = '<?xml version="1.0"?><root><div id="one">Foo</div><div>Moo</div></root>';
+    $qp = qp($xml, 'div')->filterPreg('/Foo/');
+    
+    $this->assertEquals(1, $qp->Size());
+  }
+  
   public function testFilterCallback() {
     $file = DATA_FILE;
     $cb = array($this, 'filterCallbackFunction');
