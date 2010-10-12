@@ -40,4 +40,4 @@ To use QueryPath as a **phar package**, put the phar somewhere where PHP can see
 
 To use QueryPath as a PEAR package (assuming to have already installed it with PEAR), include `QueryPath/QueryPath.php`.
 
-From there, the main functions you will want to use are `qp()` and `htmlqp()`. Start with the [API docs](http://api.querypath.org).
+From there, the main functions you will want to use are `qp()` and `htmlqp()`. Start with the [API docs](http://api.querypath.org/docs).
