@@ -111,7 +111,7 @@ To print this message, do:
   </fileset>
   
   <!-- BUILD: The primary build target. -->
-  <target name="build" depends="lint, setup, prebuild, docBuild, minimalBuild, fullBuild, pharBuild, pearBuild"
+  <target name="build" depends="lint, setup, prebuild, docBuild, minimalBuild, fullBuild, pharBuild, pearPkg"
     description="Generate docs, minimal, and full builds and then creates packages."
     ></target>
   
@@ -435,7 +435,7 @@ To print this message, do:
   </target>
   
   <!-- Requires PEAR_PackageFileManager2 -->
-  <target name="pearBuild" depends="setup,prebuild">
+  <target name="pearBuild" depends="setup,prebuild,setPearStability">
     <property name="stability" value="stable"/>
     <!-- Follow the pear naming conventions for builds -->
     <if>
@@ -489,9 +489,9 @@ To print this message, do:
        <option name="summary" value="The QueryPath XML/HTML library"/>
        <option name="description" value="QueryPath is a simple, powerful, robust library for working with XML, HTML, and HTTP. It is like jQuery for PHP. http://querypath.org"/>
        <option name="apiversion" value="${version}"/>
-       <option name="apistability" value="stable"/>
+       <option name="apistability" value="${stability}"/>
        <option name="releaseversion" value="${version}"/>
-       <option name="releasestability" value="stable"/>
+       <option name="releasestability" value="${stability}"/>
        <option name="license" value="LGPL 2 or MIT"/>
        <option name="phpdep" value="5.0.0"/>
        <option name="pearinstallerdep" value="1.4.6"/>
@@ -545,4 +545,27 @@ To print this message, do:
     <exec command="php ${pyrusPath}"/>
   </target>
   -->
+  
+  <target name="setPearStability" depends="setup">
+    <property name="stability">stable</property>
+    <if>
+      <contains string="${version}" substring="dev"/>
+      <then>
+        <property name="stability" override="true">snapshot</property>
+      </then>
+      <elseif>
+        <contains string="${version}" substring="alpha"/>
+        <then>
+          <property name="stability" override="true">alpha</property>
+        </then>
+      </elseif>
+      <elseif>
+        <contains string="${version}" substring="beta"/>
+        <then>
+          <property name="stability" override="true">beta</property>
+        </then>
+      </elseif>
+    </if>
+    <echo>${stability}</echo>
+  </target>
 </project>
