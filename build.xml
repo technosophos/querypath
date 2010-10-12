@@ -111,7 +111,7 @@ To print this message, do:
   </fileset>
   
   <!-- BUILD: The primary build target. -->
-  <target name="build" depends="lint, setup, prebuild, docBuild, minimalBuild, fullBuild"
+  <target name="build" depends="lint, setup, prebuild, docBuild, minimalBuild, fullBuild, pharBuild, pearBuild"
     description="Generate docs, minimal, and full builds and then creates packages."
     ></target>
   
