@@ -1,5 +1,5 @@
 <?php
-/**
+/** @file
  * The Query Path package provides tools for manipulating a Document Object Model.
  * The two major DOMs are the XML DOM and the HTML DOM. Using Query Path, you can 
  * build, parse, search, and modify DOM documents.
@@ -7,16 +7,16 @@
  * To use Query Path, this is the only file you should need to import.
  *
  * Standard usage:
- * <code>
+ * @code
  * <?php
  * require 'QueryPath/QueryPath.php';
  * $qp = qp('#myID', '<?xml version="1.0"?><test><foo id="myID"/></test>');
  * $qp->append('<new><elements/></new>')->writeHTML();
  * ?>
- * </code>
+ * @endcode
  *
  * The above would print (formatted for readability):
- * <code>
+ * @code
  * <?xml version="1.0"?>
  * <test>
  *  <foo id="myID">
@@ -25,7 +25,7 @@
  *    </new>
  *  </foo>
  * </test>
- * </code>
+ * @endcode
  *
  * To learn about the functions available to a Query Path object, 
  * see {@link QueryPath}. The {@link qp()} function is used to build
@@ -48,12 +48,6 @@
  * All of the code in QueryPath is licensed under either the LGPL or an MIT-like
  * license (you may choose which you prefer). All of the code is Copyright, 2009
  * by Matt Butcher.
- * @example examples/simple_example.php Basic Example
- * @example examples/html.php Generating HTML
- * @example examples/xml.php Using XML
- * @example examples/rss.php Generating RSS (Really Simple Syndication)
- * @example examples/svg.php Working with SVG (Scalable Vector Graphics)
- * @example examples/techniques.php Looping/Iteration techniques
  *
  * @package QueryPath
  * @author M Butcher <matt @aleph-null.tv>
@@ -65,6 +59,7 @@
  * @see http://technosophos.com For how-tos and examples.
  * @copyright Copyright (c) 2009, Matt Butcher.
  * @version @UNSTABLE@
+ *
  */
  
 /**
@@ -92,7 +87,7 @@ require_once 'QueryPathExtension.php';
  * as a factory.
  *
  * Example:
- * <code>
+ * @code
  * <?php
  * qp(); // New empty QueryPath
  * qp('path/to/file.xml'); // From a file
@@ -103,14 +98,16 @@ require_once 'QueryPathExtension.php';
  * // Most of the time, methods are chained directly off of this call.
  * qp(QueryPath::XHTML_STUB, 'body')->append('<h1>Title</h1>')->addClass('body-class');
  * ?>
- * </code>
+ * @endcode
  *
  * This function is used internally by QueryPath. Anything that modifies the
  * behavior of this function may also modify the behavior of common QueryPath
  * methods.
  *
- * @param mixed $document
- *  A document in one of the following forms:
+ * <b>Types of documents that QueryPath can support</b>
+ *
+ *  qp() can take any of these as its first argument:
+ *
  *  - A string of XML or HTML (See {@link XHTML_STUB})
  *  - A path on the file system or a URL
  *  - A {@link DOMDocument} object
@@ -121,10 +118,8 @@ require_once 'QueryPathExtension.php';
  *
  * Keep in mind that most features of QueryPath operate on elements. Other 
  * sorts of DOMNodes might not work with all features.
- * @param string $string 
- *  A CSS 3 selector.
- * @param array $options
- *  An associative array of options. Currently supported options are:
+ *
+ * <b>Supported Options</b>
  *  - context: A stream context object. This is used to pass context info
  *    to the underlying file IO subsystem.
  *  - encoding: A valid character encoding, such as 'utf-8' or 'ISO-8859-1'.
@@ -167,17 +162,14 @@ require_once 'QueryPathExtension.php';
  *    class is either {@link QueryPath} or a subclass thereof. See the test 
  *    cases for an example.
  *
- * @return QueryPath qp
  *
- * @example examples/simple_example.php Basic Example
- * @example examples/html.php Generating HTML
- * @example examples/xml.php Using XML
- * @example examples/rss.php Generating RSS (Really Simple Syndication)
- * @example examples/svg.php Working with SVG (Scalable Vector Graphics)
- * @example examples/musicbrainz.php Working with remote XML documents
- * @example examples/sparql.php Working with SPARQL queries
- * @example examples/dbpedia.php Working with namespaced XML
- * @example examples/techniques.php Looping/Iteration techniques
+ * @param mixed $document
+ *  A document in one of the forms listed above.
+ * @param string $string 
+ *  A CSS 3 selector.
+ * @param array $options
+ *  An associative array of options. Currently supported options are listed above.
+ * @return QueryPath
  */
 function qp($document = NULL, $string = NULL, $options = array()) {
   
@@ -203,7 +195,7 @@ function qp($document = NULL, $string = NULL, $options = array()) {
  *
  * Parser warning messages are also suppressed, so if the parser emits a warning,
  * the application will not be notified. This is equivalent to 
- * calling <code>@qp()</code>.
+ * calling @code@qp()@endcode.
  *
  * Warning: Character set conversions will only work if the Multi-Byte (mb) library
  * is installed and enabled. This is usually enabled, but not always.
@@ -291,10 +283,10 @@ class QueryPath implements IteratorAggregate {
    * This can be passed into {@link qp()} to begin a new basic HTML document.
    *
    * Example:
-   * <code>
+   * @code
    * $qp = qp(QueryPath::XHTML_STUB); // Creates a new XHTML document
    * $qp->writeXML(); // Writes the document as well-formed XHTML.
-   * </code>
+   * @endcode
    * @since 2.0
    */
   const XHTML_STUB = '<?xml version="1.0"?>
@@ -517,9 +509,9 @@ class QueryPath implements IteratorAggregate {
    *
    * This sets the current match to the document's root element. For 
    * practical purposes, this is the same as:
-   * <code>
+   * @code
    * qp($someDoc)->find(':root');
-   * </code>
+   * @endcode
    * However, since it doesn't invoke a parser, it has less overhead. It also 
    * works in cases where the QueryPath has been reduced to zero elements (a
    * case that is not handled by find(':root') because there is no element
@@ -728,11 +720,11 @@ class QueryPath implements IteratorAggregate {
    * Get/set an attribute.
    * - If no parameters are specified, this returns an associative array of all 
    *   name/value pairs.
-   * - If both name and value are set, then this will set the attribute name/value
+   * - If both $name and $value are set, then this will set the attribute name/value
    *   pair for all items in this object. 
-   * - If name is set, and is an array, then
+   * - If $name is set, and is an array, then
    *   all attributes in the array will be set for all items in this object.
-   * - If name is a string and is set, then the attribute value will be returned.
+   * - If $name is a string and is set, then the attribute value will be returned.
    *
    * When an attribute value is retrieved, only the attribute value of the FIRST
    * match is returned.
@@ -816,27 +808,27 @@ class QueryPath implements IteratorAggregate {
    * It does this by setting (or getting) the style attribute (without a namespace).
    *
    * For example, consider this code:
-   * <code>
+   * @code
    * <?php
    * qp(HTML_STUB, 'body')->css('background-color','red')->html();
    * ?>
-   * </code>
+   * @endcode
    * This will return the following HTML:
-   * <code>
+   * @code
    * <body style="background-color: red"/>
-   * </code>
+   * @endcode
    *
    * If no parameters are passed into this function, then the current style
    * element will be returned unparsed. Example:
-   * <code>
+   * @code
    * <?php
    * qp(HTML_STUB, 'body')->css('background-color','red')->css();
    * ?>
-   * </code>
+   * @endcode
    * This will return the following:
-   * <code>
+   * @code
    * background-color: red
-   * </code>
+   * @endcode
    *
    * As of QueryPath 2.1, existing style attributes will be merged with new attributes.
    * (In previous versions of QueryPath, a call to css() overwrite the existing style
@@ -898,7 +890,7 @@ class QueryPath implements IteratorAggregate {
    * return an array with the MIME type and the application data.
    *
    * When called with both $attr and $data, it will inject the data into all selected elements
-   * So <code>$qp->dataURL('src', file_get_contents('my.png'), 'image/png')</code> will inject 
+   * So @code$qp->dataURL('src', file_get_contents('my.png'), 'image/png')@endcode will inject 
    * the given PNG image into the selected elements.
    *
    * The current implementation only knows how to encode and decode Base 64 data.
@@ -1054,9 +1046,9 @@ class QueryPath implements IteratorAggregate {
    * the list of elements. Otherwise it will be kept.
    *
    * Example:
-   * <code>
+   * @code
    * qp('li')->filterLambda('qp($item)->attr("id") == "test"');
-   * </code>
+   * @endcode
    *
    * The above would filter down the list to only an item whose ID is
    * 'text'.
@@ -1090,20 +1082,20 @@ class QueryPath implements IteratorAggregate {
    * elements. This is a way of filtering elements based on their content. 
    *
    * Example:
-   * <code>
+   * @code
    *  <?xml version="1.0"?>
    *  <div>Hello <i>World</i></div>
-   * </code>
+   * @endcode
    *
-   * <code>
+   * @code
    *  <?php
    *    // This will be 1.
    *    qp($xml, 'div')->filterPreg('/World/')->size();
    *  ?>
-   * </code>
+   * @endcode
    *
-   * The return value above will be 1 because the text content of <code>qp($xml, 'div')</code> is
-   * <code>Hello World</code>.
+   * The return value above will be 1 because the text content of @codeqp($xml, 'div')@endcode is
+   * @codeHello World@endcode.
    *
    * Compare this to the behavior of the <em>:contains()</em> CSS3 pseudo-class.
    * 
@@ -1505,6 +1497,9 @@ class QueryPath implements IteratorAggregate {
 
   /**
    * Insert the given data before each element in the current set of matches.
+   *
+   * This will take the give data (XML or HTML) and put it before each of the items that 
+   * the QueryPath object currently contains. Contrast this with after().
    * 
    * @param mixed $data
    *  The data to be inserted. This can be XML in a string, a DomFragment, a DOMElement,
@@ -1628,20 +1623,20 @@ class QueryPath implements IteratorAggregate {
    *
    * For example, consider this:
    *
-   * <code>
+   * @code
    *   <root><wrapper><content/></wrapper></root>
-   * </code>
+   * @endcode
    * 
    * Now we can run this code:
-   * <code>
+   * @code
    *   qp($xml, 'content')->unwrap();
-   * </code>
+   * @endcode
    *
    * This will result in:
    *
-   * <code>
+   * @code
    *   <root><content/></root>
-   * </code>
+   * @endcode
    * This is the opposite of {@link wrap()}.
    *
    * <b>The root element cannot be unwrapped.</b> It has no parents.
@@ -2063,7 +2058,7 @@ class QueryPath implements IteratorAggregate {
    *
    * This will revert back to the last set of matches (before the last 
    * "destructive" set of operations). This undoes any change made to the set of
-   * matched objects. Functions like {@see find()} and {@see filter()} change the 
+   * matched objects. Functions like find() and filter() change the 
    * list of matched objects. The end() function will revert back to the last set of
    * matched items.
    *
@@ -2073,14 +2068,15 @@ class QueryPath implements IteratorAggregate {
    *
    * Only one level of changes is stored. Reverting beyond that will result in 
    * an empty set of matches. Example:
-   * <code>
+   *
+   * @code
    * // The line below returns the same thing as qp(document, 'p');
    * qp(document, 'p')->find('div')->end();
    * // This returns an empty array:
    * qp(document, 'p')->end();
    * // This returns an empty array:
    * qp(document, 'p')->find('div')->find('span')->end()->end();
-   * </code>
+   * @endcode
    *
    * The last one returns an empty array because only one level of changes is stored.
    *
@@ -2101,9 +2097,11 @@ class QueryPath implements IteratorAggregate {
    * Combine the current and previous set of matched objects.
    *
    * Example:
-   * <code>
+   *
+   * @code
    * qp(document, 'p')->find('div')->andSelf();
-   * </code>
+   * @endcode
+   *
    * The code above will contain a list of all p elements and all div elements that 
    * are beneath p elements.
    *
@@ -2361,7 +2359,7 @@ class QueryPath implements IteratorAggregate {
    * <b>Important:</b> This differs from jQuery's html() function. This function
    * returns <i>the current node</i> and all of its children. jQuery returns only
    * the children. This means you do not need to do things like this: 
-   * <code>$qp->parent()->html()</code>.
+   * @code$qp->parent()->html()@endcode.
    *
    * By default, this is HTML 4.01, not XHTML. Use {@link xml()} for XHTML.
    *
@@ -2415,25 +2413,25 @@ class QueryPath implements IteratorAggregate {
   /**
    * Fetch the HTML contents INSIDE of the first QueryPath item.
    *
-   * <b>This behaves the way jQuery's <code>html()</code> function behaves.</b>
+   * <b>This behaves the way jQuery's @codehtml()@endcode function behaves.</b>
    *
    * This gets all children of the first match in QueryPath. 
    *
    * Consider this fragment:
-   * <code>
+   * @code
    * <div>
    * test <p>foo</p> test
    * </div>
-   * </code>
+   * @endcode
    *
    * We can retrieve just the contents of this code by doing something like
    * this:
-   * <code>
+   * @code
    * qp($xml, 'div')->innerHTML();
-   * </code>
+   * @endcode
    *
    * This would return the following:
-   * <code>test <p>foo</p> test</code>
+   * @codetest <p>foo</p> test@endcode
    *
    * @return string
    *  Returns a string representation of the child nodes of the first
@@ -2797,8 +2795,8 @@ class QueryPath implements IteratorAggregate {
    * Typically, you should use this instead of {@link writeHTML()}.
    *
    * Currently, this functions identically to {@link toXML()} <i>except that</i>
-   * it always uses closing tags (e.g. always <code><script></script></code>, 
-   * never <code><script/></code>). It will
+   * it always uses closing tags (e.g. always @code<script></script>@endcode, 
+   * never @code<script/>@endcode). It will
    * write the file as well-formed XML. No XHTML schema validation is done.
    *
    * @see writeXML()
@@ -3043,19 +3041,19 @@ class QueryPath implements IteratorAggregate {
    * 
    * Example:
    * Consider this XML:
-   * <code>
+   * @code
    * <element class="first second"/>
-   * </code>
+   * @endcode
    *
    * Executing this fragment of code will remove only the 'first' class:
-   * <code>
+   * @code
    * qp(document, 'element')->removeClass('first');
-   * </code>
+   * @endcode
    *
    * The resulting XML will be:
-   * <code>
+   * @code
    * <element class="second"/>
-   * </code>
+   * @endcode
    *
    * To remove the entire 'class' attribute, you should use {@see removeAttr()}.
    *
@@ -3127,18 +3125,21 @@ class QueryPath implements IteratorAggregate {
    * for examples of this in practice).
    *
    * Example:
-   * <code>
+   *
+   * @code
    * <?php
    * $qp = qp(QueryPath::HTML_STUB);
    * $branch = $qp->branch();
    * $branch->find('title')->text('Title');
    * $qp->find('body')->text('This is the body')->writeHTML;
    * ?>
-   * </code>
+   * @endcode
+   *
    * Notice that in the code, each of the QueryPath objects is doing its own 
    * query. However, both are modifying the same document. The result of the above 
    * would look something like this:
-   * <code>
+   *
+   * @code
    * <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
    * <html xmlns="http://www.w3.org/1999/xhtml">
    * <head>
@@ -3147,7 +3148,7 @@ class QueryPath implements IteratorAggregate {
    * </head>
    * <body>This is the body</body>
    * </html>
-   * </code>
+   * @endcode
    *
    * Notice that while $qp and $banch were performing separate queries, they 
    * both modified the same document.
@@ -3319,7 +3320,7 @@ class QueryPath implements IteratorAggregate {
   /**
    * Empty everything within the specified element.
    *
-   * A convenience function for {@see removeChildren()}. This is equivalent to jQuery's 
+   * A convenience function for removeChildren(). This is equivalent to jQuery's 
    * empty() function. However, `empty` is a built-in in PHP, and cannot be used as a 
    * function name.
    *
