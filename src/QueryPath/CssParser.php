@@ -233,12 +233,12 @@ final class CssToken {
  * CSS.
  */
 class CssParser {
-  var $scanner = NULL;
-  var $buffer = '';
-  var $handler = NULL;
-  var $strict = FALSE;
+  protected $scanner = NULL;
+  protected $buffer = '';
+  protected $handler = NULL;
+  protected $strict = FALSE;
   
-  var $DEBUG = FALSE;
+  protected $DEBUG = FALSE;
   
   /**
    * Construct a new CSS parser object. This will attempt to
@@ -246,6 +246,7 @@ class CssParser {
    * send events to the CssEventHandler implementation.
    */
   public function __construct($string, CssEventHandler $handler) {
+    $this->originalString = $string;
     $is = new CssInputStream($string);
     $this->scanner = new CssScanner($is);
     $this->handler = $handler;
@@ -260,13 +261,29 @@ class CssParser {
    * @throws CssParseException
    */
   public function parse() {
+
     $this->scanner->nextToken();
     while ($this->scanner->token !== FALSE) {
+      // Primitive recursion detection.
+      $position = $this->scanner->position();
+      
       if ($this->DEBUG) {
         print "PARSE " . $this->scanner->token. "\n";
       }
       $this->selector();
+      
+      $finalPosition = $this->scanner->position();
+      
+      if ($this->scanner->token !== FALSE && $finalPosition == $position) {
+        // If we get here, then the scanner did not pop a single character
+        // off of the input stream during a full run of the parser, which
+        // means that the current input does not match any recognizable
+        // pattern.
+        throw new CssParseException('CSS selector is not well formed.');
+      }
+      
     }
+    
   }
   
   /**
@@ -296,7 +313,7 @@ class CssParser {
    * Handle an entire CSS selector.
    */
   private function selector() {
-    if ($this->DEBUG) print "SELECTOR\n";
+    if ($this->DEBUG) print "SELECTOR{$this->scanner->position()}\n";
     $this->consumeWhitespace(); // Remove leading whitespace
     $this->simpleSelectors();
     $this->combinator();
@@ -379,7 +396,6 @@ class CssParser {
     else {
       if ($this->DEBUG) print "COMBINATOR: no combinator found.\n";
     }
-    
   }
   
   /**
@@ -791,6 +807,13 @@ final class CssScanner {
   }
   
   /**
+   * Return the position of the reader in the string.
+   */
+  public function position() {
+    return $this->is->position;
+  }
+  
+  /**
    * See the next char without removing it from the stack.
    *
    * @return char
@@ -920,7 +943,7 @@ final class CssScanner {
         $tok = CssToken::stringLegal;
       }
       else {
-        throw new Exception('Illegal characters found in stream.');
+        throw new Exception('Illegal character found in stream: ' . $ord);
       }
     }
     
@@ -1022,7 +1045,8 @@ final class CssScanner {
  * characters.
  */
 class CssInputStream {
-  var $stream = NULL;
+  protected $stream = NULL;
+  public $position = 0;
   /**
    * Build a new CSS input stream from a string.
    * 
@@ -1048,7 +1072,11 @@ class CssInputStream {
    * stream and return it.
    */
   function consume() {
-    return array_shift($this->stream);
+    $ret = array_shift($this->stream);
+    if (!empty($ret)) {
+      $this->position++;
+    }
+    return $ret;
   }
   /**
    * Check if the stream is empty.

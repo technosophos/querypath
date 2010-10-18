@@ -104,6 +104,21 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $this->assertEquals('inside', $match->tagName);
   }
   
+  /**
+   * @expectedException Exception
+   */
+  public function testEmptySelector() {
+    $xml = '<?xml version="1.0" ?><t:test xmlns:t="urn:foo/bar"><t:inside id="first"/>Text<t:inside/><inside/></t:test>';
+    $doc = new DomDocument();
+    $doc->loadXML($xml);
+
+    // Basic test
+    $handler = new QueryPathCssEventHandler($doc);
+    $handler->find('');
+    $matches = $handler->getMatches();
+    $this->assertEquals(0, $matches->count());
+  }
+  
   public function testElementNS() {
     $xml = '<?xml version="1.0" ?><t:test xmlns:t="urn:foo/bar"><t:inside id="first"/>Text<t:inside/><inside/></t:test>';
     $doc = new DomDocument();
@@ -124,6 +139,19 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $this->assertEquals(1, $matches->count());
     $match = $this->firstMatch($matches);
     $this->assertEquals('t:test', $match->tagName);
+  }
+  
+  
+  /**
+   * @expectedException CssParseException
+   */
+  public function testFailedElementNS() {
+    $xml = '<?xml version="1.0" ?><t:test xmlns:t="urn:foo/bar"><t:inside id="first"/>Text<t:inside/><inside/></t:test>';
+    $doc = new DomDocument();
+    $doc->loadXML($xml);
+    
+    $handler = new QueryPathCssEventHandler($doc);
+    $handler->find('myns\:mytest');
   }
   
   public function testElement() {
