@@ -61,6 +61,21 @@
  * @version @UNSTABLE@
  *
  */
+
+/** @addtogroup querypath_core QueryPath Core
+ * Core classes and functions for QueryPath.
+ */
+
+/** @namespace QueryPath
+ * The core classes that compose QueryPath.
+ *
+ * The QueryPath classes contain the brunt of the QueryPath code. If you are 
+ * interested in working with just the CSS engine, you may want to look at CssEventHandler,
+ * which can be used without the rest of QueryPath. If you are interested in looking 
+ * carefully at QueryPath's implementation details, then the QueryPath class is where you 
+ * should begin. If you are interested in writing extensions, than you may want to look at
+ * QueryPathExtension, and also at some of the simple extensions, such as QPXML.
+ */
  
 /**
  * Regular expression for checking whether a string looks like XML.
@@ -162,7 +177,7 @@ require_once 'QueryPathExtension.php';
  *    class is either {@link QueryPath} or a subclass thereof. See the test 
  *    cases for an example.
  *
- *
+ * @ingroup querypath_core
  * @param mixed $document
  *  A document in one of the forms listed above.
  * @param string $string 
@@ -200,6 +215,7 @@ function qp($document = NULL, $string = NULL, $options = array()) {
  * Warning: Character set conversions will only work if the Multi-Byte (mb) library
  * is installed and enabled. This is usually enabled, but not always.
  *
+ * @ingroup querypath_core
  * @see qp()
  */
 function htmlqp($document = NULL, $selector = NULL, $options = array()) {
@@ -234,6 +250,7 @@ function htmlqp($document = NULL, $selector = NULL, $options = array()) {
  *
  * @see qp()
  * @see QueryPath.php
+ * @ingroup querypath_core
  */
 class QueryPath implements IteratorAggregate {
   

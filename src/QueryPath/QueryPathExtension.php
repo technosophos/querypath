@@ -1,5 +1,5 @@
 <?php
-/**
+/** @file
  * This file contains the Query Path extension tools.
  *
  * Query Path can be extended to support additional features. To do this, 
@@ -11,14 +11,13 @@
  * If you are trying to load an extension you have downloaded, chances are good that
  * all you need to do is {@link require_once} the file that contains the extension.
  *
- * @package QueryPath
  * @author M Butcher <matt@aleph-null.tv>
  * @license http://opensource.org/licenses/lgpl-2.1.php LGPL or MIT-like license.
  * @see QueryPathExtension
  * @see QueryPathExtensionRegistry::extend()
  */
 
-/**
+/** @interface
  * A QueryPathExtension is a tool that extends the capabilities of a QueryPath object.
  *
  * Extensions to QueryPath should implement the QueryPathExtension interface. The
@@ -71,7 +70,7 @@ interface QueryPathExtension {
   public function __construct(QueryPath $qp);
 }
 
-/**
+/** @class
  * A registry for QueryPath extensions.
  *
  * QueryPath extensions should call the {@link QueryPathExtensionRegistry::extend()}

@@ -1,5 +1,5 @@
 <?php
-/**
+/** @file
  * This package contains classes for handling database transactions from
  * within QueryPath.
  *
@@ -10,7 +10,8 @@
  * that query an RDBMS and then insert the results into the document.
  *
  * Example:
- * <code>
+ *
+ * @code
  * <?php
  * $template = '<?xml version="1.0"?><tr><td class="colOne"/><td class="colTwo"/><td class="colThree"/></tr>';
  * $qp = qp(QueryPath::HTML_STUB, 'body') // Open a stub HTML doc and select <body/>
@@ -20,7 +21,7 @@
  *  ->doneWithQuery()
  *  ->writeHTML();
  * ?>
- * </code>
+ * @endcode
  *
  * The code above will take the results of a SQL query and insert them into a n
  * HTML table.
@@ -31,7 +32,7 @@
  * connection that can be shared by all {@link QueryPath} instances.
  *
  * Thus, we could rewrite the above to look like this:
- * <code>
+ * @code
   * <?php
   * QPDB::baseDB($someDN);
   *
@@ -42,7 +43,8 @@
   *  ->doneWithQuery()
   *  ->writeHTML();
   * ?>
-  * </code>
+  * @endcode
+ *
  * Note that in this case, the QueryPath object doesn't need to call a method to
  * activate the database. There is no call to {@link dbInit()}. Instead, it checks
  * the base class to find the shared database.
@@ -53,7 +55,7 @@
  * The result of both of these examples will be identical.
  * The output looks something like this:
  * 
- * <code>
+ * @code
  * <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
  * <html xmlns="http://www.w3.org/1999/xhtml">
  * <head>
@@ -92,12 +94,12 @@
  *</table>
  *</body>
  *</html>
- *</code>
+ * @endcode
  *
  * Note how the CSS classes are used to correlate DB table names to template
  * locations.
- * @package QueryPath
- * @subpackage Extension
+ *
+ * 
  * @author M Butcher <matt@aleph-null.tv>
  * @license http://opensource.org/licenses/lgpl-2.1.php LGPL or MIT-like license.
  * @see QueryPathExtension
@@ -116,7 +118,7 @@
  * Here is an extended example taken from the unit tests for this library.
  * 
  * Let's say we create a database with code like this:
- * <code>
+ * @code
  *<?php
  * public function setUp() {
  *   $this->db = new PDO($this->dsn);
@@ -134,10 +136,11 @@
  *   }
  * }
  * ?>
- * </code>
+ * @endcode
  * 
  * From QueryPath with QPDB, we can now do very elaborate DB chains like this:
- *<code>
+ *
+ * @code
  * <?php
  * $sql = 'SELECT * FROM qpdb_test';
  * $args = array();
@@ -157,13 +160,15 @@
  *   ->doneWithQuery() // Let QueryPath clean up. YOU SHOULD ALWAYS DO THIS.
  *   ->writeHTML(); // Write the output as HTML.
  * ?> 
- *</code>
+ * @endcode
+ *
  * With the code above, we step through the document, selectively building elements
  * as we go, and then populating this elements with data from our initial query.
  *
  * When the last command, {@link QueryPath:::writeHTML()}, is run, we will get output
  * like this:
- * <code>
+ * 
+ * @code
  *   <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
  *   <html xmlns="http://www.w3.org/1999/xhtml">
  *     <head>
@@ -175,7 +180,8 @@
  *       <p>Body 1</p>
  *       Footer 1</body>
  *    </html>
- * </code>
+ * @endcode
+ *
  * Notice the body section in particular. This is where the data has been
  * inserted.
  *
@@ -185,7 +191,8 @@
  * the {@link queryInto()} function.
  *
  * Here's an example from another unit test:
- * <code>
+ *
+ * @code
  * <?php
  * $template = '<?xml version="1.0"?><li class="colOne"/>';
  * $sql = 'SELECT * FROM qpdb_test';
@@ -199,10 +206,12 @@
  *   ->doneWithQuery()
  *   ->writeHTML(); // Write the results as HTML.
  * ?>
- * </code>
+ * @endcode 
+ *
  * The simple code above puts the first column of the select statement
  * into an unordered list. The example output looks like this:
- * <code>
+ *
+ * @code
  * <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
  * <html xmlns="http://www.w3.org/1999/xhtml">
  *   <head>
@@ -219,7 +228,7 @@
  *    </ul>
  *   </body>
  * </html>
- * </code>
+ * @endcode
  *
  * Typical starting methods for this class are {@link QPDB::baseDB()}, 
  * {@link QPDB::query()}, and {@link QPDB::queryInto()}. 

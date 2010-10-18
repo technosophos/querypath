@@ -60,6 +60,9 @@ To print this message, do:
   <taskdef classname="PhingPirum.Task.PirumBuildTask" name="pirumbuild"/>
   <taskdef classname="PhingPirum.Task.PirumAddTask" name="pirumadd"/>
 
+  <!-- Doxygen -->
+  <includepath classpath="../PhingDoxygen/src"/>
+  <taskdef classname="PhingDoxygen.Task.DoxygenTask" name="doxygen"/>
 
   <!-- Global properties -->
   <property name="srcdir" value="./src"/>
@@ -231,6 +234,8 @@ To print this message, do:
   
   <target name="doc" depends="lint,setup" description="Generate API docs.">
     <delete dir="${docsdir}"/>
+    <doxygen config="./config.doxy"/>
+    <!--
     <phpdoc title="QueryPath ${version}"
       sourcecode="yes"
       destdir="${docsdir}"
@@ -240,9 +245,6 @@ To print this message, do:
       examplesdir="examples"
       quiet="true"
       >
-      <!-- 
-        output="HTML:frames:phphtmllib"
-      -->
       <fileset refid="sourcecode"/>
       <fileset refid="tutorials"/>
       <fileset refid="examplecode"/>
@@ -257,6 +259,8 @@ To print this message, do:
         <include name="API-*"/>
       </projdocfileset>
     </phpdoc>
+    -->
+    
     <!-- Need to replace version information in generated documentation -->
     <reflexive>
       <fileset refid="docs"/>

@@ -1,5 +1,5 @@
 <?php
-/**
+/** @file
  * Using QueryPath.
  *
  * This file contains an example of how QueryPath can be used
@@ -12,7 +12,7 @@
  * templates, injecting database information with {@link QPDB}, and merging
  * data from one QueryPath to another.
  *
- * @package Examples
+ * @ingroup Examples
  * @author M Butcher <matt@aleph-null.tv>
  * @license LGPL The GNU Lesser GPL (LGPL) or an MIT-like license.
  */
