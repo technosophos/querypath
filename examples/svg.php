@@ -11,7 +11,7 @@
  * at {@link http://querypath.org/svg.php}. (That URL actually runs the script displayed
  * here.)
  *
- * @package Examples
+ * 
  * @author M Butcher <matt@aleph-null.tv>
  * @license LGPL The GNU Lesser GPL (LGPL) or an MIT-like license.
  */

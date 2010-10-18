@@ -13,8 +13,12 @@
  * @license http://opensource.org/licenses/lgpl-2.1.php The GNU Lesser GPL (LGPL) or an MIT-like license. 
  */
 
-/** addtogroup querypath_css CSS Parsing
+/** @addtogroup querypath_css CSS Parsing
  * QueryPath includes a CSS 3 Selector parser.
+ *
+ *
+ * Typically the parser is not accessed directly. Most developers will use it indirectly from
+ * qp(), htmlqp(), or one of the methods on a QueryPath object.
  *
  * This parser is modular and is not tied to QueryPath, so you can use it in your 
  * own (non-QueryPath) projects if you wish. To dive in, start with CssEventHandler, the
@@ -34,6 +38,8 @@ require_once 'CssEventHandler.php';
  *
  * This library is inspired by the SAX2 API for parsing XML. Each component of a 
  * selector fires an event, passing the necessary data on to the event handler.
+ *
+ * @ingroup querypath_css
  */
 interface CssEventHandler {
   /** The is-exactly (=) operator. */
@@ -113,13 +119,13 @@ interface CssEventHandler {
    * Example: [ns|name~=attr]
    * @param string $name
    *  The attribute name.
+   * @param string $ns
+   *  The namespace identifier (not the URI).
    * @param string $value
    *  The value of the attribute, if given.
    * @param int $operation
    *  The operation to be used for matching. See {@link CssEventHandler}
    *  constants for a list of supported operations.
-   * @param string $namespace
-   *  The namespace identifier (not the URI).
    */
   public function attributeNS($name, $ns, $value = NULL, $operation = CssEventHandler::isExactly);
   /**
@@ -170,6 +176,8 @@ interface CssEventHandler {
  * Tokens for CSS.
  * This class defines the recognized tokens for the parser, and also 
  * provides utility functions for error reporting.
+ *
+ * @ingroup querypath_css
  */
 final class CssToken {
   const char = 0;
@@ -231,6 +239,8 @@ final class CssToken {
  * This class provides an event-based parser for CSS selectors. It can be
  * used, for example, as a basis for writing a DOM query engine based on
  * CSS.
+ *
+ * @ingroup querypath_css
  */
 class CssParser {
   protected $scanner = NULL;
@@ -787,6 +797,8 @@ class CssParser {
  * Scanner for CSS selector parsing.
  *
  * This provides a simple scanner for traversing an input stream.
+ *
+ * @ingroup querypath_css
  */
 final class CssScanner {
   var $is = NULL;
@@ -1090,5 +1102,7 @@ class CssInputStream {
 
 /**
  * Exception indicating an error in CSS parsing.
+ *
+ * @ingroup querypath_css
  */
 class CSSParseException extends EXCEPTION {}

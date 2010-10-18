@@ -2,7 +2,7 @@
 /**
  * Urban Dictionary Random Word Generator
  *
- * @package Examples
+ * 
  * @author Emily Brand
  * @license LGPL The GNU Lesser GPL (LGPL) or an MIT-like license.
  * @see http://www.urbandictionary.com/

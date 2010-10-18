@@ -13,7 +13,7 @@
  * methods of looping. An even more advanced method would be to use the 
  * {@link QPTPL} library. 
  *
- * @package Examples
+ * 
  * @author M Butcher <matt@aleph-null.tv>
  * @license LGPL The GNU Lesser GPL (LGPL) or an MIT-like license.
  */

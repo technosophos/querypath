@@ -1,7 +1,6 @@
 <?php
 /**
  * Unstable testing code.
- * @package Tests
  */
  
 require_once 'PHPUnit/Framework.php';
@@ -11,6 +10,7 @@ require_once 'CssEventTests.php';
 
 /**
  * Tests for QueryPathCssEventHandler class.
+ * @ingroup querypath_tests
  */
 class BottomUpCssEventHandlerTests extends QueryPathCssEventHandlerTests {
   public $xml = '<?xml version="1.0" ?>

@@ -2,7 +2,7 @@
 /**
  * Use QueryPath's database extension to import XML data into a database.
  *
- * @package Examples
+ * 
  * @author M Butcher <matt@aleph-null.tv>
  * @license LGPL The GNU Lesser GPL (LGPL) or an MIT-like license.
  */

@@ -11,7 +11,7 @@
  * parse it. From there, we make a list of hyperlinks, one for each item in 
  * the original feed.
  *
- * @package Examples
+ * 
  * @author M Butcher <matt@aleph-null.tv>
  * @license LGPL The GNU Lesser GPL (LGPL) or an MIT-like license.
  */

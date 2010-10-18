@@ -13,7 +13,7 @@
  * This file is fully explained in the official QueryPath tutorial, located 
  * at {@link https://fedorahosted.org/querypath/wiki/QueryPathTutorial}
  *
- * @package Examples
+ * 
  * @author M Butcher <matt@aleph-null.tv>
  * @license LGPL The GNU Lesser GPL (LGPL) or an MIT-like license.
  * @see qp()

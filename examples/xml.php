@@ -14,7 +14,7 @@
  * </code>
  * (A space was inserted above to prevent the documentation renderer from 
  * misinterpreting it.)
- * @package Examples
+ * 
  * @author M Butcher <matt@aleph-null.tv>
  * @license LGPL The GNU Lesser GPL (LGPL) or an MIT-like license.
  */

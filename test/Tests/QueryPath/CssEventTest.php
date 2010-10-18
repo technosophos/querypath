@@ -1,12 +1,15 @@
 <?php
-/**
- * @package Tests
+/** @file
+ * CSS Event handling tests
  */
  
 require_once 'PHPUnit/Framework.php';
 //require_once 'src/QueryPath/CssEventHandler.php';
 require_once 'src/QueryPath/QueryPath.php';
 
+/**
+ * @ingroup querypath_tests
+ */
 class CssTokenTest extends PHPUnit_Framework_TestCase {
   public function testName() {
     
@@ -19,6 +22,7 @@ class CssTokenTest extends PHPUnit_Framework_TestCase {
 
 /**
  * Tests for QueryPathCssEventHandler class.
+ * @ingroup querypath_tests
  */
 class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
   
@@ -1404,7 +1408,9 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
 }
 
 
-
+/**
+ * @ingroup querypath_tests
+ */
 class CssEventParserTests extends PHPUnit_Framework_TestCase {
   
   private function getMockHandler($method) {
@@ -1782,6 +1788,8 @@ class CssEventParserTests extends PHPUnit_Framework_TestCase {
 
 /**
  * Testing harness for the CssEventHandler.
+ *
+ * @ingroup querypath_tests
  */
 class TestCssEventHandler implements CssEventHandler {
   var $stack = NULL;
@@ -1865,6 +1873,8 @@ class TestCssEventHandler implements CssEventHandler {
 
 /**
  * Simple utility object for use with the TestCssEventHandler.
+ *
+ * @ingroup querypath_tests
  */
 class TestEvent {
   const elementID = 0;

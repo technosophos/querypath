@@ -1,7 +1,6 @@
 <?php
 /**
  * Tests for the QueryPath library.
- * @package Tests
  * @author M Butcher <matt@aleph-null.tv>
  * @license The GNU Lesser GPL (LGPL) or an MIT-like license.
  */
@@ -17,6 +16,7 @@ require_once 'QueryPathTest.php';
 
 /**
  * Run all of the usual tests, plus some extras, with some extensions loaded.
+ * @ingroup querypath_tests
  */
 class QueryPathExtensionTest extends QueryPathTest {
 //class QueryPathExtensionTest extends PHPUnit_Framework_TestCase {
@@ -89,6 +89,11 @@ class QueryPathExtensionTest extends QueryPathTest {
  
 }
 // Create a stub extension:
+/**
+ * Create a stub extension
+ *
+ * @ingroup querypath_tests
+ */
 class StubExtensionOne implements QueryPathExtension {
   private $qp = NULL;
   public function __construct(QueryPath $qp) {
@@ -100,6 +105,11 @@ class StubExtensionOne implements QueryPathExtension {
     return $this->qp;
   }
 }
+/**
+ * Create a stub extension
+ *
+ * @ingroup querypath_tests
+ */
 class StubExtensionTwo implements QueryPathExtension {
   private $qp = NULL;
   public function __construct(QueryPath $qp) {
@@ -109,7 +119,11 @@ class StubExtensionTwo implements QueryPathExtension {
     return $arg1 . $arg2;
   }
 }
-
+/**
+ * Create a stub extension
+ *
+ * @ingroup querypath_tests
+ */
 class StubExtensionThree implements QueryPathExtension {
   private $qp = NULL;
   public function __construct(QueryPath $qp) {

@@ -3,7 +3,6 @@
  * Tests for the QueryPath library.
  * @author M Butcher <matt@aleph-null.tv>
  * @license The GNU Lesser GPL (LGPL) or an MIT-like license.
- * @package Tests
  */
 
 require_once 'PHPUnit/Framework.php';
@@ -14,7 +13,7 @@ require_once 'src/QueryPath/Extension/QPTPL.php';
 QPDB::baseDB('sqlite:./test/db/qpTest.db');
 
 /**
- * @package Tests
+ * @ingroup querypath_tests
  */
 class QPDBTest extends PHPUnit_Framework_TestCase {
   private $dsn = 'sqlite:./test/db/qpTest.db';

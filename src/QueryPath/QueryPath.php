@@ -61,11 +61,23 @@
  *
  */
 
-/** @addtogroup querypath_core QueryPath Core
+/** @addtogroup querypath_core Core API
  * Core classes and functions for QueryPath.
+ *
+ * These are the classes, objects, and functions that developers who use QueryPath
+ * are likely to use. The qp() and htmlqp() functions are the best place to start,
+ * while most of the frequently used methods are part of the QueryPath object.
  */
 
-/** @namespace QueryPath
+/** @addtogroup querypath_util Utilities
+ * Utility classes for QueryPath.
+ *
+ * These classes add important, but less-often used features to QueryPath. Some of
+ * these are used transparently (QueryPathIterator). Others you can use directly in your 
+ * code (QueryPathEntities).
+ */
+
+/*   * @namespace QueryPath
  * The core classes that compose QueryPath.
  *
  * The QueryPath classes contain the brunt of the QueryPath code. If you are 
@@ -267,7 +279,7 @@ class QueryPath implements IteratorAggregate {
    *
    * @since 2.0
    */
-  const VERSION = '@UNSTABLE@';
+  const VERSION = '-UNSTABLE%';
   
   /**
    * This is a stub HTML 4.01 document.
@@ -854,6 +866,8 @@ class QueryPath implements IteratorAggregate {
    *  If this is a string, it will be used as a CSS name. If it is an array,
    *  this will assume it is an array of name/value pairs of CSS rules. It will
    *  apply all rules to all elements in the set.
+   * @param string $value
+   *  The value to set. This is only set if $name is a string.
    * @return QueryPath
    */
   public function css($name = NULL, $value = '') {
@@ -1069,7 +1083,7 @@ class QueryPath implements IteratorAggregate {
    * The above would filter down the list to only an item whose ID is
    * 'text'.
    *
-   * @param string $function
+   * @param string $fn
    *  Inline lambda function in a string.
    * @return QueryPath
    * @see filter()
@@ -1151,7 +1165,7 @@ class QueryPath implements IteratorAggregate {
    * If the callback function returns FALSE, the item will be removed from the 
    * set of matches. Otherwise the item will be considered a match and left alone.
    *
-   * @param $callback.
+   * @param callback $callback.
    *   A callback either as a string (function) or an array (object, method OR 
    *   classname, method).
    * @return QueryPath
@@ -1299,14 +1313,15 @@ class QueryPath implements IteratorAggregate {
    *
    * @param integer $start
    *  Where in the list of matches to begin the slice.
-   * @param integer $count
+   * @param integer $length
    *  The number of items to include in the slice. If nothing is specified, the 
    *  all remaining matches (from $start onward) will be included in the sliced
    *  list.
    * @return QueryPath
    * @see array_slice()
    */
-  public function slice($start, $end = 0) {
+  public function slice($start, $length = 0) {
+    $end = $length;
     $found = new SplObjectStorage();
     if ($start >= $this->size()) {
       $this->setMatches($found);
@@ -1445,7 +1460,7 @@ class QueryPath implements IteratorAggregate {
    * $destination is queried (using that selector) prior to the data being
    * appended. The data is then appended to the found items.
    *
-   * @param QueryPath $destination
+   * @param QueryPath $dest
    *  A QueryPath object that will be appended to.
    * @return QueryPath
    *  The original QueryPath, unaltered. Only the destination QueryPath will
@@ -1464,7 +1479,7 @@ class QueryPath implements IteratorAggregate {
    *
    * The markup will be inserted into each match in the set.
    *
-   * @param mixed $prependage
+   * @param mixed $data
    *  This can be either a string (the usual case), or a DOM Element.
    * @return QueryPath
    * @see append()
@@ -2541,9 +2556,11 @@ class QueryPath implements IteratorAggregate {
    * This has the effect of looping through all children, retrieving their text
    * content, and then concatenating the text with a separator.
    *
-   * @param string $separator
+   * @param string $sep
    *  The string used to separate text items. The default is a comma followed by a
    *  space.
+   * @param boolean $filterEmpties
+   *  If this is true, empty items will be ignored.
    * @return string
    *  The text contents, concatenated together with the given separator between
    *  every pair of items.
@@ -4006,6 +4023,11 @@ class QueryPath implements IteratorAggregate {
   }
 }
 
+/**
+ * Perform various tasks on HTML/XML entities.
+ *
+ * @ingroup querypath_util
+ */
 class QueryPathEntities {
   
   /**
@@ -4160,6 +4182,8 @@ class QueryPathEntities {
  * This provides iterator support for QueryPath. You do not need to construct
  * a QueryPathIterator. QueryPath does this when its {@link QueryPath::getIterator()}
  * method is called.
+ *
+ * @ingroup querypath_util
  */
 class QueryPathIterator extends IteratorIterator {
   public $options = array();
@@ -4197,6 +4221,7 @@ class QueryPathIterator extends IteratorIterator {
  *
  * @see qp()
  * @see QueryPathOptions::set()
+ * @ingroup querypath_util
  */
 class QueryPathOptions {
   
@@ -4261,6 +4286,8 @@ class QueryPathOptions {
 
 /**
  * Exception indicating that a problem has occured inside of a QueryPath object.
+ *
+ * @ingroup querypath_core
  */
 class QueryPathException extends Exception {}
 
@@ -4269,6 +4296,8 @@ class QueryPathException extends Exception {}
  *
  * This will report parser warnings as well as parser errors. It should only be 
  * thrown, though, under error conditions.
+ *
+ * @ingroup querypath_core
  */
 class QueryPathParseException extends QueryPathException {
   const ERR_MSG_FORMAT = 'Parse error in %s on line %d column %d: %s (%d)';
@@ -4299,6 +4328,11 @@ class QueryPathParseException extends QueryPathException {
   }
 }
 
+/**
+ * Indicates that an input/output exception has occurred.
+ *
+ * @ingroup querypath_core
+ */
 class QueryPathIOException extends QueryPathParseException {
   public static function initializeFromError($code, $str, $file, $line, $cxt) {
     $class = __CLASS__;

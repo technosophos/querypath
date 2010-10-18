@@ -2,7 +2,7 @@
 /**
  * Compare jQuery documentation to QueryPath documentation
  *
- * @package Examples
+ * 
  * @author Emily Brand
  * @license LGPL The GNU Lesser GPL (LGPL) or an MIT-like license.
  * @see http://api.jquery.com/api/

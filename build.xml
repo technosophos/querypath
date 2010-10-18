@@ -142,7 +142,7 @@ To print this message, do:
         <stripphpcomments/>
         <!-- Removed per issue #20 -->
         <!-- stripwhitespace/ -->
-        <replacetokens begintoken="@" endtoken="@">
+        <replacetokens begintoken="-" endtoken="%">
           <token key="UNSTABLE" value="${version}"/>
         </replacetokens>
       </filterchain>
@@ -184,7 +184,7 @@ To print this message, do:
     <!-- Copy source code, doing token replacement on version. -->
     <copy todir="${releasedir}/src">
       <filterchain>
-        <replacetokens begintoken="@" endtoken="@">
+        <replacetokens begintoken="-" endtoken="%">
           <token key="UNSTABLE" value="${version}"/>
         </replacetokens>
       </filterchain>
@@ -235,37 +235,12 @@ To print this message, do:
   <target name="doc" depends="lint,setup" description="Generate API docs.">
     <delete dir="${docsdir}"/>
     <doxygen config="./config.doxy"/>
-    <!--
-    <phpdoc title="QueryPath ${version}"
-      sourcecode="yes"
-      destdir="${docsdir}"
-      output="${phpdoc.style}" 
-      defaultcategoryname="QueryPath"
-      defaultpackagename="QueryPath"
-      examplesdir="examples"
-      quiet="true"
-      >
-      <fileset refid="sourcecode"/>
-      <fileset refid="tutorials"/>
-      <fileset refid="examplecode"/>
-      <projdocfileset dir=".">
-        <include name="README.md"/>
-        <include name="README"/>
-        <include name="INSTALL"/>
-        <include name="COPYING-LGPL.txt"/>
-        <include name="COPYING-MIT.txt"/>
-        <include name="LGPL-2.1.txt"/>
-        <include name="RELEASE-*"/>
-        <include name="API-*"/>
-      </projdocfileset>
-    </phpdoc>
-    -->
     
     <!-- Need to replace version information in generated documentation -->
     <reflexive>
       <fileset refid="docs"/>
       <filterchain>
-        <replacetokens begintoken="@" endtoken="@">
+        <replacetokens begintoken="-" endtoken="%">
           <token key="UNSTABLE" value="${version}"/>
         </replacetokens>
       </filterchain>
@@ -393,7 +368,7 @@ To print this message, do:
       <filterchain>
         <stripphpcomments/>
         <stripwhitespace/>
-        <replacetokens begintoken="@" endtoken="@">
+        <replacetokens begintoken="-" endtoken="%">
           <token key="UNSTABLE" value="${version}"/>
           <token key="PHAR_FILENAME" value="QueryPath.phar"/>
         </replacetokens>
@@ -462,7 +437,7 @@ To print this message, do:
       <filterchain>
         <!-- stripphpcomments/ -->
         <!-- stripwhitespace/ -->
-        <replacetokens begintoken="@" endtoken="@">
+        <replacetokens begintoken="-" endtoken="%">
           <token key="UNSTABLE" value="${version}"/>
         </replacetokens>
       </filterchain>

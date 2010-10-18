@@ -16,7 +16,7 @@
  * Data stored there for a particular Wikipedia entry (any Wikipedia
  * wiki name should work here).
  * 
- * @package Examples
+ * 
  * @author M Butcher <matt@aleph-null.tv>
  * @license LGPL The GNU Lesser GPL (LGPL) or an MIT-like license.
  * @see http://www.w3.org/DesignIssues/LinkedData.html

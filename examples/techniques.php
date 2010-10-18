@@ -14,7 +14,7 @@
  * altered during a loop.
  *
  * @see QueryPath
- * @package Examples
+ * 
  * @author M Butcher <matt@aleph-null.tv>
  * @license LGPL (The GNU Lesser GPL) or an MIT-like license.
  */

@@ -4,7 +4,6 @@
  * Generic CLI parser tests.
  *
  * These are not unit tests. They are just plain parser tests.
- * @package Tests
  * @author M Butcher <matt@aleph-null.tv>
  * @license The GNU Lesser GPL (LGPL) or an MIT-like license.
  */
@@ -14,8 +13,9 @@ require '../src/QueryPath/QueryPath.php';
 
 /**
  * Testing harness for the CssEventHandler.
+ * @ingroup querypath_tests
  */
-class TestCssEventHandler implements CssEventHandler {
+class SimpleTestCssEventHandler implements CssEventHandler {
   var $stack = NULL;
   var $expect = array();
   
@@ -97,6 +97,7 @@ class TestCssEventHandler implements CssEventHandler {
 
 /**
  * Simple utility object for use with the TestCssEventHandler.
+ * @ingroup querypath_tests
  */
 class TestEvent {
   const elementID = 0;
@@ -145,7 +146,7 @@ print ord('"');
 $str = 'tag.class #id :test (test)';
 print "Now testing: $str\n";
 
-$c = new TestCssEventHandler();
+$c = new SimpleTestCssEventHandler();
 
 $p = new CssParser($str, $c);
 $p->parse();

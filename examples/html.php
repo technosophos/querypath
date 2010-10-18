@@ -12,7 +12,6 @@
  * templates, injecting database information with {@link QPDB}, and merging
  * data from one QueryPath to another.
  *
- * @ingroup Examples
  * @author M Butcher <matt@aleph-null.tv>
  * @license LGPL The GNU Lesser GPL (LGPL) or an MIT-like license.
  */

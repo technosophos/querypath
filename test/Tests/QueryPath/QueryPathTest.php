@@ -7,7 +7,7 @@
  * @license The GNU Lesser GPL (LGPL) or an MIT-like license.
  */
 
-/** @addgroup querypath_tests Tests
+/** @addtogroup querypath_tests Tests
  * Unit tests and regression tests for QueryPath.
  */
 
@@ -1558,6 +1558,8 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
  *
  * This uses a testing harness, XMLishMock, to test
  * a protected method of QueryPath.
+ *
+ * @ingroup querypath_test
  */
 class XMLishTest extends PHPUnit_Framework_TestCase {
   public function testXMLishMock() {
@@ -1587,6 +1589,8 @@ class XMLishTest extends PHPUnit_Framework_TestCase {
 
 /**
  * A testing class for XMLish tests.
+ *
+ * @ingroup querypath_tests
  */
 class XMLishMock extends QueryPath {
   public function exposedIsXMLish($str) {
@@ -1596,6 +1600,8 @@ class XMLishMock extends QueryPath {
 
 /**
  * A simple mock for testing qp()'s abstract factory.
+ *
+ * @ingroup querypath_tests
  */
 class QueryPathExtended extends QueryPath {
   public $foo = 'bar';

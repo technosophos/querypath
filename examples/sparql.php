@@ -10,7 +10,7 @@
  * QueryPath. POST queries are supported, too. Use a stream context
  * to create those.
  *
- * @package Examples
+ * 
  * @author M Butcher <matt@aleph-null.tv>
  * @license LGPL The GNU Lesser GPL (LGPL) or an MIT-like license.
  * @see http://www.w3.org/2009/sparql/wiki/Main_Page

@@ -1,7 +1,6 @@
 <?php
 /**
  * Tests for the QueryPath library.
- * @package Tests
  * @author M Butcher <matt@aleph-null.tv>
  * @license The GNU Lesser GPL (LGPL) or an MIT-like license.
  */
@@ -9,7 +8,9 @@
 require_once 'PHPUnit/Framework.php';
 require_once 'src/QueryPath/QueryPath.php';
 require_once 'src/QueryPath/Extension/QPTPL.php';
-
+/**
+ * @ingroup querypath_tests
+ */
 class QPTPLTest extends PHPUnit_Framework_TestCase {
   
   public function testIsAssoc() {
@@ -150,19 +151,25 @@ class QPTPLTest extends PHPUnit_Framework_TestCase {
   }
   
 }
-
+/**
+ * @ingroup querypath_tests
+ */
 class IntrospectMe {
   public function getMyClass() {
     return 'FOO';
   }
 }
-
+/**
+ * @ingroup querypath_tests
+ */
 class FixtureOne {
   public function getBaz() {
     return '<str id="baz">This is a string</str>';
   }
 }
-
+/**
+ * @ingroup querypath_tests
+ */
 class FixtureTwo {
   private $db;
   

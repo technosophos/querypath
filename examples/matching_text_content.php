@@ -12,7 +12,7 @@
  * and exact match, so the method outline below is roughly the same as merely
  * using `:contains(Release)`.
  *
- * @package Examples
+ * 
  * @author M Butcher <matt@aleph-null.tv>
  * @license LGPL The GNU Lesser GPL (LGPL) or an MIT-like license.
  */

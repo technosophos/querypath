@@ -32,7 +32,7 @@
  *    is no calculation done.
  *
  * For detailed examples of how the code works and what selectors are supported,
- * see the {@see CssEventTests.php} file, which contains the unit tests used for
+ * see the CssEventTests file, which contains the unit tests used for
  * testing this implementation.
  *
  * @author M Butcher <matt@aleph-null.tv>
@@ -53,13 +53,13 @@ require_once 'CssParser.php';
  * match and the previously matched elements.
  *
  * To use this handler:
- * <code>
+ * @code
  * $filter = '#id'; // Some CSS selector
  * $handler = new QueryPathCssParser(DOMNode $dom);
  * $parser = new CssParser();
  * $parser->parse($filter, $handler);
  * $matches = $handler->getMatches();
- * </code>
+ * @endcode
  *
  * $matches will be an array of zero or more DOMElement objects.
  *
@@ -1419,5 +1419,7 @@ class QueryPathCssEventHandler implements CssEventHandler {
  *
  * This is thrown in cases where some feature is expected, but the current 
  * implementation does not support that feature.
+ *
+ * @ingroup querypath_css
  */
 class NotImplementedException extends Exception {}
