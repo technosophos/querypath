@@ -49,7 +49,6 @@
  * license (you may choose which you prefer). All of the code is Copyright, 2009
  * by Matt Butcher.
  *
- * @package QueryPath
  * @author M Butcher <matt @aleph-null.tv>
  * @license http://opensource.org/licenses/lgpl-2.1.php The GNU Lesser GPL (LGPL) or an MIT-like license.
  * @see QueryPath

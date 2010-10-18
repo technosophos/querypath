@@ -1,8 +1,6 @@
 <?php
-/**
+/** @file
  * This extension provides support for common HTML list operations.
- * @package QueryPath
- * @subpackage Extension
  */
 
 /**
@@ -13,6 +11,7 @@
  *
  * @deprecated This will be removed from a subsequent version of QueryPath. It will
  *  be released as a stand-alone extension.
+ * @ingroup querypath_extensions
  */ 
 class QPList implements QueryPathExtension {
   const UL = 'ul';

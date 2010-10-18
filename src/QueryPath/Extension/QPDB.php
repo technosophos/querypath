@@ -231,7 +231,9 @@
  * @endcode
  *
  * Typical starting methods for this class are {@link QPDB::baseDB()}, 
- * {@link QPDB::query()}, and {@link QPDB::queryInto()}. 
+ * {@link QPDB::query()}, and {@link QPDB::queryInto()}.
+ *
+ * @ingroup querypath_extensions
  */
 class QPDB implements QueryPathExtension {
   protected $qp;

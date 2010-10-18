@@ -1,5 +1,5 @@
 <?php
-/**
+/** @file
  * CSS selector parsing classes.
  *
  * This file contains the tools necessary for parsing CSS 3 selectors.
@@ -9,10 +9,17 @@
  * begin by implementing the {@link CssEventHandler} interface. For an example
  * of how this is done, see {@link CssEventHandler.php}.
  *
- * @package QueryPath
- * @subpackage CSSParser
  * @author M Butcher <matt@aleph-null.tv>
  * @license http://opensource.org/licenses/lgpl-2.1.php The GNU Lesser GPL (LGPL) or an MIT-like license. 
+ */
+
+/** addtogroup querypath_css CSS Parsing
+ * QueryPath includes a CSS 3 Selector parser.
+ *
+ * This parser is modular and is not tied to QueryPath, so you can use it in your 
+ * own (non-QueryPath) projects if you wish. To dive in, start with CssEventHandler, the
+ * event interface that works like a SAX API for CSS selectors. If you want to check out
+ * the details, check out the parser (CssParser),  scanner (CssScanner), and token list (CssToken).
  */
 
 require_once 'CssEventHandler.php';

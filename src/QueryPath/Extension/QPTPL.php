@@ -1,4 +1,7 @@
 <?php
+/** @file
+ * QueryPath templates. See QPTPL.
+ */
 /**
  * QPTPL is a template library for QueryPath.
  *
@@ -19,15 +22,13 @@
  *
  * The unit tests are a good place for documentation, as is the QueryPath webste.
  *
- * @package QueryPath
- * @subpackage Extension
  * @author M Butcher <matt@aleph-null.tv>
  * @license http://opensource.org/licenses/lgpl-2.1.php LGPL or MIT-like license.
  * @see QueryPathExtension
  * @see QueryPathExtensionRegistry::extend()
  * @see https://fedorahosted.org/querypath/wiki/QueryPathTemplate
+ * @ingroup querypath_extensions
  */
-
 class QPTPL implements QueryPathExtension {
   protected $qp;
   public function __construct(QueryPath $qp) {

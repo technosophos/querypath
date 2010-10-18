@@ -17,7 +17,15 @@
  * @see QueryPathExtensionRegistry::extend()
  */
 
-/** @interface
+/** @addtogroup querypath_extensions Extensions
+ * The QueryPath extension system and bundled extensions.
+ *
+ * Much like jQuery, QueryPath provides a simple extension mechanism that allows 
+ * extensions to auto-register themselves upon being loaded. For a simple example, see
+ * QPXML. For the internals, see QueryPathExntesion and QueryPath::__construct().
+ */
+
+/**
  * A QueryPathExtension is a tool that extends the capabilities of a QueryPath object.
  *
  * Extensions to QueryPath should implement the QueryPathExtension interface. The
@@ -65,18 +73,22 @@
  * When you write your own extensions, anything that does not need to return a 
  * specific value should return the QueryPath object. Between that and the 
  * extension registry, this will provide the best developer experience.
+ *
+ * @ingroup querypath_extensions
  */
 interface QueryPathExtension {
   public function __construct(QueryPath $qp);
 }
 
-/** @class
+/**
  * A registry for QueryPath extensions.
  *
  * QueryPath extensions should call the {@link QueryPathExtensionRegistry::extend()}
  * function to register their extension classes. The QueryPath library then 
  * uses this information to determine what QueryPath extensions should be loaded and
  * executed.
+ *
+ * @ingroup querypath_extensions
  */
 class QueryPathExtensionRegistry {
   /**

@@ -1,18 +1,16 @@
 <?php
+/** @file
+ * XML extensions. See QPXML.
+ */
 /**
  * Provide QueryPath with additional XML tools.
  *
- * @package QueryPath
- * @subpackage Extension
  * @author M Butcher <matt@aleph-null.tv>
  * @license http://opensource.org/licenses/lgpl-2.1.php LGPL or MIT-like license.
  * @see QueryPathExtension
  * @see QueryPathExtensionRegistry::extend()
  * @see QPXML
- */
- 
-/**
- * Provide additional tools for working with XML content.
+ * @ingroup querypath_extensions
  */
 class QPXML implements QueryPathExtension {
   

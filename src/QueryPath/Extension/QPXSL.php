@@ -1,5 +1,5 @@
 <?php
-/**
+/** @file
  * Provide QueryPath with XSLT support using the PHP libxslt module.
  *
  * This is called 'QPXSL' instead of 'QPXSLT' in accordance with the name
@@ -7,8 +7,6 @@
  *
  * You must have PHP XSL support for this to function.
  *
- * @package QueryPath
- * @subpackage Extension
  * @author M Butcher <matt@aleph-null.tv>
  * @license http://opensource.org/licenses/lgpl-2.1.php LGPL or MIT-like license.
  * @see QueryPathExtension
@@ -37,6 +35,8 @@
  * stylesheet.xml. The results are returned as a QueryPath object, which 
  * is written to XML using {@link QueryPath::writeXML()}.
  * </code>
+ *
+ * @ingroup querypath_extensions
  */
 class QPXSL implements QueryPathExtension {
   

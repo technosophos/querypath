@@ -1,5 +1,5 @@
 <?php
-/**
+/** @file
  * This file contains a full implementation of the CssEventHandler interface.
  * 
  * The tools in this package initiate a CSS selector parsing routine and then
@@ -35,8 +35,6 @@
  * see the {@see CssEventTests.php} file, which contains the unit tests used for
  * testing this implementation.
  *
- * @package QueryPath
- * @subpackage CSSParser
  * @author M Butcher <matt@aleph-null.tv>
  * @license http://opensource.org/licenses/lgpl-2.1.php LGPL (The GNU Lesser GPL) or an MIT-like license.
  */
@@ -64,6 +62,8 @@ require_once 'CssParser.php';
  * </code>
  *
  * $matches will be an array of zero or more DOMElement objects.
+ *
+ * @ingroup querypath_css
  */
 class QueryPathCssEventHandler implements CssEventHandler {
   protected $dom = NULL; // Always points to the top level.
