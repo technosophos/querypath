@@ -1,10 +1,14 @@
 <?php
-/**
+/** @file
  * Tests for the QueryPath library.
  *
- * @package Tests
+ * 
  * @author M Butcher <matt@aleph-null.tv>
  * @license The GNU Lesser GPL (LGPL) or an MIT-like license.
+ */
+
+/** @addgroup querypath_tests Tests
+ * Unit tests and regression tests for QueryPath.
  */
 
 $basedir = dirname(__FILE__);
@@ -23,6 +27,7 @@ define('HTML_IN_XML_FILE', $basedir . '/../../html.xml');
  * Tests for DOM Query. Primarily, this is focused on the DomQueryImpl
  * class which is exposed through the DomQuery interface and the dq() 
  * factory function.
+ * @ingroup querypath_tests
  */
 class QueryPathTest extends PHPUnit_Framework_TestCase {
   
