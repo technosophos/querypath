@@ -86,6 +86,8 @@ To print this message, do:
     <include name="LGPL-2.1.txt"/>
     <include name="COPYING-LGPL.txt"/>
     <include name="COPYING-MIT.txt"/>
+    <include name="RELEASE"/>
+    <include name="API"/>
   </fileset>
   
   <!-- Files to be treated as source code -->
@@ -453,6 +455,10 @@ To print this message, do:
         <include name="**/*"/>
       </fileset>
     </copy>
+    
+    <copy file="./pear-summary.txt" tofile="${releasedir}/README"/>
+    <move file="${releasedir}/RELEASE" tofile="${releasedir}/RELEASE-${version}"/>
+    <move file="${releasedir}/API" tofile="${releasedir}/API-${version}"/>
     
     <!-- Generate PEAR package. -->
     <pearpkg2 name="QueryPath" dir="./">
