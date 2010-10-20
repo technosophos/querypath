@@ -44,3 +44,5 @@ Altered CSS Selectors Behavior
   * :contains() now does substring matching instead of exact matching. This conforms
     to jQuery's behavior.
   * Quotes are now checked carefully before being stripped from pseudo-class values.
+  * Issue #40 identified a potential infinite looping problem on poorly formed selectors.
+    This was fixed.

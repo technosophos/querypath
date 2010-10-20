@@ -20,3 +20,6 @@ causes XDebug to crash.
 
 7. Data URs are now supported. QueryPath can now embed images directly
 into HTML and XML this way.
+
+8. Documentation is now in Doxygen instead of PhpDocumentor. Thanks
+to Matt Farina and Kevin O'Brien for their input.
