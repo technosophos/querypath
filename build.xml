@@ -71,6 +71,11 @@ To print this message, do:
   <taskdef classname="PhingPyrus.Task.PyrusPackageTask" name="pyruspackage"/>
   <taskdef classname="PhingPyrus.Task.PyrusHelpTask" name="pyrushelp"/>
   <taskdef classname="PhingPyrus.Task.PyrusExecTask" name="pyrusexec"/>
+  
+  <!--
+  <includepath classpath="../Phing-QueryPath/src"/>
+  <taskdef classname="PhingQueryPath.Task.QueryPathReplacementTask" name="qpreplace"/>
+  -->
 
   <!-- Global properties -->
   <property name="srcdir" value="./src"/>
@@ -79,7 +84,7 @@ To print this message, do:
   <property name="docsdir" value="./doc"/>
   <property name="packagedir" value="./dist"/>
   <property name="phardir" value="./phar"/>
-  <property name="pearchannel" value="../pear.querypath.org/pear"/>
+  <property name="pirum.channel.path" value="../pear.querypath.org/pear"/>
   
   <!-- ported from PhingPyrus -->
   <property name="pear.channel" value="pear.querypath.org"/>
@@ -463,6 +468,10 @@ To print this message, do:
     </copy>
     <copy todir="${releasedir}">
       <fileset refid="licensefiles"/>
+      <fileset dir=".">
+        <include name="package.xml"/>
+        <include name="package_compatible.xml"/>
+      </fileset>
     </copy>
     <copy todir="${releasedir}/doc">
       <fileset dir="${docsdir}">
@@ -478,6 +487,7 @@ To print this message, do:
     <pyrusmake dir="${releasedir}" packagename="${projectname}" channel="${pear.channel}"/>
     <pyruspackage packagexml="${releasedir}/package.xml"/>
     <move file="${projectname}-${version}.tgz" tofile="${packagedir}/${projectname}-${version}.tgz"/>
+
     
     <!--
     <pearpkg2 name="QueryPath" dir="./">
@@ -537,7 +547,7 @@ To print this message, do:
   <target name="pearPkg" depends="pearBuild">
     <echo>${packagedir}/QueryPath-${version}.tgz</echo>
     <!--property name="pirumdir" value="${testdir}/fakepear"/-->
-    <property name="pirumdir" value="${pearchannel}"/>
+    <property name="pirumdir" value="${pirum.channel.path}"/>
     <pirumbuild targetdir="${pirumdir}"/>
     <pirumadd targetdir="${pirumdir}" packagefile="${packagedir}/QueryPath-${version}.tgz"/>
   </target>
