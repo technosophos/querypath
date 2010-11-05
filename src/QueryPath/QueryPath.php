@@ -2600,7 +2600,7 @@ class QueryPath implements IteratorAggregate {
     if (isset($text)) {
       $this->removeChildren();
       $textNode = $this->document->createTextNode($text);
-      foreach($this->matches as $m) $m->appendChild($textNode);
+      foreach ($this->matches as $m) $m->appendChild($textNode);
       return $this;
     }
     // Returns all text as one string:
@@ -2608,6 +2608,64 @@ class QueryPath implements IteratorAggregate {
     foreach ($this->matches as $m) $buf .= $m->textContent;
     return $buf;
   }
+  /**
+   * Get or set the text before each selected item.
+   *
+   * If $text is passed in, the text is inserted before each currently selected item.
+   *
+   * If no text is given, this will return the concatenated text after each selected element.
+   *
+   * @code
+   * <?php
+   * $xml = '<?xml version="1.0"?><root>Foo<a>Bar</a><b/></root>';
+   * 
+   * // This will return 'Foo'
+   * qp($xml, 'a')->textBefore();
+   *
+   * // This will insert 'Baz' right before <b/>.
+   * qp($xml, 'b')->textBefore('Baz');
+   * ?>
+   * @endcode
+   *
+   * @param string $text
+   *  If this is set, it will be inserted before each node in the current set of
+   *  selected items.
+   * @return mixed
+   *  Returns the QueryPath object if $text was set, and returns a string (possibly empty)
+   *  if no param is passed.
+   */
+  public function textBefore($text = NULL) {
+    if (isset($text)) {
+      $textNode = $this->document->createTextNode($text);
+      return $this->before($textNode);
+    }
+    $buffer = '';
+    foreach ($this->matches as $m) {
+      $p = $m;
+      while (isset($p->previousSibling) && $p->previousSibling->nodeType == XML_TEXT_NODE) {
+        $p = $p->previousSibling;
+        $buffer .= $p->textContent;
+      }
+    }
+    return $buffer;
+  }
+  
+  public function textAfter($text = NULL) {
+    if (isset($text)) {
+      $textNode = $this->document->createTextNode($text);
+      return $this->after($textNode);
+    }
+    $buffer = '';
+    foreach ($this->matches as $m) {
+      $n = $m;
+      while (isset($n->nextSibling) && $n->nextSibling->nodeType == XML_TEXT_NODE) {
+        $n = $n->nextSibling;
+        $buffer .= $n->textContent;
+      }
+    }
+    return $buffer;
+  }
+  
   /**
    * Set or get the value of an element's 'value' attribute.
    *

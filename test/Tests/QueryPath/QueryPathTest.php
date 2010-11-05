@@ -1177,6 +1177,19 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('Foo', qp($xml, 'div')->eq(0)->text('Foo')->text());
   }
   
+  public function testTextAfter() {
+    $xml = '<?xml version="1.0"?><root><br/>After<foo/><br/>After2<div/>After3</root>';
+    $this->assertEquals('AfterAfter2', qp($xml, 'br')->textAfter());
+    $this->assertEquals('Blarg', qp($xml, 'foo')->textAfter('Blarg')->top('foo')->textAfter());
+  }
+  
+  public function testTextBefore() {
+    $xml = '<?xml version="1.0"?><root>Before<br/><foo/>Before2<br/>Before3<div/></root>';
+    $this->assertEquals('BeforeBefore2', qp($xml, 'br')->textBefore());
+    $this->assertEquals('Blarg', qp($xml, 'foo')->textBefore('Blarg')->top('foo')->textBefore());
+
+  }
+  
   public function testTextImplode() {
     $xml = '<?xml version="1.0"?><root><div>Text A</div><div>Text B</div></root>';
     $this->assertEquals('Text A, Text B', qp($xml, 'div')->textImplode());

@@ -26,6 +26,7 @@ New Methods
   * encodeDataURL()
   * dataURL()
   * filterPreg()
+  * textBefore()/textAfter()
 
 Altered Methods
   * css() has been changed to allow subsequent calls
