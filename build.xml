@@ -473,11 +473,13 @@ To print this message, do:
         <include name="package_compatible.xml"/>
       </fileset>
     </copy>
+    <!-- Pyrus seems incapable of dealing with docs in it's 2.0.0a1 state.
     <copy todir="${releasedir}/doc">
       <fileset dir="${docsdir}">
         <include name="**/*"/>
       </fileset>
     </copy>
+    -->
     
     <copy file="./pear-summary.txt" tofile="${releasedir}/README"/>
     <move file="${releasedir}/RELEASE" tofile="${releasedir}/RELEASE-${version}"/>
