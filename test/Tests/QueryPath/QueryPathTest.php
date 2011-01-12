@@ -992,10 +992,33 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $this->assertNull(qp($file, 'li')->map(array($this, $fn))->xhtml());
     
     // Regression for issue #10: Tags should not be unary (e.g. we want <script></script>, not <script/>)
-    $xml = '<html><head><title>foo</title></head><body>bar<br/></body></html>';
-    // Look for a closing </br> tag
-    $regex = '/<\/br>/';
-    $this->assertRegExp($regex, qp($xml)->xhtml(), 'BR should have a closing tag.');
+    $xml = '<html><head><title>foo</title></head>
+      <body>
+      bar<br/><hr width="100">
+      <script></script>
+      <frameset id="fooframeset"></frameset>
+      </body></html>';
+    
+    $xhtml = qp($xml)->xhtml();
+    
+    //throw new Exception($xhtml);
+    
+    // Look for a properly formatted BR unary tag:
+    $regex = '/<br \/>/';
+    $this->assertRegExp($regex, $xhtml, 'BR should have a closing tag.');
+    
+    // Look for a properly formatted HR tag:
+    $regex = '/<hr width="100" \/>/';
+    $this->assertRegExp($regex, $xhtml, 'BR should have a closing tag.');
+    
+    // Ensure that script tag is not collapsed:
+    $regex = '/<script><\/script>/';
+    $this->assertRegExp($regex, $xhtml, 'BR should have a closing tag.');
+    
+    // Ensure that frameset tag is not collapsed (it looks like <frame>):
+    throw new Exception($xhtml);
+    $regex = '/<frameset id="fooframeset"><\/frameset>/';
+    $this->assertRegExp($regex, $xhtml, 'BR should have a closing tag.');
     
   }
   

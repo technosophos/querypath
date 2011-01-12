@@ -2759,6 +2759,13 @@ class QueryPath implements IteratorAggregate {
     else {
       $text = $this->document->saveXML($first, LIBXML_NOEMPTYTAG);
     }
+    
+    // This is slightly lenient: It allows for cases where code incorrectly places content
+    // inside of these supposedly unary elements.
+//    $unary = '/<(area|base|basefont|br|col|frame|hr|img|input|isindex|link|meta|param)(\s*[^>]*)><\/[^>]*>/i';
+    $unary = '/<(area|base|basefont|br|col|frame|hr|img|input|isindex|link|meta|param)(?(?=\s)([^>]+))><\/[^>]*>/i';
+    $text = preg_replace($unary, '<\\1\\2 />', $text);
+    
     return $text;
   }
   /**
