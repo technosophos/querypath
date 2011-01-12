@@ -341,6 +341,7 @@ class QueryPath implements IteratorAggregate {
    */
   const DEFAULT_PARSER_FLAGS = NULL;
   
+  const JS_CSS_ESCAPE_CDATA = '\\1';
   const JS_CSS_ESCAPE_CDATA_CCOMMENT = '/* \\1 */';
   const JS_CSS_ESCAPE_CDATA_DOUBLESLASH = '// \\1';
   const JS_CSS_ESCAPE_NONE = '';
