@@ -2754,9 +2754,12 @@ class QueryPath implements IteratorAggregate {
     
     if ($first instanceof DOMDocument || $first->isSameNode($first->ownerDocument->documentElement)) {
       
-      return  ($omit_xml_decl ? $this->document->saveXML($first->ownerDocument->documentElement, LIBXML_NOEMPTYTAG) : $this->document->saveXML(NULL, LIBXML_NOEMPTYTAG));
+      $text = ($omit_xml_decl ? $this->document->saveXML($first->ownerDocument->documentElement, LIBXML_NOEMPTYTAG) : $this->document->saveXML(NULL, LIBXML_NOEMPTYTAG));
     }
-    return $this->document->saveXML($first, LIBXML_NOEMPTYTAG);
+    else {
+      $text = $this->document->saveXML($first, LIBXML_NOEMPTYTAG);
+    }
+    return $text;
   }
   /**
    * Set or get the XML markup for an element or elements.
