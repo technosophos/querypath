@@ -2774,7 +2774,7 @@ class QueryPath implements IteratorAggregate {
     
     // This is slightly lenient: It allows for cases where code incorrectly places content
     // inside of these supposedly unary elements.
-    $unary = '/<(area|base|basefont|br|col|frame|hr|img|input|isindex|link|meta|param)(?(?=\s)([^>]+))><\/[^>]*>/i';
+    $unary = '/<(area|base|basefont|br|col|frame|hr|img|input|isindex|link|meta|param)(?(?=\s)([^>\/]+))><\/[^>]*>/i';
     $text = preg_replace($unary, '<\\1\\2 />', $text);
     
     // Experimental: Support for enclosing CDATA sections with comments to be both XML compat
