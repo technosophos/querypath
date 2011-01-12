@@ -1377,6 +1377,21 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     
   }
   
+  public function testDocument() {
+    $file = DATA_FILE;
+    $doc1 = new DOMDocument('1.0');
+    $doc1->load($file);
+    $qp = qp($doc1);
+    
+    $this->assertEquals($doc1, $qp->document());
+    
+    // Ensure that adding to the DOMDocument is accessible to QP:
+    $ele = $doc1->createElement('testDocument');
+    $doc1->documentElement->appendChild($ele);
+    
+    $this->assertEquals(1, $qp->find('testDocument')->size());
+  }
+  
   /*
   public function test__get() {
     // Test that other properties are not interferred with by __get().

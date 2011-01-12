@@ -733,6 +733,19 @@ class QueryPath implements IteratorAggregate {
     }
     return $this->matches;
   }
+  
+  /**
+   * Get the DOMDocument that we currently work with.
+   *
+   * This returns the current DOMDocument. Any changes made to this document will be
+   * accessible to QueryPath, as both will share access to the same object.
+   * 
+   * @return DOMDocument
+   */
+  public function document() {
+    return $this->document;
+  }
+  
   /**
    * Get all current elements wrapped in an array.
    * Compatibility function for jQuery 1.4, but identical to calling {@link get()}
