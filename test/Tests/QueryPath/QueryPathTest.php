@@ -996,6 +996,9 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
       <body>
       bar<br/><hr width="100">
       <script></script>
+      <script>
+      alert("Foo");
+      </script>
       <frameset id="fooframeset"></frameset>
       </body></html>';
     
@@ -1016,9 +1019,12 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $this->assertRegExp($regex, $xhtml, 'BR should have a closing tag.');
     
     // Ensure that frameset tag is not collapsed (it looks like <frame>):
-    throw new Exception($xhtml);
     $regex = '/<frameset id="fooframeset"><\/frameset>/';
     $this->assertRegExp($regex, $xhtml, 'BR should have a closing tag.');
+    
+    // Ensure that script gets wrapped in CDATA:
+    $find = '/* <![CDATA[ ';
+    $this->assertTrue(strpos($xhtml, $find) > 0, 'CDATA section should be escaped.');
     
   }
   

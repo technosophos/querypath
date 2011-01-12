@@ -1,4 +1,10 @@
-Changes in 2.1
+API Changes in 2.1.1
+
+  * NEW METHOD: document() returns the DOMDocument
+  * BUG FIX: Issue #10 has been re-fixed to correctly collapse certain empty tags.
+  * BUG FIX: Issue #10 has been re-fixed to correctly escape JavaScript for browsers.
+
+API Changes in 2.1
 
 All changes are documented in their respective doc blocks. So take a 
 look at http://api.querypath.org to learn more.

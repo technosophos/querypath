@@ -183,6 +183,12 @@ require_once 'QueryPathExtension.php';
  *    document as HTML. Note that the XML parser is very strict, while the 
  *    HTML parser is more lenient, but does enforce some of the DTD/Schema.
  *    <i>By default, QueryPath autodetects the type.</i>
+ *  - escape_xhtml_js_css_sections: XHTML needs script and css sections to be
+ *    escaped. Yet older readers do not handle CDATA sections, and comments do not
+ *    work properly (for numerous reasons). By default, QueryPath's *XHTML methods
+ *    will wrap a script body with a CDATA declaration inside of C-style comments.
+ *    If you want to change this, you can set this option with one of the 
+ *    JS_CSS_ESCAPE_* constants, or you can write your own.
  *  - QueryPath_class: (ADVANCED) Use this to set the actual classname that
  *    {@link qp()} loads as a QueryPath instance. It is assumed that the 
  *    class is either {@link QueryPath} or a subclass thereof. See the test 
@@ -335,6 +341,10 @@ class QueryPath implements IteratorAggregate {
    */
   const DEFAULT_PARSER_FLAGS = NULL;
   
+  const JS_CSS_ESCAPE_CDATA_CCOMMENT = '/* \\1 */';
+  const JS_CSS_ESCAPE_CDATA_DOUBLESLASH = '// \\1';
+  const JS_CSS_ESCAPE_NONE = '';
+  
   //const IGNORE_ERRORS = 1544; //E_NOTICE | E_USER_WARNING | E_USER_NOTICE;
   private $errTypes = 771; //E_ERROR; | E_USER_ERROR;
   
@@ -348,6 +358,7 @@ class QueryPath implements IteratorAggregate {
     'replace_entities' => FALSE,
     'exception_level' => 771, // E_ERROR | E_USER_ERROR | E_USER_WARNING | E_WARNING
     'ignore_parser_warnings' => FALSE,
+    'escape_xhtml_js_css_sections' => self::JS_CSS_ESCAPE_CDATA_CCOMMENT,
   );
   /**
    * The array of matches.
@@ -2762,9 +2773,14 @@ class QueryPath implements IteratorAggregate {
     
     // This is slightly lenient: It allows for cases where code incorrectly places content
     // inside of these supposedly unary elements.
-//    $unary = '/<(area|base|basefont|br|col|frame|hr|img|input|isindex|link|meta|param)(\s*[^>]*)><\/[^>]*>/i';
     $unary = '/<(area|base|basefont|br|col|frame|hr|img|input|isindex|link|meta|param)(?(?=\s)([^>]+))><\/[^>]*>/i';
     $text = preg_replace($unary, '<\\1\\2 />', $text);
+    
+    // Experimental: Support for enclosing CDATA sections with comments to be both XML compat
+    // and HTML 4/5 compat
+    $cdata = '/(<!\[CDATA\[|\]\]>)/i';
+    $replace = $this->options['escape_xhtml_js_css_sections'];
+    $text = preg_replace($cdata, $replace, $text);
     
     return $text;
   }
