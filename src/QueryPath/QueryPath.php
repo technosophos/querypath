@@ -2766,10 +2766,18 @@ class QueryPath implements IteratorAggregate {
     
     if ($first instanceof DOMDocument || $first->isSameNode($first->ownerDocument->documentElement)) {
       
-      $text = ($omit_xml_decl ? $this->document->saveXML($first->ownerDocument->documentElement, LIBXML_NOEMPTYTAG) : $this->document->saveXML(NULL, LIBXML_NOEMPTYTAG));
+      // Has the unfortunate side-effect of stripping doctype.
+      //$text = ($omit_xml_decl ? $this->document->saveXML($first->ownerDocument->documentElement, LIBXML_NOEMPTYTAG) : $this->document->saveXML(NULL, LIBXML_NOEMPTYTAG));
+      $text = $this->document->saveXML(NULL, LIBXML_NOEMPTYTAG);
     }
     else {
       $text = $this->document->saveXML($first, LIBXML_NOEMPTYTAG);
+    }
+    
+    // Issue #47: Using the old trick for removing the XML tag also removed the 
+    // doctype. So we remove it with a regex:
+    if ($omit_xml_decl) {
+      $text = preg_replace('/<\?xml\s[^>]*\?>/', '', $text);
     }
     
     // This is slightly lenient: It allows for cases where code incorrectly places content
