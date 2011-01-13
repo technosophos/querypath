@@ -3,8 +3,8 @@ RELEASE NOTES
 2.1.1:
 
 1. The xhtml() and writeXHTML() methods now correctly escape JS/CSS and also correctly
-   fold some tags into unaries will keeping other empty tags. See issue #10. Thanks to 
-   Alex Lawrence for his input.
+   fold some tags into unaries will keeping other empty tags. See issues #10, #47. 
+   Thanks to Alex Lawrence for his input.
    
 2. The method document() has been added. Thanks to Alex Lawrence for suggesting this 
    addition.
