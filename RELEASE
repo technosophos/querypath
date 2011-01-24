@@ -9,6 +9,8 @@ RELEASE NOTES
 2. The method document() has been added. Thanks to Alex Lawrence for suggesting this 
    addition.
 
+3. The fetch_rss.php example created broken HREFs in some cases. Thanks to yaph for
+   the patch.
 
 
 2.1.0:
