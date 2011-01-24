@@ -35,7 +35,7 @@ foreach (qp($remote, 'channel>item') as $item) {
   $link = $item->next('link')->text();
   
   // Do a little string building.
-  $bullet = '<li><a href="' . $link . '">' . $title . '</a></li>';
+  $bullet = '<li><a href="' . htmlspecialchars($link, ENT_QUOTES, 'UTF-8') . '">' . $title . '</a></li>';
   
   // Add it to the output document.
   $out->append($bullet);
