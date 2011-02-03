@@ -58,6 +58,14 @@ interface CssEventHandler {
   const anyElement = '*';
   
   /**
+   * This event event is fired when a CSS comment is encountered.
+   *
+   * @param string $text
+   *  The entire body of the comment, with all whitespace preserved.
+   */
+  public function comment($text);
+  
+  /**
    * This event is fired when a CSS ID is encountered.
    * An ID begins with an octothorp: #name.
    *
@@ -229,6 +237,196 @@ final class CssToken {
 }
 
 /**
+ * Parse an entire CSS style sheet.
+ *
+ * This is a superset of the CssSelectorParser.
+ */
+class CssParser extends CssSelectorParser {
+  /**
+   * Construct a new CSS parser object. This will attempt to
+   * parse the string as a CSS selector. As it parses, it will 
+   * send events to the CssEventHandler implementation.
+   */
+  public function __construct($string, CssEventHandler $handler) {
+    $this->originalString = $string;
+    $is = new CssInputStream($string);
+    $this->scanner = new CssScanner($is);
+    $this->handler = $handler;
+  }
+  
+  /**
+   * Consume HTML/XML comment open.
+   *
+   * This is of no semantic importance to the CSS, so we consume it.
+   */
+  public function consumeCDO() {
+    if ($this->DEBUG) print "Consume CDO\n";
+    
+    if ($this->scanner->value == '<') {
+      $b = '<';
+      for ($i = 0; $i < 3; ++$i) {
+        $this->scanner->nextToken();
+        $b .= $this->scanner->value;
+      }
+      
+      if ($b != '<!--') throw new CssParseException('Expected <!--, got ' . $buff);
+      $this->scanner->nextToken();
+    }
+    
+    /**
+     * Parse a stylesheet.
+     *
+     * This will parse an input stream pointing to an entire CSS file.
+     *
+     * @throws CssParseException
+     */
+    public function parse() {
+
+      $this->scanner->nextToken();
+      while ($this->scanner->token !== FALSE) {
+        // Primitive recursion detection.
+        $position = $this->scanner->position();
+
+        if ($this->DEBUG) {
+          print "PARSE " . $this->scanner->token. "\n";
+        }
+        // The CSS syntax does NOT specificy that these be at the beginning of the doc.
+        $this->consumeWhitespace();
+        $this->consumeCDO();
+        
+        $this->statements();
+        
+        // The CSS syntax does NOT specify that these be at the end of the sheet.
+        $this->consumeCDC();
+
+        $finalPosition = $this->scanner->position();
+
+        if ($this->scanner->token !== FALSE && $finalPosition == $position) {
+          // If we get here, then the scanner did not pop a single character
+          // off of the input stream during a full run of the parser, which
+          // means that the current input does not match any recognizable
+          // pattern.
+          throw new CssParseException('CSS stylesheet is not well formed.');
+        }
+
+      }
+
+    }
+  }
+  
+  /**
+   * Consume HTML/XML comment close.
+   *
+   * This is of no semantic importance to the CSS, so we consume it.
+   */
+  public function consumeCDC() {
+     if ($this->DEBUG) print "Consume CDC\n";
+
+      if ($this->scanner->value == '-') {
+        $b = '-';
+        for ($i = 0; $i < 2; ++$i) {
+          $this->scanner->nextToken();
+          $b .= $this->scanner->value;
+        }
+
+        if ($b != '-->') throw new CssParseException('Expected -->, got ' . $buff);
+        $this->scanner->nextToken();
+      }
+  }
+  
+  /**
+   * Handle CSS comments.
+   */
+  public function comment() {
+    if ($this->scanner->value == '/' && $this->scanner->peek() == '*') {
+      $this->scanner->nextToken(); // Skip *
+      $this->scanner->nextToken(); // Next char after.
+      $buff = '';
+      while (!($this->scanner->value == '*' && $this->scanner->peek() == '/')) {
+        $buf .= $this->scanner->value;
+        $this->scanner->nextToken();
+      }
+      $this->scanner->nextToken(); // Skip /
+      $this->scanner->nextToken(); // Next char after.
+      $this->handler->comment();    
+    }
+  }
+  
+  /**
+   * Handle statements (at-rules, rulesets, comments).
+   */
+  public function statements() {
+    $this->consumeWhitespace();
+    $this->comment();
+    $this->atRule();
+    $this->ruleset();
+  }
+  
+  /**
+   * Handle all at-rules.
+   */
+  public function atRule() {
+    if ($this->scanner->value == '@') {
+      // Get the at-rule.
+      $b = '@';
+      while ($this->scanner->value != ';') {
+        $b .= $this->scanner->value;
+        $this->scanner->nextToken();
+      }
+      $this->handler->atRule($b);
+      $this->scanner->nextToken(); // Skip ';'
+    }
+  }
+  
+  /**
+   * Handle an entire ruleset.
+   */
+  public function ruleset() {
+    $this->selector();
+    if ($this->scanner->value == '{') {
+      $this->scanner->nextToken(); // skip {
+      
+      // Notify the event handler.
+      $this->handler->startRuleset();
+      
+      // Process all of the declarations.
+      $this->declaration();
+      
+      // Make sure the ruleset closes.
+      if ($this->scanner->value != '}') {
+        throw new CssParseException('Expected ruleset to close with }, got ' . $this->scanner->value);
+      }
+      
+      // Notify the event handler.
+      $this->handler->endRuleset();
+      $this->scanner->nextToken(); // Skip }
+    }
+  }
+  
+  public function declaration() {
+    $this->consumeWhitespace();
+    $this->comment();
+    $this->property();
+    $this->value();
+  }
+  
+  public function property() {
+    $this->consumeWhitespace();
+    // FINISH ME
+  }
+  
+  public function value() {
+    $this->consumeWhitespace();
+    $b = '';
+    do {
+      // STOPPED HERE.
+    }
+    while ($this->scanner->value != ';');
+    
+  }
+}
+
+/**
  * Parse a CSS selector.
  *
  * In CSS, a selector is used to identify which element or elements
@@ -242,7 +440,7 @@ final class CssToken {
  *
  * @ingroup querypath_css
  */
-class CssParser {
+class CssSelectorParser {
   protected $scanner = NULL;
   protected $buffer = '';
   protected $handler = NULL;
