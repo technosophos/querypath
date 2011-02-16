@@ -759,6 +759,14 @@ class QueryPath implements IteratorAggregate {
   }
   
   /**
+   * On an XML document, load all XIncludes.
+   */
+  public function xinclude() {
+    $this->document->xinclude();
+    return $this;
+  }
+  
+  /**
    * Get all current elements wrapped in an array.
    * Compatibility function for jQuery 1.4, but identical to calling {@link get()}
    * with no parameters.
