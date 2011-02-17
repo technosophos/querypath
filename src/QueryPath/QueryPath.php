@@ -760,6 +760,8 @@ class QueryPath implements IteratorAggregate {
   
   /**
    * On an XML document, load all XIncludes.
+   *
+   * @return QueryPath
    */
   public function xinclude() {
     $this->document->xinclude();
