@@ -879,12 +879,22 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $this->assertGreaterThan(5, qp($file, 'inner')->contents()->size());
     // Two cdata nodes and one element node.
     $this->assertEquals(3, qp($file, '#inner-two')->contents()->size());
+    
+    // Issue #51: Empty contents emits error.
+    $xml = '<?xml version="1.0"?><r><empty/></r>';
+    $this->assertEquals(0, qp($xml,'empty')->contents()->size());
+    
+    $this->assertEquals(0, qp(QueryPath::HTML_STUB, 'body')->contents()->size());
   }
   
   public function testSiblings() {
     $file = DATA_FILE;
     $this->assertEquals(3, qp($file, '#one')->siblings()->size());
     $this->assertEquals(2, qp($file, 'unary')->siblings('inner')->size());
+  }
+  
+  public function testXinclude() {
+    
   }
   
   public function testHTML() {
