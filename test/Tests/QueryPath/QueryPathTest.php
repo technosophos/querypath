@@ -880,11 +880,32 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     // Two cdata nodes and one element node.
     $this->assertEquals(3, qp($file, '#inner-two')->contents()->size());
     
-    // Issue #51: Empty contents emits error.
-    $xml = '<?xml version="1.0"?><r><empty/></r>';
-    $this->assertEquals(0, qp($xml,'empty')->contents()->size());
+    // Issue #51: Under certain recursive conditions, this returns error.
+    // Warning: Whitespace is important in the markup beneath.
+    $xml = '<html><body><div>Hello
+        <div>how are you
+          <div>fine thank you
+            <div>and you ?</div>
+          </div>
+        </div>
+      </div>
+    </body></html>';
+    $this->assertEquals(7, count($this->contentsRecurse(qp($xml))));
+  }
+  
+  /**
+   * Helper function for testContents().
+   * Based on problem reported in issue 51.
+   */
+  private function contentsRecurse($source, &$pack = array()) {
+    $children = $source->contents();
+    $pack[] = $source->html();
     
-    $this->assertEquals(0, qp(QueryPath::HTML_STUB, 'body')->contents()->size());
+    foreach ($children as $child) {
+      $pack += $this->contentsRecurse($source, $pack);
+    }
+    
+    return $pack;
   }
   
   public function testSiblings() {

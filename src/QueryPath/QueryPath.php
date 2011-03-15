@@ -2259,6 +2259,7 @@ class QueryPath implements IteratorAggregate {
   public function contents() {
     $found = new SplObjectStorage();
     foreach ($this->matches as $m) {
+      if (empty($m->childNodes)) continue; // Issue #51
       foreach ($m->childNodes as $c) {
         $found->attach($c);
       }
