@@ -689,7 +689,7 @@ class QueryPath implements IteratorAggregate {
     
     // Register a default namespace.
     if (!empty($options['namespace_prefix']) && !empty($options['namespace_uri'])) {
-      $xpath->registerNamesapce($options['namespace_prefix'], $options['namespace_uri']);
+      $xpath->registerNamespace($options['namespace_prefix'], $options['namespace_uri']);
     }
     
     $found = new SplObjectStorage();
