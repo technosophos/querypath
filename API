@@ -4,6 +4,7 @@ API Changes in 2.1.1
   * BUG FIX: Issue #10 has been re-fixed to correctly collapse certain empty tags.
   * BUG FIX: Issue #10 has been re-fixed to correctly escape JavaScript for browsers.
   * BUG FIX: Issue #47 has been fixed to only remove XML declaration, but leave DOCTYPE.
+  * NEW ARGUMENT: xpath() now supports $options, which includes the ability to set a namespace.
 
 API Changes in 2.1
 

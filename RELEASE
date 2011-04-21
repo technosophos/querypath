@@ -12,6 +12,8 @@ RELEASE NOTES
 3. The fetch_rss.php example created broken HREFs in some cases. Thanks to yaph for
    the patch.
 
+4. The xpath() method now supports setting default namespaces. Thanks to Xavier Prud'homme
+   for a patch.
 
 2.1.0:
 Big Changes:

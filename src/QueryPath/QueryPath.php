@@ -672,12 +672,26 @@ class QueryPath implements IteratorAggregate {
    *
    * @param string $query
    *  An XPath query.
+   * @param array $options
+   *  Currently supported options are:
+   *   - 'namespace_prefix': And XML namespace prefix to be used as the default. Used 
+   *      in conjunction with 'namespace_uri'
+   *   - 'namespace_uri': The URI to be used as the default namespace URI. Used 
+   *      with 'namespace_prefix'
    * @return QueryPath 
    *  A QueryPath object wrapping the results of the query.
    * @see find()
+   * @author M Butcher
+   * @author Xavier Prud'homme
    */
-  public function xpath($query) {
+  public function xpath($query, $options = array()) {
     $xpath = new DOMXPath($this->document);
+    
+    // Register a default namespace.
+    if (!empty($options['namespace_prefix']) && !empty($options['namespace_uri'])) {
+      $xpath->registerNamesapce($options['namespace_prefix'], $options['namespace_uri']);
+    }
+    
     $found = new SplObjectStorage();
     foreach ($this->matches as $item) {
       $nl = $xpath->query($query, $item);
