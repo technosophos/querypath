@@ -827,6 +827,14 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $finish = $qp->remove()->size();
     $this->assertEquals($start, $finish);
     $this->assertEquals(0, $qp->find(':root li')->size());
+    
+    // Test for Issue #55
+    $data = '<?xml version="1.0"?><root><a>test</a><b> FAIL</b></root>';
+    $qp = qp($data);
+    $rem = $qp->remove('b');
+    
+    $this->assertEquals('test', $qp->text());
+    $this->assertEquals(' FAIL', $rem->text());
   }
   
   public function testHasClass() {
