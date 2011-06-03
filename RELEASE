@@ -15,6 +15,10 @@ RELEASE NOTES
 4. The xpath() method now supports setting default namespaces. Thanks to Xavier Prud'homme
    for a patch.
 
+5. The remove() method was fixed (issue #55) to now correctly return a QueryPath with 
+   just the removed nodes, while not altering the base QueryPath object. Thanks to MarcusX
+   for finding and reporting the problem.
+
 2.1.0:
 Big Changes:
 

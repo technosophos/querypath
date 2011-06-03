@@ -2058,18 +2058,25 @@ class QueryPath implements IteratorAggregate {
    * @see removeChildren()
    */
   public function remove($selector = NULL) {
-    
-    if(!empty($selector))
-      $this->find($selector);
-    
+    if(!empty($selector)) {
+      // Do a non-destructive find.
+      $query = new QueryPathCssEventHandler($this->matches);
+      $query->find($selector);
+      $matches = $query->getMatches();
+    }
+    else {
+      $matches = $this->matches;
+    }
+
     $found = new SplObjectStorage();
-    foreach ($this->matches as $item) {
+    foreach ($matches as $item) {
       // The item returned is (according to docs) different from 
       // the one passed in, so we have to re-store it.
       $found->attach($item->parentNode->removeChild($item));
     }
-    $this->setMatches($found);
-    return $this;
+    
+    // Return a clone QueryPath with just the removed items.
+    return new QueryPath($found);
   }
   /**
    * This replaces everything that matches the selector with the first value
