@@ -974,6 +974,26 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $matches = $handler->getMatches();
     $this->assertEquals(1, $matches->count());
     $this->assertEquals('three', $this->firstMatch($matches)->getAttribute('id'));
+    
+    
+    // Issue #56: an+b not working.
+    $xml = '<?xml version="1.0"?>
+    <root>
+    <div class="last3">I am the first div.</div>
+    <div class="last3">I am the second div.</div>
+    <div class="last3">I am the third div.</div>
+    <div class="last3">I am the fourth div.</div>
+    <div class="last3" id="five">I am the fifth div.</div>
+    <div class="last3" id="six">I am the sixth div.</div>
+    <div class="last3" id="seven">I am the seventh div.</div>
+    </root>';
+    $handler = new QueryPathCssEventHandler($doc);
+    $handler->find('div:nth-last-of-type(-n+3)');
+    $matches = $handler->getMatches();
+    
+    $this->assertEquals(3, $matches->count());
+    $this->assertEquals('five', $this->firstMatch($matches)->getAttribute('id'));
+    
   }
 
   public function testPseudoClassEmpty() {
