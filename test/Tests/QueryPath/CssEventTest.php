@@ -979,14 +979,17 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     // Issue #56: an+b not working.
     $xml = '<?xml version="1.0"?>
     <root>
-    <div class="last3">I am the first div.</div>
-    <div class="last3">I am the second div.</div>
-    <div class="last3">I am the third div.</div>
-    <div class="last3">I am the fourth div.</div>
-    <div class="last3" id="five">I am the fifth div.</div>
-    <div class="last3" id="six">I am the sixth div.</div>
-    <div class="last3" id="seven">I am the seventh div.</div>
+    <div>I am the first div.</div>
+    <div>I am the second div.</div>
+    <div>I am the third div.</div>
+    <div>I am the fourth div.</div>
+    <div id="five">I am the fifth div.</div>
+    <div id="six">I am the sixth div.</div>
+    <div id="seven">I am the seventh div.</div>
     </root>';
+    $doc = new DomDocument();
+    $doc->loadXML($xml);
+    
     $handler = new QueryPathCssEventHandler($doc);
     $handler->find('div:nth-last-of-type(-n+3)');
     $matches = $handler->getMatches();

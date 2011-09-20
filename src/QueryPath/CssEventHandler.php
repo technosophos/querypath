@@ -701,7 +701,11 @@ class QueryPathCssEventHandler implements CssEventHandler {
     if (count($rule) == 0) {
       throw new CssParseException("nth-child value is invalid.");
     }
-    $aVal = (int)trim($rule[0]);
+    
+    // Each of these is legal: 1, -1, and -. '-' is shorthand for -1.
+    $aVal = trim($rule[0]);
+    $aVal = ($aVal == '-') ? -1 : (int)$aVal;
+    
     $bVal = !empty($rule[1]) ? (int)trim($rule[1]) : 0;
     return array($aVal, $bVal);
   }
