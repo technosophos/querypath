@@ -2643,6 +2643,21 @@ class QueryPath implements IteratorAggregate {
     return implode($sep, $tmp);
   }
   /**
+   * Get the text contents from just child elements.
+   *
+   * This is a specialized variant of textImplode() that implodes text for just the
+   * child elements of the current element.
+   *
+   * @param string $separator
+   *  The separator that will be inserted between found text content.
+   * @return string
+   *  The concatenated values of all children.
+   */
+  function childrenText($separator = ' ') {
+    // Branch makes it non-destructive.
+    return $this->branch()->xpath('descendant::text()')->textImplode($separator);
+  }
+  /**
    * Get or set the text contents of a node.
    * @param string $text
    *  If this is not NULL, this value will be set as the text of the node. It

@@ -1292,6 +1292,15 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('Text A- -Text B', qp($xml, 'div')->textImplode('-', FALSE));
   }
   
+  public function testChildrenText() {
+    $xml = '<?xml version="1.0"?><root><wrapper>
+    NOT ME!
+    <div>Text A </div>
+    <div>
+    </div><div>Text B</div></wrapper></root>';
+    $this->assertEquals('Text A , Text B', qp($xml, 'div')->childrenText(', ', TRUE), 'Just inner text.');
+  }
+  
   public function testNext() {
     $file = DATA_FILE;
     $this->assertEquals('inner', qp($file, 'unary')->next()->tag());
