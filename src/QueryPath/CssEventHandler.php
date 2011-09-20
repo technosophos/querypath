@@ -466,7 +466,7 @@ class QueryPathCssEventHandler implements CssEventHandler {
         break;
       case 'nth-of-type':
         list($aVal, $bVal) = $this->parseAnB($value);
-        $this->nthOfTypeChild($aVal, $bVal);
+        $this->nthOfTypeChild($aVal, $bVal, FALSE);
         break;
       case 'nth-last-of-type':
         list($aVal, $bVal) = $this->parseAnB($value);
