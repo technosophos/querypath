@@ -19,6 +19,11 @@ RELEASE NOTES
    just the removed nodes, while not altering the base QueryPath object. Thanks to MarcusX
    for finding and reporting the problem.
 
+6. Added childrenText() convenience method. (Safe -- no changes to existing functions.)
+
+7. Fixed bad character stripping in htmlqp() (Issue #58) so that meaningful whitespace
+   is no longer stripped prior to parsing.
+
 2.1.0:
 Big Changes:
 
