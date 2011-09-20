@@ -1111,6 +1111,22 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
     $this->assertEquals(1, $matches->count());
     $this->assertEquals('two', $this->firstMatch($matches)->getAttribute('id'));
   }
+  public function testPseudoClassNthOfType() {
+    $xml = '<?xml version="1.0" ?>
+    <test>
+      <i class="odd" id="one"/>
+      <i class="even" id="two"/>
+      <i class="odd" id="three"/>
+    </test>';
+    $doc = new DomDocument();
+    $doc->loadXML($xml);
+    
+    $handler = new QueryPathCssEventHandler($doc);
+    $handler->find('i:nth-of-type(2)');
+    $matches = $handler->getMatches();
+    $this->assertEquals(1, $matches->count());
+    $this->assertEquals('two', $this->firstMatch($matches)->getAttribute('id'));
+  }
   
   public function testPseudoClassFormElements() {
     $form = array('text', 'radio', 'checkbox', 'button', 'password');
