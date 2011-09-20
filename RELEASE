@@ -20,9 +20,17 @@ RELEASE NOTES
    for finding and reporting the problem.
 
 6. Added childrenText() convenience method. (Safe -- no changes to existing functions.)
+   Thanks to Xavatar for suggestion and proofing initial code.
 
 7. Fixed bad character stripping in htmlqp() (Issue #58) so that meaningful whitespace
-   is no longer stripped prior to parsing.
+   is no longer stripped prior to parsing. Thanks to NortherRaven for detailed report
+   and help testing and debugging.
+   
+8. Fixed broken :nth-of-type pseudo-class (Issue #57). Thanks to NorthernRaven for the 
+   detailed report and help debugging.
+   
+9. Fixed broken an+b rule handling in the special case '-n+b'. Thanks to NorthernRaven for
+   reporting and helping out.
 
 2.1.0:
 Big Changes:
