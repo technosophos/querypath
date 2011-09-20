@@ -247,7 +247,8 @@ function htmlqp($document = NULL, $selector = NULL, $options = array()) {
     'convert_from_encoding' => 'auto',
     //'replace_entities' => TRUE,
     'use_parser' => 'html',
-    'strip_low_ascii' => TRUE,
+    // This is stripping actually necessary low ASCII.
+    //'strip_low_ascii' => TRUE,
   );
   return @qp($document, $selector, $options);
 }

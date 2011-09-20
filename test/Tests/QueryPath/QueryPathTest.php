@@ -112,7 +112,15 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     
     // Stripping #13 (CR) from HTML.
     $borken = '<html><head></head><body><p>' . chr(13) . '</p><div id="after"/></body></html>';
-    $this->assertFalse(strpos('&#13;', htmlqp($borken)->html()));
+    $this->assertFalse(strpos(htmlqp($borken)->html(), '&#13;'), 'Test that CRs are not encoded.');
+    
+    // Regression for #58: Make sure we aren't getting &#10; encoded.
+    $borken = '<html><head><style>
+        .BlueText {
+          color:red;
+        }</style><body></body></html>';
+        
+    $this->assertFalse(strpos(htmlqp($borken)->html(), '&#10;'), 'Test that LF is not encoded.');
     
     // Low ASCII in a file
     $borken = '<html><head></head><body><p>' . chr(27) . '</p><div id="after"/></body></html>';
