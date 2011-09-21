@@ -417,6 +417,22 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $file = DATA_FILE;
     $this->assertTrue(qp($file)->find('#one')->is('#one'));
     $this->assertTrue(qp($file)->find('li')->is('#one'));
+    
+    $qp = qp($file)->find('#one');
+    $ele = $qp->get(0);
+    $this->assertTrue($qp->top('#one')->is($ele));
+    
+    $qp = qp($file)->find('#one');
+    $ele = $qp->get(0);
+    $ele2 = $qp->top('#two')->get(0);
+    
+    $list = new SplDoublyLinkedList();
+    $list->push($ele);
+    $list->push($ele2);
+    $this->assertEquals(2, count($list));
+    //$this->assertEquals(2, )
+    $this->assertTrue($qp->top('#one,#two')->is($list));
+    
   }
   
   public function testIndex() {

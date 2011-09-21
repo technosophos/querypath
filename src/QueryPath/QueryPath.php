@@ -1099,13 +1099,39 @@ class QueryPath implements IteratorAggregate, Countable {
    * Unlike jQuery's version, this supports full selectors (not just simple ones).
    *
    * @param string $selector
-   *   The selector to search for.
+   *   The selector to search for. As of QueryPath 2.1.1, this also supports passing a
+   *   DOMNode object.
    * @return boolean
    *   TRUE if one or more elements match. FALSE if no match is found.
    * @see get()
    * @see eq()
    */
   public function is($selector) {
+    
+    if (is_object($selector)) {
+      if ($selector instanceof DOMNode) {
+        return count($this->matches) == 1 && $selector->isSameNode($this->get(0));
+      }
+      elseif ($selector instanceof Traversable) {
+        if (count($selector) != count($this->matches)) {
+          return FALSE;
+        }
+        // Without $seen, there is an edge case here if $selector contains the same object
+        // more than once, but the counts are equal. For example, [a, a, a, a] will
+        // pass an is() on [a, b, c, d]. We use the $seen SPLOS to prevent this.
+        $seen = new SplObjectStorage();
+        foreach ($selector as $item) {
+          if (!$this->matches->contains($item) || $seen->contains($item)) {
+            return FALSE;
+          }
+          $seen->attach($item);
+        }
+        return TRUE;
+      }
+      throw new Exception('Cannot compare an object to a QueryPath.');
+      return FALSE;
+    }
+    
     foreach ($this->matches as $m) {
       $q = new QueryPathCssEventHandler($m);
       if ($q->find($selector)->getMatches()->count()) {
