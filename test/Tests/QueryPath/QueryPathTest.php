@@ -1454,10 +1454,23 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals(1, qp($contents)->size());
   }
   
+  /**
+   * @deprecated
+   */
   public function testSize() {
     $file = DATA_FILE;
     $qp = qp($file, 'li');
     $this->assertEquals(5, $qp->size());
+  }
+  
+  public function testCount() {
+    $file = DATA_FILE;
+    $qp = qp($file, 'li');
+    $this->assertEquals(5, $qp->count());
+    
+    // Test that this is exposed to PHP's Countable logic.
+    $this->assertEquals(5, count(qp($file, 'li')));
+    
   }
   
   public function testLength() {

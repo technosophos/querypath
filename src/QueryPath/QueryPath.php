@@ -270,7 +270,7 @@ function htmlqp($document = NULL, $selector = NULL, $options = array()) {
  * @see QueryPath.php
  * @ingroup querypath_core
  */
-class QueryPath implements IteratorAggregate {
+class QueryPath implements IteratorAggregate, Countable {
   
   /**
    * The version string for this version of QueryPath.
@@ -711,8 +711,28 @@ class QueryPath implements IteratorAggregate {
    *
    * @return int
    *  Number of items in the object.
+   * @deprecated QueryPath now implements Countable, so use count().
    */
   public function size() {
+    return $this->matches->count();
+  }
+  
+  /**
+   * Get the number of elements currently wrapped by this object.
+   *
+   * Since QueryPath is Countable, the PHP count() function can also
+   * be used on a QueryPath.
+   *
+   * @code
+   * <?php
+   *  count(qp($xml, 'div'));
+   * ?>
+   * @endcode
+   *
+   * @return int
+   *  The number of matches in the QueryPath.
+   */
+  public function count() {
     return $this->matches->count();
   }
   
@@ -4113,7 +4133,7 @@ class QueryPath implements IteratorAggregate {
    * it is executed with the arguments in the $arguments array.
    * 
    * @throws QueryPathException
-   *  An expcetion is thrown if a non-existent method is called.
+   *  An exception is thrown if a non-existent method is called.
    */
   public function __call($name, $arguments) {
     
