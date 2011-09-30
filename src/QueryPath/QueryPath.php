@@ -57,7 +57,7 @@
  * @see http://api.querypath.org An online version of the API docs.
  * @see http://technosophos.com For how-tos and examples.
  * @copyright Copyright (c) 2009, Matt Butcher.
- * @version @UNSTABLE@
+ * @version -UNSTABLE%
  *
  */
 
@@ -375,7 +375,7 @@ class QueryPath implements IteratorAggregate, Countable {
   /**
    * The number of current matches.
    *
-   * @see size()
+   * @see count()
    */
   public $length = 0;
   
