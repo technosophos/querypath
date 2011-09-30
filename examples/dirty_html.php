@@ -15,5 +15,5 @@ $page = rand(0, 288);
 $qp = htmlqp('http://www.urbandictionary.com/?page='.$page, '#home');
 
 $rand = rand(0, 7);
-print $qp->find('.word')->getNthElement($rand)->text().'<br />';
-print $qp->top()->find('.definition')->getNthElement($rand)->text();
+print $qp->find('.word')->eq($rand)->text().'<br />';
+print $qp->top()->find('.definition')->eq($rand)->text();
