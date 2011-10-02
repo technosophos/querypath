@@ -38,8 +38,11 @@ RELEASE NOTES
 11. QueryPath now implements Countable, which means you can do `count(qp($xml, 'div'))`. The
    size() function has been marked deprecated.
 
-12. is() now takes both DOMNodes and Traversables (includeing QueryPath) as an argument. See
+12. is() now takes both DOMNodes and Traversables (including QueryPath) as an argument. See
    issue #53.
+   
+13. The dirty_html.php example (contributed by Emily Brand, thanks!) is now fixed. Thanks to
+   MartyIX for tracking down the issue (#59).
 
 2.1.0:
 Big Changes:
