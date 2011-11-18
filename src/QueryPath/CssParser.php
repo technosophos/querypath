@@ -955,7 +955,7 @@ final class CssScanner {
         $tok = CssToken::stringLegal;
       }
       else {
-        throw new Exception('Illegal character found in stream: ' . $ord);
+        throw new CSSParseException('Illegal character found in stream: ' . $ord);
       }
     }
     

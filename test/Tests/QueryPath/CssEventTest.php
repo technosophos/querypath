@@ -3,7 +3,7 @@
  * CSS Event handling tests
  */
  
-require_once 'PHPUnit/Framework.php';
+require_once 'PHPUnit/Autoload.php';
 //require_once 'src/QueryPath/CssEventHandler.php';
 require_once 'src/QueryPath/QueryPath.php';
 
@@ -109,7 +109,7 @@ class QueryPathCssEventHandlerTests extends PHPUnit_Framework_TestCase {
   }
   
   /**
-   * @expectedException Exception
+   * @expectedException CSSParseException
    */
   public function testEmptySelector() {
     $xml = '<?xml version="1.0" ?><t:test xmlns:t="urn:foo/bar"><t:inside id="first"/>Text<t:inside/><inside/></t:test>';

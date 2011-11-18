@@ -14,7 +14,7 @@
 $basedir = dirname(__FILE__);
 
 /** */
-require_once 'PHPUnit/Framework.php';
+require_once 'PHPUnit/Autoload.php';
 require_once $basedir . '/../../../src/QueryPath/QueryPath.php';
 
 define('DATA_FILE', $basedir . '/../../data.xml');
@@ -860,6 +860,11 @@ class QueryPathTest extends PHPUnit_Framework_TestCase {
     
     $this->assertEquals(' FAIL', $rem->text());
     $this->assertEquals('test', $qp->text());
+
+    // Test for Issue #63
+    $qp = qp($data);
+    $rem = $qp->remove('noSuchElement');
+    $this->assertEquals(0, count($rem));
   }
   
   public function testHasClass() {

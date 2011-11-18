@@ -3,7 +3,7 @@
  * Unstable testing code.
  */
  
-require_once 'PHPUnit/Framework.php';
+require_once 'PHPUnit/Autoload.php';
 require_once '../src/QueryPath/CssEventHandler.php';
 require_once '../src/QueryPath/BottomUpCssEventHandler.php';
 require_once 'CssEventTests.php';

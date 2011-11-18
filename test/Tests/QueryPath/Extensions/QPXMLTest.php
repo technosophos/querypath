@@ -5,7 +5,7 @@
  * @license The GNU Lesser GPL (LGPL) or an MIT-like license.
  */
 
-require_once 'PHPUnit/Framework.php';
+require_once 'PHPUnit/Autoload.php';
 require_once 'src/QueryPath/QueryPath.php';
 require_once 'src/QueryPath/Extension/QPXML.php';
 /**
