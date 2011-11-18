@@ -2115,14 +2115,16 @@ class QueryPath implements IteratorAggregate, Countable {
       $matches = $this->matches;
     }
 
-    $found = new SplObjectStorage();
+    $found = NULL;
     foreach ($matches as $item) {
+      $found = new SplObjectStorage();
       // The item returned is (according to docs) different from 
       // the one passed in, so we have to re-store it.
       $found->attach($item->parentNode->removeChild($item));
     }
     
-    // Return a clone QueryPath with just the removed items.
+    // Return a clone QueryPath with just the removed items. If
+    // no items are found, this will return an empty QueryPath.
     return new QueryPath($found);
   }
   /**
