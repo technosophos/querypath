@@ -6,7 +6,8 @@ RELEASE NOTES
    to remove (issue #63). Thanks marktheunissen for the bug report and fix.
 
 2. New XML extensions to deal with adding namespaced elements (#64). Thanks to
-   theshadow for contributing an entire extension.
+   theshadow for contributing an entire extension, and to farinspace for
+   detailed experiments with QP and XML namespaces.
 
 2.1.1:
 
