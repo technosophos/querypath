@@ -5,12 +5,15 @@ RELEASE NOTES
 1. Fixed the case where remove() caused an error when no items were found
    to remove (issue #63). Thanks marktheunissen for the bug report and fix.
 
+2. New XML extensions to deal with adding namespaced elements (#64). Thanks to
+   theshadow for contributing an entire extension.
+
 2.1.1:
 
 1. The xhtml() and writeXHTML() methods now correctly escape JS/CSS and also correctly
    fold some tags into unaries will keeping other empty tags. See issues #10, #47. 
    Thanks to Alex Lawrence for his input.
-   
+
 2. The method document() has been added. Thanks to Alex Lawrence for suggesting this 
    addition.
 
@@ -30,7 +33,7 @@ RELEASE NOTES
 7. Fixed bad character stripping in htmlqp() (Issue #58, #52) so that meaningful whitespace
    is no longer stripped prior to parsing. Thanks to NortherRaven for detailed report
    and help testing and debugging.
-   
+
 8. Fixed broken :nth-of-type pseudo-class (Issue #57). Thanks to NorthernRaven for the 
    detailed report and help debugging.
    
