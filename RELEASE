@@ -9,6 +9,10 @@ RELEASE NOTES
    theshadow for contributing an entire extension, and to farinspace for
    detailed experiments with QP and XML namespaces.
 
+3. The adjacent CSS selector has been modified to ignore text elements. This
+   seems to be inline with the spec, but I am not 100% sure. Thanks to
+   fiveminuteargument for the patch.
+
 2.1.1:
 
 1. The xhtml() and writeXHTML() methods now correctly escape JS/CSS and also correctly
