@@ -1292,8 +1292,12 @@ class QueryPathCssEventHandler implements CssEventHandler {
     //$found = array();
     $found = new SplObjectStorage();
     foreach ($this->matches as $item) {
-      if (isset($item->nextSibling) && $item->nextSibling->nodeType === XML_ELEMENT_NODE) {
-        $found->attach($item->nextSibling);
+      while (isset($item->nextSibling)) {
+        if (isset($item->nextSibling) && $item->nextSibling->nodeType === XML_ELEMENT_NODE) {
+          $found->attach($item->nextSibling);
+          break;
+        }
+        $item = $item->nextSibling;
       }
     }
     $this->matches = $found;
