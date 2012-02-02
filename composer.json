@@ -1,5 +1,6 @@
 {
   "name": "querypath/QueryPath",
+  "version": "2.2.2",
   "type": "library",
   "description": "HTML/XML querying and processing (like jQuery)",
   "homepage": "https://github.com/technosophos/querypath",
