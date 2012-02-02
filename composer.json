@@ -4,6 +4,7 @@
   "description": "HTML/XML querying and processing (like jQuery)",
   "homepage": "https://github.com/technosophos/querypath",
   "license": "MIT-style",
+  "keywords": ["xml", "html", "css", "jquery", "xslt"],
   "require" : {
     "php" : ">=5.2.0"
   }
