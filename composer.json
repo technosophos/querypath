@@ -1,0 +1,10 @@
+{
+  "name": "querypath/QueryPath",
+  "type": "library",
+  "description": "HTML/XML querying and processing (like jQuery)",
+  "homepage": "https://github.com/technosophos/querypath",
+  "license": "MIT-style",
+  "require" : {
+    "php" : ">=5.2.0"
+  }
+}
