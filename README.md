@@ -12,7 +12,7 @@ Authors: Matt Butcher (lead), Emily Brand, and others
 This package is licensed under the GNU LGPL 2.1 (COPYING-LGPL.txt) or, at your choice, an MIT-style
 license (COPYING-MIT.txt). The licenses should have been distributed with this library.
 
-## Installing QueryPath
+## QueryPath Installers
 
 The following packages of QueryPath are available:
 
@@ -20,7 +20,7 @@ The following packages of QueryPath are available:
   * Download from the [GitHub Tags page](https://github.com/technosophos/querypath/tags).
   * [Composer](http://packagist.org): Add this to the 'require' section of your `composer.json`:
 
-```php
+```json
 {
   "require": {
     "querypath/QueryPath": ">=2.0.0"
@@ -34,13 +34,7 @@ $ pear channel-discover pear.querypath.org
 $ pear install querypath/QueryPath
 ```
 
-### Older releases
-
-We used to maintain phar and minimal packages, but due to the low usage
-rate, and the fact that PHP is changing, we will no longer be
-providing these.
-
-Older releases are still available here:
+### Downloads (for manual installation)
 
   * Phar (QueryPath-VERSION.phar): This is a Phar package which can be used as-is. Its size has been
     minimized by stripping comments. It is designed for direct inclusion in PHP 5.3 applications.
@@ -66,15 +60,12 @@ require 'QueryPath/QueryPath.php';
 ?>
 ```
 
-Unfortunately, in the 2.1 branch of QueryPath, the Composer include is:
-
+From the Full Install:
 ```php
 <?php
-require 'vendor/querypath/QueryPath/src/QueryPath/QueryPath.php';
+require 'QueryPath/src/QueryPath/QueryPath.php';
 ?>
 ```
-
-The next major release of QueryPath will support Composer autoloading.
 
 With the Phar archive, you can include QueryPath like this:
 
@@ -84,5 +75,14 @@ require 'QueryPath.phar';
 ?>
 ```
 
+Unfortunately, in the 2.1 branch of QueryPath, the Composer include is:
+
+```php
+<?php
+require 'vendor/querypath/QueryPath/src/QueryPath/QueryPath.php';
+?>
+```
+
+The next major release of QueryPath will support Composer autoloading.
 
 From there, the main functions you will want to use are `qp()` and `htmlqp()`. Start with the [API docs](http://api.querypath.org/docs).
