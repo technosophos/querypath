@@ -6,6 +6,7 @@
  * Provide QueryPath with additional XML tools.
  *
  * @author M Butcher <matt@aleph-null.tv>
+ * @author Xander Guzman <theshadow@shadowpedia.info>
  * @license http://opensource.org/licenses/lgpl-2.1.php LGPL or MIT-like license.
  * @see QueryPathExtension
  * @see QueryPathExtensionRegistry::extend()
@@ -13,25 +14,25 @@
  * @ingroup querypath_extensions
  */
 class QPXML implements QueryPathExtension {
-  
+
   protected $qp;
-  
+
   public function __construct(QueryPath $qp) {
     $this->qp = $qp;
   }
-  
+
   public function schema($file) {
     $doc = $this->qp->branch()->top()->get(0)->ownerDocument;
-    
+
     if (!$doc->schemaValidate($file)) {
       throw new QueryPathException('Document did not validate against the schema.');
     }
   }
-  
+
   /**
    * Get or set a CDATA section.
    *
-   * If this is given text, it will create a CDATA section in each matched element, 
+   * If this is given text, it will create a CDATA section in each matched element,
    * setting that item's value to $text.
    *
    * If no parameter is passed in, this will return the first CDATA section that it
@@ -57,8 +58,8 @@ class QPXML implements QueryPathExtension {
       }
       return $this->qp;;
     }
-    
-    // Look for CDATA sections
+
+    // Look for CDATA sections.
     foreach ($this->qp->get() as $ele) {
       foreach ($ele->childNodes as $node) {
         if ($node->nodeType == XML_CDATA_SECTION_NODE) {
@@ -70,7 +71,7 @@ class QPXML implements QueryPathExtension {
     return NULL;
     // Nothing found
   }
-  
+
   /**
    * Get or set a comment.
    *
@@ -107,7 +108,7 @@ class QPXML implements QueryPathExtension {
       }
     }
   }
-  
+
   /**
    * Get or set a processor instruction.
    */
@@ -122,7 +123,7 @@ class QPXML implements QueryPathExtension {
     foreach ($this->qp->get() as $ele) {
       foreach ($ele->childNodes as $node) {
         if ($node->nodeType == XML_PI_NODE) {
-          
+
           if (isset($prefix)) {
             if ($node->tagName == $prefix) {
               return $node->textContent;
@@ -135,6 +136,74 @@ class QPXML implements QueryPathExtension {
         }
       } // foreach
     } // foreach
+  }
+  public function toXml() {
+      return $this->qp->document()->saveXml();
+  }
+
+  /**
+   * Create a NIL element.
+   *
+   * @param string $text
+   * @param string $value
+   * @reval object $element
+   */
+  public function createNilElement($text, $value) {
+    $value = ($value)? 'true':'false';
+    $element = $this->qp->createElement($text);
+    $element->attr('xsi:nil', $value);
+    return $element;
+  }
+
+  /**
+   * Create an element with the given namespace.
+   *
+   * @param string $text
+   * @param string $nsUri
+   *   The namespace URI for the given element.
+   * @retval object
+   */
+  public function createElement($text, $nsUri = null) {
+    if (isset ($text)) {
+      foreach ($this->qp->get() as $element) {
+        if ($nsUri === null && strpos($text, ':') !== false) {
+          $ns = array_shift(explode(':', $text));
+          $nsUri = $element->ownerDocument->lookupNamespaceURI($ns);
+
+          if ($nsUri === null) {
+            throw new QueryPathException("Undefined namespace for: " . $text);
+          }
+      }
+
+      $node = null;
+      if ($nsUri !== null) {
+        $node = $element->ownerDocument->createElementNS(
+          $nsUri,
+          $text
+        );
+      } else {
+        $node = $element->ownerDocument->createElement($text);
+      }
+        return qp($node);
+      }
+    }
+    return;
+  }
+
+  /**
+   * Append an element.
+   *
+   * @param string $text
+   * @retval object QueryPath
+   */
+  public function appendElement($text) {
+    if (isset ($text)) {
+      foreach ($this->qp->get() as $element) {
+        $node = $this->qp->createElement($text);
+        qp($element)->append($node);
+      }
+    }
+    return $this->qp;
   }
 }
 QueryPathExtensionRegistry::extend('QPXML');
