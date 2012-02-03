@@ -65,7 +65,7 @@ To print this message, do:
   <taskdef classname="PhingDoxygen.Task.DoxygenTask" name="doxygen"/>
 
   <!-- Pyrus tasks. -->
-  <includepath classpath="/Users/mbutcher/Code"/> <!-- Pyrus is here. -->
+  <includepath classpath="/Users/mattbutcher/Code"/> <!-- Pyrus is here. -->
   <includepath classpath="../PhingPyrus/src"/>
   <taskdef classname="PhingPyrus.Task.PyrusMakeTask" name="pyrusmake"/>
   <taskdef classname="PhingPyrus.Task.PyrusPackageTask" name="pyruspackage"/>
