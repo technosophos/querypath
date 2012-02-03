@@ -29,6 +29,7 @@ The following packages of QueryPath are available:
 ```
 
 Or if you prefer PEAR:
+
 ```
 $ pear channel-discover pear.querypath.org
 $ pear install querypath/QueryPath
