@@ -62,6 +62,7 @@ require 'QueryPath/QueryPath.php';
 ```
 
 From the Full Install:
+
 ```php
 <?php
 require 'QueryPath/src/QueryPath/QueryPath.php';
