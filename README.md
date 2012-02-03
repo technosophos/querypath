@@ -17,6 +17,31 @@ license (COPYING-MIT.txt). The licenses should have been distributed with this l
 The following packages of QueryPath are available:
 
   * PEAR package (`pear install querypath/QueryPath`): Installs the library and documentation.
+  * Download from the [GitHub Tags page](https://github.com/technosophos/querypath/tags).
+  * [Composer](http://packagist.org): Add this to the 'require' section of your `composer.json`:
+
+```php
+{
+  "require": {
+    "querypath/QueryPath": ">=2.0.0"
+  }
+}
+```
+
+Or if you prefer PEAR:
+```
+$ pear channel-discover pear.querypath.org
+$ pear install querypath/QueryPath
+```
+
+### Older releases
+
+We used to maintain phar and minimal packages, but due to the low usage
+rate, and the fact that PHP is changing, we will no longer be
+providing these.
+
+Older releases are still available here:
+
   * Phar (QueryPath-VERSION.phar): This is a Phar package which can be used as-is. Its size has been
     minimized by stripping comments. It is designed for direct inclusion in PHP 5.3 applications.
   * Minimal (QueryPath-VERSION-minimal.tgz): This contains *only* the QueryPath library, with no
@@ -31,13 +56,33 @@ The following packages of QueryPath are available:
     
 If in doubt, you probably want the PEAR version or the [Full package](http://github.com/technosophos/querypath/downloads).
 
-    $ pear channel-discover pear.querypath.org
-    $ pear install querypath/QueryPath
+## Including QueryPath
 
-To use QueryPath as a **standard PHP library**, simply put it somewhere PHP can see it and include `QueryPath/QueryPath.php` (that's in `src/` in the full distro).
+If you installed QueryPath as a PEAR package, use it like this:
 
-To use QueryPath as a **phar package**, put the phar somewhere where PHP can see it and include `QueryPath.phar`.
+```php
+<?php
+require 'QueryPath/QueryPath.php';
+?>
+```
 
-To use QueryPath as a PEAR package (assuming to have already installed it with PEAR), include `QueryPath/QueryPath.php`.
+Unfortunately, in the 2.1 branch of QueryPath, the Composer include is:
+
+```php
+<?php
+require 'vendor/querypath/QueryPath/src/QueryPath/QueryPath.php';
+?>
+```
+
+The next major release of QueryPath will support Composer autoloading.
+
+With the Phar archive, you can include QueryPath like this:
+
+```php
+<?php
+require 'QueryPath.phar';
+?>
+```
+
 
 From there, the main functions you will want to use are `qp()` and `htmlqp()`. Start with the [API docs](http://api.querypath.org/docs).
