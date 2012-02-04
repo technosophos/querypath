@@ -39,6 +39,8 @@
  * @license http://opensource.org/licenses/lgpl-2.1.php LGPL (The GNU Lesser GPL) or an MIT-like license.
  */
 
+namespace QueryPath\CSS;
+
 /**
  * Require the parser library.
  */

@@ -12,6 +12,7 @@
  * @author M Butcher <matt@aleph-null.tv>
  * @license http://opensource.org/licenses/lgpl-2.1.php The GNU Lesser GPL (LGPL) or an MIT-like license. 
  */
+namespace QueryPath\CSS;
 
 /** @addtogroup querypath_css CSS Parsing
  * QueryPath includes a CSS 3 Selector parser.
