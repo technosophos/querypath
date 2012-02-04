@@ -42,11 +42,6 @@
 namespace QueryPath\CSS;
 
 /**
- * Require the parser library.
- */
-require_once 'CssParser.php';
-
-/**
  * Handler that tracks progress of a query through a DOM.
  *
  * The main idea is that we keep a copy of the tree, and then use an
@@ -1422,13 +1417,3 @@ class QueryPathCssEventHandler implements CssEventHandler {
   }
   
 }
-
-/**
- * Exception thrown for unimplemented CSS.
- *
- * This is thrown in cases where some feature is expected, but the current 
- * implementation does not support that feature.
- *
- * @ingroup querypath_css
- */
-class NotImplementedException extends Exception {}
