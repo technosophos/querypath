@@ -2,9 +2,9 @@
 /** @file
  * This file contains the Query Path extension tools.
  *
- * Query Path can be extended to support additional features. To do this, 
+ * Query Path can be extended to support additional features. To do this,
  * you need only create a new class that implements {@link QueryPathExtension}
- * and add your own methods. This class can then be registered as an extension. 
+ * and add your own methods. This class can then be registered as an extension.
  * It will then be available through Query Path.
  *
  * For information on building your own extension, see {@link QueryPathExtension}.
@@ -20,7 +20,7 @@
 /** @addtogroup querypath_extensions Extensions
  * The QueryPath extension system and bundled extensions.
  *
- * Much like jQuery, QueryPath provides a simple extension mechanism that allows 
+ * Much like jQuery, QueryPath provides a simple extension mechanism that allows
  * extensions to auto-register themselves upon being loaded. For a simple example, see
  * QPXML. For the internals, see QueryPathExntesion and QueryPath::__construct().
  */
@@ -51,17 +51,17 @@
  * The constructor stores a local copyof the QueryPath object. This is important
  * if you are planning on fully integrating with QueryPath's Fluent Interface.
  *
- * Finally, the stubToe() function illustrates how the extension makes use of 
+ * Finally, the stubToe() function illustrates how the extension makes use of
  * QueryPath internally, and remains part of the fluent interface by returning
  * the $qp object.
  *
- * Notice that beneath the class, there is a single call to register the 
- * extension with QueryPath's registry. Your extension should end with a line 
+ * Notice that beneath the class, there is a single call to register the
+ * extension with QueryPath's registry. Your extension should end with a line
  * similar to this.
  *
  * <b>How is a QueryPath extension called?</b>
  *
- * QueryPath extensions are called like regular QueryPath functions. For 
+ * QueryPath extensions are called like regular QueryPath functions. For
  * example, the extension above can be called like this:
  * <code>
  * qp('some.xml')->stubToe();
@@ -70,8 +70,8 @@
  * <code>
  * print qp('some.xml')->stubToe()->xml();
  * </code>
- * When you write your own extensions, anything that does not need to return a 
- * specific value should return the QueryPath object. Between that and the 
+ * When you write your own extensions, anything that does not need to return a
+ * specific value should return the QueryPath object. Between that and the
  * extension registry, this will provide the best developer experience.
  *
  * @ingroup querypath_extensions
@@ -84,7 +84,7 @@ interface QueryPathExtension {
  * A registry for QueryPath extensions.
  *
  * QueryPath extensions should call the {@link QueryPathExtensionRegistry::extend()}
- * function to register their extension classes. The QueryPath library then 
+ * function to register their extension classes. The QueryPath library then
  * uses this information to determine what QueryPath extensions should be loaded and
  * executed.
  *
@@ -114,10 +114,10 @@ class QueryPathExtensionRegistry {
       self::$extensionMethodRegistry[$method->getName()] = $classname;
     }
   }
-  
+
   /**
    * Check to see if a method is known.
-   * This checks to see if the given method name belongs to one of the 
+   * This checks to see if the given method name belongs to one of the
    * registered extensions. If it does, then this will return TRUE.
    *
    * @param string $name
@@ -128,13 +128,13 @@ class QueryPathExtensionRegistry {
   public static function hasMethod($name) {
     return isset(self::$extensionMethodRegistry[$name]);
   }
-  
+
   /**
    * Check to see if the given extension class is registered.
-   * Given a class name for a {@link QueryPathExtension} class, this 
+   * Given a class name for a {@link QueryPathExtension} class, this
    * will check to see if that class is registered. If so, it will return
    * TRUE.
-   * 
+   *
    * @param string $name
    *  The name of the class.
    * @return boolean
@@ -143,14 +143,14 @@ class QueryPathExtensionRegistry {
   public static function hasExtension($name) {
     return in_array($name, self::$extensionRegistry);
   }
-  
+
   /**
    * Get the class that a given method belongs to.
    * Given a method name, this will check all registered extension classes
-   * to see if any of them has the named method. If so, this will return 
+   * to see if any of them has the named method. If so, this will return
    * the classname.
    *
-   * Note that if two extensions are registered that contain the same 
+   * Note that if two extensions are registered that contain the same
    * method name, the last one registred will be the only one recognized.
    *
    * @param string $name
@@ -161,7 +161,7 @@ class QueryPathExtensionRegistry {
   public static function getMethodClass($name) {
     return self::$extensionMethodRegistry[$name];
   }
-  
+
   /**
    * Get extensions for the given QueryPath object.
    *
@@ -181,11 +181,11 @@ class QueryPathExtensionRegistry {
     }
     return $extInstances;
   }
-  
+
   /**
    * Enable or disable automatic extension loading.
    *
-   * If extension autoloading is disabled, then QueryPath will not 
+   * If extension autoloading is disabled, then QueryPath will not
    * automatically load all registred extensions when a new QueryPath
    * object is created using {@link qp()}.
    */

@@ -26,12 +26,12 @@ class CssParser {
   protected $buffer = '';
   protected $handler = NULL;
   protected $strict = FALSE;
-  
+
   protected $DEBUG = FALSE;
-  
+
   /**
    * Construct a new CSS parser object. This will attempt to
-   * parse the string as a CSS selector. As it parses, it will 
+   * parse the string as a CSS selector. As it parses, it will
    * send events to the CssEventHandler implementation.
    */
   public function __construct($string, CssEventHandler $handler) {
@@ -40,11 +40,11 @@ class CssParser {
     $this->scanner = new CssScanner($is);
     $this->handler = $handler;
   }
-  
+
   /**
    * Parse the selector.
    *
-   * This begins an event-based parsing process that will 
+   * This begins an event-based parsing process that will
    * fire events as the selector is handled. A CssEventHandler
    * implementation will be responsible for handling the events.
    * @throws CssParseException
@@ -55,14 +55,14 @@ class CssParser {
     while ($this->scanner->token !== FALSE) {
       // Primitive recursion detection.
       $position = $this->scanner->position();
-      
+
       if ($this->DEBUG) {
         print "PARSE " . $this->scanner->token. "\n";
       }
       $this->selector();
-      
+
       $finalPosition = $this->scanner->position();
-      
+
       if ($this->scanner->token !== FALSE && $finalPosition == $position) {
         // If we get here, then the scanner did not pop a single character
         // off of the input stream during a full run of the parser, which
@@ -70,14 +70,14 @@ class CssParser {
         // pattern.
         throw new CssParseException('CSS selector is not well formed.');
       }
-      
+
     }
-    
+
   }
-  
+
   /**
    * A restricted parser that can only parse simple selectors.
-   * The pseudoClass handler for this parser will throw an 
+   * The pseudoClass handler for this parser will throw an
    * exception if it encounters a pseudo-element or the
    * negation pseudo-class.
    *
@@ -93,11 +93,11 @@ class CssParser {
       $this->elementID();
       $this->pseudoClass(TRUE); // Operate in restricted mode.
       $this->attribute();
-      
+
       // TODO: Need to add failure conditions here.
     }
   }*/
-  
+
   /**
    * Handle an entire CSS selector.
    */
@@ -107,7 +107,7 @@ class CssParser {
     $this->simpleSelectors();
     $this->combinator();
   }
-  
+
   /**
    * Consume whitespace and return a count of the number of whitespace consumed.
    */
@@ -120,12 +120,12 @@ class CssParser {
     }
     return $white;
   }
-  
+
   /**
    * Handle one of the five combinators: '>', '+', ' ', '~', and ','.
    * This will call the appropriate event handlers.
    * @see CssEventHandler::directDescendant(),
-   * @see CssEventHandler::adjacent(), 
+   * @see CssEventHandler::adjacent(),
    * @see CssEventHandler::anyDescendant(),
    * @see CssEventHandler::anotherSelector().
    */
@@ -134,15 +134,15 @@ class CssParser {
     /*
      * Problem: ' ' and ' > ' are both valid combinators.
      * So we have to track whitespace consumption to see
-     * if we are hitting the ' ' combinator or if the 
+     * if we are hitting the ' ' combinator or if the
      * selector just has whitespace padding another combinator.
      */
-    
+
     // Flag to indicate that post-checks need doing
-    $inCombinator = FALSE; 
+    $inCombinator = FALSE;
     $white = $this->consumeWhitespace();
-    $t = $this->scanner->token;    
-        
+    $t = $this->scanner->token;
+
     if ($t == CssToken::rangle) {
       $this->handler->directDescendant();
       $this->scanner->nextToken();
@@ -186,7 +186,7 @@ class CssParser {
       if ($this->DEBUG) print "COMBINATOR: no combinator found.\n";
     }
   }
-  
+
   /**
    * Check if the token is a combinator.
    */
@@ -194,7 +194,7 @@ class CssParser {
     $combinators = array(CssToken::plus, CssToken::rangle, CssToken::comma, CssToken::tilde);
     return in_array($tok, $combinators);
   }
-  
+
   /**
    * Handle a simple selector.
    */
@@ -207,7 +207,7 @@ class CssParser {
     $this->pseudoClass();
     $this->attribute();
   }
-  
+
   /**
    * Handles CSS ID selectors.
    * This will call CssEventHandler::elementID().
@@ -223,7 +223,7 @@ class CssParser {
       $this->handler->elementID($id);
     }
   }
-  
+
   /**
    * Handles CSS class selectors.
    * This will call the CssEventHandler::elementClass() method.
@@ -237,7 +237,7 @@ class CssParser {
       $this->handler->elementClass($cssClass);
     }
   }
-  
+
   /**
    * Handle a pseudo-class and pseudo-element.
    *
@@ -258,12 +258,12 @@ class CssParser {
         $isPseudoElement = TRUE;
         $this->scanner->nextToken();
       }
-      
+
       $name = $this->scanner->getNameString();
       if ($restricted && $name == 'not') {
         throw new CssParseException("The 'not' pseudo-class is illegal in this context.");
       }
-      
+
       $value = NULL;
       if ($this->scanner->token == CssToken::lparen) {
         if ($isPseudoElement) {
@@ -271,7 +271,7 @@ class CssParser {
         }
         $value = $this->pseudoClassValue();
       }
-      
+
       // FIXME: This should throw errors when pseudo element has values.
       if ($isPseudoElement) {
         if ($restricted) {
@@ -279,27 +279,27 @@ class CssParser {
         }
         $this->handler->pseudoElement($name);
         $this->consumeWhitespace();
-        
-        // Per the spec, pseudo-elements must be the last items in a selector, so we 
+
+        // Per the spec, pseudo-elements must be the last items in a selector, so we
         // check to make sure that we are either at the end of the stream or that a
         // new selector is starting. Only one pseudo-element is allowed per selector.
         if ($this->scanner->token !== FALSE && $this->scanner->token !== CssToken::comma) {
           throw new CssParseException("A Pseudo-Element must be the last item in a selector.");
         }
-      } 
+      }
       else {
         $this->handler->pseudoClass($name, $value);
       }
     }
   }
-  
+
   /**
    * Get the value of a pseudo-classes.
-   * 
+   *
    * @return string
    *  Returns the value found from a pseudo-class.
    *
-   * @todo Pseudoclasses can be passed pseudo-elements and 
+   * @todo Pseudoclasses can be passed pseudo-elements and
    *  other pseudo-classes as values, which means :pseudo(::pseudo)
    *  is legal.
    */
@@ -315,7 +315,7 @@ class CssParser {
       if ($this->scanner->peek() == ':') {
         print "Is pseudo\n";
         $this->scanner->nextToken();
-      
+
         // Pseudo class
         if ($this->scanner->token == CssToken::colon) {
           $buf .= ':';
@@ -325,7 +325,7 @@ class CssParser {
             $buf .= ':';
             $this->scanner->nextToken();
           }
-          // Ident 
+          // Ident
           $buf .= $this->scanner->getNameString();
         }
       }
@@ -343,7 +343,7 @@ class CssParser {
       return $buf;
     }
   }
-  
+
   /**
    * Handle element names.
    * This will call the CssEventHandler::elementName().
@@ -373,7 +373,7 @@ class CssParser {
         $this->scanner->nextToken();
         $this->consumeWhitespace();
         if ($this->scanner->token === CssToken::star) {
-          // We have ns|* 
+          // We have ns|*
           $this->handler->anyElementInNS($elementNS);
           $this->scanner->nextToken();
         }
@@ -385,17 +385,17 @@ class CssParser {
           // We have ns|name
           $this->handler->elementNS($elementName, $elementNS);
         }
-        
+
       }
       else {
         $this->handler->element($elementName);
       }
     }
   }
-  
+
   /**
    * Check for all elements designators. Due to the new CSS 3 namespace
-   * support, this is slightly more complicated, now, as it handles 
+   * support, this is slightly more complicated, now, as it handles
    * the *|name and *|* cases as well as *.
    *
    * Calls CssEventHandler::anyElement() or CssEventHandler::elementName().
@@ -424,12 +424,12 @@ class CssParser {
       }
     }
   }
-  
+
   /**
    * Handler an attribute.
    * An attribute can be in one of two forms:
    * <code>[attrName]</code>
-   * or 
+   * or
    * <code>[attrName="AttrValue"]</code>
    *
    * This may call the following event handlers: CssEventHandler::attribute().
@@ -437,10 +437,10 @@ class CssParser {
   private function attribute() {
     if($this->scanner->token == CssToken::lsquare) {
       $attrVal = $op = $ns = NULL;
-      
+
       $this->scanner->nextToken();
       $this->consumeWhitespace();
-      
+
       if ($this->scanner->token === CssToken::at) {
         if ($this->strict) {
           throw new CssParseException('The @ is illegal in attributes.');
@@ -450,7 +450,7 @@ class CssParser {
           $this->consumeWhitespace();
         }
       }
-      
+
       if ($this->scanner->token === CssToken::star) {
         // Global namespace... requires that attr be prefixed,
         // so we pass this on to a namespace handler.
@@ -462,21 +462,21 @@ class CssParser {
         $this->scanner->nextToken();
         $this->consumeWhitespace();
       }
-      
+
       $attrName = $this->scanner->getNameString();
       $this->consumeWhitespace();
-      
-      // Check for namespace attribute: ns|attr. We have to peek() to make 
+
+      // Check for namespace attribute: ns|attr. We have to peek() to make
       // sure that we haven't hit the |= operator, which looks the same.
       if ($this->scanner->token === CssToken::pipe && $this->scanner->peek() !== '=') {
-        // We have a namespaced attribute. 
+        // We have a namespaced attribute.
         $ns = $attrName;
         $this->scanner->nextToken();
         $attrName = $this->scanner->getNameString();
         $this->consumeWhitespace();
       }
-      
-      // Note: We require that operators do not have spaces 
+
+      // Note: We require that operators do not have spaces
       // between characters, e.g. ~= , not ~ =.
 
       // Get the operator:
@@ -516,39 +516,39 @@ class CssParser {
           $op = CssEventHandler::beginsWith;
           break;
       }
-      
+
       if (isset($op)) {
         // Consume '=' and go on.
         $this->scanner->nextToken();
         $this->consumeWhitespace();
-        
+
         // So... here we have a problem. The grammer suggests that the
         // value here is String1 or String2, both of which are enclosed
-        // in quotes of some sort, and both of which allow lots of special 
+        // in quotes of some sort, and both of which allow lots of special
         // characters. But the spec itself includes examples like this:
         //   [lang=fr]
         // So some bareword support is assumed. To get around this, we assume
         // that bare words follow the NAME rules, while quoted strings follow
         // the String1/String2 rules.
-        
+
         if ($this->scanner->token === CssToken::quote || $this->scanner->token === CssToken::squote) {
           $attrVal = $this->scanner->getQuotedString();
         }
         else {
           $attrVal = $this->scanner->getNameString();
         }
-        
+
         if ($this->DEBUG) {
           print "ATTR: $attrVal AND OP: $op\n";
         }
       }
-      
+
       $this->consumeWhitespace();
-      
+
       if ($this->scanner->token != CssToken::rsquare) {
         $this->throwError(CssToken::rsquare, $this->scanner->token);
       }
-      
+
       if (isset($ns)) {
         $this->handler->attributeNS($attrName, $ns, $attrVal, $op);
       }
@@ -561,7 +561,7 @@ class CssParser {
       $this->scanner->nextToken();
     }
   }
-  
+
   /**
    * Utility for throwing a consistantly-formatted parse error.
    */
@@ -569,7 +569,7 @@ class CssParser {
     $filter = sprintf('Expected %s, got %s', CssToken::name($expected), CssToken::name($got));
     throw new CssParseException($filter);
   }
-  
+
 }
 
 /**
@@ -583,10 +583,10 @@ final class CssScanner {
   var $is = NULL;
   public $value = NULL;
   public $token = NULL;
-  
+
   var $recurse = FALSE;
   var $it = 0;
-  
+
   /**
    * Given a new input stream, tokenize the CSS selector string.
    * @see CssInputStream
@@ -596,14 +596,14 @@ final class CssScanner {
   public function __construct(CssInputStream $in) {
     $this->is = $in;
   }
-  
+
   /**
    * Return the position of the reader in the string.
    */
   public function position() {
     return $this->is->position;
   }
-  
+
   /**
    * See the next char without removing it from the stack.
    *
@@ -613,11 +613,11 @@ final class CssScanner {
   public function peek() {
     return $this->is->peek();
   }
-  
+
   /**
    * Get the next token in the input stream.
    *
-   * This sets the current token to the value of the next token in 
+   * This sets the current token to the value of the next token in
    * the stream.
    *
    * @return int
@@ -646,16 +646,16 @@ final class CssScanner {
       //$ch = $this->is->consume();
       return $tok;
     }
-    
+
     if (ctype_alnum($ch) || $ch == '-' || $ch == '_') {
       // It's a character
       $this->value = $ch; //strtolower($ch);
       $this->token = $tok = CssToken::char;
       return $tok;
     }
-    
+
     $this->value = $ch;
-    
+
     switch($ch) {
       case '*':
         $tok = CssToken::star;
@@ -718,8 +718,8 @@ final class CssScanner {
         $tok = CssToken::at;
         break;
     }
-    
-    
+
+
     // Catch all characters that are legal within strings.
     if ($tok == -1) {
       // TODO: This should be UTF-8 compatible, but PHP doesn't
@@ -737,14 +737,14 @@ final class CssScanner {
         throw new CSSParseException('Illegal character found in stream: ' . $ord);
       }
     }
-    
+
     $this->token = $tok;
     return $tok;
   }
-  
+
   /**
    * Get a name string from the input stream.
-   * A name string must be composed of 
+   * A name string must be composed of
    * only characters defined in CssToken:char: -_a-zA-Z0-9
    */
   public function getNameString() {
@@ -756,21 +756,21 @@ final class CssScanner {
     }
     return $buf;
   }
-  
+
   /**
    * This gets a string with any legal 'string' characters.
-   * See CSS Selectors specification, section 11, for the 
+   * See CSS Selectors specification, section 11, for the
    * definition of string.
    *
-   * This will check for string1, string2, and the case where a 
-   * string is unquoted (Oddly absent from the "official" grammar, 
+   * This will check for string1, string2, and the case where a
+   * string is unquoted (Oddly absent from the "official" grammar,
    * though such strings are present as examples in the spec.)
    *
    * Note:
    * Though the grammar supplied by CSS 3 Selectors section 11 does not
    * address the contents of a pseudo-class value, the spec itself indicates
-   * that a pseudo-class value is a "value between parenthesis" [6.6]. The 
-   * examples given use URLs among other things, making them closer to the 
+   * that a pseudo-class value is a "value between parenthesis" [6.6]. The
+   * examples given use URLs among other things, making them closer to the
    * definition of 'string' than to 'name'. So we handle them here as strings.
    */
   public function getQuotedString() {
@@ -778,9 +778,9 @@ final class CssScanner {
       $end = ($this->token == CssToken::lparen) ? CssToken::rparen : $this->token;
       $buf = '';
       $escape = FALSE;
-      
+
       $this->nextToken(); // Skip the opening quote/paren
-      
+
       // The second conjunct is probably not necessary.
       while ($this->token !== FALSE && $this->token > -1) {
         //print "Char: $this->value \n";
@@ -809,10 +809,10 @@ final class CssScanner {
       return $buf;
     }
   }
-  
+
   /**
    * Get a string from the input stream.
-   * This is a convenience function for getting a string of 
+   * This is a convenience function for getting a string of
    * characters that are either alphanumber or whitespace. See
    * the CssToken::white and CssToken::char definitions.
    *
@@ -827,5 +827,5 @@ final class CssScanner {
     }
     return $buf;
   }*/
-  
+
 }

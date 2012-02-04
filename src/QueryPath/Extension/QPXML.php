@@ -83,7 +83,7 @@ class QPXML implements QueryPathExtension {
    * If no comments are found, NULL will be returned.
    *
    * @param string $text
-   *  The text of the comment. If set, a new comment will be created in every item 
+   *  The text of the comment. If set, a new comment will be created in every item
    *  wrapped by the current {@link QueryPath}.
    * @return mixed
    *  If $text is set, this will return a {@link QueryPath}. If no text is set, this

@@ -12,17 +12,17 @@
  * @deprecated This will be removed from a subsequent version of QueryPath. It will
  *  be released as a stand-alone extension.
  * @ingroup querypath_extensions
- */ 
+ */
 class QPList implements QueryPathExtension {
   const UL = 'ul';
   const OL = 'ol';
   const DL = 'dl';
-  
+
   protected $qp = NULL;
   public function __construct(QueryPath $qp) {
     $this->qp = $qp;
   }
-  
+
   public function appendTable($items, $options = array()) {
     $opts = $options + array(
       'table class' => 'qptable',
@@ -33,7 +33,7 @@ class QPList implements QueryPathExtension {
       <tr></tr>
     </tbody>
     </table>';
-    
+
     $qp = qp($base, 'table')->addClass($opts['table class'])->find('tr');
     if ($items instanceof TableAble) {
       $headers = $items->getHeaders();
@@ -47,24 +47,24 @@ class QPList implements QueryPathExtension {
       $headers = $items['headers'];
       $rows = $items['rows'];
     }
-    
+
     // Add Headers:
     foreach ($headers as $header) {
       $qp->append('<th>' . $header . '</th>');
     }
     $qp->top()->find('tr:last');
-    
+
     // Add rows and cells.
     foreach ($rows as $row) {
       $qp->after('<tr/>')->next();
       foreach($row as $cell) $qp->append('<td>' . $cell . '</td>');
     }
-    
+
     $this->qp->append($qp->top());
-    
+
     return $this->qp;
   }
-  
+
   /**
    * Append a list of items into an HTML DOM using one of the HTML list structures.
    * This takes a one-dimensional array and converts it into an HTML UL or OL list,
@@ -98,10 +98,10 @@ class QPList implements QueryPathExtension {
       $q = $this->listImpl($items, $type, $opts);
       $this->qp->append($q->find(':root'));
     }
-    
+
     return $this->qp;
   }
-  
+
   /**
    * Internal recursive list generator for appendList.
    */
@@ -109,7 +109,7 @@ class QPList implements QueryPathExtension {
     $ele = '<' . $type . '/>';
     if (!isset($q))
       $q = qp()->append($ele)->addClass($opts['list class']);
-          
+
     foreach ($items as $li) {
       if ($li instanceof QueryPath) {
         $q = $this->listImpl($li->get(), $type, $opts, $q);
@@ -125,13 +125,13 @@ class QPList implements QueryPathExtension {
     }
     return $q;
   }
-  
+
   /**
    * Unused.
    */
   protected function isAssoc($array) {
     // A clever method from comment on is_array() doc page:
-    return count(array_diff_key($array, range(0, count($array) - 1))) != 0; 
+    return count(array_diff_key($array, range(0, count($array) - 1))) != 0;
   }
 }
 QueryPathExtensionRegistry::extend('QPList');
@@ -161,16 +161,16 @@ interface TableAble {
 /**
  * Format data to be inserted into a simple HTML table.
  *
- * Data in the headers or rows may contain markup. If you want to 
+ * Data in the headers or rows may contain markup. If you want to
  * disallow markup, use a {@see QPTableTextData} object instead.
  */
 class QPTableData implements TableAble, IteratorAggregate {
-  
+
   protected $headers;
   protected $rows;
   protected $caption;
   protected $p = -1;
-  
+
   public function setHeaders($array) {$this->headers = $array; return $this;}
   public function getHeaders() {return $this->headers; }
   public function setRows($array) {$this->rows = $array; return $this;}
@@ -183,8 +183,8 @@ class QPTableData implements TableAble, IteratorAggregate {
 
 /**
  * Provides a table where all of the headers and data are treated as text data.
- * 
- * This provents marked-up data from being inserted into the DOM as elements. 
+ *
+ * This provents marked-up data from being inserted into the DOM as elements.
  * Instead, the text is escaped using {@see htmlentities()}.
  *
  * @see QPTableData

@@ -9,7 +9,7 @@ namespace QueryPath\CSS;
 
 /**
  * Simple wrapper to turn a string into an input stream.
- * This provides a standard interface on top of an array of 
+ * This provides a standard interface on top of an array of
  * characters.
  */
 class CssInputStream {
