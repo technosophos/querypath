@@ -1,5 +1,7 @@
 # QueryPath: Find your way.
 
+**Branch 2.x is in maintenance.**
+
 Authors: Matt Butcher (lead), Emily Brand, and others
 
 [Website](http://querypath.org) | 
