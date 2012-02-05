@@ -233,23 +233,23 @@ class QueryPath implements \IteratorAggregate, \Countable {
         if ($this->matches->count() > 0)
           $this->document = $this->getFirstMatch()->ownerDocument;
       }
-      elseif ($document instanceof DOMDocument) {
+      elseif ($document instanceof \DOMDocument) {
         $this->document = $document;
         //$this->matches = $this->matches($document->documentElement);
         $this->setMatches($document->documentElement);
       }
-      elseif ($document instanceof DOMNode) {
+      elseif ($document instanceof \DOMNode) {
         $this->document = $document->ownerDocument;
         //$this->matches = array($document);
         $this->setMatches($document);
       }
-      elseif ($document instanceof SimpleXMLElement) {
+      elseif ($document instanceof \SimpleXMLElement) {
         $import = dom_import_simplexml($document);
         $this->document = $import->ownerDocument;
         //$this->matches = array($import);
         $this->setMatches($import);
       }
-      elseif ($document instanceof SplObjectStorage) {
+      elseif ($document instanceof \SplObjectStorage) {
         if ($document->count() == 0) {
           throw new QueryPathException('Cannot initialize QueryPath from an empty SplObjectStore');
         }
@@ -262,7 +262,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
     }
     elseif (is_array($document)) {
       //trigger_error('Detected deprecated array support', E_USER_NOTICE);
-      if (!empty($document) && $document[0] instanceof DOMNode) {
+      if (!empty($document) && $document[0] instanceof \DOMNode) {
         $found = new \SplObjectStorage();
         foreach ($document as $item) $found->attach($item);
         //$this->matches = $found;
@@ -911,10 +911,10 @@ class QueryPath implements \IteratorAggregate, \Countable {
   public function is($selector) {
 
     if (is_object($selector)) {
-      if ($selector instanceof DOMNode) {
+      if ($selector instanceof \DOMNode) {
         return count($this->matches) == 1 && $selector->isSameNode($this->get(0));
       }
-      elseif ($selector instanceof Traversable) {
+      elseif ($selector instanceof \Traversable) {
         if (count($selector) != count($this->matches)) {
           return FALSE;
         }
@@ -1099,7 +1099,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
    */
   public function not($selector) {
     $found = new \SplObjectStorage();
-    if ($selector instanceof DOMElement) {
+    if ($selector intanceof \DOMElement) {
       foreach ($this->matches as $m) if ($m !== $selector) $found->attach($m);
     }
     elseif (is_array($selector)) {
@@ -1107,7 +1107,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
         if (!in_array($m, $selector, TRUE)) $found->attach($m);
       }
     }
-    elseif ($selector instanceof SplObjectStorage) {
+    elseif ($selector intanceof \SplObjectStorage) {
       foreach ($this->matches as $m) if ($selector->contains($m)) $found->attach($m);
     }
     else {
@@ -1178,7 +1178,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
       foreach ($this->matches as $item) {
         $c = call_user_func($callback, $i, $item);
         if (isset($c)) {
-          if (is_array($c) || $c instanceof Iterable) {
+          if (is_array($c) || $c instanceof \Iterable) {
             foreach ($c as $retval) {
               if (!is_object($retval)) {
                 $tmp = new \stdClass();
@@ -1335,7 +1335,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
         foreach ($this->matches as $m) {
           // DOMDocumentFragments are even more troublesome, as they don't
           // always clone correctly. So we have to clone their children.
-          if ($data instanceof DOMDocumentFragment) {
+          if ($data intanceof \DOMDocumentFragment) {
             foreach ($data->childNodes as $n)
               $m->appendChild($n->cloneNode(TRUE));
           }
@@ -1859,14 +1859,14 @@ class QueryPath implements \IteratorAggregate, \Countable {
 
       return $this->prepareInsert($item->get(0));
     }
-    elseif ($item instanceof DOMNode) {
+    elseif ($item intanceof \DOMNode) {
       if ($item->ownerDocument !== $this->document) {
         // Deep clone this and attach it to this document
         $item = $this->document->importNode($item, TRUE);
       }
       return $item;
     }
-    elseif ($item instanceof SimpleXMLElement) {
+    elseif ($item instanceof \SimpleXMLElement) {
       $element = dom_import_simplexml($item);
       return $this->document->importNode($element, TRUE);
     }
@@ -1952,7 +1952,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * @see remove()
    * @see replaceWith()
    */
-  public function replaceAll($selector, DOMDocument $document) {
+  public function replaceAll($selector, \DOMDocument $document) {
     $replacement = $this->size() > 0 ? $this->getFirstMatch() : $this->document->createTextNode('');
 
     $c = new QueryPathCssEventHandler($document);
@@ -2332,7 +2332,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
     $first = $this->getFirstMatch();
 
     // Catch cases where first item is not a legit DOM object.
-    if (!($first instanceof DOMNode)) {
+    if (!($first intanceof \DOMNode)) {
       return NULL;
     }
 
@@ -2341,7 +2341,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
       return NULL;
     }
 
-    if ($first instanceof DOMDocument || $first->isSameNode($first->ownerDocument->documentElement)) {
+    if ($first intanceof \DOMDocument || $first->isSameNode($first->ownerDocument->documentElement)) {
       return $this->document->saveHTML();
     }
     // saveHTML cannot take a node and serialize it.
@@ -2405,7 +2405,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
     $first = $this->getFirstMatch();
 
     // Catch cases where first item is not a legit DOM object.
-    if (!($first instanceof DOMNode)) {
+    if (!($first intanceof \DOMNode)) {
       return NULL;
     }
     elseif (!$first->hasChildNodes()) {
@@ -2442,7 +2442,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
     $first = $this->getFirstMatch();
 
     // Catch cases where first item is not a legit DOM object.
-    if (!($first instanceof DOMNode)) {
+    if (!($first intanceof \DOMNode)) {
       return NULL;
     }
     elseif (!$first->hasChildNodes()) {
@@ -3314,7 +3314,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
       // Get the list of nodes.
       $nodes = $this->branch($contained)->get();
     }
-    elseif ($contained instanceof DOMNode) {
+    elseif ($contained intanceof \DOMNode) {
       // Make a list with one node.
       $nodes = array($contained);
     }
