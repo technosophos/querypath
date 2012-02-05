@@ -3,17 +3,17 @@
  * This file contains the Query Path extension tools.
  *
  * Query Path can be extended to support additional features. To do this,
- * you need only create a new class that implements {@link QueryPathExtension}
+ * you need only create a new class that implements {@link Extension}
  * and add your own methods. This class can then be registered as an extension.
  * It will then be available through Query Path.
  *
- * For information on building your own extension, see {@link QueryPathExtension}.
+ * For information on building your own extension, see {@link Extension}.
  * If you are trying to load an extension you have downloaded, chances are good that
  * all you need to do is {@link require_once} the file that contains the extension.
  *
  * @author M Butcher <matt@aleph-null.tv>
  * @license http://opensource.org/licenses/lgpl-2.1.php LGPL or MIT-like license.
- * @see QueryPathExtension
+ * @see Extension
  * @see ExtensionRegistry::extend()
  */
 namespace QueryPath;
@@ -27,15 +27,15 @@ namespace QueryPath;
  */
 
 /**
- * A QueryPathExtension is a tool that extends the capabilities of a QueryPath object.
+ * A Extension is a tool that extends the capabilities of a QueryPath object.
  *
- * Extensions to QueryPath should implement the QueryPathExtension interface. The
+ * Extensions to QueryPath should implement the Extension interface. The
  * only requirement is that the extension provide a constructor that takes a
  * QueryPath object as a parameter.
  *
  * Here is an example QueryPath extension:
  * <code><?php
- * class StubExtensionOne implements QueryPathExtension {
+ * class StubExtensionOne implements Extension {
  *   private $qp = NULL;
  *   public function __construct(QueryPath $qp) {
  *     $this->qp = $qp;
@@ -48,7 +48,7 @@ namespace QueryPath;
  * }
  * ExtensionRegistry::extend('StubExtensionOne');
  * ?></code>
- * In this example, the StubExtensionOne class implements QueryPathExtension.
+ * In this example, the StubExtensionOne class implements Extension.
  * The constructor stores a local copyof the QueryPath object. This is important
  * if you are planning on fully integrating with QueryPath's Fluent Interface.
  *

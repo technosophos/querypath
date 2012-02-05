@@ -24,12 +24,12 @@
  *
  * @author M Butcher <matt@aleph-null.tv>
  * @license http://opensource.org/licenses/lgpl-2.1.php LGPL or MIT-like license.
- * @see QueryPathExtension
+ * @see QueryPath::Extension
  * @see QueryPath::ExtensionRegistry::extend()
  * @see https://fedorahosted.org/querypath/wiki/QueryPathTemplate
  * @ingroup querypath_extensions
  */
-class QPTPL implements QueryPathExtension {
+class QPTPL implements \QueryPath\Extension {
   protected $qp;
   public function __construct(QueryPath $qp) {
     $this->qp = $qp;

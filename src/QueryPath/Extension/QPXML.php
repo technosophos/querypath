@@ -9,7 +9,7 @@ namespace QueryPath\Extension;
  * @author M Butcher <matt@aleph-null.tv>
  * @author Xander Guzman <theshadow@shadowpedia.info>
  * @license http://opensource.org/licenses/lgpl-2.1.php LGPL or MIT-like license.
- * @see QueryPathExtension
+ * @see QueryPath::Extension
  * @see QueryPath::ExtensionRegistry::extend()
  * @see QPXML
  * @ingroup querypath_extensions

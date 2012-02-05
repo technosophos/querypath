@@ -55,7 +55,7 @@ class ExtensionRegistry {
 
   /**
    * Check to see if the given extension class is registered.
-   * Given a class name for a {@link QueryPathExtension} class, this
+   * Given a class name for a QueryPathExtension class, this
    * will check to see if that class is registered. If so, it will return
    * TRUE.
    *

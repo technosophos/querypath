@@ -13,7 +13,7 @@
  *  be released as a stand-alone extension.
  * @ingroup querypath_extensions
  */
-class QPList implements QueryPathExtension {
+class QPList implements \QueryPath\Extension {
   const UL = 'ul';
   const OL = 'ol';
   const DL = 'dl';
