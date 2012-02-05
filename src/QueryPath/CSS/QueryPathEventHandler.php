@@ -1,6 +1,6 @@
 <?php
 /** @file
- * This file contains a full implementation of the CssEventHandler interface.
+ * This file contains a full implementation of the EventHandler interface.
  *
  * The tools in this package initiate a CSS selector parsing routine and then
  * handle all of the callbacks.
@@ -62,7 +62,7 @@ namespace QueryPath\CSS;
  *
  * @ingroup querypath_css
  */
-class QueryPathCssEventHandler implements CssEventHandler {
+class QueryPathEventHandler implements EventHandler {
   protected $dom = NULL; // Always points to the top level.
   protected $matches = NULL; // The matches
   protected $alreadyMatched = NULL; // Matches found before current selector.
@@ -132,7 +132,7 @@ class QueryPathCssEventHandler implements CssEventHandler {
    *
    * @param string $filter
    *  A valid CSS 3 filter.
-   * @return QueryPathCssEventHandler
+   * @return QueryPathEventHandler
    *  Returns itself.
    */
   public function find($filter) {
@@ -297,7 +297,7 @@ class QueryPathCssEventHandler implements CssEventHandler {
     $this->findAnyElement = FALSE;
   }
 
-  public function attribute($name, $value = NULL, $operation = CssEventHandler::isExactly) {
+  public function attribute($name, $value = NULL, $operation = EventHandler::isExactly) {
     $found = new SplObjectStorage();
     $matches = $this->candidateList();
     foreach ($matches as $item) {
@@ -342,7 +342,7 @@ class QueryPathCssEventHandler implements CssEventHandler {
     $this->matches = $found;
   }
 
-  public function attributeNS($lname, $ns, $value = NULL, $operation = CssEventHandler::isExactly) {
+  public function attributeNS($lname, $ns, $value = NULL, $operation = EventHandler::isExactly) {
     $matches = $this->candidateList();
     $found = new SplObjectStorage();
     if (count($matches) == 0) {
@@ -1023,7 +1023,7 @@ class QueryPathCssEventHandler implements CssEventHandler {
     //$found = array();
     $found = new SplObjectStorage();
     foreach ($matches as $item) {
-      $handler = new QueryPathCssEventHandler($item);
+      $handler = new QueryPathEventHandler($item);
       $not_these = $handler->find($filter)->getMatches();
       if ($not_these->count() == 0) {
         $found->attach($item);
@@ -1043,7 +1043,7 @@ class QueryPathCssEventHandler implements CssEventHandler {
     //$found = array();
     $found = new SplObjectStorage();
     foreach ($matches as $item) {
-      $handler = new QueryPathCssEventHandler($item);
+      $handler = new QueryPathEventHandler($item);
       $these = $handler->find($filter)->getMatches();
       if (count($these) > 0) {
         $found->attach($item);
@@ -1184,17 +1184,17 @@ class QueryPathCssEventHandler implements CssEventHandler {
     // (6.3.2)
     // To which I say, "huh?". We assume case sensitivity.
     switch ($operation) {
-      case CssEventHandler::isExactly:
+      case EventHandler::isExactly:
         return $needle == $haystack;
-      case CssEventHandler::containsWithSpace:
+      case EventHandler::containsWithSpace:
         return in_array($needle, explode(' ', $haystack));
-      case CssEventHandler::containsWithHyphen:
+      case EventHandler::containsWithHyphen:
         return in_array($needle, explode('-', $haystack));
-      case CssEventHandler::containsInString:
+      case EventHandler::containsInString:
         return strpos($haystack, $needle) !== FALSE;
-      case CssEventHandler::beginsWith:
+      case EventHandler::beginsWith:
         return strpos($haystack, $needle) === 0;
-      case CssEventHandler::endsWith:
+      case EventHandler::endsWith:
         //return strrpos($haystack, $needle) === strlen($needle) - 1;
         return preg_match('/' . $needle . '$/', $haystack) == 1;
     }

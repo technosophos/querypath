@@ -43,7 +43,7 @@
  *
  * QueryPath also comes with a full CSS 3 selector parser implementation. If
  * you are interested in reusing that in other code, you will want to start
- * with {@link CssEventHandler.php}, which is the event interface for the parser.
+ * with {@link EventHandler.php}, which is the event interface for the parser.
  *
  * All of the code in QueryPath is licensed under either the LGPL or an MIT-like
  * license (you may choose which you prefer). All of the code is Copyright, 2009
@@ -391,7 +391,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * @see is()
    * @todo If a find() returns zero matches, then a subsequent find() will
    *  also return zero matches, even if that find has a selector like :root.
-   *  The reason for this is that the {@link QueryPathCssEventHandler} does
+   *  The reason for this is that the {@link QueryPathEventHandler} does
    *  not set the root of the document tree if it cannot find any elements
    *  from which to determine what the root is. The workaround is to use
    *  {@link top()} to select the root element again.
@@ -460,7 +460,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
     }
 
 
-    $query = new QueryPathCssEventHandler($this->matches);
+    $query = new QueryPathEventHandler($this->matches);
     $query->find($selector);
     $this->setMatches($query->getMatches());
     return $this;
@@ -935,7 +935,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
     }
 
     foreach ($this->matches as $m) {
-      $q = new QueryPathCssEventHandler($m);
+      $q = new QueryPathEventHandler($m);
       if ($q->find($selector)->getMatches()->count()) {
         return TRUE;
       }
@@ -1909,7 +1909,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
   public function remove($selector = NULL) {
     if(!empty($selector)) {
       // Do a non-destructive find.
-      $query = new QueryPathCssEventHandler($this->matches);
+      $query = new QueryPathEventHandler($this->matches);
       $query->find($selector);
       $matches = $query->getMatches();
     }
@@ -1955,7 +1955,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
   public function replaceAll($selector, \DOMDocument $document) {
     $replacement = $this->size() > 0 ? $this->getFirstMatch() : $this->document->createTextNode('');
 
-    $c = new QueryPathCssEventHandler($document);
+    $c = new QueryPathEventHandler($document);
     $c->find($selector);
     $temp = $c->getMatches();
     foreach ($temp as $item) {

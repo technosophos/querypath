@@ -32,9 +32,9 @@ class CssParser {
   /**
    * Construct a new CSS parser object. This will attempt to
    * parse the string as a CSS selector. As it parses, it will
-   * send events to the CssEventHandler implementation.
+   * send events to the EventHandler implementation.
    */
-  public function __construct($string, CssEventHandler $handler) {
+  public function __construct($string, EventHandler $handler) {
     $this->originalString = $string;
     $is = new CssInputStream($string);
     $this->scanner = new CssScanner($is);
@@ -45,7 +45,7 @@ class CssParser {
    * Parse the selector.
    *
    * This begins an event-based parsing process that will
-   * fire events as the selector is handled. A CssEventHandler
+   * fire events as the selector is handled. A EventHandler
    * implementation will be responsible for handling the events.
    * @throws CssParseException
    */
@@ -124,10 +124,10 @@ class CssParser {
   /**
    * Handle one of the five combinators: '>', '+', ' ', '~', and ','.
    * This will call the appropriate event handlers.
-   * @see CssEventHandler::directDescendant(),
-   * @see CssEventHandler::adjacent(),
-   * @see CssEventHandler::anyDescendant(),
-   * @see CssEventHandler::anotherSelector().
+   * @see EventHandler::directDescendant(),
+   * @see EventHandler::adjacent(),
+   * @see EventHandler::anyDescendant(),
+   * @see EventHandler::anotherSelector().
    */
   private function combinator() {
     if ($this->DEBUG) print "COMBINATOR\n";
@@ -210,7 +210,7 @@ class CssParser {
 
   /**
    * Handles CSS ID selectors.
-   * This will call CssEventHandler::elementID().
+   * This will call EventHandler::elementID().
    */
   private function elementID() {
     if ($this->DEBUG) print "ELEMENT ID\n";
@@ -226,7 +226,7 @@ class CssParser {
 
   /**
    * Handles CSS class selectors.
-   * This will call the CssEventHandler::elementClass() method.
+   * This will call the EventHandler::elementClass() method.
    */
   private function elementClass() {
     if ($this->DEBUG) print "ELEMENT CLASS\n";
@@ -243,9 +243,9 @@ class CssParser {
    *
    * CSS 3 selectors support separate pseudo-elements, using :: instead
    * of : for separator. This is now supported, and calls the pseudoElement
-   * handler, CssEventHandler::pseudoElement().
+   * handler, EventHandler::pseudoElement().
    *
-   * This will call CssEventHandler::pseudoClass() when a
+   * This will call EventHandler::pseudoClass() when a
    * pseudo-class is parsed.
    */
   private function pseudoClass($restricted = FALSE) {
@@ -346,14 +346,14 @@ class CssParser {
 
   /**
    * Handle element names.
-   * This will call the CssEventHandler::elementName().
+   * This will call the EventHandler::elementName().
    *
    * This handles:
    * <code>
-   *  name (CssEventHandler::element())
-   *  |name (CssEventHandler::element())
-   *  ns|name (CssEventHandler::elementNS())
-   *  ns|* (CssEventHandler::elementNS())
+   *  name (EventHandler::element())
+   *  |name (EventHandler::element())
+   *  ns|name (EventHandler::elementNS())
+   *  ns|* (EventHandler::elementNS())
    * </code>
    */
   private function elementName() {
@@ -398,7 +398,7 @@ class CssParser {
    * support, this is slightly more complicated, now, as it handles
    * the *|name and *|* cases as well as *.
    *
-   * Calls CssEventHandler::anyElement() or CssEventHandler::elementName().
+   * Calls EventHandler::anyElement() or EventHandler::elementName().
    */
   private function allElements() {
     if ($this->scanner->token === CssToken::star) {
@@ -432,7 +432,7 @@ class CssParser {
    * or
    * <code>[attrName="AttrValue"]</code>
    *
-   * This may call the following event handlers: CssEventHandler::attribute().
+   * This may call the following event handlers: EventHandler::attribute().
    */
   private function attribute() {
     if($this->scanner->token == CssToken::lsquare) {
@@ -483,37 +483,37 @@ class CssParser {
       switch ($this->scanner->token) {
         case CssToken::eq:
           $this->consumeWhitespace();
-          $op = CssEventHandler::isExactly;
+          $op = EventHandler::isExactly;
           break;
         case CssToken::tilde:
           if ($this->scanner->nextToken() !== CssToken::eq) {
             $this->throwError(CssToken::eq, $this->scanner->token);
           }
-          $op = CssEventHandler::containsWithSpace;
+          $op = EventHandler::containsWithSpace;
           break;
         case CssToken::pipe:
           if ($this->scanner->nextToken() !== CssToken::eq) {
             $this->throwError(CssToken::eq, $this->scanner->token);
           }
-          $op = CssEventHandler::containsWithHyphen;
+          $op = EventHandler::containsWithHyphen;
           break;
         case CssToken::star:
           if ($this->scanner->nextToken() !== CssToken::eq) {
             $this->throwError(CssToken::eq, $this->scanner->token);
           }
-          $op = CssEventHandler::containsInString;
+          $op = EventHandler::containsInString;
           break;
         case CssToken::dollar;
           if ($this->scanner->nextToken() !== CssToken::eq) {
             $this->throwError(CssToken::eq, $this->scanner->token);
           }
-          $op = CssEventHandler::endsWith;
+          $op = EventHandler::endsWith;
           break;
         case CssToken::carat:
           if ($this->scanner->nextToken() !== CssToken::eq) {
             $this->throwError(CssToken::eq, $this->scanner->token);
           }
-          $op = CssEventHandler::beginsWith;
+          $op = EventHandler::beginsWith;
           break;
       }
 

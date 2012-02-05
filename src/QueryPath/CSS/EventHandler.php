@@ -6,8 +6,8 @@
  * In the future it may be expanded to handle all of CSS 3.
  *
  * The parser contained herein is has an event-based API. Implementors should
- * begin by implementing the {@link CssEventHandler} interface. For an example
- * of how this is done, see {@link CssEventHandler.php}.
+ * begin by implementing the {@link EventHandler} interface. For an example
+ * of how this is done, see {@link EventHandler.php}.
  *
  * @author M Butcher <matt@aleph-null.tv>
  * @license http://opensource.org/licenses/lgpl-2.1.php The GNU Lesser GPL (LGPL) or an MIT-like license.
@@ -22,19 +22,19 @@ namespace QueryPath\CSS;
  * qp(), htmlqp(), or one of the methods on a QueryPath object.
  *
  * This parser is modular and is not tied to QueryPath, so you can use it in your
- * own (non-QueryPath) projects if you wish. To dive in, start with CssEventHandler, the
+ * own (non-QueryPath) projects if you wish. To dive in, start with EventHandler, the
  * event interface that works like a SAX API for CSS selectors. If you want to check out
  * the details, check out the parser (CssParser),  scanner (CssScanner), and token list (CssToken).
  */
 
-require_once 'CssEventHandler.php';
+require_once 'EventHandler.php';
 
 
 /**
  * An event handler for handling CSS 3 Selector parsing.
  *
  * This provides a standard interface for CSS 3 Selector event handling. As the
- * parser parses a selector, it will fire events. Implementations of CssEventHandler
+ * parser parses a selector, it will fire events. Implementations of EventHandler
  * can then handle the events.
  *
  * This library is inspired by the SAX2 API for parsing XML. Each component of a
@@ -42,7 +42,7 @@ require_once 'CssEventHandler.php';
  *
  * @ingroup querypath_css
  */
-interface CssEventHandler {
+interface EventHandler {
   /** The is-exactly (=) operator. */
   const isExactly = 0; // =
   /** The contains-with-space operator (~=). */
@@ -110,10 +110,10 @@ interface CssEventHandler {
    * @param string $value
    *  The value of the attribute, if given.
    * @param int $operation
-   *  The operation to be used for matching. See {@link CssEventHandler}
+   *  The operation to be used for matching. See {@link EventHandler}
    *  constants for a list of supported operations.
    */
-  public function attribute($name, $value = NULL, $operation = CssEventHandler::isExactly); // [name=attr]
+  public function attribute($name, $value = NULL, $operation = EventHandler::isExactly); // [name=attr]
   /**
    * Handle an attribute selector bound to a specific namespace.
    * Example: [ns|name=attr]
@@ -125,10 +125,10 @@ interface CssEventHandler {
    * @param string $value
    *  The value of the attribute, if given.
    * @param int $operation
-   *  The operation to be used for matching. See {@link CssEventHandler}
+   *  The operation to be used for matching. See {@link EventHandler}
    *  constants for a list of supported operations.
    */
-  public function attributeNS($name, $ns, $value = NULL, $operation = CssEventHandler::isExactly);
+  public function attributeNS($name, $ns, $value = NULL, $operation = EventHandler::isExactly);
   /**
    * Handle a pseudo-class.
    * Example: :name(value)
