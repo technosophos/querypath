@@ -4,14 +4,13 @@
  *
  * Utility iterator for QueryPath.
  */
-
 namespace QueryPath;
 
 /**
  * An iterator for QueryPath.
  *
  * This provides iterator support for QueryPath. You do not need to construct
- * a QueryPathIterator. QueryPath does this when its {@link QueryPath::getIterator()}
+ * a QueryPathIterator. QueryPath does this when its QueryPath::getIterator()
  * method is called.
  *
  * @ingroup querypath_util
