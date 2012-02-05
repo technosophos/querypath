@@ -251,13 +251,13 @@ class QueryPath implements \IteratorAggregate, \Countable {
       }
       elseif ($document instanceof \SplObjectStorage) {
         if ($document->count() == 0) {
-          throw new QueryPathException('Cannot initialize QueryPath from an empty SplObjectStore');
+          throw new \QueryPath\Exception('Cannot initialize QueryPath from an empty SplObjectStore');
         }
         $this->matches = $document;
         $this->document = $this->getFirstMatch()->ownerDocument;
       }
       else {
-        throw new QueryPathException('Unsupported class type: ' . get_class($document));
+        throw new \QueryPath\Exception('Unsupported class type: ' . get_class($document));
       }
     }
     elseif (is_array($document)) {
@@ -930,7 +930,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
         }
         return TRUE;
       }
-      throw new QueryPathException('Cannot compare an object to a QueryPath.');
+      throw new \QueryPath\Exception('Cannot compare an object to a QueryPath.');
       return FALSE;
     }
 
@@ -1082,7 +1082,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
         if (call_user_func($callback, $i++, $item) !== FALSE) $found->attach($item);
     }
     else {
-      throw new QueryPathException('The specified callback is not callable.');
+      throw new \QueryPath\Exception('The specified callback is not callable.');
     }
     $this->setMatches($found);
     return $this;
@@ -1201,7 +1201,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
       }
     }
     else {
-      throw new QueryPathException('Callback is not callable.');
+      throw new \QueryPath\Exception('Callback is not callable.');
     }
     $this->setMatches($found, FALSE);
     return $this;
@@ -1271,7 +1271,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
       }
     }
     else {
-      throw new QueryPathException('Callback is not callable.');
+      throw new \QueryPath\Exception('Callback is not callable.');
     }
     return $this;
   }
@@ -1566,12 +1566,13 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * @code
    *   <root><content/></root>
    * @endcode
-   * This is the opposite of {@link wrap()}.
+   * This is the opposite of wrap().
    *
    * <b>The root element cannot be unwrapped.</b> It has no parents.
-   * If you attempt to use unwrap on a root element, this will throw a QueryPathException.
-   * (You can, however, "Unwrap" a child that is a direct descendant of the root element. This
-   * will remove the root element, and replace the child as the root element. Be careful, though.
+   * If you attempt to use unwrap on a root element, this will throw a
+   * QueryPath::Exception. (You can, however, "Unwrap" a child that is
+   * a direct descendant of the root element. This will remove the root
+   * element, and replace the child as the root element. Be careful, though.
    * You cannot set more than one child as a root element.)
    *
    * @return QueryPath
@@ -1593,7 +1594,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
 
       // Cannot unwrap the root element.
       if ($m->isSameNode($m->ownerDocument->documentElement)) {
-        throw new QueryPathException('Cannot unwrap the root element.');
+        throw new \QueryPath\Exception('Cannot unwrap the root element.');
       }
 
       // Move children to peer of parent.
@@ -1872,7 +1873,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
     }
     // What should we do here?
     //var_dump($item);
-    throw new QueryPathException("Cannot prepare item of unsupported type: " . gettype($item));
+    throw new \QueryPath\Exception("Cannot prepare item of unsupported type: " . gettype($item));
   }
   /**
    * The tag name of the first element in the list.
@@ -3889,7 +3890,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
   public function __call($name, $arguments) {
 
     if (!QueryPathExtensionRegistry::$useRegistry) {
-      throw new QueryPathException("No method named $name found (Extensions disabled).");
+      throw new \QueryPath\Exception("No method named $name found (Extensions disabled).");
     }
 
     // Loading of extensions is deferred until the first time a
@@ -3913,7 +3914,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
       $method = new \ReflectionMethod($owner, $name);
       return $method->invokeArgs($this->ext[$owner], $arguments);
     }
-    throw new QueryPathException("No method named $name found. Possibly missing an extension.");
+    throw new \QueryPath\Exception("No method named $name found. Possibly missing an extension.");
   }
 
   /**

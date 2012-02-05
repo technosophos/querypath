@@ -2,6 +2,7 @@
 /** @file
  * XML extensions. See QPXML.
  */
+namespace QueryPath\Extension;
 /**
  * Provide QueryPath with additional XML tools.
  *
@@ -13,7 +14,7 @@
  * @see QPXML
  * @ingroup querypath_extensions
  */
-class QPXML implements QueryPathExtension {
+class QPXML implements \QueryPath\Extension {
 
   protected $qp;
 
@@ -25,7 +26,7 @@ class QPXML implements QueryPathExtension {
     $doc = $this->qp->branch()->top()->get(0)->ownerDocument;
 
     if (!$doc->schemaValidate($file)) {
-      throw new QueryPathException('Document did not validate against the schema.');
+      throw new \QueryPath\Exception('Document did not validate against the schema.');
     }
   }
 
@@ -171,7 +172,7 @@ class QPXML implements QueryPathExtension {
           $nsUri = $element->ownerDocument->lookupNamespaceURI($ns);
 
           if ($nsUri === null) {
-            throw new QueryPathException("Undefined namespace for: " . $text);
+            throw new \QueryPath\Exception("Undefined namespace for: " . $text);
           }
       }
 
