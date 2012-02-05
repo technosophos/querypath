@@ -10,7 +10,7 @@ namespace QueryPath\CSS;
  *
  * @ingroup querypath_css
  */
-final class CssToken {
+final class Token {
   const char = 0;
   const star = 1;
   const rangle = 2;
