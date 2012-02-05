@@ -14,7 +14,7 @@ namespace QueryPath;
  *
  * @ingroup querypath_core
  */
-class QueryPathParseException extends \QueryPath\Exception {
+class ParseException extends \QueryPath\Exception {
   const ERR_MSG_FORMAT = 'Parse error in %s on line %d column %d: %s (%d)';
   const WARN_MSG_FORMAT = 'Parser warning in %s on line %d column %d: %s (%d)';
   // trigger_error

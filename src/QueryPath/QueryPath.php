@@ -1843,7 +1843,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
 
       $frag = $this->document->createDocumentFragment();
       try {
-        set_error_handler(array('QueryPathParseException', 'initializeFromError'), $this->errTypes);
+        set_error_handler(array('\QueryPath\ParseException', 'initializeFromError'), $this->errTypes);
         $frag->appendXML($item);
       }
       // Simulate a finally block.
@@ -3666,7 +3666,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
     $document = new \DOMDocument('1.0');
     $lead = strtolower(substr($string, 0, 5)); // <?xml
     try {
-      set_error_handler(array('QueryPathParseException', 'initializeFromError'), $this->errTypes);
+      set_error_handler(array('\QueryPath\ParseException', 'initializeFromError'), $this->errTypes);
 
       if (isset($this->options['convert_to_encoding'])) {
         // Is there another way to do this?
@@ -3718,7 +3718,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
     restore_error_handler();
 
     if (empty($document)) {
-      throw new QueryPathParseException('Unknown parser exception.');
+      throw new \QueryPath\ParseException('Unknown parser exception.');
     }
     return $document;
   }
@@ -3806,7 +3806,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
    *  parsing path is followed: The file is loaded by PHP's stream-aware IO
    *  facilities, read entirely into memory, and then handed off to
    *  {@link parseXMLString()}. On large files, this can have a performance impact.
-   * @throws QueryPathParseException
+   * @throws \QueryPath\ParseException
    *  Thrown when a file cannot be loaded or parsed.
    */
   private function parseXMLFile($filename, $flags = NULL, $context = NULL) {
@@ -3827,7 +3827,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
       restore_error_handler();
 
       if ($contents == FALSE) {
-        throw new QueryPathParseException(sprintf('Contents of the file %s could not be retrieved.', $filename));
+        throw new \QueryPath\ParseException(sprintf('Contents of the file %s could not be retrieved.', $filename));
       }
       return $this->parseXMLString($contents, $flags);
     }
