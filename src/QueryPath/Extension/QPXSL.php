@@ -10,7 +10,7 @@
  * @author M Butcher <matt@aleph-null.tv>
  * @license http://opensource.org/licenses/lgpl-2.1.php LGPL or MIT-like license.
  * @see QueryPathExtension
- * @see QueryPathExtensionRegistry::extend()
+ * @see QueryPath::ExtensionRegistry::extend()
  * @see QPXSL
  * @see QPXML
  */
@@ -72,4 +72,4 @@ class QPXSL implements QueryPathExtension {
     return qp($processor->transformToDoc($sourceDoc));
   }
 }
-QueryPathExtensionRegistry::extend('QPXSL');
+\QueryPath\ExtensionRegistry::extend('QPXSL');

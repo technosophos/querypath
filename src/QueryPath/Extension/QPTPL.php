@@ -25,7 +25,7 @@
  * @author M Butcher <matt@aleph-null.tv>
  * @license http://opensource.org/licenses/lgpl-2.1.php LGPL or MIT-like license.
  * @see QueryPathExtension
- * @see QueryPathExtensionRegistry::extend()
+ * @see QueryPath::ExtensionRegistry::extend()
  * @see https://fedorahosted.org/querypath/wiki/QueryPathTemplate
  * @ingroup querypath_extensions
  */
@@ -272,4 +272,4 @@ class QPTPL implements QueryPathExtension {
     return '.' . substr($mname, 3);
   }
 }
-QueryPathExtensionRegistry::extend('QPTPL');
+\QueryPath\ExtensionRegistry::extend('QPTPL');

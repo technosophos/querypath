@@ -103,7 +103,7 @@
  * @author M Butcher <matt@aleph-null.tv>
  * @license http://opensource.org/licenses/lgpl-2.1.php LGPL or MIT-like license.
  * @see QueryPathExtension
- * @see QueryPathExtensionRegistry::extend()
+ * @see QueryPath::ExtensionRegistry::extend()
  * @see QPDB
  */
 
@@ -708,4 +708,4 @@ class QPDB implements QueryPathExtension {
 
 // The define allows another class to extend this.
 if (!defined('QPDB_OVERRIDE'))
-  QueryPathExtensionRegistry::extend('QPDB');
+  \QueryPath\ExtensionRegistry::extend('QPDB');

@@ -10,7 +10,7 @@ namespace QueryPath\Extension;
  * @author Xander Guzman <theshadow@shadowpedia.info>
  * @license http://opensource.org/licenses/lgpl-2.1.php LGPL or MIT-like license.
  * @see QueryPathExtension
- * @see QueryPathExtensionRegistry::extend()
+ * @see QueryPath::ExtensionRegistry::extend()
  * @see QPXML
  * @ingroup querypath_extensions
  */
@@ -207,4 +207,4 @@ class QPXML implements \QueryPath\Extension {
     return $this->qp;
   }
 }
-QueryPathExtensionRegistry::extend('QPXML');
+\QueryPath\ExtensionRegistry::extend('QPXML');

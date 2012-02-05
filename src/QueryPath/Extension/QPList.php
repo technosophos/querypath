@@ -134,7 +134,7 @@ class QPList implements QueryPathExtension {
     return count(array_diff_key($array, range(0, count($array) - 1))) != 0;
   }
 }
-QueryPathExtensionRegistry::extend('QPList');
+\QueryPath\ExtensionRegistry::extend('QPList');
 
 /**
  * A TableAble object represents tabular data and can be converted to a table.

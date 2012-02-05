@@ -3889,7 +3889,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
    */
   public function __call($name, $arguments) {
 
-    if (!QueryPathExtensionRegistry::$useRegistry) {
+    if (!ExtensionRegistry::$useRegistry) {
       throw new \QueryPath\Exception("No method named $name found (Extensions disabled).");
     }
 
@@ -3905,12 +3905,12 @@ class QueryPath implements \IteratorAggregate, \Countable {
     // Also, this will at least limit the number of circular references.
     if (empty($this->ext)) {
       // Load the registry
-      $this->ext = QueryPathExtensionRegistry::getExtensions($this);
+      $this->ext = ExtensionRegistry::getExtensions($this);
     }
 
     // Note that an empty ext registry indicates that extensions are disabled.
-    if (!empty($this->ext) && QueryPathExtensionRegistry::hasMethod($name)) {
-      $owner = QueryPathExtensionRegistry::getMethodClass($name);
+    if (!empty($this->ext) && ExtensionRegistry::hasMethod($name)) {
+      $owner = ExtensionRegistry::getMethodClass($name);
       $method = new \ReflectionMethod($owner, $name);
       return $method->invokeArgs($this->ext[$owner], $arguments);
     }
