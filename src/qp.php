@@ -24,17 +24,26 @@
 // autoloader is used.
 if (!class_exists('\QueryPath\QueryPath')) {
   define('QP_NO_AUTOLOADER', TRUE);
-  $srcdir = array(__DIR__ . '/QueryPath/', __DIR__ . '/QueryPath/CSS/');
 
-  foreach ($srcdir as $dir) {
-    $h = opendir($dir);
-    while ($f = readdir($h)) {
-      if (strrpos($f, '.php') > 0) {
-        print "Including $f" . PHP_EOL;
-        require_once $dir . $f;
-      }
-    }
-  }
+  // This is all (and only) the required classes for QueryPath.
+  // Extensions are not loaded automatically.
+  require __DIR__ . '/QueryPath/Exception.php';
+  require __DIR__ . '/QueryPath/ParseException.php';
+  require __DIR__ . '/QueryPath/IOException.php';
+  require __DIR__ . '/QueryPath/CSS/ParseException.php';
+  require __DIR__ . '/QueryPath/CSS/NotImplementedException.php';
+  require __DIR__ . '/QueryPath/CSS/EventHandler.php';
+  require __DIR__ . '/QueryPath/CSS/Token.php';
+  require __DIR__ . '/QueryPath/CSS/InputStream.php';
+  require __DIR__ . '/QueryPath/CSS/Scanner.php';
+  require __DIR__ . '/QueryPath/CSS/Parser.php';
+  require __DIR__ . '/QueryPath/CSS/QueryPathEventHandler.php';
+  require __DIR__ . '/QueryPath/Entities.php';
+  require __DIR__ . '/QueryPath/Extension.php';
+  require __DIR__ . '/QueryPath/ExtensionRegistry.php';
+  require __DIR__ . '/QueryPath/Options.php';
+  require __DIR__ . '/QueryPath/QueryPathIterator.php';
+  require __DIR__ . '/QueryPath/QueryPath.php';
 }
 /** @addtogroup querypath_core Core API
  * Core classes and functions for QueryPath.
