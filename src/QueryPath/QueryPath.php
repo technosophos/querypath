@@ -1838,7 +1838,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
     elseif (is_string($item)) {
       // If configured to do so, replace all entities.
       if ($this->options['replace_entities']) {
-        $item = QueryPathEntities::replaceAllEntities($item);
+        $item = \QueryPath\Entities::replaceAllEntities($item);
       }
 
       $frag = $this->document->createDocumentFragment();
@@ -2314,7 +2314,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
     if (isset($markup)) {
 
       if ($this->options['replace_entities']) {
-        $markup = QueryPathEntities::replaceAllEntities($markup);
+        $markup = \QueryPath\Entities::replaceAllEntities($markup);
       }
 
       // Parse the HTML and insert it into the DOM
@@ -2724,7 +2724,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
     }
     elseif (isset($markup)) {
       if ($this->options['replace_entities']) {
-        $markup = QueryPathEntities::replaceAllEntities($markup);
+        $markup = \QueryPath\Entities::replaceAllEntities($markup);
       }
       $doc = $this->document->createDocumentFragment();
       $doc->appendXML($markup);
@@ -3701,7 +3701,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
       // Parse as XML if it looks like XML, or if XML parser is requested.
       elseif ($lead == '<?xml' || $useParser == 'xml') {
         if ($this->options['replace_entities']) {
-          $string = QueryPathEntities::replaceAllEntities($string);
+          $string = \QueryPath\Entities::replaceAllEntities($string);
         }
         $document->loadXML($string, $flags);
       }

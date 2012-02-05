@@ -11,7 +11,7 @@ namespace QueryPath;
  *
  * @ingroup querypath_util
  */
-class QueryPathEntities {
+class Entities {
 
   /**
    * This is three regexes wrapped into 1. The | divides them.
@@ -39,7 +39,7 @@ class QueryPathEntities {
    *  all entity replacements made.
    */
   public static function replaceAllEntities($string) {
-    return preg_replace_callback(self::$regex, 'QueryPathEntities::doReplacement', $string);
+    return preg_replace_callback(self::$regex, '\QueryPath\Entities::doReplacement', $string);
   }
 
   /**
