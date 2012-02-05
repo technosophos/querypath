@@ -23,9 +23,8 @@
 // This is sort of a last ditch attempt to load QueryPath if no
 // autoloader is used.
 if (!class_exists('\QueryPath\QueryPath')) {
-  $basedir = __DIR__;
-
-  $srcdir = array($basedir . '/QueryPath/', $basedir . '/QueryPath/CSS/');
+  define('QP_NO_AUTOLOADER', TRUE);
+  $srcdir = array(__DIR__ . '/QueryPath/', __DIR__ . '/QueryPath/CSS/');
 
   foreach ($srcdir as $dir) {
     $h = opendir($dir);
@@ -36,7 +35,6 @@ if (!class_exists('\QueryPath\QueryPath')) {
       }
     }
   }
-
 }
 /** @addtogroup querypath_core Core API
  * Core classes and functions for QueryPath.
