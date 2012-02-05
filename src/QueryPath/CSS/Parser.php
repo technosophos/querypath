@@ -37,7 +37,7 @@ class Parser {
   public function __construct($string, EventHandler $handler) {
     $this->originalString = $string;
     $is = new InputStream($string);
-    $this->scanner = new CssScanner($is);
+    $this->scanner = new Scanner($is);
     $this->handler = $handler;
   }
 
@@ -114,7 +114,7 @@ class Parser {
   private function consumeWhitespace() {
     if ($this->DEBUG) print "CONSUME WHITESPACE\n";
     $white = 0;
-    while ($this->scanner->token == CssToken::white) {
+    while ($this->scanner->token == Token::white) {
       $this->scanner->nextToken();
       ++$white;
     }
@@ -143,25 +143,25 @@ class Parser {
     $white = $this->consumeWhitespace();
     $t = $this->scanner->token;
 
-    if ($t == CssToken::rangle) {
+    if ($t == Token::rangle) {
       $this->handler->directDescendant();
       $this->scanner->nextToken();
       $inCombinator = TRUE;
       //$this->simpleSelectors();
     }
-    elseif ($t == CssToken::plus) {
+    elseif ($t == Token::plus) {
       $this->handler->adjacent();
       $this->scanner->nextToken();
       $inCombinator = TRUE;
       //$this->simpleSelectors();
     }
-    elseif ($t == CssToken::comma) {
+    elseif ($t == Token::comma) {
       $this->handler->anotherSelector();
       $this->scanner->nextToken();
       $inCombinator = TRUE;
       //$this->scanner->selectors();
     }
-    elseif ($t == CssToken::tilde) {
+    elseif ($t == Token::tilde) {
       $this->handler->sibling();
       $this->scanner->nextToken();
       $inCombinator = TRUE;
@@ -170,7 +170,7 @@ class Parser {
     // Check that we don't get two combinators in a row.
     if ($inCombinator) {
       $white = 0;
-      if ($this->DEBUG) print "COMBINATOR: " . CssToken::name($t) . "\n";
+      if ($this->DEBUG) print "COMBINATOR: " . Token::name($t) . "\n";
       $this->consumeWhitespace();
       if ($this->isCombinator($this->scanner->token)) {
         throw new CssParseException("Illegal combinator: Cannot have two combinators in sequence.");
@@ -191,7 +191,7 @@ class Parser {
    * Check if the token is a combinator.
    */
   private function isCombinator($tok) {
-    $combinators = array(CssToken::plus, CssToken::rangle, CssToken::comma, CssToken::tilde);
+    $combinators = array(Token::plus, Token::rangle, Token::comma, Token::tilde);
     return in_array($tok, $combinators);
   }
 
@@ -214,9 +214,9 @@ class Parser {
    */
   private function elementID() {
     if ($this->DEBUG) print "ELEMENT ID\n";
-    if ($this->scanner->token == CssToken::octo) {
+    if ($this->scanner->token == Token::octo) {
       $this->scanner->nextToken();
-      if ($this->scanner->token !== CssToken::char) {
+      if ($this->scanner->token !== Token::char) {
         throw new CssParseException("Expected string after #");
       }
       $id = $this->scanner->getNameString();
@@ -230,7 +230,7 @@ class Parser {
    */
   private function elementClass() {
     if ($this->DEBUG) print "ELEMENT CLASS\n";
-    if ($this->scanner->token == CssToken::dot) {
+    if ($this->scanner->token == Token::dot) {
       $this->scanner->nextToken();
       $this->consumeWhitespace(); // We're very fault tolerent. This should prob through error.
       $cssClass = $this->scanner->getNameString();
@@ -250,11 +250,11 @@ class Parser {
    */
   private function pseudoClass($restricted = FALSE) {
     if ($this->DEBUG) print "PSEUDO-CLASS\n";
-    if ($this->scanner->token == CssToken::colon) {
+    if ($this->scanner->token == Token::colon) {
 
       // Check for CSS 3 pseudo element:
       $isPseudoElement = FALSE;
-      if ($this->scanner->nextToken() === CssToken::colon) {
+      if ($this->scanner->nextToken() === Token::colon) {
         $isPseudoElement = TRUE;
         $this->scanner->nextToken();
       }
@@ -265,7 +265,7 @@ class Parser {
       }
 
       $value = NULL;
-      if ($this->scanner->token == CssToken::lparen) {
+      if ($this->scanner->token == Token::lparen) {
         if ($isPseudoElement) {
           throw new CssParseException("Illegal left paren. Pseudo-Element cannot have arguments.");
         }
@@ -283,7 +283,7 @@ class Parser {
         // Per the spec, pseudo-elements must be the last items in a selector, so we
         // check to make sure that we are either at the end of the stream or that a
         // new selector is starting. Only one pseudo-element is allowed per selector.
-        if ($this->scanner->token !== FALSE && $this->scanner->token !== CssToken::comma) {
+        if ($this->scanner->token !== FALSE && $this->scanner->token !== Token::comma) {
           throw new CssParseException("A Pseudo-Element must be the last item in a selector.");
         }
       }
@@ -304,7 +304,7 @@ class Parser {
    *  is legal.
    */
   private function pseudoClassValue() {
-    if ($this->scanner->token == CssToken::lparen) {
+    if ($this->scanner->token == Token::lparen) {
       $buf = '';
 
       // For now, just leave pseudoClass value vague.
@@ -317,11 +317,11 @@ class Parser {
         $this->scanner->nextToken();
 
         // Pseudo class
-        if ($this->scanner->token == CssToken::colon) {
+        if ($this->scanner->token == Token::colon) {
           $buf .= ':';
           $this->scanner->nextToken();
           // Pseudo element
-          if ($this->scanner->token == CssToken::colon) {
+          if ($this->scanner->token == Token::colon) {
             $buf .= ':';
             $this->scanner->nextToken();
           }
@@ -332,8 +332,8 @@ class Parser {
       else {
         print "fetching string.\n";
         $buf .= $this->scanner->getQuotedString();
-        if ($this->scanner->token != CssToken::rparen) {
-          $this->throwError(CssToken::rparen, $this->scanner->token);
+        if ($this->scanner->token != Token::rparen) {
+          $this->throwError(Token::rparen, $this->scanner->token);
         }
         $this->scanner->nextToken();
       }
@@ -358,27 +358,27 @@ class Parser {
    */
   private function elementName() {
     if ($this->DEBUG) print "ELEMENT NAME\n";
-    if ($this->scanner->token === CssToken::pipe) {
+    if ($this->scanner->token === Token::pipe) {
       // We have '|name', which is equiv to 'name'
       $this->scanner->nextToken();
       $this->consumeWhitespace();
       $elementName =  $this->scanner->getNameString();
       $this->handler->element($elementName);
     }
-    elseif ($this->scanner->token === CssToken::char) {
+    elseif ($this->scanner->token === Token::char) {
       $elementName =  $this->scanner->getNameString();
-      if ($this->scanner->token == CssToken::pipe) {
+      if ($this->scanner->token == Token::pipe) {
         // Get ns|name
         $elementNS = $elementName;
         $this->scanner->nextToken();
         $this->consumeWhitespace();
-        if ($this->scanner->token === CssToken::star) {
+        if ($this->scanner->token === Token::star) {
           // We have ns|*
           $this->handler->anyElementInNS($elementNS);
           $this->scanner->nextToken();
         }
-        elseif ($this->scanner->token !== CssToken::char) {
-          $this->throwError(CssToken::char, $this->scanner->token);
+        elseif ($this->scanner->token !== Token::char) {
+          $this->throwError(Token::char, $this->scanner->token);
         }
         else {
           $elementName = $this->scanner->getNameString();
@@ -401,11 +401,11 @@ class Parser {
    * Calls EventHandler::anyElement() or EventHandler::elementName().
    */
   private function allElements() {
-    if ($this->scanner->token === CssToken::star) {
+    if ($this->scanner->token === Token::star) {
       $this->scanner->nextToken();
-      if ($this->scanner->token === CssToken::pipe) {
+      if ($this->scanner->token === Token::pipe) {
         $this->scanner->nextToken();
-        if ($this->scanner->token === CssToken::star) {
+        if ($this->scanner->token === Token::star) {
           // We got *|*. According to spec, this requires
           // that the element has a namespace, so we pass it on
           // to the handler:
@@ -435,13 +435,13 @@ class Parser {
    * This may call the following event handlers: EventHandler::attribute().
    */
   private function attribute() {
-    if($this->scanner->token == CssToken::lsquare) {
+    if($this->scanner->token == Token::lsquare) {
       $attrVal = $op = $ns = NULL;
 
       $this->scanner->nextToken();
       $this->consumeWhitespace();
 
-      if ($this->scanner->token === CssToken::at) {
+      if ($this->scanner->token === Token::at) {
         if ($this->strict) {
           throw new CssParseException('The @ is illegal in attributes.');
         }
@@ -451,13 +451,13 @@ class Parser {
         }
       }
 
-      if ($this->scanner->token === CssToken::star) {
+      if ($this->scanner->token === Token::star) {
         // Global namespace... requires that attr be prefixed,
         // so we pass this on to a namespace handler.
         $ns = '*';
         $this->scanner->nextToken();
       }
-      if ($this->scanner->token === CssToken::pipe) {
+      if ($this->scanner->token === Token::pipe) {
         // Skip this. It's a global namespace.
         $this->scanner->nextToken();
         $this->consumeWhitespace();
@@ -468,7 +468,7 @@ class Parser {
 
       // Check for namespace attribute: ns|attr. We have to peek() to make
       // sure that we haven't hit the |= operator, which looks the same.
-      if ($this->scanner->token === CssToken::pipe && $this->scanner->peek() !== '=') {
+      if ($this->scanner->token === Token::pipe && $this->scanner->peek() !== '=') {
         // We have a namespaced attribute.
         $ns = $attrName;
         $this->scanner->nextToken();
@@ -481,37 +481,37 @@ class Parser {
 
       // Get the operator:
       switch ($this->scanner->token) {
-        case CssToken::eq:
+        case Token::eq:
           $this->consumeWhitespace();
           $op = EventHandler::isExactly;
           break;
-        case CssToken::tilde:
-          if ($this->scanner->nextToken() !== CssToken::eq) {
-            $this->throwError(CssToken::eq, $this->scanner->token);
+        case Token::tilde:
+          if ($this->scanner->nextToken() !== Token::eq) {
+            $this->throwError(Token::eq, $this->scanner->token);
           }
           $op = EventHandler::containsWithSpace;
           break;
-        case CssToken::pipe:
-          if ($this->scanner->nextToken() !== CssToken::eq) {
-            $this->throwError(CssToken::eq, $this->scanner->token);
+        case Token::pipe:
+          if ($this->scanner->nextToken() !== Token::eq) {
+            $this->throwError(Token::eq, $this->scanner->token);
           }
           $op = EventHandler::containsWithHyphen;
           break;
-        case CssToken::star:
-          if ($this->scanner->nextToken() !== CssToken::eq) {
-            $this->throwError(CssToken::eq, $this->scanner->token);
+        case Token::star:
+          if ($this->scanner->nextToken() !== Token::eq) {
+            $this->throwError(Token::eq, $this->scanner->token);
           }
           $op = EventHandler::containsInString;
           break;
-        case CssToken::dollar;
-          if ($this->scanner->nextToken() !== CssToken::eq) {
-            $this->throwError(CssToken::eq, $this->scanner->token);
+        case Token::dollar;
+          if ($this->scanner->nextToken() !== Token::eq) {
+            $this->throwError(Token::eq, $this->scanner->token);
           }
           $op = EventHandler::endsWith;
           break;
-        case CssToken::carat:
-          if ($this->scanner->nextToken() !== CssToken::eq) {
-            $this->throwError(CssToken::eq, $this->scanner->token);
+        case Token::carat:
+          if ($this->scanner->nextToken() !== Token::eq) {
+            $this->throwError(Token::eq, $this->scanner->token);
           }
           $op = EventHandler::beginsWith;
           break;
@@ -531,7 +531,7 @@ class Parser {
         // that bare words follow the NAME rules, while quoted strings follow
         // the String1/String2 rules.
 
-        if ($this->scanner->token === CssToken::quote || $this->scanner->token === CssToken::squote) {
+        if ($this->scanner->token === Token::quote || $this->scanner->token === Token::squote) {
           $attrVal = $this->scanner->getQuotedString();
         }
         else {
@@ -545,8 +545,8 @@ class Parser {
 
       $this->consumeWhitespace();
 
-      if ($this->scanner->token != CssToken::rsquare) {
-        $this->throwError(CssToken::rsquare, $this->scanner->token);
+      if ($this->scanner->token != Token::rsquare) {
+        $this->throwError(Token::rsquare, $this->scanner->token);
       }
 
       if (isset($ns)) {
@@ -566,266 +566,9 @@ class Parser {
    * Utility for throwing a consistantly-formatted parse error.
    */
   private function throwError($expected, $got) {
-    $filter = sprintf('Expected %s, got %s', CssToken::name($expected), CssToken::name($got));
+    $filter = sprintf('Expected %s, got %s', Token::name($expected), Token::name($got));
     throw new CssParseException($filter);
   }
 
 }
 
-/**
- * Scanner for CSS selector parsing.
- *
- * This provides a simple scanner for traversing an input stream.
- *
- * @ingroup querypath_css
- */
-final class CssScanner {
-  var $is = NULL;
-  public $value = NULL;
-  public $token = NULL;
-
-  var $recurse = FALSE;
-  var $it = 0;
-
-  /**
-   * Given a new input stream, tokenize the CSS selector string.
-   * @see InputStream
-   * @param InputStream $in
-   *  An input stream to be scanned.
-   */
-  public function __construct(InputStream $in) {
-    $this->is = $in;
-  }
-
-  /**
-   * Return the position of the reader in the string.
-   */
-  public function position() {
-    return $this->is->position;
-  }
-
-  /**
-   * See the next char without removing it from the stack.
-   *
-   * @return char
-   *  Returns the next character on the stack.
-   */
-  public function peek() {
-    return $this->is->peek();
-  }
-
-  /**
-   * Get the next token in the input stream.
-   *
-   * This sets the current token to the value of the next token in
-   * the stream.
-   *
-   * @return int
-   *  Returns an int value corresponding to one of the CssToken constants,
-   *  or FALSE if the end of the string is reached. (Remember to use
-   *  strong equality checking on FALSE, since 0 is a valid token id.)
-   */
-  public function nextToken() {
-    $tok = -1;
-    ++$this->it;
-    if ($this->is->isEmpty()) {
-      if ($this->recurse) {
-        throw new Exception("Recursion error detected at iteration " . $this->it . '.');
-        exit();
-      }
-      //print "{$this->it}: All done\n";
-      $this->recurse = TRUE;
-      $this->token = FALSE;
-      return FALSE;
-    }
-    $ch = $this->is->consume();
-    //print __FUNCTION__ . " Testing $ch.\n";
-    if (ctype_space($ch)) {
-      $this->value = ' '; // Collapse all WS to a space.
-      $this->token = $tok = CssToken::white;
-      //$ch = $this->is->consume();
-      return $tok;
-    }
-
-    if (ctype_alnum($ch) || $ch == '-' || $ch == '_') {
-      // It's a character
-      $this->value = $ch; //strtolower($ch);
-      $this->token = $tok = CssToken::char;
-      return $tok;
-    }
-
-    $this->value = $ch;
-
-    switch($ch) {
-      case '*':
-        $tok = CssToken::star;
-        break;
-      case chr(ord('>')):
-        $tok = CssToken::rangle;
-        break;
-      case '.':
-        $tok = CssToken::dot;
-        break;
-      case '#':
-        $tok = CssToken::octo;
-        break;
-      case '[':
-        $tok = CssToken::lsquare;
-        break;
-      case ']':
-        $tok = CssToken::rsquare;
-        break;
-      case ':':
-        $tok = CssToken::colon;
-        break;
-      case '(':
-        $tok = CssToken::lparen;
-        break;
-      case ')':
-        $tok = CssToken::rparen;
-        break;
-      case '+':
-        $tok = CssToken::plus;
-        break;
-      case '~':
-        $tok = CssToken::tilde;
-        break;
-      case '=':
-        $tok = CssToken::eq;
-        break;
-      case '|':
-        $tok = CssToken::pipe;
-        break;
-      case ',':
-        $tok = CssToken::comma;
-        break;
-      case chr(34):
-        $tok = CssToken::quote;
-        break;
-      case "'":
-        $tok = CssToken::squote;
-        break;
-      case '\\':
-        $tok = CssToken::bslash;
-        break;
-      case '^':
-        $tok = CssToken::carat;
-        break;
-      case '$':
-        $tok = CssToken::dollar;
-        break;
-      case '@':
-        $tok = CssToken::at;
-        break;
-    }
-
-
-    // Catch all characters that are legal within strings.
-    if ($tok == -1) {
-      // TODO: This should be UTF-8 compatible, but PHP doesn't
-      // have a native UTF-8 string. Should we use external
-      // mbstring library?
-
-      $ord = ord($ch);
-      // Characters in this pool are legal for use inside of
-      // certain strings. Extended ASCII is used here, though I
-      // Don't know if these are really legal.
-      if (($ord >= 32 && $ord <= 126) || ($ord >= 128 && $ord <= 255)) {
-        $tok = CssToken::stringLegal;
-      }
-      else {
-        throw new CSSParseException('Illegal character found in stream: ' . $ord);
-      }
-    }
-
-    $this->token = $tok;
-    return $tok;
-  }
-
-  /**
-   * Get a name string from the input stream.
-   * A name string must be composed of
-   * only characters defined in CssToken:char: -_a-zA-Z0-9
-   */
-  public function getNameString() {
-    $buf = '';
-    while ($this->token === CssToken::char) {
-      $buf .= $this->value;
-      $this->nextToken();
-      //print '_';
-    }
-    return $buf;
-  }
-
-  /**
-   * This gets a string with any legal 'string' characters.
-   * See CSS Selectors specification, section 11, for the
-   * definition of string.
-   *
-   * This will check for string1, string2, and the case where a
-   * string is unquoted (Oddly absent from the "official" grammar,
-   * though such strings are present as examples in the spec.)
-   *
-   * Note:
-   * Though the grammar supplied by CSS 3 Selectors section 11 does not
-   * address the contents of a pseudo-class value, the spec itself indicates
-   * that a pseudo-class value is a "value between parenthesis" [6.6]. The
-   * examples given use URLs among other things, making them closer to the
-   * definition of 'string' than to 'name'. So we handle them here as strings.
-   */
-  public function getQuotedString() {
-    if ($this->token == CssToken::quote || $this->token == CssToken::squote || $this->token == CssToken::lparen) {
-      $end = ($this->token == CssToken::lparen) ? CssToken::rparen : $this->token;
-      $buf = '';
-      $escape = FALSE;
-
-      $this->nextToken(); // Skip the opening quote/paren
-
-      // The second conjunct is probably not necessary.
-      while ($this->token !== FALSE && $this->token > -1) {
-        //print "Char: $this->value \n";
-        if ($this->token == CssToken::bslash && !$escape) {
-          // XXX: The backslash (\) is removed here.
-          // Turn on escaping.
-          //$buf .= $this->value;
-          $escape = TRUE;
-        }
-        elseif ($escape) {
-          // Turn off escaping
-          $buf .= $this->value;
-          $escape = FALSE;
-        }
-        elseif ($this->token === $end) {
-          // At end of string; skip token and break.
-          $this->nextToken();
-          break;
-        }
-        else {
-          // Append char.
-          $buf .= $this->value;
-        }
-        $this->nextToken();
-      }
-      return $buf;
-    }
-  }
-
-  /**
-   * Get a string from the input stream.
-   * This is a convenience function for getting a string of
-   * characters that are either alphanumber or whitespace. See
-   * the CssToken::white and CssToken::char definitions.
-   *
-   * @deprecated This is not used anywhere in QueryPath.
-   *//*
-  public function getStringPlusWhitespace() {
-    $buf = '';
-    if($this->token === FALSE) {return '';}
-    while ($this->token === CssToken::char || $this->token == CssToken::white) {
-      $buf .= $this->value;
-      $this->nextToken();
-    }
-    return $buf;
-  }*/
-
-}
