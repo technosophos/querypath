@@ -12,7 +12,7 @@ namespace QueryPath\CSS;
  * This provides a standard interface on top of an array of
  * characters.
  */
-class CssInputStream {
+class InputStream {
   protected $stream = NULL;
   public $position = 0;
   /**

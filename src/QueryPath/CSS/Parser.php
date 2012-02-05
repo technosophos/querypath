@@ -36,7 +36,7 @@ class Parser {
    */
   public function __construct($string, EventHandler $handler) {
     $this->originalString = $string;
-    $is = new CssInputStream($string);
+    $is = new InputStream($string);
     $this->scanner = new CssScanner($is);
     $this->handler = $handler;
   }
@@ -589,11 +589,11 @@ final class CssScanner {
 
   /**
    * Given a new input stream, tokenize the CSS selector string.
-   * @see CssInputStream
-   * @param CssInputStream $in
+   * @see InputStream
+   * @param InputStream $in
    *  An input stream to be scanned.
    */
-  public function __construct(CssInputStream $in) {
+  public function __construct(InputStream $in) {
     $this->is = $in;
   }
 
