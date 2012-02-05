@@ -4,9 +4,7 @@
  *
  * QueryPath functions.
  *
- * This file holds the QueryPath functions, qp() and htmlqp(). It also
- * statically includes the QueryPath library (without relying upon an
- * autoloader).
+ * This file holds the QueryPath functions, qp() and htmlqp().
  *
  * Usage:
  *
@@ -18,10 +16,28 @@
  * ?>
  * @endcode
  *
- * While using this library is not required, it is the only way to
- * access the qp()/htmlqp() functions which, since they are not classed,
- * cannot be loaded by an autoloader.
+ * If no autoloader is currently operating, this will attempt to
+ * require the entire QueryPath library.
  */
+
+// This is sort of a last ditch attempt to load QueryPath if no
+// autoloader is used.
+if (!class_exists('\QueryPath\QueryPath')) {
+  $basedir = __DIR__;
+
+  $srcdir = array($basedir . '/QueryPath/', $basedir . '/QueryPath/CSS/');
+
+  foreach ($srcdir as $dir) {
+    $h = opendir($dir);
+    while ($f = readdir($h)) {
+      if (strrpos($f, '.php') > 0) {
+        print "Including $f" . PHP_EOL;
+        require_once $dir . $f;
+      }
+    }
+  }
+
+}
 /** @addtogroup querypath_core Core API
  * Core classes and functions for QueryPath.
  *
