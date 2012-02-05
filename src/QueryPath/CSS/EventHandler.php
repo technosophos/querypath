@@ -24,11 +24,8 @@ namespace QueryPath\CSS;
  * This parser is modular and is not tied to QueryPath, so you can use it in your
  * own (non-QueryPath) projects if you wish. To dive in, start with EventHandler, the
  * event interface that works like a SAX API for CSS selectors. If you want to check out
- * the details, check out the parser (CssParser),  scanner (CssScanner), and token list (CssToken).
+ * the details, check out the parser (QueryPath::CSS::Parser),  scanner (CssScanner), and token list (CssToken).
  */
-
-require_once 'EventHandler.php';
-
 
 /**
  * An event handler for handling CSS 3 Selector parsing.

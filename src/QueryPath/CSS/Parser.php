@@ -21,7 +21,7 @@ namespace QueryPath\CSS;
  *
  * @ingroup querypath_css
  */
-class CssParser {
+class Parser {
   protected $scanner = NULL;
   protected $buffer = '';
   protected $handler = NULL;

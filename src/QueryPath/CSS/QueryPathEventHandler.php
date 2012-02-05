@@ -52,8 +52,8 @@ namespace QueryPath\CSS;
  * To use this handler:
  * @code
  * $filter = '#id'; // Some CSS selector
- * $handler = new QueryPathCssParser(DOMNode $dom);
- * $parser = new CssParser();
+ * $handler = new QueryPathEventHandler(DOMNode $dom);
+ * $parser = new Parser();
  * $parser->parse($filter, $handler);
  * $matches = $handler->getMatches();
  * @endcode
@@ -136,7 +136,7 @@ class QueryPathEventHandler implements EventHandler {
    *  Returns itself.
    */
   public function find($filter) {
-    $parser = new CssParser($filter, $this);
+    $parser = new Parser($filter, $this);
     $parser->parse();
     return $this;
   }
