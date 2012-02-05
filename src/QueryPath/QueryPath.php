@@ -1316,7 +1316,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
    *  The QueryPath object.
    * @see appendTo()
    * @see prepend()
-   * @throws QueryPathException
+   * @throws QueryPath::Exception
    *  Thrown if $data is an unsupported object type.
    */
   public function append($data) {
@@ -1365,7 +1365,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
    *  be modified.
    * @see append()
    * @see prependTo()
-   * @throws QueryPathException
+   * @throws QueryPath::Exception
    *  Thrown if $data is an unsupported object type.
    */
   public function appendTo(QueryPath $dest) {
@@ -1384,7 +1384,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * @see before()
    * @see after()
    * @see prependTo()
-   * @throws QueryPathException
+   * @throws QueryPath::Exception
    *  Thrown if $data is an unsupported object type.
    */
   public function prepend($data) {
@@ -1416,7 +1416,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
    *  The destination QueryPath object.
    * @return QueryPath
    *  The original QueryPath, unmodified. NOT the destination QueryPath.
-   * @throws QueryPathException
+   * @throws QueryPath::Exception
    *  Thrown if $data is an unsupported object type.
    */
   public function prependTo(QueryPath $dest) {
@@ -1440,7 +1440,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * @see after()
    * @see append()
    * @see prepend()
-   * @throws QueryPathException
+   * @throws QueryPath::Exception
    *  Thrown if $data is an unsupported object type.
    */
   public function before($data) {
@@ -1465,7 +1465,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * @see before()
    * @see insertAfter()
    * @see appendTo()
-   * @throws QueryPathException
+   * @throws QueryPath::Exception
    *  Thrown if $data is an unsupported object type.
    */
   public function insertBefore(QueryPath $dest) {
@@ -1483,7 +1483,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * @see after()
    * @see insertBefore()
    * @see append()
-   * @throws QueryPathException
+   * @throws QueryPath::Exception
    *  Thrown if $data is an unsupported object type.
    */
   public function insertAfter(QueryPath $dest) {
@@ -1503,7 +1503,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
    *  The QueryPath object (with the items inserted).
    * @see before()
    * @see append()
-   * @throws QueryPathException
+   * @throws QueryPath::Exception
    *  Thrown if $data is an unsupported object type.
    */
   public function after($data) {
@@ -1576,7 +1576,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
    *
    * @return QueryPath
    *  The QueryPath object, with the same element(s) selected.
-   * @throws QueryPathException
+   * @throws QueryPath::Exception
    *  An exception is thrown if one attempts to unwrap a root element.
    * @see wrap()
    * @since 2.1
@@ -1827,7 +1827,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
    *  Item to prepare for insert.
    * @return mixed
    *  Returns the prepared item.
-   * @throws QueryPathException
+   * @throws QueryPath::Exception
    *  Thrown if the object passed in is not of a supprted object type.
    */
   protected function prepareInsert($item) {
@@ -3883,7 +3883,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * registered extenstensions for a matching function name. If one is found,
    * it is executed with the arguments in the $arguments array.
    *
-   * @throws QueryPathException
+   * @throws QueryPath::Exception
    *  An exception is thrown if a non-existent method is called.
    */
   public function __call($name, $arguments) {
