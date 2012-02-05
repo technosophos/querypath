@@ -492,7 +492,7 @@ class QueryPathEventHandler implements EventHandler {
         break;
       case 'not':
         if (empty($value)) {
-          throw new CssParseException(":not() requires a value.");
+          throw new ParseException(":not() requires a value.");
         }
         $this->not($value);
         break;
@@ -579,7 +579,7 @@ class QueryPathEventHandler implements EventHandler {
         $this->matches = $found;
         break;
       default:
-        throw new CssParseException("Unknown Pseudo-Class: " . $name);
+        throw new ParseException("Unknown Pseudo-Class: " . $name);
     }
     $this->findAnyElement = FALSE;
   }
@@ -677,7 +677,7 @@ class QueryPathEventHandler implements EventHandler {
    *  Some rule in the an+b format.
    * @return
    *  Array (list($aVal, $bVal)) of the two values.
-   * @throws CssParseException
+   * @throws ParseException
    *  If the rule does not follow conventions.
    */
   protected function parseAnB($rule) {
@@ -696,7 +696,7 @@ class QueryPathEventHandler implements EventHandler {
 
     $rule = explode('n', $rule);
     if (count($rule) == 0) {
-      throw new CssParseException("nth-child value is invalid.");
+      throw new ParseException("nth-child value is invalid.");
     }
 
     // Each of these is legal: 1, -1, and -. '-' is shorthand for -1.

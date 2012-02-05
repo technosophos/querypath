@@ -47,7 +47,7 @@ class Parser {
    * This begins an event-based parsing process that will
    * fire events as the selector is handled. A EventHandler
    * implementation will be responsible for handling the events.
-   * @throws CssParseException
+   * @throws ParseException
    */
   public function parse() {
 
@@ -68,7 +68,7 @@ class Parser {
         // off of the input stream during a full run of the parser, which
         // means that the current input does not match any recognizable
         // pattern.
-        throw new CssParseException('CSS selector is not well formed.');
+        throw new ParseException('CSS selector is not well formed.');
       }
 
     }
@@ -173,7 +173,7 @@ class Parser {
       if ($this->DEBUG) print "COMBINATOR: " . Token::name($t) . "\n";
       $this->consumeWhitespace();
       if ($this->isCombinator($this->scanner->token)) {
-        throw new CssParseException("Illegal combinator: Cannot have two combinators in sequence.");
+        throw new ParseException("Illegal combinator: Cannot have two combinators in sequence.");
       }
     }
     // Check to see if we have whitespace combinator:
@@ -217,7 +217,7 @@ class Parser {
     if ($this->scanner->token == Token::octo) {
       $this->scanner->nextToken();
       if ($this->scanner->token !== Token::char) {
-        throw new CssParseException("Expected string after #");
+        throw new ParseException("Expected string after #");
       }
       $id = $this->scanner->getNameString();
       $this->handler->elementID($id);
@@ -261,13 +261,13 @@ class Parser {
 
       $name = $this->scanner->getNameString();
       if ($restricted && $name == 'not') {
-        throw new CssParseException("The 'not' pseudo-class is illegal in this context.");
+        throw new ParseException("The 'not' pseudo-class is illegal in this context.");
       }
 
       $value = NULL;
       if ($this->scanner->token == Token::lparen) {
         if ($isPseudoElement) {
-          throw new CssParseException("Illegal left paren. Pseudo-Element cannot have arguments.");
+          throw new ParseException("Illegal left paren. Pseudo-Element cannot have arguments.");
         }
         $value = $this->pseudoClassValue();
       }
@@ -275,7 +275,7 @@ class Parser {
       // FIXME: This should throw errors when pseudo element has values.
       if ($isPseudoElement) {
         if ($restricted) {
-          throw new CssParseException("Pseudo-Elements are illegal in this context.");
+          throw new ParseException("Pseudo-Elements are illegal in this context.");
         }
         $this->handler->pseudoElement($name);
         $this->consumeWhitespace();
@@ -284,7 +284,7 @@ class Parser {
         // check to make sure that we are either at the end of the stream or that a
         // new selector is starting. Only one pseudo-element is allowed per selector.
         if ($this->scanner->token !== FALSE && $this->scanner->token !== Token::comma) {
-          throw new CssParseException("A Pseudo-Element must be the last item in a selector.");
+          throw new ParseException("A Pseudo-Element must be the last item in a selector.");
         }
       }
       else {
@@ -443,7 +443,7 @@ class Parser {
 
       if ($this->scanner->token === Token::at) {
         if ($this->strict) {
-          throw new CssParseException('The @ is illegal in attributes.');
+          throw new ParseException('The @ is illegal in attributes.');
         }
         else {
           $this->scanner->nextToken();
@@ -567,7 +567,7 @@ class Parser {
    */
   private function throwError($expected, $got) {
     $filter = sprintf('Expected %s, got %s', Token::name($expected), Token::name($got));
-    throw new CssParseException($filter);
+    throw new ParseException($filter);
   }
 
 }
