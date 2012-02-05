@@ -4,7 +4,6 @@
  *
  * Options management.
  */
-
 namespace QueryPath;
 
 
@@ -21,16 +20,15 @@ namespace QueryPath;
  * When a QueryPath object is created, it will evaluate options in the
  * following order:
  *
- * - Options passed into {@link qp()} have highest priority.
- * - Options in {@link QueryPathOptions} (this class) have the next highest priority.
+ * - Options passed into qp() have highest priority.
+ * - Options in QueryPath::Options (this class) have the next highest priority.
  * - If the option is not specified elsewhere, QueryPath will use its own defaults.
  *
  * @see qp()
- * @see QueryPathOptions::set()
+ * @see QueryPath::Options::set()
  * @ingroup querypath_util
  */
-class QueryPathOptions {
-
+class Options {
   /**
    * This is the static options array.
    *
@@ -38,7 +36,6 @@ class QueryPathOptions {
    * modify this array.
    */
   static $options = array();
-
   /**
    * Set the default options.
    *
@@ -50,7 +47,6 @@ class QueryPathOptions {
   static function set($array) {
     self::$options = $array;
   }
-
   /**
    * Get the default options.
    *
@@ -64,7 +60,6 @@ class QueryPathOptions {
   static function get() {
     return self::$options;
   }
-
   /**
    * Merge the provided array with existing options.
    *
@@ -77,7 +72,6 @@ class QueryPathOptions {
   static function merge($array) {
     self::$options = $array + self::$options;
   }
-
   /**
    * Returns true of the specified key is already overridden in this object.
    *
@@ -87,5 +81,4 @@ class QueryPathOptions {
   static function has($key) {
     return array_key_exists($key, self::$options);
   }
-
 }

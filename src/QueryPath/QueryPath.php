@@ -206,7 +206,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
    */
   public function __construct($document = NULL, $string = NULL, $options = array()) {
     $string = trim($string);
-    $this->options = $options + QueryPathOptions::get() + $this->options;
+    $this->options = $options + Options::get() + $this->options;
 
     $parser_flags = isset($options['parser_flags']) ? $options['parser_flags'] : self::DEFAULT_PARSER_FLAGS;
     if (!empty($this->options['ignore_parser_warnings'])) {
@@ -332,13 +332,13 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * This returns an associative array of all of the options as set
    * for the current QueryPath object. This includes default options,
    * options directly passed in via {@link qp()} or the constructor,
-   * an options set in the {@link QueryPathOptions} object.
+   * an options set in the QueryPath::Options object.
    *
    * The order of merging options is this:
-   *  - Options passed in using {@link qp()} are highest priority, and will
+   *  - Options passed in using qp() are highest priority, and will
    *    override other options.
-   *  - Options set with {@link QueryPathOptions} will override default options,
-   *    but can be overridden by options passed into {@link qp()}.
+   *  - Options set with QueryPath::Options will override default options,
+   *    but can be overridden by options passed into qp().
    *  - Default options will be used when no overrides are present.
    *
    * This function will return the options currently used, with the above option
@@ -348,8 +348,8 @@ class QueryPath implements \IteratorAggregate, \Countable {
    *  An associative array of options, calculated from defaults and overridden
    *  options.
    * @see qp()
-   * @see QueryPathOptions::set()
-   * @see QueryPathOptions::merge()
+   * @see QueryPath::Options::set()
+   * @see QueryPath::Options::merge()
    * @since 2.0
    */
   public function getOptions() {
