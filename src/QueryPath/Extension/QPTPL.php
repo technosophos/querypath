@@ -190,12 +190,13 @@ class QPTPL implements QueryPathExtension {
   /**
    * Recursively merge array data into a template.
    * Attributes may be manipulated as well by appending
-   * the attribute name to the selector with @
+   * the attribute name to the selector with @.
+   * For example: $data['.class@src'] = '/img/nyancat.gif'
    */
- public function tplArrayR($qp, $array, $options = NULL) {
+  public function tplArrayR($qp, $array, $options = NULL) {
     // If the value looks primitive, append it.
     if (!is_array($array) && !($array instanceof Traversable)) {
-		$qp->append($array);
+      $qp->append($array);
     }else {//process the array
 		//work on a branch of qp. narrows the selection and provides
 		//a reset branch1 for the loop branch2.
@@ -209,8 +210,8 @@ class QPTPL implements QueryPathExtension {
 			// If no dot or hash, assume class.
 			$first = substr($k,0,1);
 			if ($first != '.' && $first != '#') $k = '.' . $k;
-			
-			if (is_array($v)) {
+			//if $v is an array OR we're inside of a numeric array
+			if (is_array($v) || (is_numeric($k) && !is_array($v))) {
 				if (is_numeric($k)) {
 					//get branch2 DOM
 					$eles = $branch2->get();
@@ -241,10 +242,11 @@ class QPTPL implements QueryPathExtension {
 					$branch2->find($k)->append($v);
 				}
 			}
-		}//endforeach
+		}
 	}
-	return $qp;
+    return $qp;
   }
+  
   /**
    * Check whether an array is associative.
    * If the keys of the array are not consecutive integers starting with 0,
