@@ -210,7 +210,7 @@ class QPTPL implements QueryPathExtension {
 			// If no dot or hash, assume class.
 			$first = substr($k,0,1);
 			if ($first != '.' && $first != '#') $k = '.' . $k;
-			//if $v is an array OR we're inside of a numeric array
+			//if $v is an array OR ( value is not an array AND we're inside of a numeric array)
 			if (is_array($v) || (is_numeric($k) && !is_array($v))) {
 				if (is_numeric($k)) {
 					//get branch2 DOM
