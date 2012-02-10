@@ -189,61 +189,62 @@ class QPTPL implements QueryPathExtension {
   
   /**
    * Recursively merge array data into a template.
+   * Attributes may be manipulated as well by appending
+   * the attribute name to the selector with @
    */
-  public function tplArrayR($qp, $array, $options = NULL) {
+ public function tplArrayR($qp, $array, $options = NULL) {
     // If the value looks primitive, append it.
     if (!is_array($array) && !($array instanceof Traversable)) {
-      $qp->append($array);
-    }
-    // If we are dealing with an associative array, traverse it
-    // and merge as we go.
-    elseif ($this->isAssoc($array)) {
-      // Do key/value substitutions
-      foreach ($array as $k => $v) {
-        
-        // If no dot or hash, assume class.
-        $first = substr($k,0,1);
-        if ($first != '.' && $first != '#') $k = '.' . $k;
-        
-        // If value is an array, recurse.
-        if (is_array($v)) {
-          // XXX: Not totally sure that starting at the 
-          // top is right. Perhaps it should start
-          // at some other context?
-          $this->tplArrayR($qp->top($k), $v, $options);
-        }
-        // Otherwise, try to append value.
-        else {
-          $qp->branch()->children($k)->append($v);
-        }
-      }
-    }
-    // Otherwise we have an indexed array, and we iterate through
-    // it.
-    else {
-      // Get a copy of the current template and then recurse.
-      foreach ($array as $entry) {
-        $eles = $qp->get();
-        $template = array();
-        
-        // We manually deep clone the template.
-        foreach ($eles as $ele) {
-          $template = $ele->cloneNode(TRUE);
-        }
-        $tpl = qp($template);
-        $tpl = $this->tplArrayR($tpl, $entry, $options);
-        $qp->before($tpl);
-      }
-      // Remove the original template without loosing a handle to the
-      // newly injected one.
-      $dead = $qp->branch();
-      $qp->parent();
-      $dead->remove();
-      unset($dead);
-    }
-    return $qp;
+		$qp->append($array);
+    }else {//process the array
+		//work on a branch of qp. narrows the selection and provides
+		//a reset branch1 for the loop branch2.
+		$branch1 = $qp->branch();
+		foreach( $array as $kstr => $v) {
+			//work on a second branch so the pointer isn't moved in each iteration
+			$branch2 = $branch1->branch();
+			//split kstr into selector and attribute
+			$karr = explode('@',$kstr);
+			$k = $karr[0];
+			// If no dot or hash, assume class.
+			$first = substr($k,0,1);
+			if ($first != '.' && $first != '#') $k = '.' . $k;
+			
+			if (is_array($v)) {
+				if (is_numeric($k)) {
+					//get branch2 DOM
+					$eles = $branch2->get();
+					$template = array();
+					//manually deep clone the template.
+					foreach ($eles as $ele) {
+					  $template[] = $ele->cloneNode(TRUE);
+					}
+					$tpl = qp($template);
+					//recurse the template clone
+					$tpl = $this->tplArrayR($tpl, $v, $options);
+					//bring the filled template into the branch
+					$branch2->before($tpl);
+				//elseif $k is valid selector
+				}elseif($branch2->is($k)) {
+					//recurse from the new selector position
+					$this->tplArrayR($branch2->find($k), $v, $options);
+					//remove the template element
+					$branch2->last()->remove();
+				}else {/*the selector,$k, wasn't found.*/}
+			}
+			//elseif $k is a valid selector
+			elseif ($branch2->is($k)) {
+				//if the attribute selector is set.
+				if (isset($karr[1])) {
+					$branch2->find($k)->attr($karr[1],$v);
+				}else {
+					$branch2->find($k)->append($v);
+				}
+			}
+		}//endforeach
+	}
+	return $qp;
   }
-  
   /**
    * Check whether an array is associative.
    * If the keys of the array are not consecutive integers starting with 0,
