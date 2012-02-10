@@ -193,53 +193,49 @@ class QPTPL implements QueryPathExtension {
    * the attribute name to the selector with @.
    * For example: $data['.class@src'] = '/img/nyancat.gif'
    */
-  public function tplArrayR($qp, $array, $options = NULL) {
+    public function tplArrayR($qp, $array, $options = NULL) {
     // If the value looks primitive, append it.
     if (!is_array($array) && !($array instanceof Traversable)) {
       $qp->append($array);
     }else {//process the array
-		//work on a branch of qp. narrows the selection and provides
-		//a reset branch1 for the loop branch2.
-		$branch1 = $qp->branch();
 		foreach( $array as $kstr => $v) {
-			//work on a second branch so the pointer isn't moved in each iteration
-			$branch2 = $branch1->branch();
 			//split kstr into selector and attribute
 			$karr = explode('@',$kstr);
 			$k = $karr[0];
 			// If no dot or hash, assume class.
 			$first = substr($k,0,1);
 			if ($first != '.' && $first != '#') $k = '.' . $k;
-			//if $v is an array OR ( value is not an array AND we're inside of a numeric array)
+			//if $v is an array OR we're inside of a numeric array
 			if (is_array($v) || (is_numeric($k) && !is_array($v))) {
 				if (is_numeric($k)) {
-					//get branch2 DOM
-					$eles = $branch2->get();
+					//get DOM
+					$eles = $qp->get();
 					$template = array();
 					//manually deep clone the template.
 					foreach ($eles as $ele) {
 					  $template[] = $ele->cloneNode(TRUE);
 					}
-					$tpl = qp($template);
 					//recurse the template clone
-					$tpl = $this->tplArrayR($tpl, $v, $options);
-					//bring the filled template into the branch
-					$branch2->before($tpl);
+					$tpl = $this->tplArrayR(qp($template), $v, $options);
+					//bring the filled template into a branch to preserve position
+					$qp->branch()->before($tpl);
 				//elseif $k is valid selector
-				}elseif($branch2->is($k)) {
+				}elseif($qp->is($k)) {
+					$branch = $qp->branch()->find($k);
 					//recurse from the new selector position
-					$this->tplArrayR($branch2->find($k), $v, $options);
+					$this->tplArrayR($branch, $v, $options);
 					//remove the template element
-					$branch2->last()->remove();
+					$dead = $branch->last()->remove();
+					unset($dead);
 				}else {/*the selector,$k, wasn't found.*/}
 			}
 			//elseif $k is a valid selector
-			elseif ($branch2->is($k)) {
+			elseif ($qp->is($k)) {
 				//if the attribute selector is set.
 				if (isset($karr[1])) {
-					$branch2->find($k)->attr($karr[1],$v);
+					$qp->branch()->find($k)->attr($karr[1],$v);
 				}else {
-					$branch2->find($k)->append($v);
+					$qp->branch()->find($k)->append($v);
 				}
 			}
 		}
