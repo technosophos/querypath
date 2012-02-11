@@ -193,7 +193,7 @@ class QPTPL implements QueryPathExtension {
    * the attribute name to the selector with @.
    * For example: $data['.class@src'] = '/img/nyancat.gif'
    */
-    public function tplArrayR($qp, $array, $options = NULL) {
+   public function tplArrayR($qp, $array, $options = NULL) {
     // If the value looks primitive, append it.
     if (!is_array($array) && !($array instanceof Traversable)) {
       $qp->append($array);
@@ -205,6 +205,9 @@ class QPTPL implements QueryPathExtension {
 			// If no dot or hash, assume class.
 			$first = substr($k,0,1);
 			if ($first != '.' && $first != '#') $k = '.' . $k;
+			
+			//save main obj position with a branch
+			$branch = $qp->branch();
 			//if $v is an array OR we're inside of a numeric array
 			if (is_array($v) || (is_numeric($k) && !is_array($v))) {
 				if (is_numeric($k)) {
@@ -218,10 +221,9 @@ class QPTPL implements QueryPathExtension {
 					//recurse the template clone
 					$tpl = $this->tplArrayR(qp($template), $v, $options);
 					//bring the filled template into a branch to preserve position
-					$qp->branch()->before($tpl);
+					$branch->before($tpl);
 				//elseif $k is valid selector
-				}elseif($qp->is($k)) {
-					$branch = $qp->branch()->find($k);
+				}elseif($branch->find($k)->count()>0) {
 					//recurse from the new selector position
 					$this->tplArrayR($branch, $v, $options);
 					//remove the template element
@@ -230,12 +232,12 @@ class QPTPL implements QueryPathExtension {
 				}else {/*the selector,$k, wasn't found.*/}
 			}
 			//elseif $k is a valid selector
-			elseif ($qp->is($k)) {
+			elseif ($branch->find($k)->count()>0) {
 				//if the attribute selector is set.
 				if (isset($karr[1])) {
-					$qp->branch()->find($k)->attr($karr[1],$v);
+					$branch->attr($karr[1],$v);
 				}else {
-					$qp->branch()->find($k)->append($v);
+					$branch->append($v);
 				}
 			}
 		}
