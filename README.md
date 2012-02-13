@@ -1,5 +1,7 @@
 # QueryPath: Find your way.
 
+**New development is happening on the `3.x` branch.**
+
 Authors: Matt Butcher (lead), Emily Brand, and others
 
 [Website](http://querypath.org) | 
