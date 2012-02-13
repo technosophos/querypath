@@ -934,6 +934,8 @@ class QueryPath implements \IteratorAggregate, \Countable {
       return FALSE;
     }
 
+    // Can this be replaced with qp($this->matches)->find($selector)->count()?
+    // Or, better yet, $this->branch($selector)->count()?
     foreach ($this->matches as $m) {
       $q = new QueryPathEventHandler($m);
       if ($q->find($selector)->getMatches()->count()) {
