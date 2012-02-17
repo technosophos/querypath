@@ -187,64 +187,105 @@ class QPTPL implements QueryPathExtension {
     return $tqp;
   }
   
-  /**
+   /**
    * Recursively merge array data into a template.
-   * Attributes may be manipulated as well by appending
-   * the attribute name to the selector with @.
-   * For example: $data['.class@src'] = '/img/nyancat.gif'
-   */
-   public function tplArrayR($qp, $array, $options = NULL) {
-    // If the value looks primitive, append it.
-    if (!is_array($array) && !($array instanceof Traversable)) {
-      $qp->append($array);
-    }else {//process the array
-		foreach( $array as $kstr => $v) {
-			//split kstr into selector and attribute
-			$karr = explode('@',$kstr);
-			$k = $karr[0];
-			// If no dot or hash, assume class.
-			$first = substr($k,0,1);
-			if ($first != '.' && $first != '#') $k = '.' . $k;
+   * Attributes may be manipulated as well
+   * Example:
+PHP:
+$html	=	'<select multiple="multiple">
+				<optgroup>
+					<option class="option" value=""></option>
+				</optgroup>
+			</select>';
+$data		= array();
+$optgroups	= array();
+$options	= array();
+
+$options[]=	array(
+	'@value'=>'one',
+	':self'	=>'One',
+	);
+$options[]=	array(
+	':self'	=>'Two',
+	'@value'=>'two',
+	);
+$groups[]=	array(
+	'@label'	=> 'Group One',
+	'.option'		=> $options,
+	);
+$groups[]=	array(
+	'@label'	=> 'Group Two',
+	'.option'	=> $options,
+	);
+$data6['option'] = 'Option ';
+$data6['select']['@name'] = 'filter';
+$data6['select'][] = array(
+	'optgroup'	=>	$groups,
+	);
+$htmlqp()->tplArrayR()->writeHTML();
+
+OUTPUT:
+<select name="filter" multiple="multiple">
+  <optgroup class="opt-group" label="Group One">
+    <option class="option" value="one">Option One</option>
+    <option class="option" value="two">Option Two</option>
+  </optgroup>
+  <optgroup class="opt-group" label="Group Two">
+    <option class="option" value="one">Option One</option>
+	<option class="option" value="two">Option Two</option>
+  </optgroup>
+</select>
+*/
+public function tplArrayR($qp, $array, $options = NULL) {
+	//If $array looks primitive, append it.
+	if (!is_array($array) && !($array instanceof Traversable)) {
+		$qp->append($array);
+	}
+	else {
+		foreach($array as $k => $v){
+			//store the modifier if $k is a string, else null
+			$kmod = ( $k_is_str = is_string($k) ) ? substr($k,0,1) : NULL;
 			
-			//save main obj position with a branch
-			$branch = $qp->branch();
-			//if $v is an array OR we're inside of a numeric array
-			if (is_array($v) || (is_numeric($k) && !is_array($v))) {
-				if (is_numeric($k)) {
-					//get DOM
-					$eles = $qp->get();
-					$template = array();
-					//manually deep clone the template.
-					foreach ($eles as $ele) {
-					  $template[] = $ele->cloneNode(TRUE);
-					}
-					//recurse the template clone
-					$tpl = $this->tplArrayR(qp($template), $v, $options);
-					//bring the filled template into a branch to preserve position
-					$branch->before($tpl);
-				//elseif $k is valid selector
-				}elseif($branch->find($k)->count()>0) {
-					//recurse from the new selector position
-					$this->tplArrayR($branch, $v, $options);
-					//remove the template element
-					$dead = $branch->last()->remove();
-					unset($dead);
-				}else {/*the selector,$k, wasn't found.*/}
-			}
-			//elseif $k is a valid selector
-			elseif ($branch->find($k)->count()>0) {
-				//if the attribute selector is set.
-				if (isset($karr[1])) {
-					$branch->attr($karr[1],$v);
-				}else {
-					$branch->append($v);
+			//$v is array or primitive
+			if( !$k_is_str ) {
+				//deep copy the current document selection
+				$elements	= $qp->get();
+				$dom_tpl	= array();
+				foreach($elements as $element) {
+					$dom_tpl[]	=	$element->cloneNode(true);
 				}
+				//populate the copy via recursion
+				$tpl = $this->tplArrayR(htmlqp($dom_tpl), $v, $options);
+				//insert the copy into the document
+				$qp->before($tpl);
 			}
+			//$k is a string
+			elseif (!($kmod==':' || $kmod=='@') && $qp->count($k)>0) {
+				//create a branch pointing to with $k scope and recurse
+				$this->tplArrayR($qp->branch($k), $v, $options);
+			}
+			//$k is non-selector string or invalid selector
+			elseif (!is_array($v)) {
+				if ($kmod=='@') {
+					//$v is a attr
+					$k = ltrim($k,'@');
+					$qp->attr($k,$v);
+				}
+				elseif ($k==':self') {
+					$qp->append($v); 
+				}
+			} 
+		}
+		//if $array is not assoc
+		if(!$k_is_str) {
+			//remove the template element
+			$dead = $qp->remove();
+			unset($dead);
 		}
 	}
-    return $qp;
-  }
-  
+	return $qp;
+}
+	
   /**
    * Check whether an array is associative.
    * If the keys of the array are not consecutive integers starting with 0,
