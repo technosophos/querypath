@@ -47,7 +47,7 @@ class CssEventParserTests extends TestCase {
   }
 
   public function testElementNS() {
-    $mock = $this->getMock('TestEventHandler', array('elementNS'));
+    $mock = $this->getMock('\QueryPath\Tests\TestEventHandler', array('elementNS'));
     $mock->expects($this->once())
       ->method('elementNS')
       ->with($this->equalTo('mytest'), $this->equalTo('myns'));
@@ -55,7 +55,7 @@ class CssEventParserTests extends TestCase {
     $parser = new Parser('myns|mytest', $mock);
     $parser->parse();
 
-    $mock = $this->getMock('TestEventHandler', array('elementNS'));
+    $mock = $this->getMock('\QueryPath\Tests\TestEventHandler', array('elementNS'));
     $mock->expects($this->once())
       ->method('elementNS')
       ->with($this->equalTo('mytest'), $this->equalTo('*'));
@@ -63,7 +63,7 @@ class CssEventParserTests extends TestCase {
     $parser = new Parser('*|mytest', $mock);
     $parser->parse();
 
-    $mock = $this->getMock('TestEventHandler', array('anyElementInNS'));
+    $mock = $this->getMock('\QueryPath\Tests\TestEventHandler', array('anyElementInNS'));
     $mock->expects($this->once())
       ->method('anyElementInNS')
       ->with($this->equalTo('*'));
@@ -73,7 +73,7 @@ class CssEventParserTests extends TestCase {
   }
 
   public function testAnyElement() {
-    $mock = $this->getMock('TestEventHandler', array('anyElement', 'element'));
+    $mock = $this->getMock('\QueryPath\Tests\TestEventHandler', array('anyElement', 'element'));
     $mock->expects($this->once())
       ->method('anyElement');
 
@@ -82,7 +82,7 @@ class CssEventParserTests extends TestCase {
   }
 
   public function testAnyElementInNS() {
-    $mock = $this->getMock('TestEventHandler', array('anyElementInNS', 'element'));
+    $mock = $this->getMock('\QueryPath\Tests\TestEventHandler', array('anyElementInNS', 'element'));
     $mock->expects($this->once())
       ->method('anyElementInNS')
       ->with($this->equalTo('myns'));
@@ -92,7 +92,7 @@ class CssEventParserTests extends TestCase {
   }
 
   public function testElementClass() {
-    $mock = $this->getMock('TestEventHandler', array('elementClass'));
+    $mock = $this->getMock('\QueryPath\Tests\TestEventHandler', array('elementClass'));
     $mock->expects($this->once())
       ->method('elementClass')
       ->with($this->equalTo('myclass'));
@@ -104,7 +104,7 @@ class CssEventParserTests extends TestCase {
   public function testPseudoClass() {
 
     // Test empty pseudoclass
-    $mock = $this->getMock('TestEventHandler', array('pseudoClass'));
+    $mock = $this->getMock('\QueryPath\Tests\TestEventHandler', array('pseudoClass'));
     $mock->expects($this->once())
       ->method('pseudoClass')
       ->with($this->equalTo('mypclass'));
@@ -113,7 +113,7 @@ class CssEventParserTests extends TestCase {
     $parser->parse();
 
     // Test pseudoclass with value
-    $mock = $this->getMock('TestEventHandler', array('pseudoClass'));
+    $mock = $this->getMock('\QueryPath\Tests\TestEventHandler', array('pseudoClass'));
     $mock->expects($this->once())
       ->method('pseudoClass')
       ->with($this->equalTo('mypclass'), $this->equalTo('myval'));
@@ -122,7 +122,7 @@ class CssEventParserTests extends TestCase {
     $parser->parse();
 
     // Test pseudclass with pseudoclass:
-    $mock = $this->getMock('TestEventHandler', array('pseudoClass'));
+    $mock = $this->getMock('\QueryPath\Tests\TestEventHandler', array('pseudoClass'));
     $mock->expects($this->once())
       ->method('pseudoClass')
       ->with($this->equalTo('mypclass'), $this->equalTo(':anotherPseudo'));
@@ -134,7 +134,7 @@ class CssEventParserTests extends TestCase {
 
   public function testPseudoElement() {
     // Test pseudo-element
-    $mock = $this->getMock('TestEventHandler', array('pseudoElement'));
+    $mock = $this->getMock('\QueryPath\Tests\TestEventHandler', array('pseudoElement'));
     $mock->expects($this->once())
       ->method('pseudoElement')
       ->with($this->equalTo('mypele'));
@@ -145,7 +145,7 @@ class CssEventParserTests extends TestCase {
 
   public function testDirectDescendant() {
     // Test direct Descendant
-    $mock = $this->getMock('TestEventHandler', array('directDescendant'));
+    $mock = $this->getMock('\QueryPath\Tests\TestEventHandler', array('directDescendant'));
     $mock->expects($this->once())
       ->method('directDescendant');
 
@@ -156,7 +156,7 @@ class CssEventParserTests extends TestCase {
 
   public function testAnyDescendant() {
     // Test direct Descendant
-    $mock = $this->getMock('TestEventHandler', array('anyDescendant'));
+    $mock = $this->getMock('\QueryPath\Tests\TestEventHandler', array('anyDescendant'));
     $mock->expects($this->once())
       ->method('anyDescendant');
 
@@ -167,7 +167,7 @@ class CssEventParserTests extends TestCase {
 
   public function testAdjacent() {
     // Test sibling
-    $mock = $this->getMock('TestEventHandler', array('adjacent'));
+    $mock = $this->getMock('\QueryPath\Tests\TestEventHandler', array('adjacent'));
     $mock->expects($this->once())
       ->method('adjacent');
 
@@ -177,7 +177,7 @@ class CssEventParserTests extends TestCase {
 
   public function testSibling() {
     // Test adjacent
-    $mock = $this->getMock('TestEventHandler', array('sibling'));
+    $mock = $this->getMock('\QueryPath\Tests\TestEventHandler', array('sibling'));
     $mock->expects($this->once())
       ->method('sibling');
 
@@ -187,7 +187,7 @@ class CssEventParserTests extends TestCase {
 
   public function testAnotherSelector() {
     // Test adjacent
-    $mock = $this->getMock('TestEventHandler', array('anotherSelector'));
+    $mock = $this->getMock('\QueryPath\Tests\TestEventHandler', array('anotherSelector'));
     $mock->expects($this->once())
       ->method('anotherSelector');
 
@@ -221,7 +221,7 @@ class CssEventParserTests extends TestCase {
       'element[attr2]' => 'attr2', // Issue #
     );
     foreach ($selectors as $filter => $expected) {
-      $mock = $this->getMock('TestEventHandler', array('attribute'));
+      $mock = $this->getMock('\QueryPath\Tests\TestEventHandler', array('attribute'));
       $mock->expects($this->once())
         ->method('attribute')
         ->with($this->equalTo($expected));
@@ -257,7 +257,7 @@ class CssEventParserTests extends TestCase {
       '*[attr=""]' => array('attr','',EventHandler::isExactly),
     );
     foreach ($selectors as $filter => $expected) {
-      $mock = $this->getMock('TestEventHandler', array('attribute'));
+      $mock = $this->getMock('\QueryPath\Tests\TestEventHandler', array('attribute'));
       $mock->expects($this->once())
         ->method('attribute')
         ->with($this->equalTo($expected[0]), $this->equalTo($expected[1]), $this->equalTo($expected[2]));
@@ -275,7 +275,7 @@ class CssEventParserTests extends TestCase {
     );
 
     foreach ($selectors as $filter => $expected) {
-      $mock = $this->getMock('TestEventHandler', array('attributeNS'));
+      $mock = $this->getMock('\QueryPath\Tests\TestEventHandler', array('attributeNS'));
       $mock->expects($this->once())
         ->method('attributeNS')
         ->with($this->equalTo($expected[0]), $this->equalTo($expected[1]), $this->equalTo($expected[2]), $this->equalTo($expected[3]));

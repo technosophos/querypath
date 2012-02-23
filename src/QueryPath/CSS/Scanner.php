@@ -61,7 +61,7 @@ final class Scanner {
     ++$this->it;
     if ($this->is->isEmpty()) {
       if ($this->recurse) {
-        throw new Exception("Recursion error detected at iteration " . $this->it . '.');
+        throw new \QueryPath\Exception("Recursion error detected at iteration " . $this->it . '.');
         exit();
       }
       //print "{$this->it}: All done\n";
@@ -165,7 +165,7 @@ final class Scanner {
         $tok = Token::stringLegal;
       }
       else {
-        throw new CSSParseException('Illegal character found in stream: ' . $ord);
+        throw new ParseException('Illegal character found in stream: ' . $ord);
       }
     }
 

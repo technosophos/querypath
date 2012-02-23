@@ -1412,7 +1412,7 @@ class QueryPathEventHandler implements EventHandler {
   /**
    * Attach all nodes in a node list to the given \SplObjectStorage.
    */
-  public function attachNodeList(DOMNodeList $nodeList, \SplObjectStorage $splos) {
+  public function attachNodeList(\DOMNodeList $nodeList, \SplObjectStorage $splos) {
     foreach ($nodeList as $item) $splos->attach($item);
   }
 
