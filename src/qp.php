@@ -174,7 +174,7 @@ if (!class_exists('\QueryPath\QueryPath')) {
  */
 function qp($document = NULL, $string = NULL, $options = array()) {
 
-  $qpClass = isset($options['QueryPath_class']) ? $options['QueryPath_class'] : 'QueryPath';
+  $qpClass = isset($options['QueryPath_class']) ? $options['QueryPath_class'] : '\QueryPath\QueryPath';
 
   $qp = new $qpClass($document, $string, $options);
   return $qp;
