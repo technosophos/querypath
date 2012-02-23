@@ -80,7 +80,7 @@ class QueryPathEventHandler implements EventHandler {
     if (is_array($dom) || $dom instanceof \SplObjectStorage) {
       //$matches = array();
       foreach($dom as $item) {
-        if ($item instanceof DOMNode && $item->nodeType == XML_ELEMENT_NODE) {
+        if ($item instanceof \DOMNode && $item->nodeType == XML_ELEMENT_NODE) {
           //$matches[] = $item;
           $matches->attach($item);
         }
@@ -97,17 +97,17 @@ class QueryPathEventHandler implements EventHandler {
       $this->matches = $matches;
     }
     // DOM Document -- we get the root element.
-    elseif ($dom instanceof DOMDocument) {
+    elseif ($dom instanceof \DOMDocument) {
       $this->dom = $dom->documentElement;
       $matches->attach($dom->documentElement);
     }
     // DOM Element -- we use this directly
-    elseif ($dom instanceof DOMElement) {
+    elseif ($dom instanceof \DOMElement) {
       $this->dom = $dom;
       $matches->attach($dom);
     }
     // NodeList -- We turn this into an array
-    elseif ($dom instanceof DOMNodeList) {
+    elseif ($dom instanceof \DOMNodeList) {
       $a = array(); // Not sure why we are doing this....
       foreach ($dom as $item) {
         if ($item->nodeType == XML_ELEMENT_NODE) {
@@ -222,7 +222,7 @@ class QueryPathEventHandler implements EventHandler {
       // - base should always be checked (what we do here)
       // - base should never be checked (only children)
       // - base should only be checked if it is the root node
-      if ($item instanceof DOMNode
+      if ($item instanceof \DOMNode
           && $item->namespaceURI == $nsuri
           && $lname == $item->localName) {
         $found->attach($item);
@@ -420,11 +420,11 @@ class QueryPathEventHandler implements EventHandler {
           $found->attach($this->dom[0]->ownerDocument->documentElement);
           $this->matches = $found;
         }
-        elseif ($this->dom instanceof DOMNode) {
+        elseif ($this->dom instanceof \DOMNode) {
           $found->attach($this->dom->ownerDocument->documentElement);
           $this->matches = $found;
         }
-        elseif ($this->dom instanceof DOMNodeList && $this->dom->length > 0) {
+        elseif ($this->dom instanceof \DOMNodeList && $this->dom->length > 0) {
           $found->attach($this->dom->item(0)->ownerDocument->documentElement);
           $this->matches = $found;
         }
@@ -1214,7 +1214,7 @@ class QueryPathEventHandler implements EventHandler {
       case 'first-line':
         $matches = $this->candidateList();
         $found = new \SplObjectStorage();
-        $o = new stdClass();
+        $o = new \stdClass();
         foreach ($matches as $item) {
           $str = $item->textContent;
           $lines = explode("\n", $str);
@@ -1232,7 +1232,7 @@ class QueryPathEventHandler implements EventHandler {
       case 'first-letter':
         $matches = $this->candidateList();
         $found = new \SplObjectStorage();
-        $o = new stdClass();
+        $o = new \stdClass();
         foreach ($matches as $item) {
           $str = $item->textContent;
           if (!empty($str)) {
