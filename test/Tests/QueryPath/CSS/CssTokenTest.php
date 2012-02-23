@@ -30,7 +30,7 @@ class CSSTokenTest extends TestCase {
  * @ingroup querypath_tests
  * @group CSS
  */
-class QueryPathEventHandlerTests extends TestCase {
+class QueryPathEventHandlerTest extends TestCase {
 
 
   var $xml = '<?xml version="1.0" ?>
