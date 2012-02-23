@@ -63,6 +63,8 @@
 
 namespace QueryPath;
 
+use \QueryPath\CSS\QueryPathEventHandler;
+
 
 /**
  * The Query Path object is the primary tool in this library.
