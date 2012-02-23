@@ -120,7 +120,7 @@ class QueryPathEventHandler implements EventHandler {
     // FIXME: Handle SimpleXML!
     // Uh-oh... we don't support anything else.
     else {
-      throw new Exception("Unhandled type: " . get_class($dom));
+      throw new \QueryPath\Exception("Unhandled type: " . get_class($dom));
     }
     $this->matches = $matches;
   }
