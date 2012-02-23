@@ -12,7 +12,7 @@ use \QueryPath\CSS\Token;
  * @ingroup querypath_tests
  * @group CSS
  */
-class CSSTokenTest extends TestCase {
+class TokenTest extends TestCase {
   public function testName() {
 
     $this->assertEquals('character', (Token::name(0)));
