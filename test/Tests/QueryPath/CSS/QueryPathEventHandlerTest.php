@@ -196,7 +196,7 @@ class CssEventParserTests extends TestCase {
   }
 
   /**
-   * @expectedException CSSParseException
+   * @expectedException \QueryPath\CSS\ParseException
    */
   public function testIllegalAttribute() {
 

@@ -101,7 +101,7 @@ class QueryPathEventHandlerTest extends TestCase {
   }
 
   /**
-   * @expectedException CSSParseException
+   * @expectedException \QueryPath\CSS\ParseException
    */
   public function testEmptySelector() {
     $xml = '<?xml version="1.0" ?><t:test xmlns:t="urn:foo/bar"><t:inside id="first"/>Text<t:inside/><inside/></t:test>';
