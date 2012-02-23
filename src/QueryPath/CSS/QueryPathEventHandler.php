@@ -73,11 +73,11 @@ class QueryPathEventHandler implements EventHandler {
    * Create a new event handler.
    */
   public function __construct($dom) {
-    $this->alreadyMatched = new SplObjectStorage();
-    $matches = new SplObjectStorage();
+    $this->alreadyMatched = new \SplObjectStorage();
+    $matches = new \SplObjectStorage();
 
     // Array of DOMElements
-    if (is_array($dom) || $dom instanceof SplObjectStorage) {
+    if (is_array($dom) || $dom instanceof \SplObjectStorage) {
       //$matches = array();
       foreach($dom as $item) {
         if ($item instanceof DOMNode && $item->nodeType == XML_ELEMENT_NODE) {
@@ -153,7 +153,7 @@ class QueryPathEventHandler implements EventHandler {
    */
   public function getMatches() {
     //$result = array_merge($this->alreadyMatched, $this->matches);
-    $result = new SplObjectStorage();
+    $result = new \SplObjectStorage();
     foreach($this->alreadyMatched as $m) $result->attach($m);
     foreach($this->matches as $m) $result->attach($m);
     return $result;
@@ -169,7 +169,7 @@ class QueryPathEventHandler implements EventHandler {
    *  String ID for an element.
    */
   public function elementID($id) {
-    $found = new SplObjectStorage();
+    $found = new \SplObjectStorage();
     $matches = $this->candidateList();
     foreach ($matches as $item) {
       // Check if any of the current items has the desired ID.
@@ -186,7 +186,7 @@ class QueryPathEventHandler implements EventHandler {
   public function element($name) {
     $matches = $this->candidateList();
     $this->findAnyElement = FALSE;
-    $found = new SplObjectStorage();
+    $found = new \SplObjectStorage();
     foreach ($matches as $item) {
       // Should the existing item be included?
       // In some cases (e.g. element is root element)
@@ -205,7 +205,7 @@ class QueryPathEventHandler implements EventHandler {
   // Inherited
   public function elementNS($lname, $namespace = NULL) {
     $this->findAnyElement = FALSE;
-    $found = new SplObjectStorage();
+    $found = new \SplObjectStorage();
     $matches = $this->candidateList();
     foreach ($matches as $item) {
       // Looking up NS URI only works if the XMLNS attributes are declared
@@ -253,7 +253,7 @@ class QueryPathEventHandler implements EventHandler {
   }
 
   public function anyElement() {
-    $found = new SplObjectStorage();
+    $found = new \SplObjectStorage();
     //$this->findAnyElement = TRUE;
     $matches = $this->candidateList();
     foreach ($matches as $item) {
@@ -270,7 +270,7 @@ class QueryPathEventHandler implements EventHandler {
   public function anyElementInNS($ns) {
     //$this->findAnyElement = TRUE;
     $nsuri = $this->dom->lookupNamespaceURI($ns);
-    $found = new SplObjectStorage();
+    $found = new \SplObjectStorage();
     if (!empty($nsuri)) {
       $matches = $this->candidateList();
       foreach ($matches as $item) {
@@ -284,7 +284,7 @@ class QueryPathEventHandler implements EventHandler {
   }
   public function elementClass($name) {
 
-    $found = new SplObjectStorage();
+    $found = new \SplObjectStorage();
     $matches = $this->candidateList();
     foreach ($matches as $item) {
       if ($item->hasAttribute('class')) {
@@ -298,7 +298,7 @@ class QueryPathEventHandler implements EventHandler {
   }
 
   public function attribute($name, $value = NULL, $operation = EventHandler::isExactly) {
-    $found = new SplObjectStorage();
+    $found = new \SplObjectStorage();
     $matches = $this->candidateList();
     foreach ($matches as $item) {
       if ($item->hasAttribute($name)) {
@@ -324,7 +324,7 @@ class QueryPathEventHandler implements EventHandler {
    * @deprecated All use cases seem to be covered by attribute().
    */
   protected function searchForAttr($name, $value = NULL) {
-    $found = new SplObjectStorage();
+    $found = new \SplObjectStorage();
     $matches = $this->candidateList();
     foreach ($matches as $candidate) {
       if ($candidate->hasAttribute($name)) {
@@ -344,7 +344,7 @@ class QueryPathEventHandler implements EventHandler {
 
   public function attributeNS($lname, $ns, $value = NULL, $operation = EventHandler::isExactly) {
     $matches = $this->candidateList();
-    $found = new SplObjectStorage();
+    $found = new \SplObjectStorage();
     if (count($matches) == 0) {
       $this->matches = $found;
       return;
@@ -394,7 +394,7 @@ class QueryPathEventHandler implements EventHandler {
         // These require a UA, which we don't have.
       case 'target':
         // This requires a location URL, which we don't have.
-        $this->matches = new SplObjectStorage();
+        $this->matches = new \SplObjectStorage();
         break;
       case 'indeterminate':
         // The assumption is that there is a UA and the format is HTML.
@@ -412,7 +412,7 @@ class QueryPathEventHandler implements EventHandler {
         $this->searchForAttr('href');
         break;
       case 'root':
-        $found = new SplObjectStorage();
+        $found = new \SplObjectStorage();
         if (empty($this->dom)) {
           $this->matches = $found;
         }
@@ -439,7 +439,7 @@ class QueryPathEventHandler implements EventHandler {
       // the constructor.
       case 'x-root':
       case 'x-reset':
-        $this->matches = new SplObjectStorage();
+        $this->matches = new \SplObjectStorage();
         $this->matches->attach($this->dom);
         break;
 
@@ -509,7 +509,7 @@ class QueryPathEventHandler implements EventHandler {
         break;
       case 'parent':
         $matches = $this->candidateList();
-        $found = new SplObjectStorage();
+        $found = new \SplObjectStorage();
         foreach ($matches as $match) {
           if (!empty($match->firstChild)) {
             $found->attach($match);
@@ -537,7 +537,7 @@ class QueryPathEventHandler implements EventHandler {
 
       case 'header':
         $matches = $this->candidateList();
-        $found = new SplObjectStorage();
+        $found = new \SplObjectStorage();
         foreach ($matches as $item) {
           $tag = $item->tagName;
           $f = strtolower(substr($tag, 0, 1));
@@ -556,7 +556,7 @@ class QueryPathEventHandler implements EventHandler {
         $value = $this->removeQuotes($value);
 
         $matches = $this->candidateList();
-        $found = new SplObjectStorage();
+        $found = new \SplObjectStorage();
         foreach ($matches as $item) {
           if (strpos($item->textContent, $value) !== FALSE) {
             $found->attach($item);
@@ -570,7 +570,7 @@ class QueryPathEventHandler implements EventHandler {
         $value = $this->removeQuotes($value);
 
         $matches = $this->candidateList();
-        $found = new SplObjectStorage();
+        $found = new \SplObjectStorage();
         foreach ($matches as $item) {
           if ($item->textContent == $value) {
             $found->attach($item);
@@ -602,7 +602,7 @@ class QueryPathEventHandler implements EventHandler {
    */
   private function getByPosition($operator, $pos) {
     $matches = $this->candidateList();
-    $found = new SplObjectStorage();
+    $found = new \SplObjectStorage();
     if ($matches->count() == 0) {
       return;
     }
@@ -722,8 +722,8 @@ class QueryPathEventHandler implements EventHandler {
     // EXPERIMENTAL: New in Quark. This should be substantially faster
     // than the old (jQuery-ish) version. It still has E_STRICT violations
     // though.
-    $parents = new SplObjectStorage();
-    $matches = new SplObjectStorage();
+    $parents = new \SplObjectStorage();
+    $matches = new \SplObjectStorage();
 
     $i = 0;
     foreach ($this->matches as $item) {
@@ -794,7 +794,7 @@ class QueryPathEventHandler implements EventHandler {
     $arr = array();
     foreach ($this->matches as $m) array_unshift($arr, $m);
 
-    $this->found = new SplObjectStorage();
+    $this->found = new \SplObjectStorage();
     foreach ($arr as $item) $this->found->attach($item);
   }*/
 
@@ -851,7 +851,7 @@ class QueryPathEventHandler implements EventHandler {
 
     // XXX: Added in Quark: I believe this should return an empty
     // match set if no child was found tat the index.
-    $this->matches = new SplObjectStorage();
+    $this->matches = new \SplObjectStorage();
 
     foreach ($matches as $item) {
       $parent = $item->parentNode;
@@ -883,7 +883,7 @@ class QueryPathEventHandler implements EventHandler {
           if ($child->tagName == $tagName) {
             // See if this is the index we are looking for.
             if ($i == $index) {
-              //$this->matches = new SplObjectStorage();
+              //$this->matches = new \SplObjectStorage();
               $this->matches->attach($child);
               return;
             }
@@ -912,8 +912,8 @@ class QueryPathEventHandler implements EventHandler {
     // EXPERIMENTAL: New in Quark. This should be substantially faster
     // than the old (jQuery-ish) version. It still has E_STRICT violations
     // though.
-    $parents = new SplObjectStorage();
-    $matches = new SplObjectStorage();
+    $parents = new \SplObjectStorage();
+    $matches = new \SplObjectStorage();
 
     $i = 0;
     foreach ($this->matches as $item) {
@@ -1021,7 +1021,7 @@ class QueryPathEventHandler implements EventHandler {
   protected function not($filter) {
     $matches = $this->candidateList();
     //$found = array();
-    $found = new SplObjectStorage();
+    $found = new \SplObjectStorage();
     foreach ($matches as $item) {
       $handler = new QueryPathEventHandler($item);
       $not_these = $handler->find($filter)->getMatches();
@@ -1041,7 +1041,7 @@ class QueryPathEventHandler implements EventHandler {
   public function has($filter) {
     $matches = $this->candidateList();
     //$found = array();
-    $found = new SplObjectStorage();
+    $found = new \SplObjectStorage();
     foreach ($matches as $item) {
       $handler = new QueryPathEventHandler($item);
       $these = $handler->find($filter)->getMatches();
@@ -1058,7 +1058,7 @@ class QueryPathEventHandler implements EventHandler {
    */
   protected function firstOfType() {
     $matches = $this->candidateList();
-    $found = new SplObjectStorage();
+    $found = new \SplObjectStorage();
     foreach ($matches as $item) {
       $type = $item->tagName;
       $parent = $item->parentNode;
@@ -1079,7 +1079,7 @@ class QueryPathEventHandler implements EventHandler {
    */
   protected function lastOfType() {
     $matches = $this->candidateList();
-    $found = new SplObjectStorage();
+    $found = new \SplObjectStorage();
     foreach ($matches as $item) {
       $type = $item->tagName;
       $parent = $item->parentNode;
@@ -1101,7 +1101,7 @@ class QueryPathEventHandler implements EventHandler {
    */
   protected function onlyChild() {
     $matches = $this->candidateList();
-    $found = new SplObjectStorage();
+    $found = new \SplObjectStorage();
     foreach($matches as $item) {
       $parent = $item->parentNode;
       $kids = array();
@@ -1123,7 +1123,7 @@ class QueryPathEventHandler implements EventHandler {
    * Pseudo-class handler for :empty.
    */
   protected function emptyElement() {
-    $found = new SplObjectStorage();
+    $found = new \SplObjectStorage();
     $matches = $this->candidateList();
     foreach ($matches as $item) {
       $empty = TRUE;
@@ -1147,10 +1147,10 @@ class QueryPathEventHandler implements EventHandler {
    */
   protected function onlyOfType() {
     $matches = $this->candidateList();
-    $found = new SplObjectStorage();
+    $found = new \SplObjectStorage();
     foreach ($matches as $item) {
       if (!$item->parentNode) {
-        $this->matches = new SplObjectStorage();
+        $this->matches = new \SplObjectStorage();
       }
       $parent = $item->parentNode;
       $onlyOfType = TRUE;
@@ -1160,7 +1160,7 @@ class QueryPathEventHandler implements EventHandler {
         if ($kid->nodeType == XML_ELEMENT_NODE
             && $kid->tagName == $item->tagName
             && $kid !== $item) {
-          //$this->matches = new SplObjectStorage();
+          //$this->matches = new \SplObjectStorage();
           $onlyOfType = FALSE;
           break;
         }
@@ -1213,7 +1213,7 @@ class QueryPathEventHandler implements EventHandler {
       // each of the matched elements?
       case 'first-line':
         $matches = $this->candidateList();
-        $found = new SplObjectStorage();
+        $found = new \SplObjectStorage();
         $o = new stdClass();
         foreach ($matches as $item) {
           $str = $item->textContent;
@@ -1231,7 +1231,7 @@ class QueryPathEventHandler implements EventHandler {
       // of the matched elements?
       case 'first-letter':
         $matches = $this->candidateList();
-        $found = new SplObjectStorage();
+        $found = new \SplObjectStorage();
         $o = new stdClass();
         foreach ($matches as $item) {
           $str = $item->textContent;
@@ -1257,7 +1257,7 @@ class QueryPathEventHandler implements EventHandler {
   public function directDescendant() {
     $this->findAnyElement = FALSE;
 
-    $kids = new SplObjectStorage();
+    $kids = new \SplObjectStorage();
     foreach ($this->matches as $item) {
       $kidsNL = $item->childNodes;
       foreach ($kidsNL as $kidNode) {
@@ -1287,7 +1287,7 @@ class QueryPathEventHandler implements EventHandler {
     $this->findAnyElement = FALSE;
     // List of nodes that are immediately adjacent to the current one.
     //$found = array();
-    $found = new SplObjectStorage();
+    $found = new \SplObjectStorage();
     foreach ($this->matches as $item) {
       while (isset($item->nextSibling)) {
         if (isset($item->nextSibling) && $item->nextSibling->nodeType === XML_ELEMENT_NODE) {
@@ -1310,7 +1310,7 @@ class QueryPathEventHandler implements EventHandler {
 
     // Start over at the top of the tree.
     $this->findAnyElement = TRUE; // Reset depth flag.
-    $this->matches = new SplObjectStorage();
+    $this->matches = new \SplObjectStorage();
     $this->matches->attach($this->dom);
   }
 
@@ -1326,7 +1326,7 @@ class QueryPathEventHandler implements EventHandler {
     // Get the nodes at the same level.
 
     if ($this->matches->count() > 0) {
-      $sibs = new SplObjectStorage();
+      $sibs = new \SplObjectStorage();
       foreach ($this->matches as $item) {
         /*$candidates = $item->parentNode->childNodes;
         foreach ($candidates as $candidate) {
@@ -1349,7 +1349,7 @@ class QueryPathEventHandler implements EventHandler {
    */
   public function anyDescendant() {
     // Get children:
-    $found = new SplObjectStorage();
+    $found = new \SplObjectStorage();
     foreach ($this->matches as $item) {
       $kids = $item->getElementsByTagName('*');
       //$found = array_merge($found, $this->nodeListToArray($kids));
@@ -1388,7 +1388,7 @@ class QueryPathEventHandler implements EventHandler {
    *  A list of all candidate elements.
    */
   private function getAllCandidates($elements) {
-    $found = new SplObjectStorage();
+    $found = new \SplObjectStorage();
     foreach ($elements as $item) {
       $found->attach($item); // put self in
       $nl = $item->getElementsByTagName('*');
@@ -1410,9 +1410,9 @@ class QueryPathEventHandler implements EventHandler {
   */
 
   /**
-   * Attach all nodes in a node list to the given SplObjectStorage.
+   * Attach all nodes in a node list to the given \SplObjectStorage.
    */
-  public function attachNodeList(DOMNodeList $nodeList, SplObjectStorage $splos) {
+  public function attachNodeList(DOMNodeList $nodeList, \SplObjectStorage $splos) {
     foreach ($nodeList as $item) $splos->attach($item);
   }
 
