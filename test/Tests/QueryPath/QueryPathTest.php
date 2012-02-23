@@ -2,7 +2,7 @@
 /** @file
  * Tests for the QueryPath library.
  *
- * 
+ *
  * @author M Butcher <matt@aleph-null.tv>
  * @license The GNU Lesser GPL (LGPL) or an MIT-like license.
  */
