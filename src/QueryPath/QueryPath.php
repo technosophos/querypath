@@ -1795,7 +1795,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * @return array
    *  Returns an array of DOM nodes.
    */
-  protected function deepestNode(DOMNode $ele, $depth = 0, $current = NULL, &$deepest = NULL) {
+  protected function deepestNode(\DOMNode $ele, $depth = 0, $current = NULL, &$deepest = NULL) {
     // FIXME: Should this use SplObjectStorage?
     if (!isset($current)) $current = array($ele);
     if (!isset($deepest)) $deepest = $depth;

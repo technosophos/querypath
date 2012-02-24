@@ -24,7 +24,7 @@ class QueryPathIterator extends \IteratorIterator {
       $this->qp = qp(parent::current(), NULL, $this->options);
     }
     else {
-      $splos = new SplObjectStorage();
+      $splos = new \SplObjectStorage();
       $splos->attach(parent::current());
       $this->qp->setMatches($splos);
     }
