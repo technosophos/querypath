@@ -1,6 +1,63 @@
 <?php
-/**
- * @file
+/** @file
+ * The Query Path package provides tools for manipulating a Document Object Model.
+ * The two major DOMs are the XML DOM and the HTML DOM. Using Query Path, you can
+ * build, parse, search, and modify DOM documents.
+ *
+ * To use Query Path, this is the only file you should need to import.
+ *
+ * Standard usage:
+ * @code
+ * <?php
+ * require 'QueryPath/QueryPath.php';
+ * $qp = qp('#myID', '<?xml version="1.0"?><test><foo id="myID"/></test>');
+ * $qp->append('<new><elements/></new>')->writeHTML();
+ * ?>
+ * @endcode
+ *
+ * The above would print (formatted for readability):
+ * @code
+ * <?xml version="1.0"?>
+ * <test>
+ *  <foo id="myID">
+ *    <new>
+ *      <element/>
+ *    </new>
+ *  </foo>
+ * </test>
+ * @endcode
+ *
+ * To learn about the functions available to a Query Path object,
+ * see QueryPath. The qp() function is used to build
+ * new DOMNode objects. The documentation for that function explains the
+ * wealth of arguments that the function can take.
+ *
+ * Included with the source code for QueryPath is a complete set of unit tests
+ * as well as some example files. Those are good resources for learning about
+ * how to apply QueryPath's tools. The full API documentation can be generated
+ * from these files using PHPDocumentor.
+ *
+ * If you are interested in building extensions for QueryParser, see the
+ * QueryPath and QueryPath::Extension classes. There, you will find information on adding
+ * your own tools to QueryPath.
+ *
+ * QueryPath also comes with a full CSS 3 selector parser implementation. If
+ * you are interested in reusing that in other code, you will want to start
+ * with {@link EventHandler.php}, which is the event interface for the parser.
+ *
+ * All of the code in QueryPath is licensed under either the LGPL or an MIT-like
+ * license (you may choose which you prefer). All of the code is Copyright, 2009
+ * by Matt Butcher.
+ *
+ * @author M Butcher <matt @aleph-null.tv>
+ * @license http://opensource.org/licenses/lgpl-2.1.php The GNU Lesser GPL (LGPL) or an MIT-like license.
+ * @see QueryPath
+ * @see qp()
+ * @see http://querypath.org The QueryPath home page.
+ * @see http://api.querypath.org An online version of the API docs.
+ * @see http://technosophos.com For how-tos and examples.
+ * @copyright Copyright (c) 2009-2012, Matt Butcher.
+ * @version -UNSTABLE%
  *
  */
 
@@ -72,7 +129,7 @@ class QueryPath {
 
 
   public static function with($document, $selector = NULL, $options = array()) {
-    $qpClass = isset($options['QueryPath_class']) ? $options['QueryPath_class'] : '\QueryPath\QueryPath';
+    $qpClass = isset($options['QueryPath_class']) ? $options['QueryPath_class'] : '\QueryPath\DOMQuery';
 
     $qp = new $qpClass($document, $selector, $options);
     return $qp;
@@ -100,6 +157,42 @@ class QueryPath {
       //'strip_low_ascii' => TRUE,
     );
     return @self::with($document, $selector, $options);
+  }
+  /**
+   * A static function for transforming data into a Data URL.
+   *
+   * This can be used to create Data URLs for injection into CSS, JavaScript, or other
+   * non-XML/HTML content. If you are working with QP objects, you may want to use
+   * dataURL() instead.
+   *
+   * @param mixed $data
+   *  The contents to inject as the data. The value can be any one of the following:
+   *  - A URL: If this is given, then the subsystem will read the content from that URL. THIS
+   *    MUST BE A FULL URL, not a relative path.
+   *  - A string of data: If this is given, then the subsystem will encode the string.
+   *  - A stream or file handle: If this is given, the stream's contents will be encoded
+   *    and inserted as data.
+   *  (Note that we make the assumption here that you would never want to set data to be
+   *  a URL. If this is an incorrect assumption, file a bug.)
+   * @param string $mime
+   *  The MIME type of the document.
+   * @param resource $context
+   *  A valid context. Use this only if you need to pass a stream context. This is only necessary
+   *  if $data is a URL. (See {@link stream_context_create()}).
+   * @return
+   *  An encoded data URL.
+   */
+  public static function encodeDataURL($data, $mime = 'application/octet-stream', $context = NULL) {
+    if (is_resource($data)) {
+      $data = stream_get_contents($data);
+    }
+    elseif (filter_var($data, FILTER_VALIDATE_URL)) {
+      $data = file_get_contents($data, FALSE, $context);
+    }
+
+    $encoded = base64_encode($data);
+
+    return 'data:' . $mime . ';base64,' . $encoded;
   }
 
 }

@@ -1,64 +1,14 @@
 <?php
-/** @file
- * The Query Path package provides tools for manipulating a Document Object Model.
- * The two major DOMs are the XML DOM and the HTML DOM. Using Query Path, you can
- * build, parse, search, and modify DOM documents.
+/**
+ * @file
+ * This houses the class formerly called QueryPath.
  *
- * To use Query Path, this is the only file you should need to import.
- *
- * Standard usage:
- * @code
- * <?php
- * require 'QueryPath/QueryPath.php';
- * $qp = qp('#myID', '<?xml version="1.0"?><test><foo id="myID"/></test>');
- * $qp->append('<new><elements/></new>')->writeHTML();
- * ?>
- * @endcode
- *
- * The above would print (formatted for readability):
- * @code
- * <?xml version="1.0"?>
- * <test>
- *  <foo id="myID">
- *    <new>
- *      <element/>
- *    </new>
- *  </foo>
- * </test>
- * @endcode
- *
- * To learn about the functions available to a Query Path object,
- * see {@link QueryPath}. The {@link qp()} function is used to build
- * new QueryPath objects. The documentation for that function explains the
- * wealth of arguments that the function can take.
- *
- * Included with the source code for QueryPath is a complete set of unit tests
- * as well as some example files. Those are good resources for learning about
- * how to apply QueryPath's tools. The full API documentation can be generated
- * from these files using PHPDocumentor.
- *
- * If you are interested in building extensions for QueryParser, see the
- * {@link QueryPathExtender} class. There, you will find information on adding
- * your own tools to QueryPath.
- *
- * QueryPath also comes with a full CSS 3 selector parser implementation. If
- * you are interested in reusing that in other code, you will want to start
- * with {@link EventHandler.php}, which is the event interface for the parser.
- *
- * All of the code in QueryPath is licensed under either the LGPL or an MIT-like
- * license (you may choose which you prefer). All of the code is Copyright, 2009
- * by Matt Butcher.
- *
- * @author M Butcher <matt @aleph-null.tv>
- * @license http://opensource.org/licenses/lgpl-2.1.php The GNU Lesser GPL (LGPL) or an MIT-like license.
- * @see QueryPath
- * @see qp()
- * @see http://querypath.org The QueryPath home page.
- * @see http://api.querypath.org An online version of the API docs.
- * @see http://technosophos.com For how-tos and examples.
- * @copyright Copyright (c) 2009, Matt Butcher.
- * @version -UNSTABLE%
- *
+ * As of QueryPath 3.0.0, the class was renamed QueryPath::DOMQuery. This
+ * was done for a few reasons:
+ * - The library has been refactored, and it made more sense to call the top
+ *   level class QueryPath. This is not the top level class.
+ * - There have been requests for a JSONQuery class, which would be the 
+ *   natural complement of DOMQuery.
  */
 
 namespace QueryPath;
@@ -67,23 +17,23 @@ use \QueryPath\CSS\QueryPathEventHandler;
 
 
 /**
- * The Query Path object is the primary tool in this library.
+ * The DOMQuery object is the primary tool in this library.
  *
- * To create a new Query Path, use the {@link qp()} function.
+ * To create a new DOMQuery, use QueryPath::with() or qp() function.
  *
- * If you are new to these documents, start at the {@link QueryPath.php} page.
+ * If you are new to these documents, start at the QueryPath.php page.
  * There you will find a quick guide to the tools contained in this project.
  *
- * A note on serialization: QueryPath uses DOM classes internally, and those
- * do not serialize well at all. In addition, QueryPath may contain many
+ * A note on serialization: DOMQuery uses DOM classes internally, and those
+ * do not serialize well at all. In addition, DOMQuery may contain many
  * extensions, and there is no guarantee that extensions can serialize. The
- * moral of the story: Don't serialize QueryPath.
+ * moral of the story: Don't serialize DOMQuery.
  *
  * @see qp()
  * @see QueryPath.php
  * @ingroup querypath_core
  */
-class QueryPath implements \IteratorAggregate, \Countable {
+class DOMQuery implements \IteratorAggregate, \Countable {
 
   /**
    * Default parser flags.
@@ -133,8 +83,8 @@ class QueryPath implements \IteratorAggregate, \Countable {
   /**
    * Constructor.
    *
-   * This should not be called directly. Use the {@link qp()} factory function
-   * instead.
+   * Typically, a new DOMQuery is created by QueryPath::with(), QueryPath::withHTML(),
+   * qp(), or htmlqp().
    *
    * @param mixed $document
    *   A document-like object.
@@ -229,48 +179,12 @@ class QueryPath implements \IteratorAggregate, \Countable {
     }
   }
 
-  /**
-   * A static function for transforming data into a Data URL.
-   *
-   * This can be used to create Data URLs for injection into CSS, JavaScript, or other
-   * non-XML/HTML content. If you are working with QP objects, you may want to use
-   * {@link dataURL()} instead.
-   *
-   * @param mixed $data
-   *  The contents to inject as the data. The value can be any one of the following:
-   *  - A URL: If this is given, then the subsystem will read the content from that URL. THIS
-   *    MUST BE A FULL URL, not a relative path.
-   *  - A string of data: If this is given, then the subsystem will encode the string.
-   *  - A stream or file handle: If this is given, the stream's contents will be encoded
-   *    and inserted as data.
-   *  (Note that we make the assumption here that you would never want to set data to be
-   *  a URL. If this is an incorrect assumption, file a bug.)
-   * @param string $mime
-   *  The MIME type of the document.
-   * @param resource $context
-   *  A valid context. Use this only if you need to pass a stream context. This is only necessary
-   *  if $data is a URL. (See {@link stream_context_create()}).
-   * @return
-   *  An encoded data URL.
-   */
-  public static function encodeDataURL($data, $mime = 'application/octet-stream', $context = NULL) {
-    if (is_resource($data)) {
-      $data = stream_get_contents($data);
-    }
-    elseif (filter_var($data, FILTER_VALIDATE_URL)) {
-      $data = file_get_contents($data, FALSE, $context);
-    }
-
-    $encoded = base64_encode($data);
-
-    return 'data:' . $mime . ';base64,' . $encoded;
-  }
 
   /**
-   * Get the effective options for the current QueryPath object.
+   * Get the effective options for the current DOMQuery object.
    *
    * This returns an associative array of all of the options as set
-   * for the current QueryPath object. This includes default options,
+   * for the current DOMQuery object. This includes default options,
    * options directly passed in via {@link qp()} or the constructor,
    * an options set in the QueryPath::Options object.
    *
@@ -312,8 +226,8 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * @param string $selector
    *  A selector. If this is supplied, QueryPath will navigate to the
    *  document root and then run the query. (Added in QueryPath 2.0 Beta 2)
-   * @return QueryPath
-   *  The QueryPath object, wrapping the root element (document element)
+   * @retval object DOMQuery
+   *  The DOMQuery object, wrapping the root element (document element)
    *  for the current document.
    */
   public function top($selector = NULL) {
@@ -326,7 +240,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
    *
    * @param string $selector
    *   CSS 3 Selector
-   * @return QueryPath
+   * @retval object DOMQuery
    * @see filter()
    * @see is()
    * @todo If a find() returns zero matches, then a subsequent find() will
@@ -413,7 +327,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * XPath provides a finer-grained query language. Use this to execute
    * XPath queries.
    *
-   * Beware, though. QueryPath works best on DOM Elements, but an XPath
+   * Beware, though. DOMQuery works best on DOM Elements, but an XPath
    * query can return other nodes, strings, and values. These may not work with
    * other QueryPath functions (though you will be able to access the
    * values with {@link get()}).
@@ -426,8 +340,8 @@ class QueryPath implements \IteratorAggregate, \Countable {
    *      in conjunction with 'namespace_uri'
    *   - 'namespace_uri': The URI to be used as the default namespace URI. Used
    *      with 'namespace_prefix'
-   * @return QueryPath
-   *  A QueryPath object wrapping the results of the query.
+   * @retval object DOMQuery
+   *  A DOMQuery object wrapping the results of the query.
    * @see find()
    * @author M Butcher
    * @author Xavier Prud'homme
@@ -467,8 +381,8 @@ class QueryPath implements \IteratorAggregate, \Countable {
   /**
    * Get the number of elements currently wrapped by this object.
    *
-   * Since QueryPath is Countable, the PHP count() function can also
-   * be used on a QueryPath.
+   * Since DOMQuery is Countable, the PHP count() function can also
+   * be used on a DOMQuery.
    *
    * @code
    * <?php
@@ -477,7 +391,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * @endcode
    *
    * @return int
-   *  The number of matches in the QueryPath.
+   *  The number of matches in the DOMQuery.
    */
   public function count() {
     return $this->matches->count();
@@ -487,20 +401,20 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * Get one or all elements from this object.
    *
    * When called with no paramaters, this returns all objects wrapped by
-   * the QueryPath. Typically, these are DOMElement objects (unless you have
-   * used {@link map()}, {@link xpath()}, or other methods that can select
+   * the DOMQuery. Typically, these are DOMElement objects (unless you have
+   * used map(), xpath(), or other methods that can select
    * non-elements).
    *
-   * When called with an index, it will return the item in the QueryPath with
+   * When called with an index, it will return the item in the DOMQuery with
    * that index number.
    *
-   * Calling this method does not change the QueryPath (e.g. it is
+   * Calling this method does not change the DOMQuery (e.g. it is
    * non-destructive).
    *
    * You can use qp()->get() to iterate over all elements matched. You can
-   * also iterate over qp() itself (QueryPath implementations must be Traversable).
+   * also iterate over qp() itself (DOMQuery implementations must be Traversable).
    * In the later case, though, each item
-   * will be wrapped in a QueryPath object. To learn more about iterating
+   * will be wrapped in a DOMQuery object. To learn more about iterating
    * in QueryPath, see {@link examples/techniques.php}.
    *
    * @param int $index
@@ -532,7 +446,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * Get the DOMDocument that we currently work with.
    *
    * This returns the current DOMDocument. Any changes made to this document will be
-   * accessible to QueryPath, as both will share access to the same object.
+   * accessible to DOMQuery, as both will share access to the same object.
    *
    * @return DOMDocument
    */
@@ -543,7 +457,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
   /**
    * On an XML document, load all XIncludes.
    *
-   * @return QueryPath
+   * @retval object DOMQuery
    */
   public function xinclude() {
     $this->document->xinclude();
@@ -579,7 +493,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * @param string $value
    *   A value (used only when setting an individual property).
    * @return mixed
-   *   If this was a setter request, return the QueryPath object. If this was
+   *   If this was a setter request, return the DOMQuery object. If this was
    *   an access request (getter), return the string value.
    * @see removeAttr()
    * @see tag()
@@ -649,7 +563,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
 
   /**
    * Set/get a CSS value for the current element(s).
-   * This sets the CSS value for each element in the QueryPath object.
+   * This sets the CSS value for each element in the DOMQuery object.
    * It does this by setting (or getting) the style attribute (without a namespace).
    *
    * For example, consider this code:
@@ -685,7 +599,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
    *  apply all rules to all elements in the set.
    * @param string $value
    *  The value to set. This is only set if $name is a string.
-   * @return QueryPath
+   * @retval object DOMQuery
    */
   public function css($name = NULL, $value = '') {
     if (empty($name)) {
@@ -760,8 +674,8 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * @param resource $context
    *  A valid context. Use this only if you need to pass a stream context. This is only necessary
    *  if $data is a URL. (See {@link stream_context_create()}).
-   * @return
-   *  If this is called as a setter, this will return a QueryPath object. Otherwise, it
+   * @retval mixed
+   *  If this is called as a setter, this will return a DOMQuery object. Otherwise, it
    *  will attempt to fetch data out of the attribute and return that.
    * @see http://en.wikipedia.org/wiki/Data:_URL
    * @see attr()
@@ -795,17 +709,17 @@ class QueryPath implements \IteratorAggregate, \Countable {
   }
 
   /**
-   * Remove the named attribute from all elements in the current QueryPath.
+   * Remove the named attribute from all elements in the current DOMQuery.
    *
    * This will remove any attribute with the given name. It will do this on each
-   * item currently wrapped by QueryPath.
+   * item currently wrapped by DOMQuery.
    *
    * As is the case in jQuery, this operation is not considered destructive.
    *
    * @param string $name
    *  Name of the parameter to remove.
-   * @return QueryPath
-   *  The QueryPath object with the same elements.
+   * @retval object DOMQuery
+   *  The DOMQuery object with the same elements.
    * @see attr()
    */
   public function removeAttr($name) {
@@ -825,7 +739,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * @param $index
    *  The index of the element to keep. The rest will be
    *  discarded.
-   * @return QueryPath
+   * @retval object DOMQuery
    * @see get()
    * @see is()
    * @see end()
@@ -870,14 +784,14 @@ class QueryPath implements \IteratorAggregate, \Countable {
         }
         return TRUE;
       }
-      throw new \QueryPath\Exception('Cannot compare an object to a QueryPath.');
+      throw new \QueryPath\Exception('Cannot compare an object to a DOMQuery.');
       return FALSE;
     }
 
     // Can this be replaced with qp($this->matches)->find($selector)->count()?
     // Or, better yet, $this->branch($selector)->count()?
     foreach ($this->matches as $m) {
-      $q = new QueryPathEventHandler($m);
+      $q = new \QueryPath\CSS\QueryPathEventHandler($m);
       if ($q->find($selector)->getMatches()->count()) {
         return TRUE;
       }
@@ -891,8 +805,8 @@ class QueryPath implements \IteratorAggregate, \Countable {
    *
    * @param string $selector
    *   The selector to use as a filter.
-   * @return QueryPath
-   *   The QueryPath with non-matching items filtered out.
+   * @retval object DOMQuery
+   *   The DOMQuery with non-matching items filtered out.
    * @see filterLambda()
    * @see filterCallback()
    * @see map()
@@ -925,7 +839,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
    *
    * @param string $fn
    *  Inline lambda function in a string.
-   * @return QueryPath
+   * @retval object DOMQuery
    * @see filter()
    * @see map()
    * @see mapLambda()
@@ -971,7 +885,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
    *
    * @param string $regex
    *  A regular expression.
-   * @return QueryPath
+   * @retval object DOMQuery
    * @see filter()
    * @see filterCallback()
    * @see preg_match()
@@ -1008,7 +922,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * @param callback $callback.
    *   A callback either as a string (function) or an array (object, method OR
    *   classname, method).
-   * @return QueryPath
+   * @retval object DOMQuery
    *   Query path object augmented according to the function.
    * @see filter()
    * @see filterLambda()
@@ -1035,8 +949,8 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * @param string $selector
    *  A selector to use as a negation filter. If the filter is matched, the
    *  element will be removed from the list.
-   * @return QueryPath
-   *  The QueryPath object with matching items filtered out.
+   * @retval object DOMQuery
+   *  The DOMQuery object with matching items filtered out.
    * @see find()
    */
   public function not($selector) {
@@ -1090,7 +1004,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * The mapping callback can return anything. Whatever it returns will be
    * stored as a match in the set, though. This means that afer a map call,
    * there is no guarantee that the elements in the set will behave correctly
-   * with other QueryPath functions.
+   * with other DOMQuery functions.
    *
    * Callback rules:
    * - If the callback returns NULL, the item will be removed from the array.
@@ -1104,11 +1018,11 @@ class QueryPath implements \IteratorAggregate, \Countable {
    *  - $index: The index position in the list of items wrapped by this object.
    *  - $item: The current item.
    *
-   * @return QueryPath
-   *  The QueryPath object wrapping a list of whatever values were returned
+   * @retval object DOMQuery
+   *  The DOMQuery object wrapping a list of whatever values were returned
    *  by each run of the callback.
    *
-   * @see QueryPath::get()
+   * @see DOMQuery::get()
    * @see filter()
    * @see find()
    */
@@ -1157,7 +1071,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
    *  The number of items to include in the slice. If nothing is specified, the
    *  all remaining matches (from $start onward) will be included in the sliced
    *  list.
-   * @return QueryPath
+   * @retval object DOMQuery
    * @see array_slice()
    */
   public function slice($start, $length = 0) {
@@ -1198,8 +1112,8 @@ class QueryPath implements \IteratorAggregate, \Countable {
    *
    * @param callback $callback
    *  The callback to run.
-   * @return QueryPath
-   *  The QueryPath.
+   * @retval object DOMQuery
+   *  The DOMQuery.
    * @see eachLambda()
    * @see filter()
    * @see map()
@@ -1222,8 +1136,8 @@ class QueryPath implements \IteratorAggregate, \Countable {
    *
    * @param string $lambda
    *  The lambda function. This will be passed ($index, &$item).
-   * @return QueryPath
-   *  The QueryPath object.
+   * @retval object DOMQuery
+   *  The DOMQuery object.
    * @see each()
    * @see filterLambda()
    * @see filterCallback()
@@ -1254,8 +1168,8 @@ class QueryPath implements \IteratorAggregate, \Countable {
    *
    * @param mixed $data
    *  This can be either a string (the usual case), or a DOM Element.
-   * @return QueryPath
-   *  The QueryPath object.
+   * @retval object DOMQuery
+   *  The DOMQuery object.
    * @see appendTo()
    * @see prepend()
    * @throws QueryPath::Exception
@@ -1300,17 +1214,17 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * $destination is queried (using that selector) prior to the data being
    * appended. The data is then appended to the found items.
    *
-   * @param QueryPath $dest
-   *  A QueryPath object that will be appended to.
-   * @return QueryPath
-   *  The original QueryPath, unaltered. Only the destination QueryPath will
+   * @param DOMQuery $dest
+   *  A DOMQuery object that will be appended to.
+   * @retval object DOMQuery
+   *  The original DOMQuery, unaltered. Only the destination DOMQuery will
    *  be modified.
    * @see append()
    * @see prependTo()
    * @throws QueryPath::Exception
    *  Thrown if $data is an unsupported object type.
    */
-  public function appendTo(QueryPath $dest) {
+  public function appendTo(DOMQuery $dest) {
     foreach ($this->matches as $m) $dest->append($m);
     return $this;
   }
@@ -1321,7 +1235,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
    *
    * @param mixed $data
    *  This can be either a string (the usual case), or a DOM Element.
-   * @return QueryPath
+   * @retval object DOMQuery
    * @see append()
    * @see before()
    * @see after()
@@ -1344,24 +1258,24 @@ class QueryPath implements \IteratorAggregate, \Countable {
   }
   /**
    * Take all nodes in the current object and prepend them to the children nodes of
-   * each matched node in the passed-in QueryPath object.
+   * each matched node in the passed-in DOMQuery object.
    *
-   * This will iterate through each item in the current QueryPath object and
+   * This will iterate through each item in the current DOMQuery object and
    * add each item to the beginning of the children of each element in the
-   * passed-in QueryPath object.
+   * passed-in DOMQuery object.
    *
    * @see insertBefore()
    * @see insertAfter()
    * @see prepend()
    * @see appendTo()
-   * @param QueryPath $dest
-   *  The destination QueryPath object.
-   * @return QueryPath
-   *  The original QueryPath, unmodified. NOT the destination QueryPath.
+   * @param DOMQuery $dest
+   *  The destination DOMQuery object.
+   * @retval object DOMQuery
+   *  The original DOMQuery, unmodified. NOT the destination DOMQuery.
    * @throws QueryPath::Exception
    *  Thrown if $data is an unsupported object type.
    */
-  public function prependTo(QueryPath $dest) {
+  public function prependTo(DOMQuery $dest) {
     foreach ($this->matches as $m) $dest->prepend($m);
     return $this;
   }
@@ -1370,13 +1284,13 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * Insert the given data before each element in the current set of matches.
    *
    * This will take the give data (XML or HTML) and put it before each of the items that
-   * the QueryPath object currently contains. Contrast this with after().
+   * the DOMQuery object currently contains. Contrast this with after().
    *
    * @param mixed $data
    *  The data to be inserted. This can be XML in a string, a DomFragment, a DOMElement,
    *  or the other usual suspects. (See {@link qp()}).
-   * @return QueryPath
-   *  Returns the QueryPath with the new modifications. The list of elements currently
+   * @retval object DOMQuery
+   *  Returns the DOMQuery with the new modifications. The list of elements currently
    *  selected will remain the same.
    * @see insertBefore()
    * @see after()
@@ -1396,13 +1310,13 @@ class QueryPath implements \IteratorAggregate, \Countable {
   }
   /**
    * Insert the current elements into the destination document.
-   * The items are inserted before each element in the given QueryPath document.
+   * The items are inserted before each element in the given DOMQuery document.
    * That is, they will be siblings with the current elements.
    *
-   * @param QueryPath $dest
-   *  Destination QueryPath document.
-   * @return QueryPath
-   *  The current QueryPath object, unaltered. Only the destination QueryPath
+   * @param DOMQuery $dest
+   *  Destination DOMQuery document.
+   * @retval object DOMQuery
+   *  The current DOMQuery object, unaltered. Only the destination DOMQuery
    *  object is altered.
    * @see before()
    * @see insertAfter()
@@ -1410,30 +1324,30 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * @throws QueryPath::Exception
    *  Thrown if $data is an unsupported object type.
    */
-  public function insertBefore(QueryPath $dest) {
+  public function insertBefore(DOMQuery $dest) {
     foreach ($this->matches as $m) $dest->before($m);
     return $this;
   }
   /**
-   * Insert the contents of the current QueryPath after the nodes in the
-   * destination QueryPath object.
+   * Insert the contents of the current DOMQuery after the nodes in the
+   * destination DOMQuery object.
    *
-   * @param QueryPath $dest
+   * @param DOMQuery $dest
    *  Destination object where the current elements will be deposited.
-   * @return QueryPath
-   *  The present QueryPath, unaltered. Only the destination object is altered.
+   * @retval object DOMQuery
+   *  The present DOMQuery, unaltered. Only the destination object is altered.
    * @see after()
    * @see insertBefore()
    * @see append()
    * @throws QueryPath::Exception
    *  Thrown if $data is an unsupported object type.
    */
-  public function insertAfter(QueryPath $dest) {
+  public function insertAfter(DOMQuery $dest) {
     foreach ($this->matches as $m) $dest->after($m);
     return $this;
   }
   /**
-   * Insert the given data after each element in the current QueryPath object.
+   * Insert the given data after each element in the current DOMQuery object.
    *
    * This inserts the element as a peer to the currently matched elements.
    * Contrast this with {@link append()}, which inserts the data as children
@@ -1441,8 +1355,8 @@ class QueryPath implements \IteratorAggregate, \Countable {
    *
    * @param mixed $data
    *  The data to be appended.
-   * @return QueryPath
-   *  The QueryPath object (with the items inserted).
+   * @retval object DOMQuery
+   *  The DOMQuery object (with the items inserted).
    * @see before()
    * @see append()
    * @throws QueryPath::Exception
@@ -1464,9 +1378,9 @@ class QueryPath implements \IteratorAggregate, \Countable {
    *
    * @param mixed $new
    *  A DOMElement or XML in a string. This will replace all elements
-   *  currently wrapped in the QueryPath object.
-   * @return QueryPath
-   *  The QueryPath object wrapping <b>the items that were removed</b>.
+   *  currently wrapped in the DOMQuery object.
+   * @retval object DOMQuery
+   *  The DOMQuery object wrapping <b>the items that were removed</b>.
    *  This remains consistent with the jQuery API.
    * @see append()
    * @see prepend()
@@ -1517,8 +1431,8 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * element, and replace the child as the root element. Be careful, though.
    * You cannot set more than one child as a root element.)
    *
-   * @return QueryPath
-   *  The QueryPath object, with the same element(s) selected.
+   * @retval object DOMQuery
+   *  The DOMQuery object, with the same element(s) selected.
    * @throws QueryPath::Exception
    *  An exception is thrown if one attempts to unwrap a root element.
    * @see wrap()
@@ -1558,13 +1472,13 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * Wrap each element inside of the given markup.
    *
    * Markup is usually a string, but it can also be a DOMNode, a document
-   * fragment, a SimpleXMLElement, or another QueryPath object (in which case
+   * fragment, a SimpleXMLElement, or another DOMNode object (in which case
    * the first item in the list will be used.)
    *
    * @param mixed $markup
    *  Markup that will wrap each element in the current list.
-   * @return QueryPath
-   *  The QueryPath object with the wrapping changes made.
+   * @retval object DOMQuery
+   *  The DOMQuery object with the wrapping changes made.
    * @see wrapAll()
    * @see wrapInner()
    */
@@ -1606,13 +1520,13 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * accordance with the way jQuery works.)
    *
    * Markup is usually XML in a string, but it can also be a DOMNode, a document
-   * fragment, a SimpleXMLElement, or another QueryPath object (in which case
+   * fragment, a SimpleXMLElement, or another DOMNode object (in which case
    * the first item in the list will be used.)
    *
    * @param string $markup
    *  Markup that will wrap all elements in the current list.
-   * @return QueryPath
-   *  The QueryPath object with the wrapping changes made.
+   * @retval object DOMQuery
+   *  The DOMQuery object with the wrapping changes made.
    * @see wrap()
    * @see wrapInner()
    */
@@ -1645,13 +1559,13 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * Wrap the child elements of each item in the list with the given markup.
    *
    * Markup is usually a string, but it can also be a DOMNode, a document
-   * fragment, a SimpleXMLElement, or another QueryPath object (in which case
+   * fragment, a SimpleXMLElement, or another DOMNode object (in which case
    * the first item in the list will be used.)
    *
    * @param string $markup
    *  Markup that will wrap children of each element in the current list.
-   * @return QueryPath
-   *  The QueryPath object with the wrapping changes made.
+   * @retval object DOMQuery
+   *  The DOMQuery object with the wrapping changes made.
    * @see wrap()
    * @see wrapAll()
    */
@@ -1692,8 +1606,8 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * In the case where there are multiple nodes at the same depth, all of the
    * nodes at that depth will be included.
    *
-   * @return QueryPath
-   *  The QueryPath wrapping the single deepest node.
+   * @retval object DOMQuery
+   *  The DOMQuery wrapping the single deepest node.
    */
   public function deepest() {
     $deepest = 0;
@@ -1760,7 +1674,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * This handles a variety of boilerplate tasks that need doing before an
    * indeterminate object can be inserted into a DOM tree.
    * - If item is a string, this is converted into a document fragment and returned.
-   * - If item is a QueryPath, then the first item is retrieved and this call function
+   * - If item is a DOMQuery, then the first item is retrieved and this call function
    *   is called recursivel.
    * - If the item is a DOMNode, it is imported into the current DOM if necessary.
    * - If the item is a SimpleXMLElement, it is converted into a DOM node and then
@@ -1796,7 +1710,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
       restore_error_handler();
       return $frag;
     }
-    elseif ($item instanceof QueryPath) {
+    elseif ($item instanceof DOMQuery) {
       if ($item->size() == 0)
         return;
 
@@ -1835,7 +1749,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * Remove any items from the list if they match the selector.
    *
    * In other words, each item that matches the selector will be remove
-   * from the DOM document. The returned QueryPath wraps the list of
+   * from the DOM document. The returned DOMQuery wraps the list of
    * removed elements.
    *
    * If no selector is specified, this will remove all current matches from
@@ -1843,7 +1757,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
    *
    * @param string $selector
    *  A CSS Selector.
-   * @return QueryPath
+   * @retval object DOMQuery
    *  The Query path wrapping a list of removed items.
    * @see replaceAll()
    * @see replaceWith()
@@ -1867,9 +1781,10 @@ class QueryPath implements \IteratorAggregate, \Countable {
       $found->attach($item->parentNode->removeChild($item));
     }
 
-    // Return a clone QueryPath with just the removed items. If
-    // no items are found, this will return an empty QueryPath.
-    return count($found) == 0 ? new QueryPath() : new QueryPath($found);
+    // Return a clone DOMQuery with just the removed items. If
+    // no items are found, this will return an empty DOMQuery.
+    $klass = __CLASS__;
+    return count($found) == 0 ? new $klass() : new $klass($found);
   }
   /**
    * This replaces everything that matches the selector with the first value
@@ -1877,7 +1792,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
    *
    * This is the reverse of replaceWith.
    *
-   * Unlike jQuery, QueryPath cannot assume a default document. Consequently,
+   * Unlike jQuery, DOMQuery cannot assume a default document. Consequently,
    * you must specify the intended destination document. If it is omitted, the
    * present document is assumed to be tthe document. However, that can result
    * in undefined behavior if the selector and the replacement are not sufficiently
@@ -1887,8 +1802,8 @@ class QueryPath implements \IteratorAggregate, \Countable {
    *  The selector.
    * @param DOMDocument $document
    *  The destination document.
-   * @return QueryPath
-   *  The QueryPath wrapping the modified document.
+   * @retval object DOMQuery
+   *  The DOMQuery wrapping the modified document.
    * @deprecated Due to the fact that this is not a particularly friendly method,
    *  and that it can be easily replicated using {@see replaceWith()}, it is to be
    *  considered deprecated.
@@ -1917,8 +1832,8 @@ class QueryPath implements \IteratorAggregate, \Countable {
    *
    * @param string $selector
    *  A valid selector.
-   * @return QueryPath
-   *  The QueryPath object with the newly added elements.
+   * @retval object DOMQuery
+   *  The DOMQuery object with the newly added elements.
    * @see append()
    * @see after()
    * @see andSelf()
@@ -1960,8 +1875,8 @@ class QueryPath implements \IteratorAggregate, \Countable {
    *
    * The last one returns an empty array because only one level of changes is stored.
    *
-   * @return QueryPath
-   *  A QueryPath object reflecting the list of matches prior to the last destructive
+   * @retval object DOMQuery
+   *  A DOMNode object reflecting the list of matches prior to the last destructive
    *  operation.
    * @see andSelf()
    * @see add()
@@ -1986,8 +1901,8 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * are beneath p elements.
    *
    * @see end();
-   * @return QueryPath
-   *  A QueryPath object with the results of the last two "destructive" operations.
+   * @retval object DOMQuery
+   *  A DOMNode object with the results of the last two "destructive" operations.
    * @see add()
    * @see end()
    */
@@ -2006,8 +1921,8 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * This is equivalent to jQuery's empty() function. (However, empty() is a
    * PHP built-in, and cannot be used as a method name.)
    *
-   * @return QueryPath
-   *  The QueryPath object with the child nodes removed.
+   * @retval object DOMQuery
+   *  The DOMQuery object with the child nodes removed.
    * @see replaceWith()
    * @see replaceAll()
    * @see remove()
@@ -2021,15 +1936,15 @@ class QueryPath implements \IteratorAggregate, \Countable {
     return $this;
   }
   /**
-   * Get the children of the elements in the QueryPath object.
+   * Get the children of the elements in the DOMQuery object.
    *
    * If a selector is provided, the list of children will be filtered through
    * the selector.
    *
    * @param string $selector
    *  A valid selector.
-   * @return QueryPath
-   *  A QueryPath wrapping all of the children.
+   * @retval object DOMQuery
+   *  A DOMQuery wrapping all of the children.
    * @see removeChildren()
    * @see parent()
    * @see parents()
@@ -2060,9 +1975,9 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * This does not process iframes. Xinclude processing is dependent on the
    * DOM implementation and configuration.
    *
-   * @return QueryPath
-   *  A QueryPath object wrapping all child nodes for all elements in the
-   *  QueryPath object.
+   * @retval object DOMQuery
+   *  A DOMNode object wrapping all child nodes for all elements in the
+   *  DOMNode object.
    * @see find()
    * @see text()
    * @see html()
@@ -2087,7 +2002,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * This will compile a list of every sibling of every element in the
    * current list of elements.
    *
-   * Note that if two siblings are present in the QueryPath object to begin with,
+   * Note that if two siblings are present in the DOMQuery object to begin with,
    * then both will be returned in the matched set, since they are siblings of each
    * other. In other words,if the matches contain a and b, and a and b are siblings of
    * each other, than running siblings will return a set that contains
@@ -2096,8 +2011,8 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * @param string $selector
    *  If the optional selector is provided, siblings will be filtered through
    *  this expression.
-   * @return QueryPath
-   *  The QueryPath containing the matched siblings.
+   * @retval object DOMQuery
+   *  The DOMQuery containing the matched siblings.
    * @see contents()
    * @see children()
    * @see parent()
@@ -2132,7 +2047,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * It is provided for jQuery 1.3 compatibility.
    * @param string $selector
    *  A CSS Selector to match.
-   * @return QueryPath
+   * @retval object DOMQuery
    *  The set of matches.
    * @since 2.0
    */
@@ -2159,15 +2074,15 @@ class QueryPath implements \IteratorAggregate, \Countable {
     return $this;
   }
   /**
-   * Get the immediate parent of each element in the QueryPath.
+   * Get the immediate parent of each element in the DOMQuery.
    *
    * If a selector is passed, this will return the nearest matching parent for
-   * each element in the QueryPath.
+   * each element in the DOMQuery.
    *
    * @param string $selector
    *  A valid CSS3 selector.
-   * @return QueryPath
-   *  A QueryPath object wrapping the matching parents.
+   * @retval object DOMQuery
+   *  A DOMNode object wrapping the matching parents.
    * @see children()
    * @see siblings()
    * @see parents()
@@ -2196,15 +2111,15 @@ class QueryPath implements \IteratorAggregate, \Countable {
     return $this;
   }
   /**
-   * Get all ancestors of each element in the QueryPath.
+   * Get all ancestors of each element in the DOMQuery.
    *
    * If a selector is present, only matching ancestors will be retrieved.
    *
    * @see parent()
    * @param string $selector
    *  A valid CSS 3 Selector.
-   * @return QueryPath
-   *  A QueryPath object containing the matching ancestors.
+   * @retval object DOMQuery
+   *  A DOMNode object containing the matching ancestors.
    * @see siblings()
    * @see children()
    */
@@ -2247,7 +2162,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * @param string $markup
    *  The text to insert.
    * @return mixed
-   *  A string if no markup was passed, or a QueryPath if markup was passed.
+   *  A string if no markup was passed, or a DOMQuery if markup was passed.
    * @see xml()
    * @see text()
    * @see contents()
@@ -2292,11 +2207,11 @@ class QueryPath implements \IteratorAggregate, \Countable {
   }
 
   /**
-   * Fetch the HTML contents INSIDE of the first QueryPath item.
+   * Fetch the HTML contents INSIDE of the first DOMQuery item.
    *
    * <b>This behaves the way jQuery's @codehtml()@endcode function behaves.</b>
    *
-   * This gets all children of the first match in QueryPath.
+   * This gets all children of the first match in DOMQuery.
    *
    * Consider this fragment:
    * @code
@@ -2455,7 +2370,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
    *  If this is not NULL, this value will be set as the text of the node. It
    *  will replace any existing content.
    * @return mixed
-   *  A QueryPath if $text is set, or the text content if no text
+   *  A DOMQuery if $text is set, or the text content if no text
    *  is passed in as a pram.
    * @see html()
    * @see xml()
@@ -2496,7 +2411,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
    *  If this is set, it will be inserted before each node in the current set of
    *  selected items.
    * @return mixed
-   *  Returns the QueryPath object if $text was set, and returns a string (possibly empty)
+   *  Returns the DOMQuery object if $text was set, and returns a string (possibly empty)
    *  if no param is passed.
    */
   public function textBefore($text = NULL) {
@@ -2547,7 +2462,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * @see attr()
    * @param string $value
    * @return mixed
-   *  Returns a QueryPath if a string was passed in, and a string if no string
+   *  Returns a DOMQuery if a string was passed in, and a string if no string
    *  was passed in. In the later case, an error will produce NULL.
    */
   public function val($value = NULL) {
@@ -2571,7 +2486,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * @param string $markup
    *  A string containing XML data.
    * @return mixed
-   *  If markup is passed in, a QueryPath is returned. If no markup is passed
+   *  If markup is passed in, a DOMQuery is returned. If no markup is passed
    *  in, XML representing the first matched element is returned.
    * @see html()
    * @see innerXHTML()
@@ -2639,17 +2554,17 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * Like {@link html()}, this functions in both a setter and a getter mode.
    *
    * In setter mode, the string passed in will be parsed and then appended to the
-   * elements wrapped by this QueryPath object.When in setter mode, this parses
+   * elements wrapped by this DOMNode object.When in setter mode, this parses
    * the XML using the DOMFragment parser. For that reason, an XML declaration
    * is not necessary.
    *
-   * In getter mode, the first element wrapped by this QueryPath object will be
+   * In getter mode, the first element wrapped by this DOMNode object will be
    * converted to an XML string and returned.
    *
    * @param string $markup
    *  A string containing XML data.
    * @return mixed
-   *  If markup is passed in, a QueryPath is returned. If no markup is passed
+   *  If markup is passed in, a DOMQuery is returned. If no markup is passed
    *  in, XML representing the first matched element is returned.
    * @see xhtml()
    * @see html()
@@ -2706,8 +2621,8 @@ class QueryPath implements \IteratorAggregate, \Countable {
    *  sent to the remote browser.
    * @param int $options
    *  (As of QueryPath 2.1) Pass libxml options to the saving mechanism.
-   * @return QueryPath
-   *  The QueryPath object, unmodified.
+   * @retval object DOMQuery
+   *  The DOMQuery object, unmodified.
    * @see xml()
    * @see innerXML()
    * @see writeXHTML()
@@ -2743,8 +2658,8 @@ class QueryPath implements \IteratorAggregate, \Countable {
    *  The path to the file into which the XML should be written. if
    *  this is NULL, data will be written to STDOUT, which is usually
    *  sent to the remote browser.
-   * @return QueryPath
-   *  The QueryPath object, unmodified.
+   * @retval object DOMQuery
+   *  The DOMQuery object, unmodified.
    * @see html()
    * @see innerHTML()
    * @throws Exception
@@ -2785,8 +2700,8 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * @see xhtml()
    * @param string $path
    *  The filename of the file to write to.
-   * @return QueryPath
-   *  Returns the QueryPath, unmodified.
+   * @retval object DOMQuery
+   *  Returns the DOMQuery, unmodified.
    * @throws Exception
    *  In the event that the output file cannot be written, an exception is
    *  thrown.
@@ -2796,14 +2711,14 @@ class QueryPath implements \IteratorAggregate, \Countable {
     return $this->writeXML($path, LIBXML_NOEMPTYTAG);
   }
   /**
-   * Get the next sibling of each element in the QueryPath.
+   * Get the next sibling of each element in the DOMQuery.
    *
    * If a selector is provided, the next matching sibling will be returned.
    *
    * @param string $selector
    *  A CSS3 selector.
-   * @return QueryPath
-   *  The QueryPath object.
+   * @retval object DOMQuery
+   *  The DOMQuery object.
    * @see nextAll()
    * @see prev()
    * @see children()
@@ -2836,14 +2751,14 @@ class QueryPath implements \IteratorAggregate, \Countable {
   /**
    * Get all siblings after an element.
    *
-   * For each element in the QueryPath, get all siblings that appear after
+   * For each element in the DOMQuery, get all siblings that appear after
    * it. If a selector is passed in, then only siblings that match the
    * selector will be included.
    *
    * @param string $selector
    *  A valid CSS 3 selector.
-   * @return QueryPath
-   *  The QueryPath object, now containing the matching siblings.
+   * @retval object DOMQuery
+   *  The DOMQuery object, now containing the matching siblings.
    * @see next()
    * @see prevAll()
    * @see children()
@@ -2870,16 +2785,16 @@ class QueryPath implements \IteratorAggregate, \Countable {
     return $this;
   }
   /**
-   * Get the next sibling before each element in the QueryPath.
+   * Get the next sibling before each element in the DOMQuery.
    *
-   * For each element in the QueryPath, this retrieves the previous sibling
+   * For each element in the DOMQuery, this retrieves the previous sibling
    * (if any). If a selector is supplied, it retrieves the first matching
    * sibling (if any is found).
    *
    * @param string $selector
    *  A valid CSS 3 selector.
-   * @return QueryPath
-   *  A QueryPath object, now containing any previous siblings that have been
+   * @retval object DOMQuery
+   *  A DOMNode object, now containing any previous siblings that have been
    *  found.
    * @see prevAll()
    * @see next()
@@ -2909,15 +2824,15 @@ class QueryPath implements \IteratorAggregate, \Countable {
     return $this;
   }
   /**
-   * Get the previous siblings for each element in the QueryPath.
+   * Get the previous siblings for each element in the DOMQuery.
    *
-   * For each element in the QueryPath, get all previous siblings. If a
+   * For each element in the DOMQuery, get all previous siblings. If a
    * selector is provided, only matching siblings will be retrieved.
    *
    * @param string $selector
    *  A valid CSS 3 selector.
-   * @return QueryPath
-   *  The QueryPath object, now wrapping previous sibling elements.
+   * @retval object DOMQuery
+   *  The DOMQuery object, now wrapping previous sibling elements.
    * @see prev()
    * @see nextAll()
    * @see siblings()
@@ -2967,17 +2882,17 @@ class QueryPath implements \IteratorAggregate, \Countable {
     return $this;
   }
   /**
-   * Add a class to all elements in the current QueryPath.
+   * Add a class to all elements in the current DOMQuery.
    *
    * This searchers for a class attribute on each item wrapped by the current
-   * QueryPath object. If no attribute is found, a new one is added and its value
+   * DOMNode object. If no attribute is found, a new one is added and its value
    * is set to $class. If a class attribute is found, then the value is appended
    * on to the end.
    *
    * @param string $class
    *  The name of the class.
-   * @return QueryPath
-   *  Returns the QueryPath object.
+   * @retval object DOMQuery
+   *  Returns the DOMQuery object.
    * @see css()
    * @see attr()
    * @see removeClass()
@@ -2996,7 +2911,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
     return $this;
   }
   /**
-   * Remove the named class from any element in the QueryPath that has it.
+   * Remove the named class from any element in the DOMQuery that has it.
    *
    * This may result in the entire class attribute being removed. If there
    * are other items in the class attribute, though, they will not be removed.
@@ -3021,8 +2936,8 @@ class QueryPath implements \IteratorAggregate, \Countable {
    *
    * @param string $class
    *  The class name to remove.
-   * @return QueryPath
-   *  The modified QueryPath object.
+   * @retval object DOMQuery
+   *  The modified DOMNode object.
    * @see attr()
    * @see addClass()
    * @see hasClass()
@@ -3046,7 +2961,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
     return $this;
   }
   /**
-   * Returns TRUE if any of the elements in the QueryPath have the specified class.
+   * Returns TRUE if any of the elements in the DOMQuery have the specified class.
    *
    * @param string $class
    *  The name of the class.
@@ -3066,19 +2981,19 @@ class QueryPath implements \IteratorAggregate, \Countable {
   }
 
   /**
-   * Branch the base QueryPath into another one with the same matches.
+   * Branch the base DOMQuery into another one with the same matches.
    *
-   * This function makes a copy of the QueryPath object, but keeps the new copy
+   * This function makes a copy of the DOMQuery object, but keeps the new copy
    * (initially) pointed at the same matches. This object can then be queried without
-   * changing the original QueryPath. However, changes to the elements inside of this
-   * QueryPath will show up in the QueryPath from which it is branched.
+   * changing the original DOMQuery. However, changes to the elements inside of this
+   * DOMQuery will show up in the DOMQuery from which it is branched.
    *
    * Compare this operation with {@link cloneAll()}. The cloneAll() call takes
-   * the current QueryPath object and makes a copy of all of its matches. You continue
-   * to operate on the same QueryPath object, but the elements inside of the QueryPath
+   * the current DOMNode object and makes a copy of all of its matches. You continue
+   * to operate on the same DOMNode object, but the elements inside of the DOMQuery
    * are copies of those before the call to cloneAll().
    *
-   * This, on the other hand, copies <i>the QueryPath</i>, but keeps valid
+   * This, on the other hand, copies <i>the DOMQuery</i>, but keeps valid
    * references to the document and the wrapped elements. A new query branch is
    * created, but any changes will be written back to the same document.
    *
@@ -3090,14 +3005,14 @@ class QueryPath implements \IteratorAggregate, \Countable {
    *
    * @code
    * <?php
-   * $qp = qp(QueryPath::HTML_STUB);
+   * $qp = qp( QueryPath::HTML_STUB);
    * $branch = $qp->branch();
    * $branch->find('title')->text('Title');
    * $qp->find('body')->text('This is the body')->writeHTML;
    * ?>
    * @endcode
    *
-   * Notice that in the code, each of the QueryPath objects is doing its own
+   * Notice that in the code, each of the DOMQuery objects is doing its own
    * query. However, both are modifying the same document. The result of the above
    * would look something like this:
    *
@@ -3119,14 +3034,14 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * function because there is (implicitly) only one document. In QueryPath, there
    * is no implicit document. Every document must be explicitly specified (and,
    * in most cases, parsed -- which is costly). Branching makes it possible to
-   * work on one document with multiple QueryPath objects.
+   * work on one document with multiple DOMNode objects.
    *
    * @param string $selector
    *  If a selector is passed in, an additional {@link find()} will be executed
    *  on the branch before it is returned. (Added in QueryPath 2.0.)
-   * @return QueryPath
-   *  A copy of the QueryPath object that points to the same set of elements that
-   *  the original QueryPath was pointing to.
+   * @retval object DOMQuery
+   *  A copy of the DOMQuery object that points to the same set of elements that
+   *  the original DOMQuery was pointing to.
    * @since 1.1
    * @see cloneAll()
    * @see find()
@@ -3137,10 +3052,10 @@ class QueryPath implements \IteratorAggregate, \Countable {
     return $temp;
   }
   /**
-   * Perform a deep clone of each node in the QueryPath.
+   * Perform a deep clone of each node in the DOMQuery.
    *
-   * This does not clone the QueryPath object, but instead clones the
-   * list of nodes wrapped by the QueryPath. Every element is deeply
+   * This does not clone the DOMQuery object, but instead clones the
+   * list of nodes wrapped by the DOMQuery. Every element is deeply
    * cloned.
    *
    * This method is analogous to jQuery's clone() method.
@@ -3148,7 +3063,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * This is a destructive operation, which means that end() will revert
    * the list back to the clone's original.
    * @see qp()
-   * @return QueryPath
+   * @retval object DOMQuery
    */
   public function cloneAll() {
     $found = new \SplObjectStorage();
@@ -3158,9 +3073,9 @@ class QueryPath implements \IteratorAggregate, \Countable {
   }
 
   /**
-   * Clone the QueryPath.
+   * Clone the DOMQuery.
    *
-   * This makes a deep clone of the elements inside of the QueryPath.
+   * This makes a deep clone of the elements inside of the DOMQuery.
    *
    * This clones only the QueryPathImpl, not all of the decorators. The
    * clone operator in PHP should handle the cloning of the decorators.
@@ -3176,7 +3091,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * Detach any items from the list if they match the selector.
    *
    * In other words, each item that matches the selector will be remove
-   * from the DOM document. The returned QueryPath wraps the list of
+   * from the DOM document. The returned DOMQuery wraps the list of
    * removed elements.
    *
    * If no selector is specified, this will remove all current matches from
@@ -3184,7 +3099,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
    *
    * @param string $selector
    *  A CSS Selector.
-   * @return QueryPath
+   * @retval object DOMQuery
    *  The Query path wrapping a list of removed items.
    * @see replaceAll()
    * @see replaceWith()
@@ -3214,9 +3129,9 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * If no selector is specified, this will remove all current matches from
    * the document.
    *
-   * @param QueryPath $dest
-   *  A QueryPath Selector.
-   * @return QueryPath
+   * @param DOMQuery $dest
+   *  A DOMQuery Selector.
+   * @retval object DOMQuery
    *  The Query path wrapping a list of removed items.
    * @see replaceAll()
    * @see replaceWith()
@@ -3224,13 +3139,13 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * @since 2.1
    * @author eabrand
    */
-  public function attach(QueryPath $dest) {
+  public function attach(DOMQuery $dest) {
     foreach ($this->last as $m) $dest->append($m);
     return $this;
   }
 
   /**
-   * Reduce the elements matched by QueryPath to only those which contain the given item.
+   * Reduce the elements matched by DOMQuery to only those which contain the given item.
    *
    * There are two ways in which this is different from jQuery's implementation:
    * - We allow ANY DOMNode, not just DOMElements. That means this will work on
@@ -3240,7 +3155,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
    *
    * @param mixed $contained
    *   - If $contained is a CSS selector (e.g. '#foo'), this will test to see
-   *     if the current QueryPath has any elements that contain items that match
+   *     if the current DOMQuery has any elements that contain items that match
    *     the selector.
    *   - If $contained is a DOMNode, then this will test to see if THE EXACT DOMNode
    *     exists in the currently matched elements. (Note that you cannot match across DOM trees, even if it is the same document.)
@@ -3263,7 +3178,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
     }
 
     // Now we go through each of the nodes that we are testing. We want to find
-    // ALL PARENTS that are in our existing QueryPath matches. Those are the
+    // ALL PARENTS that are in our existing DOMQuery matches. Those are the
     // ones we add to our new matches.
     foreach ($nodes as $original_node) {
       $node = $original_node;
@@ -3286,8 +3201,8 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * empty() function. However, `empty` is a built-in in PHP, and cannot be used as a
    * function name.
    *
-   * @return QueryPath
-   *  The QueryPath object with the newly emptied elements.
+   * @retval object DOMQuery
+   *  The DOMQuery object with the newly emptied elements.
    * @see removeChildren()
    * @since 2.1
    * @author eabrand
@@ -3303,8 +3218,8 @@ class QueryPath implements \IteratorAggregate, \Countable {
    *
    *
    *
-   * @return QueryPath
-   *  A QueryPath wrapping all of the children.
+   * @retval object DOMQuery
+   *  A DOMQuery wrapping all of the children.
    * @see removeChildren()
    * @see parent()
    * @see parents()
@@ -3330,8 +3245,8 @@ class QueryPath implements \IteratorAggregate, \Countable {
    *
    *
    *
-   * @return QueryPath
-   *  A QueryPath wrapping all of the children.
+   * @retval object DOMQuery
+   *  A DOMQuery wrapping all of the children.
    * @see removeChildren()
    * @see parent()
    * @see parents()
@@ -3356,8 +3271,8 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * Get the first matching element.
    *
    *
-   * @return QueryPath
-   *  A QueryPath wrapping all of the children.
+   * @retval object DOMQuery
+   *  A DOMQuery wrapping all of the children.
    * @see next()
    * @see prev()
    * @since 2.1
@@ -3380,8 +3295,8 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * Get the first child of the matching element.
    *
    *
-   * @return QueryPath
-   *  A QueryPath wrapping all of the children.
+   * @retval object DOMQuery
+   *  A DOMQuery wrapping all of the children.
    * @see next()
    * @see prev()
    * @since 2.1
@@ -3410,8 +3325,8 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * Get the last matching element.
    *
    *
-   * @return QueryPath
-   *  A QueryPath wrapping all of the children.
+   * @retval object DOMQuery
+   *  A DOMQuery wrapping all of the children.
    * @see next()
    * @see prev()
    * @since 2.1
@@ -3437,8 +3352,8 @@ class QueryPath implements \IteratorAggregate, \Countable {
    * Get the last child of the matching element.
    *
    *
-   * @return QueryPath
-   *  A QueryPath wrapping all of the children.
+   * @retval object DOMQuery
+   *  A DOMQuery wrapping all of the children.
    * @see next()
    * @see prev()
    * @since 2.1
@@ -3466,14 +3381,14 @@ class QueryPath implements \IteratorAggregate, \Countable {
   /**
    * Get all siblings after an element until the selector is reached.
    *
-   * For each element in the QueryPath, get all siblings that appear after
+   * For each element in the DOMQuery, get all siblings that appear after
    * it. If a selector is passed in, then only siblings that match the
    * selector will be included.
    *
    * @param string $selector
    *  A valid CSS 3 selector.
-   * @return QueryPath
-   *  The QueryPath object, now containing the matching siblings.
+   * @retval object DOMQuery
+   *  The DOMQuery object, now containing the matching siblings.
    * @see next()
    * @see prevAll()
    * @see children()
@@ -3506,16 +3421,16 @@ class QueryPath implements \IteratorAggregate, \Countable {
   }
 
   /**
-   * Get the previous siblings for each element in the QueryPath
+   * Get the previous siblings for each element in the DOMQuery
    * until the selector is reached.
    *
-   * For each element in the QueryPath, get all previous siblings. If a
+   * For each element in the DOMQuery, get all previous siblings. If a
    * selector is provided, only matching siblings will be retrieved.
    *
    * @param string $selector
    *  A valid CSS 3 selector.
-   * @return QueryPath
-   *  The QueryPath object, now wrapping previous sibling elements.
+   * @retval object DOMQuery
+   *  The DOMQuery object, now wrapping previous sibling elements.
    * @see prev()
    * @see nextAll()
    * @see siblings()
@@ -3542,15 +3457,15 @@ class QueryPath implements \IteratorAggregate, \Countable {
   }
 
   /**
-   * Get all ancestors of each element in the QueryPath until the selector is reached.
+   * Get all ancestors of each element in the DOMQuery until the selector is reached.
    *
    * If a selector is present, only matching ancestors will be retrieved.
    *
    * @see parent()
    * @param string $selector
    *  A valid CSS 3 Selector.
-   * @return QueryPath
-   *  A QueryPath object containing the matching ancestors.
+   * @retval object DOMQuery
+   *  A DOMNode object containing the matching ancestors.
    * @see siblings()
    * @see children()
    * @since 2.1
@@ -3713,7 +3628,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
   /**
    * A utility function for retriving a match by index.
    *
-   * The internal data structure used in QueryPath does not have
+   * The internal data structure used in DOMQuery does not have
    * strong random access support, so we suppliment it with this method.
    */
   private function getNthMatch($index) {
@@ -3841,7 +3756,7 @@ class QueryPath implements \IteratorAggregate, \Countable {
     // enough extensions.)
     //
     // The main reason for moving this out of the constructor is that most
-    // new QueryPath instances do not use extensions. Charging qp() calls
+    // new DOMQuery instances do not use extensions. Charging qp() calls
     // with the additional hit is not a good idea.
     //
     // Also, this will at least limit the number of circular references.

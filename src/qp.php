@@ -44,6 +44,7 @@ if (!class_exists('\QueryPath\QueryPath')) {
   require __DIR__ . '/QueryPath/Options.php';
   require __DIR__ . '/QueryPath/QueryPathIterator.php';
   require __DIR__ . '/QueryPath/QueryPath.php';
+  require __DIR__ . '/QueryPath.php';
 }
 /** @addtogroup querypath_core Core API
  * Core classes and functions for QueryPath.
@@ -173,11 +174,7 @@ if (!class_exists('\QueryPath\QueryPath')) {
  * @return QueryPath
  */
 function qp($document = NULL, $string = NULL, $options = array()) {
-
-  $qpClass = isset($options['QueryPath_class']) ? $options['QueryPath_class'] : '\QueryPath\QueryPath';
-
-  $qp = new $qpClass($document, $string, $options);
-  return $qp;
+  return QueryPath::with($document, $string, $options);
 }
 
 /**
@@ -205,19 +202,5 @@ function qp($document = NULL, $string = NULL, $options = array()) {
  * @see qp()
  */
 function htmlqp($document = NULL, $selector = NULL, $options = array()) {
-
-  // Need a way to force an HTML parse instead of an XML parse when the
-  // doctype is XHTML, since many XHTML documents are not valid XML
-  // (because of coding errors, not by design).
-
-  $options += array(
-    'ignore_parser_warnings' => TRUE,
-    'convert_to_encoding' => 'ISO-8859-1',
-    'convert_from_encoding' => 'auto',
-    //'replace_entities' => TRUE,
-    'use_parser' => 'html',
-    // This is stripping actually necessary low ASCII.
-    //'strip_low_ascii' => TRUE,
-  );
-  return @qp($document, $selector, $options);
+  return QueryPath::withHTML($document, $selector, $options);
 }

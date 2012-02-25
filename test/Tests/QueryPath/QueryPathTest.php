@@ -1,6 +1,6 @@
 <?php
 /** @file
- * Tests for the QueryPath library.
+ * Tests for the DOMQuery class.
  *
  *
  * @author M Butcher <matt@aleph-null.tv>
@@ -10,10 +10,10 @@
 namespace QueryPath\Tests;
 
 /** @addtogroup querypath_tests Tests
- * Unit tests and regression tests for QueryPath.
+ * Unit tests and regression tests for DOMQuery.
  */
 
-use QueryPath\QueryPath;
+use QueryPath\DOMQuery;
 
 /** */
 require_once 'PHPUnit/Autoload.php';
@@ -31,9 +31,9 @@ define('HTML_IN_XML_FILE', __DIR__ . '/../../html.xml');
  * factory function.
  * @ingroup querypath_tests
  */
-class QueryPathTest extends TestCase {
+class DOMQueryTest extends TestCase {
 
-  public function testQueryPathConstructors() {
+  public function testDOMQueryConstructors() {
 
     // From XML file
     $file = DATA_FILE;
@@ -75,7 +75,7 @@ class QueryPathTest extends TestCase {
     $this->assertEquals(1, count($qp->get()));
     $this->assertTrue($qp->get(0) instanceof \DOMNode);
 
-    // Test with another QueryPath
+    // Test with another DOMQuery.
     $qp = qp($qp);
     $this->assertEquals(1, count($qp->get()));
     $this->assertTrue($qp->get(0) instanceof \DOMNode);
@@ -90,7 +90,7 @@ class QueryPathTest extends TestCase {
   /**
    * Test alternate constructors.
    */
-  public function testQueryPathHtmlConstructors() {
+  public function testDOMQueryHtmlConstructors() {
     $qp = htmlqp(QueryPath::HTML_STUB);
     $this->assertEquals(1, count($qp->get()));
     $this->assertTrue($qp->get(0) instanceof \DOMNode);
@@ -130,7 +130,7 @@ class QueryPathTest extends TestCase {
   }
 
   public function testForTests() {
-    $qp_methods = get_class_methods('\QueryPath\QueryPath');
+    $qp_methods = get_class_methods('\QueryPath\DOMQuery');
     $test_methods = get_class_methods('\QueryPath\Tests\QueryPathTest');
 
     $ignore = array("__construct", "__call", "__clone", "get", "getOptions", "setMatches", "toArray", "getIterator");
@@ -665,7 +665,7 @@ class QueryPathTest extends TestCase {
     $this->assertEquals($utf8raquo, $qp->find('p')->html(), 'Entities are decoded to UTF-8 correctly.');
 
     // Test with empty, mainly to make sure it doesn't explode.
-    $this->assertTrue(qp($file)->append('') instanceof QueryPath);
+    $this->assertTrue(qp($file)->append('') instanceof DOMQuery);
   }
 
   /**
@@ -810,7 +810,7 @@ class QueryPathTest extends TestCase {
   public function testWrap() {
     $file = DATA_FILE;
     $xml = qp($file,'unary')->wrap('');
-    $this->assertTrue($xml instanceof QueryPath);
+    $this->assertTrue($xml instanceof DOMQuery);
 
     $xml = qp($file,'unary')->wrap('<test id="testWrap"></test>')->get(0)->ownerDocument->saveXML();
     $this->assertEquals(1, qp($xml, '#testWrap')->get(0)->childNodes->length);
@@ -826,7 +826,7 @@ class QueryPathTest extends TestCase {
     $file = DATA_FILE;
 
     $xml = qp($file,'unary')->wrapAll('');
-    $this->assertTrue($xml instanceof QueryPath);
+    $this->assertTrue($xml instanceof DOMQuery);
 
     $xml = qp($file,'unary')->wrapAll('<test id="testWrap"></test>')->get(0)->ownerDocument->saveXML();
     $this->assertEquals(1, qp($xml, '#testWrap')->get(0)->childNodes->length);
@@ -839,7 +839,7 @@ class QueryPathTest extends TestCase {
   public function testWrapInner() {
     $file = DATA_FILE;
 
-    $this->assertTrue(qp($file,'#inner-one')->wrapInner('') instanceof QueryPath);
+    $this->assertTrue(qp($file,'#inner-one')->wrapInner('') instanceof DOMQuery);
 
     $xml = qp($file,'#inner-one')->wrapInner('<test class="testWrap"></test>')->get(0)->ownerDocument->saveXML();
     // FIXME: 9 includes text nodes. Should fix this.
@@ -1137,7 +1137,7 @@ class QueryPathTest extends TestCase {
     $name = './' . __FUNCTION__ . '.xml';
     qp($xml)->writeXML($name);
     $this->assertTrue(file_exists($name));
-    $this->assertTrue(qp($name) instanceof QueryPath);
+    $this->assertTrue(qp($name) instanceof DOMQuery);
     unlink($name);
   }
 
@@ -1172,7 +1172,7 @@ class QueryPathTest extends TestCase {
     $name = './' . __FUNCTION__ . '.xml';
     qp($xml)->writeXHTML($name);
     $this->assertTrue(file_exists($name));
-    $this->assertTrue(qp($name) instanceof QueryPath);
+    $this->assertTrue(qp($name) instanceof DOMQuery);
     unlink($name);
 
     // Regression for issue #10 (keep closing tags in XHTML)
@@ -1274,7 +1274,7 @@ class QueryPathTest extends TestCase {
     $name = './' . __FUNCTION__ . '.html';
     qp($xml)->writeXML($name);
     $this->assertTrue(file_exists($name));
-    $this->assertTrue(qp($name) instanceof QueryPath);
+    $this->assertTrue(qp($name) instanceof DOMQuery);
     unlink($name);
   }
 
@@ -1715,7 +1715,7 @@ class QueryPathTest extends TestCase {
  *
  * @ingroup querypath_tests
  */
-class QueryPathExtended extends QueryPath {
+class QueryPathExtended extends DOMQuery {
   public $foo = 'bar';
   public function foonator() {
     return TRUE;
