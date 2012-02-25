@@ -12,6 +12,13 @@ namespace QueryPath;
  * uses this information to determine what QueryPath extensions should be loaded and
  * executed.
  *
+ * Extensions are attached to a Query object.
+ *
+ * To enable an extension (the easy way), use QueryPath::enable().
+ *
+ * This class provides lower-level interaction with the extension
+ * mechanism.
+ *
  * @ingroup querypath_extensions
  */
 class ExtensionRegistry {
@@ -28,11 +35,11 @@ class ExtensionRegistry {
   protected static $extensionRegistry = array();
   protected static $extensionMethodRegistry = array();
   /**
-   * Extend QueryPath with the given extension class.
+   * Extend a Query with the given extension class.
    */
   public static function extend($classname) {
     self::$extensionRegistry[] = $classname;
-    $class = new ReflectionClass($classname);
+    $class = new \ReflectionClass($classname);
     $methods = $class->getMethods();
     foreach ($methods as $method) {
       self::$extensionMethodRegistry[$method->getName()] = $classname;
@@ -55,7 +62,7 @@ class ExtensionRegistry {
 
   /**
    * Check to see if the given extension class is registered.
-   * Given a class name for a QueryPathExtension class, this
+   * Given a class name for a QueryPath::Extension class, this
    * will check to see if that class is registered. If so, it will return
    * TRUE.
    *
@@ -87,18 +94,18 @@ class ExtensionRegistry {
   }
 
   /**
-   * Get extensions for the given QueryPath object.
+   * Get extensions for the given Query object.
    *
-   * Given a {@link QueryPath} object, this will return
+   * Given a Query object, this will return
    * an associative array of extension names to (new) instances.
    * Generally, this is intended to be used internally.
    *
-   * @param QueryPath $qp
-   *  The QueryPath into which the extensions should be registered.
+   * @param Query $qp
+   *  The Query into which the extensions should be registered.
    * @return array
    *  An associative array of classnames to instances.
    */
-  public static function getExtensions(QueryPath $qp) {
+  public static function getExtensions(Query $qp) {
     $extInstances = array();
     foreach (self::$extensionRegistry as $ext) {
       $extInstances[$ext] = new $ext($qp);
@@ -106,11 +113,15 @@ class ExtensionRegistry {
     return $extInstances;
   }
 
+  public static function extensionNames() {
+    return self::$extensionRegistry;
+  }
+
   /**
    * Enable or disable automatic extension loading.
    *
    * If extension autoloading is disabled, then QueryPath will not
-   * automatically load all registred extensions when a new QueryPath
+   * automatically load all registred extensions when a new Query
    * object is created using qp().
    */
   public static function autoloadExtensions($boolean = TRUE) {
