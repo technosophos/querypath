@@ -11,20 +11,20 @@ class QueryPath_Test extends TestCase {
   public function testWith() {
     $qp = \QueryPath::with(\QueryPath::XHTML_STUB);
 
-    $this->assertInstanceOf('\QueryPath\QueryPath', $qp);
+    $this->assertInstanceOf('\QueryPath\DOMQuery', $qp);
 
   }
 
   public function testWithHTML() {
     $qp = \QueryPath::with(\QueryPath::HTML_STUB);
 
-    $this->assertInstanceOf('\QueryPath\QueryPath', $qp);
+    $this->assertInstanceOf('\QueryPath\DOMQuery', $qp);
   }
 
   public function testWithXML() {
     $qp = \QueryPath::with(\QueryPath::XHTML_STUB);
 
-    $this->assertInstanceOf('\QueryPath\QueryPath', $qp);
+    $this->assertInstanceOf('\QueryPath\DOMQuery', $qp);
   }
 
 }
