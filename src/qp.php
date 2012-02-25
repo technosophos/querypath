@@ -38,6 +38,7 @@ if (!class_exists('\QueryPath\QueryPath')) {
   require __DIR__ . '/QueryPath/CSS/Scanner.php';
   require __DIR__ . '/QueryPath/CSS/Parser.php';
   require __DIR__ . '/QueryPath/CSS/QueryPathEventHandler.php';
+  require __DIR__ . '/QueryPath/Query.php';
   require __DIR__ . '/QueryPath/Entities.php';
   require __DIR__ . '/QueryPath/Extension.php';
   require __DIR__ . '/QueryPath/ExtensionRegistry.php';
