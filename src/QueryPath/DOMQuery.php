@@ -703,7 +703,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
       }
     }
     else {
-      $attVal = self::encodeDataURL($data, $mime, $context);
+      $attVal = \QueryPath::encodeDataURL($data, $mime, $context);
       return $this->attr($attr, $attVal);
     }
   }
