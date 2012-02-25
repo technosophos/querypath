@@ -4,18 +4,25 @@
  * @author M Butcher <matt@aleph-null.tv>
  * @license The GNU Lesser GPL (LGPL) or an MIT-like license.
  */
-
+namespace QueryPath\Tests;
 require_once 'PHPUnit/Autoload.php';
-require_once 'src/QueryPath/QueryPath.php';
+require_once __DIR__ . '/../TestCase.php';
+/*
+  require_once 'src/QueryPath/QueryPath.php';
+ */
 require_once 'src/QueryPath/Extension/QPDB.php';
 require_once 'src/QueryPath/Extension/QPTPL.php';
+
+use \QueryPath\Extension\QPDB;
+
+\QueryPath::enable('\QueryPath\Extension\QPDB');
 
 QPDB::baseDB('sqlite:./test/db/qpTest.db');
 
 /**
  * @ingroup querypath_tests
  */
-class QPDBTest extends PHPUnit_Framework_TestCase {
+class QPDBTest extends TestCase {
   private $dsn = 'sqlite:./test/db/qpTest.db';
 
   public function setUp() {

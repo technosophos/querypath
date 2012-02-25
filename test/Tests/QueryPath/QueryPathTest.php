@@ -6,7 +6,7 @@ require_once __DIR__ . '/TestCase.php';
 //require_once __DIR__ . '/../../../src/qp.php';
 require_once __DIR__ . '/../../../src/QueryPath.php';
 
-class QueryPath_Test extends TestCase {
+class QueryPathTest extends TestCase {
 
   public function testWith() {
     $qp = \QueryPath::with(\QueryPath::XHTML_STUB);
@@ -25,6 +25,27 @@ class QueryPath_Test extends TestCase {
     $qp = \QueryPath::with(\QueryPath::XHTML_STUB);
 
     $this->assertInstanceOf('\QueryPath\DOMQuery', $qp);
+  }
+
+  public function testEnable() {
+    \QueryPath::enable('\QueryPath\Tests\DummyExtension');
+
+    $qp = \QueryPath::with(\QueryPath::XHTML_STUB);
+
+    $this->assertTrue($qp->grrrrrrr());
+
+  }
+
+}
+
+class DummyExtension implements \QueryPath\Extension {
+
+  public function __construct(\QueryPath\Query $qp) {
+    $this->qp = $qp;
+  }
+
+  public function grrrrrrr() {
+    return TRUE;
   }
 
 }
