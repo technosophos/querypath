@@ -3,6 +3,8 @@
  * This extension provides support for common HTML list operations.
  */
 
+namespace QueryPath\Extension;
+
 /**
  * Provide list operations for QueryPath.
  *
@@ -19,7 +21,7 @@ class QPList implements \QueryPath\Extension {
   const DL = 'dl';
 
   protected $qp = NULL;
-  public function __construct(QueryPath $qp) {
+  public function __construct(\QueryPath\Query $qp) {
     $this->qp = $qp;
   }
 
@@ -134,7 +136,6 @@ class QPList implements \QueryPath\Extension {
     return count(array_diff_key($array, range(0, count($array) - 1))) != 0;
   }
 }
-\QueryPath\ExtensionRegistry::extend('QPList');
 
 /**
  * A TableAble object represents tabular data and can be converted to a table.

@@ -42,7 +42,7 @@ class QPXSL implements \QueryPath\Extension {
 
   protected $src = NULL;
 
-  public function __construct(QueryPath $qp) {
+  public function __construct(\QueryPath\Query $qp) {
     $this->src = $qp;
   }
 

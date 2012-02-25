@@ -18,7 +18,7 @@ class QPXML implements \QueryPath\Extension {
 
   protected $qp;
 
-  public function __construct(QueryPath $qp) {
+  public function __construct(\QueryPath\Query $qp) {
     $this->qp = $qp;
   }
 

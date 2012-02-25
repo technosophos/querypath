@@ -105,7 +105,11 @@
  * @see QueryPath::Extension
  * @see QueryPath::ExtensionRegistry::extend()
  * @see QPDB
+ * @todo This documentation needs to be updated for QueryPath 3.0
  */
+
+namespace QueryPath\Extension;
+use \PDO;
 
 /**
  * Provide DB access to a QueryPath object.
@@ -312,7 +316,7 @@ class QPDB implements \QueryPath\Extension {
   /**
    * Construct a new QPDB object. This is usually done by QueryPath itself.
    */
-  public function __construct(QueryPath $qp) {
+  public function __construct(\QueryPath\Query $qp) {
     $this->qp = $qp;
     // By default, we set it up to use the base DB.
     $this->db = self::$con;
@@ -705,7 +709,3 @@ class QPDB implements \QueryPath\Extension {
   }
 
 }
-
-// The define allows another class to extend this.
-if (!defined('QPDB_OVERRIDE'))
-  \QueryPath\ExtensionRegistry::extend('QPDB');
