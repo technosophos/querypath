@@ -33,7 +33,7 @@ use \QueryPath\CSS\QueryPathEventHandler;
  * @see QueryPath.php
  * @ingroup querypath_core
  */
-class DOMQuery implements \IteratorAggregate, \Countable {
+class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
 
   /**
    * Default parser flags.
