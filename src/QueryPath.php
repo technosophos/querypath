@@ -139,7 +139,7 @@ class QueryPath {
     $options += array(
       'use_parser' => 'xml',
     );
-    return self::with($document, $selector, $options);
+    return self::with($source, $selector, $options);
   }
 
   public static function withHTML($source, $selector = NULL, $options = array()) {
@@ -156,8 +156,76 @@ class QueryPath {
       // This is stripping actually necessary low ASCII.
       //'strip_low_ascii' => TRUE,
     );
-    return @self::with($document, $selector, $options);
+    return @self::with($source, $selector, $options);
   }
+
+  /**
+   * Enable one or more extensions.
+   *
+   * Extensions provide additional features to QueryPath. To enable and 
+   * extension, you can use this method.
+   *
+   * In this example, we enable the QPTPL extension:
+   * @code
+   * <?php
+   * QueryPath::enable('\QueryPath\QPTPL');
+   * ?>
+   * @endcode
+   *
+   * Note that the name is a fully qualified class name.
+   *
+   * We can enable more than one extension at a time like this:
+   *
+   * @code
+   * <?php
+   * $extensions = array('\QueryPath\QPXML', '\QueryPath\QPDB');
+   * QueryPath::enable($extensions);
+   * ?>
+   * @endcode
+   *
+   * @attention If you are not using an autoloader, you will need to
+   * manually `require` or `include` the files that contain the
+   * extensions.
+   *
+   * @param mixed $extensionNames
+   *   The name of an extension or an array of extension names.
+   *   QueryPath assumes that these are extension class names,
+   *   and attempts to register these as QueryPath extensions.
+   */
+  public static function enable($extensionNames) {
+
+    if (is_array($extensionNames)) {
+      foreach ($extensionnames as $extension) {
+        \QueryPath\ExtensionRegistry::extend($extension);
+      }
+    }
+    else {
+      \QueryPath\ExtensionRegistry::extend($extensionNames);
+    }
+  }
+
+  /**
+   * Get a list of all of the enabled extensions.
+   *
+   * This example dumps a list of extensions to standard output:
+   * @code
+   * <?php
+   * $extensions = QueryPath::enabledExtensions();
+   * print_r($extensions);
+   * ?>
+   * @endcode
+   *
+   * @retval array
+   *   An array of extension names.
+   *
+   * @see QueryPath::ExtensionRegistry
+   */
+  public static function enabledExtensions() {
+    return \QueryPath\ExtensionRegistry::extensionNames();
+  }
+
+
+
   /**
    * A static function for transforming data into a Data URL.
    *
