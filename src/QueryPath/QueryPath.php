@@ -86,68 +86,6 @@ use \QueryPath\CSS\QueryPathEventHandler;
 class QueryPath implements \IteratorAggregate, \Countable {
 
   /**
-   * The version string for this version of QueryPath.
-   *
-   * Standard releases will be of the following form: <MAJOR>.<MINOR>[.<PATCH>][-STABILITY].
-   *
-   * Examples:
-   * - 2.0
-   * - 2.1.1
-   * - 2.0-alpha1
-   *
-   * Developer releases will always be of the form dev-<DATE>.
-   *
-   * @since 2.0
-   */
-  const VERSION = '-UNSTABLE%';
-
-  /**
-   * This is a stub HTML 4.01 document.
-   *
-   * <b>Using {@link QueryPath::XHTML_STUB} is preferred.</b>
-   *
-   * This is primarily for generating legacy HTML content. Modern web applications
-   * should use {@link QueryPath::XHTML_STUB}.
-   *
-   * Use this stub with the HTML familiy of methods ({@link html()},
-   * {@link writeHTML()}, {@link innerHTML()}).
-   */
-  const HTML_STUB = '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-  <html lang="en">
-  <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <title>Untitled</title>
-  </head>
-  <body></body>
-  </html>';
-
-  /**
-   * This is a stub XHTML document.
-   *
-   * Since XHTML is an XML format, you should use XML functions with this document
-   * fragment. For example, you should use {@link xml()}, {@link innerXML()}, and
-   * {@link writeXML()}.
-   *
-   * This can be passed into {@link qp()} to begin a new basic HTML document.
-   *
-   * Example:
-   * @code
-   * $qp = qp(QueryPath::XHTML_STUB); // Creates a new XHTML document
-   * $qp->writeXML(); // Writes the document as well-formed XHTML.
-   * @endcode
-   * @since 2.0
-   */
-  const XHTML_STUB = '<?xml version="1.0"?>
-  <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-  <html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-  <title>Untitled</title>
-  </head>
-  <body></body>
-  </html>';
-
-  /**
    * Default parser flags.
    *
    * These are flags that will be used if no global or local flags override them.

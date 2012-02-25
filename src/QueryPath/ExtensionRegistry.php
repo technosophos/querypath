@@ -111,7 +111,7 @@ class ExtensionRegistry {
    *
    * If extension autoloading is disabled, then QueryPath will not
    * automatically load all registred extensions when a new QueryPath
-   * object is created using {@link qp()}.
+   * object is created using qp().
    */
   public static function autoloadExtensions($boolean = TRUE) {
     self::$useRegistry = $boolean;

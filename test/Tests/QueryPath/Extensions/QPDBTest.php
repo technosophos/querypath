@@ -17,42 +17,42 @@ QPDB::baseDB('sqlite:./test/db/qpTest.db');
  */
 class QPDBTest extends PHPUnit_Framework_TestCase {
   private $dsn = 'sqlite:./test/db/qpTest.db';
-  
+
   public function setUp() {
     $this->db = QPDB::getBaseDB();
     $this->db->exec('CREATE TABLE IF NOT EXISTS qpdb_test (colOne, colTwo, colThree)');
-    
+
     $stmt = $this->db->prepare(
       'INSERT INTO qpdb_test (colOne, colTwo, colThree) VALUES (:one, :two, :three)'
     );
-    
+
     for ($i = 0; $i < 5; ++$i) {
       $vals = array(':one' => 'Title ' . $i, ':two' => 'Body ' . $i, ':three' => 'Footer ' . $i);
       $stmt->execute($vals);
       $stmt->closeCursor();
     }
   }
-  
+
   public function tearDown() {
     $this->db->exec('DROP TABLE qpdb_test');
     //$s = $this->db->prepare('DELETE FROM qpdb_test');
     //$s->execute();
     //$s->closeCursor();
   }
-  
+
   public function testQueryInto() {
     // This is the only query that uses dbInit().
     $sql = 'SELECT "Hello", "World"';
     $qp = qp(QueryPath::HTML_STUB, 'body')->dbInit($this->dsn)->queryInto($sql)->doneWithQuery();
     $this->assertEquals('HelloWorld', $qp->top()->find('body')->text());
-    
+
     $template = '<?xml version="1.0"?><li class="colOne"/>';
     $sql = 'SELECT * FROM qpdb_test';
     $args = array();
     $qp = qp(QueryPath::HTML_STUB, 'body')->append('<ul/>')->children()->queryInto($sql, $args, $template)->doneWithQuery();
     //$qp->writeHTML();
     $this->assertEquals(5, $qp->top()->find('li')->size());
-    
+
     $template = '<?xml version="1.0"?><tr><td class="colOne"/><td class="colTwo"/><td class="colThree"/></tr>';
     $sql = 'SELECT * FROM qpdb_test';
     $args = array();
@@ -64,7 +64,7 @@ class QPDBTest extends PHPUnit_Framework_TestCase {
       ;//->writeHTML();
     $this->assertEquals('Footer 4', $qp->top()->find('td:last')->text());
   }
-  
+
   /*
   public function xtestExec() {
     $sql = 'INSERT INTO qpdb_test (colOne, colTwo, colThree) VALUES ("o", "t", "tr")';
@@ -73,7 +73,7 @@ class QPDBTest extends PHPUnit_Framework_TestCase {
     $qp->doneWithQuery();
   }
   */
-  
+
   public function testQueryChains() {
     $sql = 'SELECT * FROM qpdb_test';
     $args = array();
@@ -95,7 +95,7 @@ class QPDBTest extends PHPUnit_Framework_TestCase {
       ;//->writeHTML(); // Write the output as HTML.
     $this->assertEquals('Title 0', $qp->top()->find('h1')->text());
     $this->assertEquals('Body 1', $qp->top()->find('p')->text());
-    
+
     $qp = qp(QueryPath::HTML_STUB, 'body') // Open a stub HTML doc and select <body/>
       ->append('<table><tbody/></table>')
       ->find('tbody')
@@ -104,8 +104,8 @@ class QPDBTest extends PHPUnit_Framework_TestCase {
       ->appendColumn('colOne')
       ->doneWithQuery();
     $this->assertEquals('Title 0Title 1', $qp->top()->find('tbody')->text());
-    
-    $wrap = '<tr><td/></tr>';    
+
+    $wrap = '<tr><td/></tr>';
     $qp = qp(QueryPath::HTML_STUB, 'body')
       ->append('<table><tbody/></table>')
       ->find('tbody')
