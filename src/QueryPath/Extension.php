@@ -23,21 +23,22 @@ namespace QueryPath;
  *
  * Much like jQuery, QueryPath provides a simple extension mechanism that allows
  * extensions to auto-register themselves upon being loaded. For a simple example, see
- * QPXML. For the internals, see QueryPathExntesion and QueryPath::__construct().
+ * QPXML. For the internals, see QueryPath::Extension and QueryPath::with().
  */
 
 /**
- * A Extension is a tool that extends the capabilities of a QueryPath object.
+ * A Extension is a tool that extends the capabilities of a Query object.
  *
  * Extensions to QueryPath should implement the Extension interface. The
  * only requirement is that the extension provide a constructor that takes a
- * QueryPath object as a parameter.
+ * Query object as a parameter.
  *
  * Here is an example QueryPath extension:
- * <code><?php
+ * @code
+ * <?php
  * class StubExtensionOne implements Extension {
  *   private $qp = NULL;
- *   public function __construct(QueryPath $qp) {
+ *   public function __construct(\QueryPath\Query $qp) {
  *     $this->qp = $qp;
  *   }
  *
@@ -46,19 +47,28 @@ namespace QueryPath;
  *     return $this->qp;
  *   }
  * }
- * ExtensionRegistry::extend('StubExtensionOne');
- * ?></code>
+ * ?>
+ * @endcode
  * In this example, the StubExtensionOne class implements Extension.
- * The constructor stores a local copyof the QueryPath object. This is important
+ * The constructor stores a local copyof the Query object. This is important
  * if you are planning on fully integrating with QueryPath's Fluent Interface.
  *
  * Finally, the stubToe() function illustrates how the extension makes use of
- * QueryPath internally, and remains part of the fluent interface by returning
+ * QueryPath's Query object internally, and remains part of the fluent interface by returning
  * the $qp object.
  *
- * Notice that beneath the class, there is a single call to register the
- * extension with QueryPath's registry. Your extension should end with a line
- * similar to this.
+ * <b>Enabling an Extension</b>
+ *
+ * To enable an extension, call the QueryPath::enable() method.
+ *
+ * @code
+ * <?php
+ * QueryPath::enable('StubExtension');
+ * ?>
+ * @endcode
+ *
+ * More complex management of extensions can be accomplished with the
+ * QueryPath::ExtensionRegistry class.
  *
  * <b>How is a QueryPath extension called?</b>
  *
@@ -66,17 +76,19 @@ namespace QueryPath;
  * example, the extension above can be called like this:
  * <code>
  * qp('some.xml')->stubToe();
+ * // or
+ * QueryPath::with('some.xml')->stubToe();
  * </code>
- * Since it returns the QueryPath ($qp) object, chaining is supported:
+ * Since it returns the Query ($qp) object, chaining is supported:
  * <code>
  * print qp('some.xml')->stubToe()->xml();
  * </code>
  * When you write your own extensions, anything that does not need to return a
- * specific value should return the QueryPath object. Between that and the
+ * specific value should return the Query object. Between that and the
  * extension registry, this will provide the best developer experience.
  *
  * @ingroup querypath_extensions
  */
 interface Extension {
-  public function __construct(QueryPath $qp);
+  public function __construct(Query $qp);
 }
