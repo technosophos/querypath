@@ -91,7 +91,7 @@ class DOMQueryTest extends TestCase {
    * Test alternate constructors.
    */
   public function testDOMQueryHtmlConstructors() {
-    $qp = htmlqp(QueryPath::HTML_STUB);
+    $qp = htmlqp(\QueryPath::HTML_STUB);
     $this->assertEquals(1, count($qp->get()));
     $this->assertTrue($qp->get(0) instanceof \DOMNode);
 
@@ -131,7 +131,7 @@ class DOMQueryTest extends TestCase {
 
   public function testForTests() {
     $qp_methods = get_class_methods('\QueryPath\DOMQuery');
-    $test_methods = get_class_methods('\QueryPath\Tests\QueryPathTest');
+    $test_methods = get_class_methods('\QueryPath\Tests\DOMQueryTest');
 
     $ignore = array("__construct", "__call", "__clone", "get", "getOptions", "setMatches", "toArray", "getIterator");
 
@@ -1333,7 +1333,7 @@ class DOMQueryTest extends TestCase {
 
     // Regression test for issue eabrand identified:
 
-    $qp = qp(QueryPath::HTML_STUB)->append('<div></div><p>Hello</p><p>Goodbye</p>')
+    $qp = qp(\QueryPath::HTML_STUB)->append('<div></div><p>Hello</p><p>Goodbye</p>')
       ->children('p')
       ->after('<p>new paragraph</p>');
 
@@ -1420,14 +1420,14 @@ class DOMQueryTest extends TestCase {
   }
 
   public function testBranch() {
-    $qp = qp(QueryPath::HTML_STUB);
+    $qp = qp(\QueryPath::HTML_STUB);
     $branch = $qp->branch();
     $branch->find('title')->text('Title');
     $qp->find('body')->text('This is the body');
 
     $this->assertEquals($qp->top()->find('title')->text(), $branch->top()->find('title')->text());
 
-    $qp = qp(QueryPath::HTML_STUB);
+    $qp = qp(\QueryPath::HTML_STUB);
     $branch = $qp->branch('title');
     $branch->find('title')->text('Title');
     $qp->find('body')->text('This is the body');
@@ -1452,12 +1452,12 @@ class DOMQueryTest extends TestCase {
   }
 
   public function testStub() {
-    $this->assertEquals(1, qp(QueryPath::HTML_STUB)->find('title')->size());
+    $this->assertEquals(1, qp(\QueryPath::HTML_STUB)->find('title')->size());
   }
 
   public function testIterator() {
 
-    $qp = qp(QueryPath::HTML_STUB, 'body')->append('<li/><li/><li/><li/>');
+    $qp = qp(\QueryPath::HTML_STUB, 'body')->append('<li/><li/><li/><li/>');
 
     $this->assertEquals(4, $qp->find('li')->size());
     $i = 0;
@@ -1705,7 +1705,7 @@ class DOMQueryTest extends TestCase {
   }
 
   public function testEncodeDataURL() {
-    $data = QueryPath::encodeDataURL('Hi!', 'text/plain');
+    $data = \QueryPath::encodeDataURL('Hi!', 'text/plain');
     $this->assertEquals('data:text/plain;base64,SGkh', $data);
   }
 }

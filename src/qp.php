@@ -43,7 +43,7 @@ if (!class_exists('\QueryPath\QueryPath')) {
   require __DIR__ . '/QueryPath/ExtensionRegistry.php';
   require __DIR__ . '/QueryPath/Options.php';
   require __DIR__ . '/QueryPath/QueryPathIterator.php';
-  require __DIR__ . '/QueryPath/QueryPath.php';
+  require __DIR__ . '/QueryPath/DOMQuery.php';
   require __DIR__ . '/QueryPath.php';
 }
 /** @addtogroup querypath_core Core API

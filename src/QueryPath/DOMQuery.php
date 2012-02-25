@@ -118,7 +118,7 @@ class DOMQuery implements \IteratorAggregate, \Countable {
     // Figure out if document is DOM, HTML/XML, or a filename
     elseif (is_object($document)) {
 
-      if ($document instanceof QueryPath) {
+      if ($document instanceof DOMQuery) {
         $this->matches = $document->get(NULL, TRUE);
         if ($this->matches->count() > 0)
           $this->document = $this->getFirstMatch()->ownerDocument;
