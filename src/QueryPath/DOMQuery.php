@@ -788,15 +788,17 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
       return FALSE;
     }
 
-    // Can this be replaced with qp($this->matches)->find($selector)->count()?
-    // Or, better yet, $this->branch($selector)->count()?
-    foreach ($this->matches as $m) {
-      $q = new \QueryPath\CSS\QueryPathEventHandler($m);
-      if ($q->find($selector)->getMatches()->count()) {
-        return TRUE;
-      }
-    }
-    return FALSE;
+    // Testing based on Issue #70.
+    return $this->branch($selector)->count() > 0;
+
+    // Old version:
+    //foreach ($this->matches as $m) {
+      //$q = new \QueryPath\CSS\QueryPathEventHandler($m);
+      //if ($q->find($selector)->getMatches()->count()) {
+        //return TRUE;
+      //}
+    //}
+    //return FALSE;
   }
   /**
    * Filter a list down to only elements that match the selector.
