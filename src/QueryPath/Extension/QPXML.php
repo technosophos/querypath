@@ -207,4 +207,3 @@ class QPXML implements \QueryPath\Extension {
     return $this->qp;
   }
 }
-\QueryPath\ExtensionRegistry::extend('QPXML');

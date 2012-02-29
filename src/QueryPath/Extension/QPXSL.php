@@ -15,6 +15,8 @@
  * @see QPXML
  */
 
+namespace QueryPath\Extension;
+
 /**
  * Provide tools for running XSL Transformation (XSLT) on a document.
  *
@@ -67,9 +69,8 @@ class QPXSL implements \QueryPath\Extension {
     }
     $sourceDoc = $this->src->top()->get(0)->ownerDocument;
     $styleDoc = $style->get(0)->ownerDocument;
-    $processor = new XSLTProcessor();
+    $processor = new \XSLTProcessor();
     $processor->importStylesheet($styleDoc);
     return qp($processor->transformToDoc($sourceDoc));
   }
 }
-\QueryPath\ExtensionRegistry::extend('QPXSL');

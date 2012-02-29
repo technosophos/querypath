@@ -15,6 +15,9 @@ use \QueryPath\Extension\QPTPL;
  * @ingroup querypath_tests
  */
 class QPTPLTest extends TestCase {
+  public static function setUpBeforeClass() {
+    \QueryPath::enable('\QueryPath\Extension\QPTPL');
+  }
 
   public function testIsAssoc() {
     $t = new QPTPL(qp());
@@ -109,7 +112,7 @@ class QPTPLTest extends TestCase {
       '.cell1' => 'Cell Five',
       '.cell2' => 'Cell Six',
     );
-    $qp = qp(QueryPath::HTML_STUB, 'body')->tpl($tpl, $data);
+    $qp = qp(\QueryPath::HTML_STUB, 'body')->tpl($tpl, $data);
     $this->assertEquals('Cell Six', $qp->top()->find('.table-row:last .cell2')->text());
     $this->assertEquals(6, $qp->top()->find('td')->size());
 
@@ -128,7 +131,7 @@ class QPTPLTest extends TestCase {
     $data['.item'][] = 'Three';
     $data['.item'][] = 'Four';
 
-    $qp = qp(QueryPath::HTML_STUB, 'body')->tpl($tpl, $data);
+    $qp = qp(\QueryPath::HTML_STUB, 'body')->tpl($tpl, $data);
     $this->assertEquals(4, $qp->top('.item')->size());
 
     // Same test as before, but with one item set to NULL.
@@ -138,7 +141,7 @@ class QPTPLTest extends TestCase {
     $data['.item'][] = NULL;
     $data['.item'][] = 'Four';
 
-    $qp = qp(QueryPath::HTML_STUB, 'body')->tpl($tpl, $data);
+    $qp = qp(\QueryPath::HTML_STUB, 'body')->tpl($tpl, $data);
     $this->assertEquals(4, $qp->top('.item')->size());
     $this->assertEquals('One', $qp->eq(0)->text());
     $this->assertEquals('', $qp->eq(2)->text());
@@ -148,8 +151,8 @@ class QPTPLTest extends TestCase {
   public function testTplTraversable() {
     // Test that a Traversable will work.
     $tpl = '<?xml version="1.0"?><data><item class="classb myclass classc"/><item id="one"/></data>';
-    $data = new ArrayIterator(array('.myclass' => 'VALUE', '#one' => '<b>OTHER VALUE</b>'));
-    $qp = qp(QueryPath::HTML_STUB, 'body')->tpl($tpl, $data);
+    $data = new \ArrayIterator(array('.myclass' => 'VALUE', '#one' => '<b>OTHER VALUE</b>'));
+    $qp = qp(\QueryPath::HTML_STUB, 'body')->tpl($tpl, $data);
     $this->assertEquals('VALUE', $qp->top()->find('.myclass')->text());
   }
 
@@ -177,8 +180,8 @@ class FixtureTwo {
   private $db;
 
   public function __construct() {
-    $this->db = new PDO('sqlite:./test/db/qpTest2.db');
-    $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $this->db = new \PDO('sqlite:./test/db/qpTest2.db');
+    $this->db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
     $this->db->exec('CREATE TABLE IF NOT EXISTS test (message TEXT)');
     $this->db->exec('INSERT INTO test (message) VALUES ("This is a message")');
   }

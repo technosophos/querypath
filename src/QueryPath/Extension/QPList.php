@@ -165,7 +165,7 @@ interface TableAble {
  * Data in the headers or rows may contain markup. If you want to
  * disallow markup, use a {@see QPTableTextData} object instead.
  */
-class QPTableData implements TableAble, IteratorAggregate {
+class QPTableData implements TableAble, \IteratorAggregate {
 
   protected $headers;
   protected $rows;

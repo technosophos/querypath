@@ -15,8 +15,6 @@ require_once 'src/QueryPath/Extension/QPTPL.php';
 
 use \QueryPath\Extension\QPDB;
 
-\QueryPath::enable('\QueryPath\Extension\QPDB');
-
 QPDB::baseDB('sqlite:./test/db/qpTest.db');
 
 /**
@@ -24,6 +22,11 @@ QPDB::baseDB('sqlite:./test/db/qpTest.db');
  */
 class QPDBTest extends TestCase {
   private $dsn = 'sqlite:./test/db/qpTest.db';
+
+  public static function setUpBeforeClass() {
+    \QueryPath::enable('\QueryPath\Extension\QPDB');
+    \QueryPath::enable('\QueryPath\Extension\QPTPL');
+  }
 
   public function setUp() {
     $this->db = QPDB::getBaseDB();
@@ -50,20 +53,20 @@ class QPDBTest extends TestCase {
   public function testQueryInto() {
     // This is the only query that uses dbInit().
     $sql = 'SELECT "Hello", "World"';
-    $qp = qp(QueryPath::HTML_STUB, 'body')->dbInit($this->dsn)->queryInto($sql)->doneWithQuery();
+    $qp = qp(\QueryPath::HTML_STUB, 'body')->dbInit($this->dsn)->queryInto($sql)->doneWithQuery();
     $this->assertEquals('HelloWorld', $qp->top()->find('body')->text());
 
     $template = '<?xml version="1.0"?><li class="colOne"/>';
     $sql = 'SELECT * FROM qpdb_test';
     $args = array();
-    $qp = qp(QueryPath::HTML_STUB, 'body')->append('<ul/>')->children()->queryInto($sql, $args, $template)->doneWithQuery();
+    $qp = qp(\QueryPath::HTML_STUB, 'body')->append('<ul/>')->children()->queryInto($sql, $args, $template)->doneWithQuery();
     //$qp->writeHTML();
     $this->assertEquals(5, $qp->top()->find('li')->size());
 
     $template = '<?xml version="1.0"?><tr><td class="colOne"/><td class="colTwo"/><td class="colThree"/></tr>';
     $sql = 'SELECT * FROM qpdb_test';
     $args = array();
-    $qp = qp(QueryPath::HTML_STUB, 'body')
+    $qp = qp(\QueryPath::HTML_STUB, 'body')
       ->append('<table><tbody><tr><th>Title</th><th>Body</th><th>Foot</th></tr></tbody></table>')
       ->find('tbody')
       ->queryInto($sql, $args, $template)
@@ -84,7 +87,7 @@ class QPDBTest extends TestCase {
   public function testQueryChains() {
     $sql = 'SELECT * FROM qpdb_test';
     $args = array();
-    $qp = qp(QueryPath::HTML_STUB, 'body') // Open a stub HTML doc and select <body/>
+    $qp = qp(\QueryPath::HTML_STUB, 'body') // Open a stub HTML doc and select <body/>
       ->append('<h1></h1>') // Add <h1/>
       ->children()  // Select the <h1/>
       //->dbInit($this->dsn) // Connect to the database
@@ -103,7 +106,7 @@ class QPDBTest extends TestCase {
     $this->assertEquals('Title 0', $qp->top()->find('h1')->text());
     $this->assertEquals('Body 1', $qp->top()->find('p')->text());
 
-    $qp = qp(QueryPath::HTML_STUB, 'body') // Open a stub HTML doc and select <body/>
+    $qp = qp(\QueryPath::HTML_STUB, 'body') // Open a stub HTML doc and select <body/>
       ->append('<table><tbody/></table>')
       ->find('tbody')
       ->query('SELECT * FROM qpdb_test LIMIT 2')
@@ -113,7 +116,7 @@ class QPDBTest extends TestCase {
     $this->assertEquals('Title 0Title 1', $qp->top()->find('tbody')->text());
 
     $wrap = '<tr><td/></tr>';
-    $qp = qp(QueryPath::HTML_STUB, 'body')
+    $qp = qp(\QueryPath::HTML_STUB, 'body')
       ->append('<table><tbody/></table>')
       ->find('tbody')
       ->query('SELECT * FROM qpdb_test LIMIT 2')

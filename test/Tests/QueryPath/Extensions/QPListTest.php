@@ -7,6 +7,7 @@
 namespace QueryPath\Tests;
 
 require_once 'PHPUnit/Autoload.php';
+require_once 'src/QueryPath/Extension/QPList.php';
 require_once __DIR__ . '/../TestCase.php';
 
 use \QueryPath\Extension\QPList;
@@ -15,6 +16,9 @@ use \QueryPath\Extension\QPList;
  * @ingroup querypath_tests
  */
 class QPListTests extends TestCase {
+  public static function setUpBeforeClass() {
+    \QueryPath::enable('\QueryPath\Extension\QPList');
+  }
   public function testAppendList() {
     $list = array('one', 'two', 'three');
     $qp = qp(\QueryPath::HTML_STUB, 'body')->appendList($list, QPList::UL);
