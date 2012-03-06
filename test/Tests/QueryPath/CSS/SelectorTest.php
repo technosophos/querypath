@@ -3,8 +3,8 @@ namespace QueryPath\Tests;
 require_once __DIR__ . '/../TestCase.php';
 
 use \QueryPath\CSS\Selector,
-  \QueryPath\CSS\SimpleSelector,
-  \QueryPath\CSS\EventHandler;
+    \QueryPath\CSS\SimpleSelector,
+    \QueryPath\CSS\EventHandler;
 
 class SelectorTest extends TestCase {
 

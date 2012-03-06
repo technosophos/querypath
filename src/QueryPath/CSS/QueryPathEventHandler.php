@@ -62,7 +62,7 @@ namespace QueryPath\CSS;
  *
  * @ingroup querypath_css
  */
-class QueryPathEventHandler implements EventHandler {
+class QueryPathEventHandler implements EventHandler, Traverser {
   protected $dom = NULL; // Always points to the top level.
   protected $matches = NULL; // The matches
   protected $alreadyMatched = NULL; // Matches found before current selector.
