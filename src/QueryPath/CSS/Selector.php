@@ -93,29 +93,30 @@ class Selector implements EventHandler, \IteratorAggregate {
   }
   public function attribute($name, $value = NULL, $operation = EventHandler::isExactly) {
     $this->currSelector->attributes[] = array(
-      'name' => $name,
+      'name'  => $name,
       'value' => $value,
-      'op' => $operation,
+      'op'    => $operation,
     );
   }
   public function attributeNS($name, $ns, $value = NULL, $operation = EventHandler::isExactly) {
     $this->currSelector->attributes[] = array(
-      'name' => $name,
+      'name'  => $name,
       'value' => $value,
-      'op' => $operation,
-      'ns' => $ns,
+      'op'    => $operation,
+      'ns'    => $ns,
     );
   }
   public function pseudoClass($name, $value = NULL) {
-    $this->pseudoClasses[] = array('name' => $name, 'value' => $value);
+    $this->currSelector->pseudoClasses[] = array('name' => $name, 'value' => $value);
   }
   public function pseudoElement($name) {
-    $this->pseudoElements[] = $name;
+    $this->currSelector->pseudoElements[] = $name;
   }
   public function combinator($combinatorName) {
     $this->currSelector->combinator = $combinatorName;
     $this->currSelector = new SimpleSelector();
-    array_push($this->currSelector);
+    array_unshift($this->selectors, $this->currSelector);
+    //$this->selectors[]= $this->currSelector;
   }
   public function directDescendant() {
     $this->combinator(SimpleSelector::directDescendant);

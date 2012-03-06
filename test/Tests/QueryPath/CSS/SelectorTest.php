@@ -57,7 +57,7 @@ class SelectorTest extends TestCase {
 
     $this->assertEquals(1, count($attrs));
 
-    $attr = $attrs[1];
+    $attr = $attrs[0];
     $this->assertEquals('bar', $attr['name']);
     $this->assertEquals(EventHandler::isExactly, $attr['op']);
     $this->assertEquals('baz', $attr['value']);
@@ -71,8 +71,6 @@ class SelectorTest extends TestCase {
   public function testAttributesNS() {
     $selector = $this->parse('[myns|foo=bar]')->toArray();
 
-    //throw new \Exception(print_r($selector, TRUE));
-
     $attr = $selector[0]->attributes[0];
 
     $this->assertEquals('myns', $attr['ns']);
@@ -80,12 +78,12 @@ class SelectorTest extends TestCase {
   }
 
   public function testPseudoClasses() {
-    $selector = $this->parse('foo:bar')->toArray();
+    $selector = $this->parse('foo:first')->toArray();
     $pseudo = $selector[0]->pseudoClasses;
 
     $this->assertEquals(1, count($pseudo));
 
-    $this->assertEquals('bar', $pseudo[0]['name']);
+    $this->assertEquals('first', $pseudo[0]['name']);
   }
 
   public function testPseudoElements() {
@@ -100,10 +98,11 @@ class SelectorTest extends TestCase {
   public function testCombinators() {
     $selector = $this->parse('>foo')->toArray();
 
-    $this->assertEquals(SimpleSelector::directDescendant, $selector[0]['combinator']);
+    $this->assertEquals(SimpleSelector::directDescendant, $selector[0]->combinator);
 
     $selector = $this->parse('>foo bar')->toArray();
-    $this->assertEquals(SimpleSelector::anyDescendant, $selector[0]['combinator']);
+    throw new \Exception(print_r($selector, TRUE));
+    $this->assertEquals(SimpleSelector::anyDescendant, $selector[0]->combinator);
   }
 
   public function testIterator() {
