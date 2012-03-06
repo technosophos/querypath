@@ -52,6 +52,8 @@ class Selector implements EventHandler, \IteratorAggregate {
 
   public function __construct() {
     $this->currSelector = new SimpleSelector();
+
+    $this->selectors[] = $this->currSelector;
   }
 
   public function getIterator() {
@@ -111,9 +113,9 @@ class Selector implements EventHandler, \IteratorAggregate {
     $this->pseudoElements[] = $name;
   }
   public function combinator($combinatorName) {
-    $this->currSelector = $combinatorName;
-    array_push($this->currSelector);
+    $this->currSelector->combinator = $combinatorName;
     $this->currSelector = new SimpleSelector();
+    array_push($this->currSelector);
   }
   public function directDescendant() {
     $this->combinator(SimpleSelector::directDescendant);

@@ -71,6 +71,8 @@ class SelectorTest extends TestCase {
   public function testAttributesNS() {
     $selector = $this->parse('[myns|foo=bar]')->toArray();
 
+    //throw new \Exception(print_r($selector, TRUE));
+
     $attr = $selector[0]->attributes[0];
 
     $this->assertEquals('myns', $attr['ns']);
@@ -79,7 +81,7 @@ class SelectorTest extends TestCase {
 
   public function testPseudoClasses() {
     $selector = $this->parse('foo:bar')->toArray();
-    $pseudo = $selectpr[0]->pseudoClasses;
+    $pseudo = $selector[0]->pseudoClasses;
 
     $this->assertEquals(1, count($pseudo));
 
@@ -88,7 +90,7 @@ class SelectorTest extends TestCase {
 
   public function testPseudoElements() {
     $selector = $this->parse('foo::bar')->toArray();
-    $pseudo = $selectpr[0]->pseudoElements;
+    $pseudo = $selector[0]->pseudoElements;
 
     $this->assertEquals(1, count($pseudo));
 
