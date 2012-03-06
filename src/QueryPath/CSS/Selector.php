@@ -3,7 +3,7 @@
  * A selector.
  */
 
-namepsace QueryPath\CSS;
+namespace QueryPath\CSS;
 
 /**
  * A CSS Selector.

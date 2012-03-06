@@ -1,6 +1,10 @@
 <?php
 namespace QueryPath\Tests;
-require_once __DIR__ . '/TestCase.php';
+require_once __DIR__ . '/../TestCase.php';
+
+use \QueryPath\CSS\Selector,
+  \QueryPath\CSS\SimpleSelector,
+  \QueryPath\CSS\EventHandler;
 
 class SelectorTest extends TestCase {
 
@@ -69,8 +73,8 @@ class SelectorTest extends TestCase {
 
     $attr = $selector[0]->attributes[0];
 
-    $this->assertEquals('myns', $attr['ns'])
-    $this->assertEquals('foo', $attr['name'])
+    $this->assertEquals('myns', $attr['ns']);
+    $this->assertEquals('foo', $attr['name']);
   }
 
   public function testPseudoClasses() {

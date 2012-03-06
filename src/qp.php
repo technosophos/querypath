@@ -33,6 +33,8 @@ if (!class_exists('\QueryPath\QueryPath')) {
   require __DIR__ . '/QueryPath/CSS/ParseException.php';
   require __DIR__ . '/QueryPath/CSS/NotImplementedException.php';
   require __DIR__ . '/QueryPath/CSS/EventHandler.php';
+  require __DIR__ . '/QueryPath/CSS/SimpleSelector.php';
+  require __DIR__ . '/QueryPath/CSS/Selector.php';
   require __DIR__ . '/QueryPath/CSS/Token.php';
   require __DIR__ . '/QueryPath/CSS/InputStream.php';
   require __DIR__ . '/QueryPath/CSS/Scanner.php';
