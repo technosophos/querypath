@@ -105,10 +105,10 @@ class Selector implements EventHandler, \IteratorAggregate {
     );
   }
   public function pseudoClass($name, $value = NULL) {
-    $this->pseudoClass[] = array('name' => $name, 'value' => $value);
+    $this->pseudoClasses[] = array('name' => $name, 'value' => $value);
   }
   public function pseudoElement($name) {
-    $this->pseudoElement[] = $name;
+    $this->pseudoElements[] = $name;
   }
   public function combinator($combinatorName) {
     $this->currSelector = $combinatorName;
