@@ -96,13 +96,19 @@ class SelectorTest extends TestCase {
   }
 
   public function testCombinators() {
+    // This implies *>foo
     $selector = $this->parse('>foo')->toArray();
 
-    $this->assertEquals(SimpleSelector::directDescendant, $selector[0]->combinator);
+    $this->assertEquals(SimpleSelector::directDescendant, $selector[1]->combinator);
 
+    // This will be a selector with three simples:
+    // 'bar'
+    // 'foo '
+    // '*>'
     $selector = $this->parse('>foo bar')->toArray();
-    throw new \Exception(print_r($selector, TRUE));
-    $this->assertEquals(SimpleSelector::anyDescendant, $selector[0]->combinator);
+    $this->assertNull($selector[0]->combinator);
+    $this->assertEquals(SimpleSelector::anyDescendant, $selector[1]->combinator);
+    $this->assertEquals(SimpleSelector::directDescendant, $selector[2]->combinator);
   }
 
   public function testIterator() {
