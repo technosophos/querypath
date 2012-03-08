@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<root>
+  <outside level="1" id="first-outside" class="first">
+    <inside level="2" type="thing">
+      <bottom/>
+    </inside>
+    <inside level="2" type="thing">
+      <bottom level="3"/>
+    </inside>
+  </outside>
+  <outside level="1" id="second-outside">
+    <ul>
+      <li class="first">one</li>
+      <li>two</li>
+      <li>three</li>
+      <li>four</li>
+      <li>five</li>
+      <li class="last">six</li>
+    </ul>
+  </outside>
+  <outside level="1" id="third-outside">
+    <a class="a1"><a class="a2"><a class="a3">bottom</a></a></a>
+  </outside>
+  <crowded attr1="one" attr2="two" attr3="three" attr4="four"/>
+  <classtest class="one two three      four five six seven"/>
+  <idtest id="idtest-one"/>
+  <p author="T.S. Eliot">this is the way the world ends. Not with a bang, but a whimper.</p>
+</root>
