@@ -2948,25 +2948,28 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
     if (empty($class))
     {
       foreach ($this->matches as $m) {
-        if ($m->hasAttribute('class')) {
           $m->removeAttribute('class');
-        }
       }
     }else{
       $to_remove = array_filter(explode(' ',$class));
       foreach ($this->matches as $m) {
         if ($m->hasAttribute('class')) {
           $vals = array_filter(explode(' ', $m->getAttribute('class')));
-          $vals = array_diff($vals, $to_remove);
-          if(empty($vals))
+          $buf = array();
+          foreach ($vals as $v) {
+            if (!in_array($v, $to_remove))
+              $buf[] = $v;
+          }
+          if (empty($buf))
             $m->removeAttribute('class');
           else
-            $m->setAttribute('class', implode(' ', $vals));
+            $m->setAttribute('class', implode(' ', $buf));
         }
       }
     }
     return $this;
   }
+
   /**
    * Returns TRUE if any of the elements in the DOMQuery have the specified class.
    *
