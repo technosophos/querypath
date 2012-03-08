@@ -35,7 +35,7 @@ class SimpleSelector {
   const sibling = 8;
   const anyDescendant = 16;
 
-  public $element = '*';
+  public $element;
   public $ns;
   public $id;
   public $classes = array();
@@ -44,7 +44,72 @@ class SimpleSelector {
   public $pseudoElements = array();
   public $combinator;
 
+  public static function attributeOperator($code) {
+    switch($code) {
+      case EventHandler::containsWithSpace:
+        return '~=';
+      case EventHandler::containsWithHyphen:
+         return '|=';
+      case EventHandler::containsInString:
+         return '*=';
+      case EventHandler::beginsWith:
+        return '^=';
+      case EventHandler::endsWith:
+        return '$=';
+      default:
+        return '=';
+    }
+  }
+
   public function __construct() {
+  }
+
+  public function notEmpty() {
+    return !empty($element)
+      && !empty($id)
+      && !empty($classes)
+      && !empty($combinator)
+      && !empty($attributes)
+      && !empty($pseudoClasses)
+      && !empty($pseudoElements)
+    ;
+  }
+
+  public function __tostring() {
+    $buffer = array();
+
+    if (!empty($this->ns)) {
+      $buffer[] = $this->ns; $buffer[] = '|';
+    }
+    if (!empty($this->element)) $buffer[] = $this->element;
+    if (!empty($this->id)) $buffer[] = '#' . $this->id;
+    if (!empty($this->attributes)) {
+      foreach ($this->attributes as $attr) {
+        $buffer[] = '[';
+        if(!empty($attr['ns'])) $buffer[] = $attr['ns'] . '|';
+        $buffer[] = $attr['name'];
+        if (!empty($attr['value'])) {
+          $buffer[] = self::attributeOperator($attr['op']);
+          $buffer[] = $attr['value'];
+        }
+        $buffer[] = ']';
+      }
+    }
+    if (!empty($this->pseudoClasses)) {
+      foreach ($this->pseudoClasses as $ps) {
+        $buffer[] = ':' . $ps['name'];
+      }
+    }
+    foreach ($this->pseudoElements as $pe) {
+      $buffer[] = '::' . $pe;
+    }
+
+    if (!empty($this->combinator)) {
+      $buffer[] = $this->combintator;
+    }
+
+
+   return implode('', $buffer);
   }
 
 }
