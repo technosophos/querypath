@@ -2944,19 +2944,24 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
    * @see addClass()
    * @see hasClass()
    */
-  public function removeClass($class) {
-    foreach ($this->matches as $m) {
-      if ($m->hasAttribute('class')) {
-        $vals = explode(' ', $m->getAttribute('class'));
-        if (in_array($class, $vals)) {
-          $buf = array();
-          foreach ($vals as $v) {
-            if ($v != $class) $buf[] = $v;
-          }
-          if (count($buf) == 0)
+  public function removeClass($class = false) {
+    if (empty($class))
+    {
+      foreach ($this->matches as $m) {
+        if ($m->hasAttribute('class')) {
+          $m->removeAttribute('class');
+        }
+      }
+    }else{
+      $to_remove = array_filter(explode(' ',$class));
+      foreach ($this->matches as $m) {
+        if ($m->hasAttribute('class')) {
+          $vals = array_filter(explode(' ', $m->getAttribute('class')));
+          $vals = array_diff($vals, $to_remove);
+          if(empty($vals))
             $m->removeAttribute('class');
           else
-            $m->setAttribute('class', implode(' ', $buf));
+            $m->setAttribute('class', implode(' ', $vals));
         }
       }
     }
