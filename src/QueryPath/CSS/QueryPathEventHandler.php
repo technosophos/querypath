@@ -159,6 +159,10 @@ class QueryPathEventHandler implements EventHandler, Traverser {
     return $result;
   }
 
+  public function matches() {
+    return $this->getMatches();
+  }
+
   /**
    * Find any element with the ID that matches $id.
    *
