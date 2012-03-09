@@ -1,5 +1,16 @@
 RELEASE NOTES
 
+3.0.0
+
+1. removeAll() now works as it does in recent jQuery. Thanks to GDMac
+  (issues #77 #78) for the fix.
+2. Refactored to use namespaces.
+3. Refactored to be SPR-0 compliant.
+4. Now uses Composer.
+5. The traversal mechanism is now bottom-up, which means Querypath is
+  faster.
+
+
 2.1.3
 
 1. QueryPath Templates have gotten an overhaul from TomorrowToday (Issue #59).
