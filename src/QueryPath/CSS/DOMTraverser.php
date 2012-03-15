@@ -5,6 +5,10 @@
 
 namespace QueryPath\CSS;
 
+use \QueryPath\CSS\DOMTraverser\Util;
+use \QueryPath\CSS\DOMTraverser\PseudoClass;
+use \QueryPath\CSS\DOMTraverser\PseudoElement;
+
 /**
  * Traverse a DOM, finding matches to the selector.
  *
@@ -231,11 +235,18 @@ class DOMTraverser implements Traverser {
       if (isset($attr['ns'])) {
         throw new \Exception('FIXME: Attribute namespace support missing.');
       }
+      $val = isset($attr['value']) ? $attr['value'] : NULL;
+      $matches = Util::matchesAttribute($node, $attr['name'], $val, $attr['op']);
+
+      if (!$matches) {
+        return FALSE;
+      }
+      /*
       $name = $attr['name'];
       if ($node->hasAttribute($name)) {
         if (isset($attr['value'])) {
           $attrVal = $node->getAttribute($name);
-          $res = $this->matchAttributeValue($attr['value'], $attrVal, $attr['op']);
+          $res = Util::matchesAttributeValue($attr['value'], $attrVal, $attr['op']);
 
           // As soon as we fail to match, return FALSE.
           if (!$res) {
@@ -247,40 +258,10 @@ class DOMTraverser implements Traverser {
       else {
         return FALSE;
       }
+       */
     }
     return TRUE;
   }
-  /**
-   * Check for attr value matches based on an operation.
-   */
-  protected function matchAttributeValue($needle, $haystack, $operation) {
-
-    if (strlen($haystack) < strlen($needle)) return FALSE;
-
-    // According to the spec:
-    // "The case-sensitivity of attribute names in selectors depends on the document language."
-    // (6.3.2)
-    // To which I say, "huh?". We assume case sensitivity.
-    switch ($operation) {
-      case EventHandler::isExactly:
-        return $needle == $haystack;
-      case EventHandler::containsWithSpace:
-        // XXX: This needs testing!
-        return preg_match('/\b/', $haystack) == 1;
-        //return in_array($needle, explode(' ', $haystack));
-      case EventHandler::containsWithHyphen:
-        return in_array($needle, explode('-', $haystack));
-      case EventHandler::containsInString:
-        return strpos($haystack, $needle) !== FALSE;
-      case EventHandler::beginsWith:
-        return strpos($haystack, $needle) === 0;
-      case EventHandler::endsWith:
-        //return strrpos($haystack, $needle) === strlen($needle) - 1;
-        return preg_match('/' . $needle . '$/', $haystack) == 1;
-    }
-    return FALSE; // Shouldn't be able to get here.
-  }
-
   /**
    * Check that the given DOMNode has the given ID.
    */

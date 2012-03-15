@@ -36,6 +36,9 @@ if (!class_exists('\QueryPath\QueryPath')) {
   require __DIR__ . '/QueryPath/CSS/SimpleSelector.php';
   require __DIR__ . '/QueryPath/CSS/Selector.php';
   require __DIR__ . '/QueryPath/CSS/Traverser.php';
+  require __DIR__ . '/QueryPath/CSS/DOMTraverser/PseudoClass.php';
+  require __DIR__ . '/QueryPath/CSS/DOMTraverser/PseudoElement.php';
+  require __DIR__ . '/QueryPath/CSS/DOMTraverser/Util.php';
   require __DIR__ . '/QueryPath/CSS/DOMTraverser.php';
   require __DIR__ . '/QueryPath/CSS/Token.php';
   require __DIR__ . '/QueryPath/CSS/InputStream.php';
