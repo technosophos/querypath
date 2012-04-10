@@ -35,7 +35,7 @@ $qp = qp($demo, 'data');
 
 // Iterate over elements as DOMNodes:
 foreach ($qp->get() as $li_ele) {
-  print $li->tagName . PHP_EOL; // Prints 'li' five times.
+  print $li_ele->tagName . PHP_EOL; // Prints 'li' five times.
 }
 
 // Iterate over elements as QueryPath objects
