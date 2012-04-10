@@ -9,6 +9,8 @@ RELEASE NOTES
 4. Now uses Composer.
 5. The traversal mechanism is now bottom-up, which means Querypath is
   faster.
+6. Issue #83: Fixed broken forloop in techniques.php. Thanks to BillOrtell for
+  the fix.
 
 
 2.1.3
