@@ -61,6 +61,10 @@ class DOMTraverserTest extends TestCase {
   }
 
   public function testMatchElement() {
+    // Canary: If element does not exist, must return FALSE.
+    $matches = $this->find('NO_SUCH_ELEMENT');
+    $this->assertEquals(0, count($matches));
+
     // Test without namespace
     $matches = $this->find('root');
     $this->assertEquals(1, count($matches));
@@ -80,6 +84,7 @@ class DOMTraverserTest extends TestCase {
     $matches = $traverser->find('*')->matches();
     $actual= $traverser->getDocument()->getElementsByTagName('*');
     $this->assertEquals($actual->length, count($matches));
+
 
     // Test with namespace
     $this->markTestIncomplete();
@@ -150,12 +155,53 @@ class DOMTraverserTest extends TestCase {
   }
 
   public function testMatchPseudoClasses() {
+    $this->markTestIncomplete();
   }
 
   public function testMatchPseudoElements() {
+    $this->markTestIncomplete();
   }
 
-  public function testDeepCominators() {
+  public function testCombineAdjacent() {
+    // Simple test
+    $matches = $this->find('idtest + p');
+    $this->assertEquals(1, count($matches));
+    foreach ($matches as $m) {
+      $this->assertEquals('p', $m->tagName);
+    }
+
+    // Test ignoring PCDATA
+    $matches = $this->find('p + one');
+    $this->assertEquals(1, count($matches));
+    foreach ($matches as $m) {
+      $this->assertEquals('one', $m->tagName);
+    }
+
+    // Test that non-adjacent elements don't match.
+    $matches = $this->find('idtest + one');
+    foreach ($matches as $m) {
+      $this->assertEquals('one', $m->tagName);
+    }
+    $this->assertEquals(0, count($matches), 'Non-adjacents should not match.');
+
+    // Test that elements BEFORE don't match
+    $matches = $this->find('one + p');
+    foreach ($matches as $m) {
+      $this->assertEquals('one', $m->tagName);
+    }
+    $this->assertEquals(0, count($matches), 'Match only if b is after a');
+
+    $this->markTestIncomplete();
   }
+  public function testCombineSibling() {
+    $this->markTestIncomplete();
+  }
+  public function testCombineDirectDescendant() {
+    $this->markTestIncomplete();
+  }
+  public function testCombineAnyDescendant() {
+    $this->markTestIncomplete();
+  }
+
 }
 
