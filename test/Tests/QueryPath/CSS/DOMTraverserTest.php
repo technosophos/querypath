@@ -190,17 +190,77 @@ class DOMTraverserTest extends TestCase {
       $this->assertEquals('one', $m->tagName);
     }
     $this->assertEquals(0, count($matches), 'Match only if b is after a');
-
-    $this->markTestIncomplete();
   }
+
   public function testCombineSibling() {
-    $this->markTestIncomplete();
+    // Canary:
+    $matches = $this->find('one ~ two');
+    $this->assertEquals(0, count($matches));
+
+    // Canary 2:
+    $matches = $this->find('NO_SUCH_ELEMENT ~ two');
+    $this->assertEquals(0, count($matches));
+
+    // Simple test
+    $matches = $this->find('idtest ~ p');
+    $this->assertEquals(1, count($matches));
+    foreach ($matches as $m) {
+      $this->assertEquals('p', $m->tagName);
+    }
+
+    // Simple test
+    $matches = $this->find('outside ~ p');
+    $this->assertEquals(1, count($matches));
+    foreach ($matches as $m) {
+      $this->assertEquals('p', $m->tagName);
+    }
+
+    // Matches only go left, not right.
+    $matches = $this->find('p ~ outside');
+    $this->assertEquals(0, count($matches));
   }
   public function testCombineDirectDescendant() {
-    $this->markTestIncomplete();
+    // Canary:
+    $matches = $this->find('one > four');
+    $this->assertEquals(0, count($matches));
+
+    $matches = $this->find('two>three');
+    $this->assertEquals(1, count($matches));
+    foreach ($matches as $m) {
+      $this->assertEquals('three', $m->tagName);
+    }
+
+    $matches = $this->find('one > two > three');
+    $this->assertEquals(1, count($matches));
+    foreach ($matches as $m) {
+      $this->assertEquals('three', $m->tagName);
+    }
+
+    $matches = $this->find('a>a>a');
+    $this->assertEquals(1, count($matches));
+
+    $matches = $this->find('a>a');
+    $this->assertEquals(2, count($matches));
   }
   public function testCombineAnyDescendant() {
-    $this->markTestIncomplete();
+    // Canary
+    $matches = $this->find('four one');
+    $this->assertEquals(0, count($matches));
+
+    $matches = $this->find('one two');
+    $this->assertEquals(1, count($matches));
+    foreach ($matches as $m) {
+      $this->assertEquals('two', $m->tagName);
+    }
+
+    $matches = $this->find('one four');
+    $this->assertEquals(1, count($matches));
+
+    $matches = $this->find('a a');
+    $this->assertEquals(2, count($matches));
+
+    $matches = $this->find('root two four');
+    $this->assertEquals(1, count($matches));
   }
 
 }

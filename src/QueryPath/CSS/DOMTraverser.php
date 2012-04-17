@@ -204,7 +204,7 @@ class DOMTraverser implements Traverser {
     while (!empty($node->previousSibling)) {
       $node = $node->previousSibling;
       if ($node->nodeType == XML_ELEMENT_NODE) {
-        $this->debug(sprintf('Testing %s against "%s"', $node->tagName, $selectors[$index]));
+        //$this->debug(sprintf('Testing %s against "%s"', $node->tagName, $selectors[$index]));
         return $this->matchesSimpleSelector($node, $selectors, $index);
       }
     }
@@ -239,7 +239,7 @@ class DOMTraverser implements Traverser {
      */
     while (!empty($node->previousSibling)) {
       $node = $node->previousSibling;
-      if ($node->type == XML_ELEMENT_NODE && $this->matchesSimpleSelector($node, $selectors, $index)) {
+      if ($node->nodeType == XML_ELEMENT_NODE && $this->matchesSimpleSelector($node, $selectors, $index)) {
         return TRUE;
       }
     }
@@ -293,7 +293,7 @@ class DOMTraverser implements Traverser {
       // Catch case where element is child of something
       // else. This should really only happen with a
       // document element.
-      if ($node->type != XML_ELEMENT_NODE) {
+      if ($node->nodeType != XML_ELEMENT_NODE) {
         continue;
       }
 
