@@ -121,11 +121,14 @@ class DOMTraverser implements Traverser {
   public function matchesSelector($node, $selector) {
     $res = TRUE;
     $i = 0;
+    $res = $this->matchesSimpleSelector($node, $selector, $i);
+    /*
     do {
       //$this->debug("Selector: " . $selector[$i] . " on " . $node->nodeName);
       $res = $this->matchesSimpleSelector($node, $selector[$i]);
     }
     while ($res == TRUE && isset($selector[++$i]));
+     */
 
     return $res;
   }
@@ -144,16 +147,160 @@ class DOMTraverser implements Traverser {
    * @retval boolean
    *   A boolean TRUE if the node matches, false otherwise.
    */
-  public function matchesSimpleSelector($node, $selector) {
+  public function matchesSimpleSelector($node, $selectors, $index) {
+    $selector = $selectors[$index];
     // Note that this will short circuit as soon as one of these
     // returns FALSE.
-    return $this->matchElement($node, $selector->element, $selector->ns)
+    $result = $this->matchElement($node, $selector->element, $selector->ns)
       && $this->matchAttributes($node, $selector->attributes)
       && $this->matchId($node, $selector->id)
       && $this->matchClasses($node, $selector->classes)
       && $this->matchPseudoClasses($node, $selector->pseudoClasses)
       && $this->matchPseudoElements($node, $selector->pseudoElements);
-      //&& $this->matchCombinator($node, $selector->combinator);
+
+    // If we have a match and we have a combinator, we need to
+    // recurse up the tree.
+    if ($result && isset($selectors[++$index])) {
+      $result = $this->combine($node, $selectors, $index);
+    }
+
+    return $result;
+  }
+
+  public function combine($node, $selectors, $index) {
+    $selector = $selectors[$index];
+    //$this->debug(implode(' ', $selectors));
+    switch ($selector->combinator) {
+      case SimpleSelector::adjacent:
+        return $this->combineAdjacent($node, $selectors, $index);
+      case SimpleSelector::sibling:
+        return $this->combineSibling($node, $selectors, $index);
+      case SimpleSelector::directDescendant:
+        return $this->combineDirectDescendant($node, $selectors, $index);
+      case SimpleSelector::anyDescendant:
+        return $this->combineAnyDescendant($node, $selectors, $index);
+      ;
+    }
+    return FALSE;
+  }
+
+  /**
+   * Process an Adjacent Sibling.
+   *
+   * The spec does not indicate whether Adjacent should ignore non-Element
+   * nodes, so we choose to ignore them.
+   *
+   * @param DOMNode $node
+   *   A DOM Node.
+   * @param array $selectors
+   *   The selectors array.
+   * @param int $index
+   *   The current index to the operative simple selector in the selectors
+   *   array.
+   * @return boolean
+   *   TRUE if the combination matches, FALSE otherwise.
+   */
+  public function combineAdjacent($node, $selectors, $index) {
+    while (!empty($node->previousSibling)) {
+      $node = $node->previousSibling;
+      if ($node->nodeType == XML_ELEMENT_NODE) {
+        $this->debug(sprintf('Testing %s against "%s"', $node->tagName, $selectors[$index]));
+        return $this->matchesSimpleSelector($node, $selectors, $index);
+      }
+    }
+    return FALSE;
+  }
+
+  /**
+   * Check all siblings.
+   *
+   * According to the spec, this only tests elements LEFT of the provided
+   * node.
+   *
+   * @param DOMNode $node
+   *   A DOM Node.
+   * @param array $selectors
+   *   The selectors array.
+   * @param int $index
+   *   The current index to the operative simple selector in the selectors
+   *   array.
+   * @return boolean
+   *   TRUE if the combination matches, FALSE otherwise.
+   */
+  public function combineSibling($node, $selectors, $index) {
+    /*
+    $peers = $node->parentNode->childNodes;
+    ++$index;
+    foreach ($peers as $peer) {
+      if (!$node->isSameNode($peer) && $this->matchesSimpleSelector($node, $selectors, $index)) {
+        return TRUE;
+      }
+    }
+     */
+    while (!empty($node->previousSibling)) {
+      $node = $node->previousSibling;
+      if ($node->type == XML_ELEMENT_NODE && $this->matchesSimpleSelector($node, $selectors, $index)) {
+        return TRUE;
+      }
+    }
+    return FALSE;
+  }
+
+  /**
+   * Handle a Direct Descendant combination.
+   *
+   * Check whether the given node is a rightly-related descendant
+   * of its parent node.
+   *
+   * @param DOMNode $node
+   *   A DOM Node.
+   * @param array $selectors
+   *   The selectors array.
+   * @param int $index
+   *   The current index to the operative simple selector in the selectors
+   *   array.
+   * @return boolean
+   *   TRUE if the combination matches, FALSE otherwise.
+   */
+  public function combineDirectDescendant($node, $selectors, $index) {
+    $parent = $node->parentNode;
+    if (empty($parent)) {
+      return FALSE;
+    }
+    return $this->matchesSimpleSelector($parent, $selectors, $index);
+  }
+
+  /**
+   * Handle Any Descendant combinations.
+   *
+   * This checks to see if there are any matching routes from the
+   * selector beginning at the present node.
+   *
+   * @param DOMNode $node
+   *   A DOM Node.
+   * @param array $selectors
+   *   The selectors array.
+   * @param int $index
+   *   The current index to the operative simple selector in the selectors
+   *   array.
+   * @return boolean
+   *   TRUE if the combination matches, FALSE otherwise.
+   */
+  public function combineAnyDescendant($node, $selectors, $index) {
+    while (!empty($node->parentNode)) {
+      $node = $node->parentNode;
+
+      // Catch case where element is child of something
+      // else. This should really only happen with a
+      // document element.
+      if ($node->type != XML_ELEMENT_NODE) {
+        continue;
+      }
+
+      if ($this->matchesSimpleSelector($node, $selectors, $index)) {
+        return TRUE;
+      }
+    }
   }
 
   /**
@@ -197,7 +344,7 @@ class DOMTraverser implements Traverser {
       throw new \Exception('FIXME: Need namespace support.');
     }
 
-    return TRUE;
+    return $node->tagName == $element;
 
   }
 

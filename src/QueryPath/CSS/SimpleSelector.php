@@ -61,6 +61,19 @@ class SimpleSelector {
     }
   }
 
+  public static function combinatorOperator($code) {
+    switch ($code) {
+      case self::adjacent:
+        return '+';
+      case self::directDescendant:
+        return '>';
+      case self::sibling:
+        return '~';
+      case self::anyDescendant:
+        return '   ';
+    }
+  }
+
   public function __construct() {
   }
 
@@ -77,37 +90,42 @@ class SimpleSelector {
 
   public function __tostring() {
     $buffer = array();
+    try {
 
-    if (!empty($this->ns)) {
-      $buffer[] = $this->ns; $buffer[] = '|';
-    }
-    if (!empty($this->element)) $buffer[] = $this->element;
-    if (!empty($this->id)) $buffer[] = '#' . $this->id;
-    if (!empty($this->attributes)) {
-      foreach ($this->attributes as $attr) {
-        $buffer[] = '[';
-        if(!empty($attr['ns'])) $buffer[] = $attr['ns'] . '|';
-        $buffer[] = $attr['name'];
-        if (!empty($attr['value'])) {
-          $buffer[] = self::attributeOperator($attr['op']);
-          $buffer[] = $attr['value'];
+      if (!empty($this->ns)) {
+        $buffer[] = $this->ns; $buffer[] = '|';
+      }
+      if (!empty($this->element)) $buffer[] = $this->element;
+      if (!empty($this->id)) $buffer[] = '#' . $this->id;
+      if (!empty($this->attributes)) {
+        foreach ($this->attributes as $attr) {
+          $buffer[] = '[';
+          if(!empty($attr['ns'])) $buffer[] = $attr['ns'] . '|';
+          $buffer[] = $attr['name'];
+          if (!empty($attr['value'])) {
+            $buffer[] = self::attributeOperator($attr['op']);
+            $buffer[] = $attr['value'];
+          }
+          $buffer[] = ']';
         }
-        $buffer[] = ']';
       }
-    }
-    if (!empty($this->pseudoClasses)) {
-      foreach ($this->pseudoClasses as $ps) {
-        $buffer[] = ':' . $ps['name'];
+      if (!empty($this->pseudoClasses)) {
+        foreach ($this->pseudoClasses as $ps) {
+          $buffer[] = ':' . $ps['name'];
+        }
       }
-    }
-    foreach ($this->pseudoElements as $pe) {
-      $buffer[] = '::' . $pe;
-    }
+      foreach ($this->pseudoElements as $pe) {
+        $buffer[] = '::' . $pe;
+      }
 
-    if (!empty($this->combinator)) {
-      $buffer[] = $this->combintator;
-    }
+      if (!empty($this->combinator)) {
+        $buffer[] = self::combinatorOperator($this->combinator);
+      }
 
+    }
+    catch (\Exception $e) {
+     return $e->getMessage();
+   }
 
    return implode('', $buffer);
   }
