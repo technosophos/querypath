@@ -25,4 +25,6 @@
   <classtest class="one two three      four five six seven"/>
   <idtest id="idtest-one"/>
   <p author="T.S. Eliot">this is the way the world ends. Not with a bang, but a whimper.</p>
+  ==FOO==
+  <one><two><three><four>target</four></three></two></one>
 </root>
