@@ -11,6 +11,11 @@ RELEASE NOTES
   faster.
 6. Issue #83: Fixed broken forloop in techniques.php. Thanks to BillOrtell for
   the fix.
+7. ID-based searches no longer guarantee that only one element will be returned.
+  This accomodates XML documents that may use 'id' in a way different than
+  HTML.
+8. The base CSS Traverser is now optimized for selectors that use ID or
+  class, but no element.
 
 
 2.1.3
