@@ -221,9 +221,21 @@ class PseudoClassTest extends TestCase {
   public function testLink() {
   }
   public function testRoot() {
+    $ps = new PseudoClass();
+    $xml = '<?xml version="1.0"?><root><p><q/></p><a></a><b/></root>';
+
+    list($ele, $root) = $this->doc($xml, 'q');
+    $ret = $ps->elementMatches('root', $ele, $root);
+    $this->assertFalse($ret);
+
+    list($ele, $root) = $this->doc($xml, 'root');
+    $ret = $ps->elementMatches('root', $ele, $root);
+    $this->assertTrue($ret);
   }
+  /* Deprecated and removed.
   public function testXRoot() {
   }
   public function testXReset() {
   }
+   */
 }

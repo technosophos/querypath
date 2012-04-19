@@ -21,7 +21,7 @@ RELEASE NOTES
   it checks to see if the condition is met by the present element, and
   returns TRUE if it does. This means we do not need special case logic
   to deal with text fragments.
-
+10. Pseudo-classes :x-root and :x-reset were removed.
 
 2.1.3
 

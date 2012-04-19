@@ -65,39 +65,13 @@ class PseudoClass {
         $this->searchForAttr('href');
         break;
       case 'root':
-        throw new NotImplementedExcetion("FIXME!");
-        $found = new \SplObjectStorage();
-        if (empty($this->dom)) {
-          $this->matches = $found;
-        }
-        elseif (is_array($this->dom)) {
-          $found->attach($this->dom[0]->ownerDocument->documentElement);
-          $this->matches = $found;
-        }
-        elseif ($this->dom instanceof \DOMNode) {
-          $found->attach($this->dom->ownerDocument->documentElement);
-          $this->matches = $found;
-        }
-        elseif ($this->dom instanceof \DOMNodeList && $this->dom->length > 0) {
-          $found->attach($this->dom->item(0)->ownerDocument->documentElement);
-          $this->matches = $found;
-        }
-        else {
-          // Hopefully we never get here:
-          $found->attach($this->dom);
-          $this->matches = $found;
-        }
-        break;
+        return $node->isSameNode($node->ownerDocument->documentElement);
 
       // NON-STANDARD extensions for reseting to the "top" items set in
-      // the constructor.
+      // the constructor. Deprecated.
       case 'x-root':
       case 'x-reset':
-        throw new NotImplementedExcetion("FIXME!");
-        $this->matches = new \SplObjectStorage();
-        $this->matches->attach($this->dom);
-        break;
-
+        throw new NotImplementedExcetion("No longer supported.");
       // NON-STANDARD extensions for simple support of even and odd. These
       // are supported by jQuery, FF, and other user agents.
       case 'even':
