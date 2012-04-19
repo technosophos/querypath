@@ -103,15 +103,14 @@ class PseudoClass {
       case 'last-child':
         $this->nthLastChild(0, 1);
         break;
+
       case 'first-of-type':
-        $this->firstOfType();
-        break;
+        return $this->isFirstOfType($node);
       case 'last-of-type':
-        $this->lastOfType();
-        break;
+        return $this->isLastOfType($node);
       case 'only-of-type':
-        $this->onlyOfType();
-        break;
+        return $this->isFirstOfType($node) && $this->isLastOfType($node);
+
       case 'not':
         if (empty($value)) {
           throw new ParseException(":not() requires a value.");
@@ -214,10 +213,30 @@ class PseudoClass {
     }
     return TRUE;
   }
+  protected function isFirstOfType($node) {
+    $type = $node->tagName;
+    while (isset($node->previousSibling)) {
+      $node = $node->previousSibling;
+      if ($node->nodeType == XML_ELEMENT_NODE && $node->tagName == $type) {
+        return FALSE;
+      }
+    }
+    return TRUE;
+  }
   protected function isLast($node) {
     while (isset($node->nextSibling)) {
       $node = $node->nextSibling;
       if ($node->nodeType == XML_ELEMENT_NODE) {
+        return FALSE;
+      }
+    }
+    return TRUE;
+  }
+  protected function isLastOfType($node) {
+    $type = $node->tagName;
+    while (isset($node->nextSibling)) {
+      $node = $node->nextSibling;
+      if ($node->nodeType == XML_ELEMENT_NODE && $node->tagName == $type) {
         return FALSE;
       }
     }
@@ -233,4 +252,5 @@ class PseudoClass {
     $value = Util::removeQuotes($value);
     return isset($text) && $text == $value;
   }
+
 }

@@ -217,8 +217,6 @@ class PseudoClassTest extends TestCase {
   }
   public function testNot() {
   }
-  public function testOnlyOfType() {
-  }
   public function testEmpty() {
     $xml = '<?xml version="1.0"?><root><foo lang="en-US">test</foo><bar/><baz></baz></root>';
 
@@ -253,8 +251,55 @@ class PseudoClassTest extends TestCase {
     $this->assertTrue($ret);
   }
   public function testLastOfType() {
+    $xml = '<?xml version="1.0"?><root><one><a/><b/><c/></one><two><d/><d/><b/></two></root>';
+    $ps = new PseudoClass();
+
+    list($ele, $root) = $this->doc($xml, 'a');
+    $ret = $ps->elementMatches('last-of-type', $ele, $root);
+    $this->assertTrue($ret);
+
+    list($ele, $root) = $this->doc($xml, 'a');
+    $nl = $root->getElementsByTagName('d');
+
+    $ret = $ps->elementMatches('last-of-type', $nl->item(0), $root);
+    $this->assertFalse($ret);
+
+    $ret = $ps->elementMatches('last-of-type', $nl->item(1), $root);
+    $this->assertTrue($ret);
   }
   public function testFirstOftype() {
+    $xml = '<?xml version="1.0"?><root><one><a/><b/><c/></one><two><d/><d/><b/></two></root>';
+    $ps = new PseudoClass();
+
+    list($ele, $root) = $this->doc($xml, 'a');
+    $ret = $ps->elementMatches('first-of-type', $ele, $root);
+    $this->assertTrue($ret);
+
+    list($ele, $root) = $this->doc($xml, 'a');
+    $nl = $root->getElementsByTagName('d');
+
+    $ret = $ps->elementMatches('first-of-type', $nl->item(0), $root);
+    $this->assertTrue($ret);
+
+    $ret = $ps->elementMatches('first-of-type', $nl->item(1), $root);
+    $this->assertFalse($ret);
+  }
+  public function testOnlyOfType() {
+    $xml = '<?xml version="1.0"?><root><one><a/><b/><c/></one><two><d/><d/><b/></two></root>';
+    $ps = new PseudoClass();
+
+    list($ele, $root) = $this->doc($xml, 'a');
+    $ret = $ps->elementMatches('only-of-type', $ele, $root);
+    $this->assertTrue($ret);
+
+    list($ele, $root) = $this->doc($xml, 'a');
+    $nl = $root->getElementsByTagName('d');
+
+    $ret = $ps->elementMatches('only-of-type', $nl->item(0), $root);
+    $this->assertFalse($ret);
+
+    $ret = $ps->elementMatches('only-of-type', $nl->item(1), $root);
+    $this->assertFalse($ret);
   }
   public function testNthLastChild() {
   }
