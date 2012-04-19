@@ -77,6 +77,18 @@ class DOMTraverser implements Traverser {
     fwrite(STDOUT, PHP_EOL . $msg);
   }
 
+  /**
+   * Given a selector, find the matches in the given DOM.
+   *
+   * This is the main function for querying the DOM using a CSS
+   * selector.
+   *
+   * @param string $selector
+   *   The selector.
+   * @retval object SPLObjectStorage
+   *   An SPLObjectStorage containing a list of matched
+   *   DOMNode objects.
+   */
   public function find($selector) {
     // Setup
     $handler = new Selector();
@@ -111,6 +123,17 @@ class DOMTraverser implements Traverser {
   /**
    * Check whether the given node matches the given selector.
    *
+   * A selector is a group of one or more simple selectors combined
+   * by combinators. This determines if a given selector
+   * matches the given node.
+   *
+   * @attention
+   * Evaluation of selectors is done recursively. Thus the length
+   * of the selector is limited to the recursion depth allowed by
+   * the PHP configuration. This should only cause problems for
+   * absolutely huge selectors or for versions of PHP tuned to
+   * strictly limit recursion depth.
+   *
    * @param object DOMNode
    *   The DOMNode to check.
    * @param array Selector->toArray()
@@ -119,18 +142,7 @@ class DOMTraverser implements Traverser {
    *   A boolean TRUE if the node matches, false otherwise.
    */
   public function matchesSelector($node, $selector) {
-    $res = TRUE;
-    $i = 0;
-    $res = $this->matchesSimpleSelector($node, $selector, $i);
-    /*
-    do {
-      //$this->debug("Selector: " . $selector[$i] . " on " . $node->nodeName);
-      $res = $this->matchesSimpleSelector($node, $selector[$i]);
-    }
-    while ($res == TRUE && isset($selector[++$i]));
-     */
-
-    return $res;
+    return $this->matchesSimpleSelector($node, $selector, 0);
   }
 
   /**
@@ -167,6 +179,24 @@ class DOMTraverser implements Traverser {
     return $result;
   }
 
+  /**
+   * Combine the next selector with the given match
+   * using the next combinator.
+   *
+   * If the next selector is combined with another
+   * selector, that will be evaluated too, and so on.
+   * So if this function returns TRUE, it means that all
+   * child selectors are also matches.
+   *
+   * @param DOMNode $node
+   *   The DOMNode to test.
+   * @param array $selectors
+   *   The array of simple selectors.
+   * @param int $index
+   *   The index of the current selector.
+   * @retval boolean
+   *   TRUE if the next selector(s) match.
+   */
   public function combine($node, $selectors, $index) {
     $selector = $selectors[$index];
     //$this->debug(implode(' ', $selectors));
@@ -228,15 +258,6 @@ class DOMTraverser implements Traverser {
    *   TRUE if the combination matches, FALSE otherwise.
    */
   public function combineSibling($node, $selectors, $index) {
-    /*
-    $peers = $node->parentNode->childNodes;
-    ++$index;
-    foreach ($peers as $peer) {
-      if (!$node->isSameNode($peer) && $this->matchesSimpleSelector($node, $selectors, $index)) {
-        return TRUE;
-      }
-    }
-     */
     while (!empty($node->previousSibling)) {
       $node = $node->previousSibling;
       if ($node->nodeType == XML_ELEMENT_NODE && $this->matchesSimpleSelector($node, $selectors, $index)) {
