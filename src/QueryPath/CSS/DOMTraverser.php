@@ -343,6 +343,115 @@ class DOMTraverser implements Traverser {
       throw new \Exception('FIXME: Need namespace support.');
     }
 
+    // We try to do some optimization here to reduce the
+    // number of matches to the bare minimum. This will
+    // reduce the subsequent number of operations that
+    // must be performed in the query.
+
+    // Experimental: ID queries use XPath to match, since
+    // this should give us only a single matched element
+    // to work with.
+    if (/*$element == '*' &&*/ !empty($selector->id)) {
+      // fprintf(STDOUT, "ID Fastrack on %s\n", $selector);
+      $this->initialMatchOnID($selector);
+    }
+    // If the element is a wildcard, using class can
+    // substantially reduce the number of elements that
+    // we start with.
+    elseif ($element == '*' && !empty($selector->classes)) {
+      // fprintf(STDOUT, "Class Fastrack on %s\n", $selector);
+      $this->initialMatchOnClasses($selector);
+    }
+    else {
+      $this->initialMatchOnElement($selector);
+    }
+
+  }
+
+  /**
+   * Shortcut for finding initial match by ID.
+   *
+   * If the element is set to '*' and an ID is
+   * set, then this should be used to find by ID,
+   * which will drastically reduce the amount of
+   * comparison operations done in PHP.
+   *
+   */
+  protected function initialMatchOnID($selector) {
+    $id = $selector->id;
+    $found = $this->newMatches();
+    $baseQuery = ".//*[@id='{$id}']";
+    $xpath = new \DOMXPath($this->dom);
+
+    // Now we try to find any matching IDs.
+    foreach ($this->getMatches() as $node) {
+      $nl = $this->initialXpathQuery($xpath, $node, $baseQuery);
+      $this->attachNodeList($nl, $found);
+    }
+    $this->setMatches($found);
+
+    // Unset the ID selector.
+    $selector->id = NULL;
+  }
+
+  /**
+   * Shortcut for setting the intial match.
+   *
+   * This shortcut should only be used when the initial
+   * element is '*' and there are classes set.
+   *
+   * In any other case, the element finding algo is
+   * faster and should be used instead.
+   */
+  protected function initialMatchOnClasses($selector) {
+    $found = $this->newMatches();
+    $baseQuery = ".//*[@class]";
+    $xpath = new \DOMXPath($this->dom);
+
+    // Now we try to find any matching IDs.
+    foreach ($this->getMatches() as $node) {
+      $nl = $this->initialXpathQuery($xpath, $node, $baseQuery);
+
+      foreach ($nl as $node) {
+        $classes = $node->getAttribute('class');
+        $classArray = explode(' ', $classes);
+
+        $intersect = array_intersect($selector->classes, $classArray);
+        if (count($intersect) == count($selector->classes)) {
+          $found->attach($node);
+        }
+      }
+    }
+    $this->setMatches($found);
+
+    // Unset the classes selector.
+    $selector->classes = array();
+  }
+
+  /**
+   * Internal xpath query.
+   *
+   * This is optimized for very specific use, and is not a general
+   * purpose function.
+   */
+  private function initialXpathQuery($xpath, $node, $query) {
+      // This works around a bug in which the document element
+      // does not correctly search with the $baseQuery.
+      if ($node->isSameNode($this->dom->documentElement)) {
+        $query = substr($query, 1);
+      }
+
+      return $xpath->query($query, $node);
+  }
+
+  /**
+   * Shortcut for setting the initial match.
+   */
+  protected function initialMatchOnElement($selector) {
+    $element = $selector->element;
+    if (is_null($element)) {
+      $element = '*';
+    }
     $found = $this->newMatches();
     foreach ($this->getMatches() as $node) {
       $nl = $node->getElementsByTagName($element);

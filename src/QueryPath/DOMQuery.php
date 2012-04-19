@@ -252,6 +252,8 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
    */
   public function find($selector) {
 
+    /* DEPRECATED: This was moved into the traverser logic.
+
     // Optimize for ID/Class searches. These two take a long time
     // when a rdp is used. Using an XPath pushes work to C code.
     $ids = array();
@@ -312,6 +314,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
 
       return $this;
     }
+*/
 
 
     $query = new QueryPathEventHandler($this->matches);
