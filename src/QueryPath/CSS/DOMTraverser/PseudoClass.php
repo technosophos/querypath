@@ -109,9 +109,6 @@ class PseudoClass {
       case 'last-of-type':
         $this->lastOfType();
         break;
-      case 'only-child':
-        $this->onlyChild();
-        break;
       case 'only-of-type':
         $this->onlyOfType();
         break;
@@ -134,6 +131,9 @@ class PseudoClass {
         return $this->isFirst($node);
       case 'last':
         return $this->isLast($node);
+      case 'only-child':
+        return $this->isFirst($node) && $this->isLast($node);
+        break;
       case 'empty':
         return $this->isEmpty($node);
       case 'parent':

@@ -237,6 +237,20 @@ class PseudoClassTest extends TestCase {
     $this->assertTrue($ret);
   }
   public function testOnlyChild() {
+    $xml = '<?xml version="1.0"?><root><foo>test<a/></foo><b><c/></b></root>';
+    $ps = new PseudoClass();
+
+    list($ele, $root) = $this->doc($xml, 'foo');
+    $ret = $ps->elementMatches('only-child', $ele, $root);
+    $this->assertFalse($ret);
+
+    list($ele, $root) = $this->doc($xml, 'a');
+    $ret = $ps->elementMatches('only-child', $ele, $root);
+    $this->assertTrue($ret);
+
+    list($ele, $root) = $this->doc($xml, 'c');
+    $ret = $ps->elementMatches('only-child', $ele, $root);
+    $this->assertTrue($ret);
   }
   public function testLastOfType() {
   }
