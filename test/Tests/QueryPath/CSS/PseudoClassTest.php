@@ -115,8 +115,44 @@ class PseudoClassTest extends TestCase {
   }
 
   public function testContains(){
+    $xml = '<?xml version="1.0"?><root><h>This is a test of :contains.</h></root>';
+
+    list($ele, $root) = $this->doc($xml, 'h');
+    $ps = new PseudoClass();
+
+    $ret = $ps->elementMatches('contains', $ele, $root, 'test');
+    $this->assertTrue($ret);
+
+    $ret = $ps->elementMatches('contains', $ele, $root, 'is a test');
+    $this->assertTrue($ret);
+
+    $ret = $ps->elementMatches('contains', $ele, $root, 'This is a test of :contains.');
+    $this->assertTrue($ret);
+
+    $ret = $ps->elementMatches('contains', $ele, $root, 'Agent P, here is your mission.');
+    $this->assertFalse($ret);
+
+    $ret = $ps->elementMatches('contains', $ele, $root, "'Agent P, here is your mission.'");
+    $this->assertFalse($ret);
+
   }
   public function testContainsExactly() {
+    $xml = '<?xml version="1.0"?><root><h>This is a test of :contains-exactly.</h></root>';
+
+    list($ele, $root) = $this->doc($xml, 'h');
+    $ps = new PseudoClass();
+
+    $ret = $ps->elementMatches('contains-exactly', $ele, $root, 'test');
+    $this->assertFalse($ret);
+
+    $ret = $ps->elementMatches('contains-exactly', $ele, $root, 'This is a test of :contains-exactly.');
+    $this->assertTrue($ret);
+
+    $ret = $ps->elementMatches('contains-exactly', $ele, $root, 'Agent P, here is your mission.');
+    $this->assertFalse($ret);
+
+    $ret = $ps->elementMatches('contains-exactly', $ele, $root, '"Agent P, here is your mission."');
+    $this->assertFalse($ret);
   }
   public function testHas() {
   }
@@ -219,6 +255,20 @@ class PseudoClassTest extends TestCase {
   public function testNthLastOfTypeChild() {
   }
   public function testLink() {
+    $ps = new PseudoClass();
+    $xml = '<?xml version="1.0"?><root><a href="foo"><b hreff="bar">test</b></a><c/></root>';
+
+    list($ele, $root) = $this->doc($xml, 'c');
+    $ret = $ps->elementMatches('link', $ele, $root);
+    $this->assertFalse($ret);
+
+    list($ele, $root) = $this->doc($xml, 'a');
+    $ret = $ps->elementMatches('link', $ele, $root);
+    $this->assertTrue($ret);
+
+    list($ele, $root) = $this->doc($xml, 'b');
+    $ret = $ps->elementMatches('link', $ele, $root);
+    $this->assertFalse($ret);
   }
   public function testRoot() {
     $ps = new PseudoClass();

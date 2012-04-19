@@ -63,4 +63,16 @@ class Util {
     return FALSE; // Shouldn't be able to get here.
   }
 
+  /**
+   * Remove leading and trailing quotes.
+   */
+  public static function removeQuotes($str) {
+    $f = substr($str, 0, 1);
+    $l = substr($str, -1);
+    if ($f === $l && ($f == '"' || $f == "'")) {
+      $str = substr($str, 1, -1);
+    }
+    return $str;
+  }
+
 }

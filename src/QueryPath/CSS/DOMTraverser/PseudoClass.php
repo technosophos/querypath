@@ -57,12 +57,11 @@ class PseudoClass {
       case 'lang':
         // No value = exception.
         if (!isset($value)) {
-          throw new NotImplementedException("No handler for lang pseudoclass without value.");
+          throw new NotImplementedException(":lang() requires a value.");
         }
         return $this->lang($node, $value);
       case 'link':
-        throw new NotImplementedExcetion("FIXME!");
-        $this->searchForAttr('href');
+        return Util::matchesAttribute($node, 'href');
         break;
       case 'root':
         return $node->isSameNode($node->ownerDocument->documentElement);
@@ -163,31 +162,10 @@ class PseudoClass {
       // Contains == text matches.
       // In QP 2.1, this was changed.
       case 'contains':
-        $value = $this->removeQuotes($value);
-
-        $matches = $this->candidateList();
-        $found = new \SplObjectStorage();
-        foreach ($matches as $item) {
-          if (strpos($item->textContent, $value) !== FALSE) {
-            $found->attach($item);
-          }
-        }
-        $this->matches = $found;
-        break;
-
+        return $this->contains($node, $value);
       // Since QP 2.1
       case 'contains-exactly':
-        $value = $this->removeQuotes($value);
-
-        $matches = $this->candidateList();
-        $found = new \SplObjectStorage();
-        foreach ($matches as $item) {
-          if ($item->textContent == $value) {
-            $found->attach($item);
-          }
-        }
-        $this->matches = $found;
-        break;
+        return $this->containsExactly($node, $value);
       default:
         throw new \QueryPath\CSS\ParseException("Unknown Pseudo-Class: " . $name);
     }
@@ -196,6 +174,10 @@ class PseudoClass {
 
   /**
    * Pseudo-class handler for :lang
+   *
+   * Note that this does not implement the spec in its entirety because we do
+   * not presume to "know the language" of the document. If anyone is interested
+   * in making this more intelligent, please do so.
    */
   protected function lang($node, $value) {
     // TODO: This checks for cases where an explicit language is
@@ -241,5 +223,14 @@ class PseudoClass {
     }
     return TRUE;
   }
-
+  protected function contains($node, $value) {
+    $text = $node->textContent;
+    $value = Util::removeQuotes($value);
+    return isset($text) && (strpos($text, $value) !== FALSE);
+  }
+  protected function containsExactly($node, $value) {
+    $text = $node->textContent;
+    $value = Util::removeQuotes($value);
+    return isset($text) && $text == $value;
+  }
 }
