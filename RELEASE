@@ -16,6 +16,11 @@ RELEASE NOTES
   HTML.
 8. The base CSS Traverser is now optimized for selectors that use ID or
   class, but no element.
+9. Pseudo-element behavior has been rewritten to better conform to the
+  standard. Using a pseudo-element no longer changes the match. Rather,
+  it checks to see if the condition is met by the present element, and
+  returns TRUE if it does. This means we do not need special case logic
+  to deal with text fragments.
 
 
 2.1.3

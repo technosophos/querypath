@@ -573,8 +573,29 @@ class DOMTraverser implements Traverser {
   protected function matchPseudoClasses($node, $pseudoClasses) {
     return TRUE;
   }
+  /**
+   * Test whether the given node matches the pseudoElements.
+   *
+   * If any pseudo-elements are passed, this will test to see
+   * <i>if conditions obtain that would allow the pseudo-element
+   * to be created</i>. This does not modify the match in any way.
+   */
   protected function matchPseudoElements($node, $pseudoElements) {
-    return TRUE;
+    if (empty($pseudoElements)) {
+      return TRUE;
+    }
+
+    foreach ($pseudoElements as $pse) {
+      switch ($pse) {
+        case 'first-line':
+        case 'first-letter':
+        case 'before':
+        case 'after':
+          return strlen($node->textContent) > 0;
+        case 'selection':
+          throw new \QueryPath\CSS\NotImplementedException("::$name is not implemented.");
+      }
+    }
   }
 
   protected function newMatches() {

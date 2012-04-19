@@ -159,7 +159,20 @@ class DOMTraverserTest extends TestCase {
   }
 
   public function testMatchPseudoElements() {
-    $this->markTestIncomplete();
+    $matches = $this->find('p::first-line');
+    $this->assertEquals(1, count($matches));
+
+    $matches = $this->find('p::first-letter');
+    $this->assertEquals(1, count($matches));
+
+    $matches = $this->find('p::before');
+    $this->assertEquals(1, count($matches));
+
+    $matches = $this->find('p::after');
+    $this->assertEquals(1, count($matches));
+
+    $matches = $this->find('bottom::after');
+    $this->assertEquals(0, count($matches));
   }
 
   public function testCombineAdjacent() {
