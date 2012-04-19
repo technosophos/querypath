@@ -144,6 +144,39 @@ class PseudoClassTest extends TestCase {
     $this->assertTrue($ret);
 
   }
+  public function testFirst() {
+    $ps = new PseudoClass();
+    $xml = '<?xml version="1.0"?><root><p><q/></p><a></a><b/></root>';
+
+    list($ele, $root) = $this->doc($xml, 'q');
+    $ret = $ps->elementMatches('first', $ele, $root);
+    $this->assertTrue($ret);
+
+    list($ele, $root) = $this->doc($xml, 'p');
+    $ret = $ps->elementMatches('first', $ele, $root);
+    $this->assertTrue($ret);
+
+    list($ele, $root) = $this->doc($xml, 'b');
+    $ret = $ps->elementMatches('first', $ele, $root);
+    $this->assertFalse($ret);
+
+  }
+  public function testLast() {
+    $ps = new PseudoClass();
+    $xml = '<?xml version="1.0"?><root><p><q/></p><a></a><b/></root>';
+
+    list($ele, $root) = $this->doc($xml, 'q');
+    $ret = $ps->elementMatches('last', $ele, $root);
+    $this->assertTrue($ret);
+
+    list($ele, $root) = $this->doc($xml, 'p');
+    $ret = $ps->elementMatches('last', $ele, $root);
+    $this->assertFalse($ret);
+
+    list($ele, $root) = $this->doc($xml, 'b');
+    $ret = $ps->elementMatches('last', $ele, $root);
+    $this->assertTrue($ret);
+  }
   public function testByPosition() {
   }
   public function testNot() {

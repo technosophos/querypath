@@ -142,8 +142,6 @@ class PseudoClass {
       case 'only-of-type':
         $this->onlyOfType();
         break;
-      case 'empty':
-        return $this->emptyElement($node);
       case 'not':
         if (empty($value)) {
           throw new ParseException(":not() requires a value.");
@@ -155,14 +153,18 @@ class PseudoClass {
       case 'gt':
       case 'nth':
       case 'eq':
-      case 'first':
-      case 'last':
       //case 'even':
       //case 'odd':
         $this->getByPosition($name, $value);
         break;
+      case 'first':
+        return $this->isFirst($node);
+      case 'last':
+        return $this->isLast($node);
+      case 'empty':
+        return $this->isEmpty($node);
       case 'parent':
-        return !empty($node->firstChild);
+        return !$this->isEmpty($node);
 
       case 'enabled':
       case 'disabled':
@@ -235,7 +237,7 @@ class PseudoClass {
     return preg_match('/^h[1-9]$/i', $node->tagName) == 1;
   }
 
-  protected function emptyElement($node) {
+  protected function isEmpty($node) {
     foreach ($node->childNodes as $kid) {
       // We don't want to count PIs and comments. From the spec, it
       // appears that CDATA is also not counted.
@@ -247,8 +249,23 @@ class PseudoClass {
     return TRUE;
   }
 
-  protected function parent($node) {
-    return !empty($node->firstChild);
+  protected function isFirst($node) {
+    while (isset($node->previousSibling)) {
+      $node = $node->previousSibling;
+      if ($node->nodeType == XML_ELEMENT_NODE) {
+        return FALSE;
+      }
+    }
+    return TRUE;
+  }
+  protected function isLast($node) {
+    while (isset($node->nextSibling)) {
+      $node = $node->nextSibling;
+      if ($node->nodeType == XML_ELEMENT_NODE) {
+        return FALSE;
+      }
+    }
+    return TRUE;
   }
 
 }
