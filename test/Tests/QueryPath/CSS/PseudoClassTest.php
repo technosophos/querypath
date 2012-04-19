@@ -121,6 +121,28 @@ class PseudoClassTest extends TestCase {
   public function testHas() {
   }
   public function testParent() {
+    $ps = new PseudoClass();
+
+    $xml = '<?xml version="1.0"?><root><p/></root>';
+    list($ele, $root) = $this->doc($xml, 'p');
+    $ret = $ps->elementMatches('parent', $ele, $root);
+    $this->assertFalse($ret);
+
+    $xml = '<?xml version="1.0"?><root><p></p>></root>';
+    list($ele, $root) = $this->doc($xml, 'p');
+    $ret = $ps->elementMatches('parent', $ele, $root);
+    $this->assertFalse($ret);
+
+    $xml = '<?xml version="1.0"?><root><p>TEST</p></root>';
+    list($ele, $root) = $this->doc($xml, 'p');
+    $ret = $ps->elementMatches('parent', $ele, $root);
+    $this->assertTrue($ret);
+
+    $xml = '<?xml version="1.0"?><root><p><q/></p></root>';
+    list($ele, $root) = $this->doc($xml, 'p');
+    $ret = $ps->elementMatches('parent', $ele, $root);
+    $this->assertTrue($ret);
+
   }
   public function testByPosition() {
   }

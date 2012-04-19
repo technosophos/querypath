@@ -162,15 +162,7 @@ class PseudoClass {
         $this->getByPosition($name, $value);
         break;
       case 'parent':
-        $matches = $this->candidateList();
-        $found = new \SplObjectStorage();
-        foreach ($matches as $match) {
-          if (!empty($match->firstChild)) {
-            $found->attach($match);
-          }
-        }
-        $this->matches = $found;
-        break;
+        return !empty($node->firstChild);
 
       case 'enabled':
       case 'disabled':
@@ -190,7 +182,7 @@ class PseudoClass {
       case 'header':
         return $this->header($node);
       case 'has':
-        $this->has($value);
+        return $this->has($value);
         break;
       // Contains == text matches.
       // In QP 2.1, this was changed.
@@ -253,6 +245,10 @@ class PseudoClass {
       }
     }
     return TRUE;
+  }
+
+  protected function parent($node) {
+    return !empty($node->firstChild);
   }
 
 }
