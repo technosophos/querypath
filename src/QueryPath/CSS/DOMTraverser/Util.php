@@ -75,4 +75,40 @@ class Util {
     return $str;
   }
 
+  /**
+   * Parse an an+b rule for CSS pseudo-classes.
+   * @param $rule
+   *  Some rule in the an+b format.
+   * @return
+   *  Array (list($aVal, $bVal)) of the two values.
+   * @throws ParseException
+   *  If the rule does not follow conventions.
+   */
+  public static function parseAnB($rule) {
+    if ($rule == 'even') {
+      return array(2, 0);
+    }
+    elseif ($rule == 'odd') {
+      return array(2, 1);
+    }
+    elseif ($rule == 'n') {
+      return array(1, 0);
+    }
+    elseif (is_numeric($rule)) {
+      return array(0, (int)$rule);
+    }
+
+    $rule = explode('n', $rule);
+    if (count($rule) == 0) {
+      throw new ParseException("nth-child value is invalid.");
+    }
+
+    // Each of these is legal: 1, -1, and -. '-' is shorthand for -1.
+    $aVal = trim($rule[0]);
+    $aVal = ($aVal == '-') ? -1 : (int)$aVal;
+
+    $bVal = !empty($rule[1]) ? (int)trim($rule[1]) : 0;
+    return array($aVal, $bVal);
+  }
+
 }

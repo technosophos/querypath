@@ -74,17 +74,11 @@ class PseudoClass {
       // NON-STANDARD extensions for simple support of even and odd. These
       // are supported by jQuery, FF, and other user agents.
       case 'even':
-        $this->nthChild(2, 0);
-        break;
+        return $this->isNthChild($node, 'even');
       case 'odd':
-        $this->nthChild(2, 1);
-        break;
-
-      // Standard child-checking items.
+        return $this->isNthChild($node, 'odd');
       case 'nth-child':
-        list($aVal, $bVal) = $this->parseAnB($value);
-        $this->nthChild($aVal, $bVal);
-        break;
+        return $this->isNthChild($node, $value);
       case 'nth-last-child':
         list($aVal, $bVal) = $this->parseAnB($value);
         $this->nthLastChild($aVal, $bVal);
@@ -97,13 +91,6 @@ class PseudoClass {
         list($aVal, $bVal) = $this->parseAnB($value);
         $this->nthLastOfTypeChild($aVal, $bVal);
         break;
-      case 'first-child':
-        $this->nthChild(0, 1);
-        break;
-      case 'last-child':
-        $this->nthLastChild(0, 1);
-        break;
-
       case 'first-of-type':
         return $this->isFirstOfType($node);
       case 'last-of-type':
@@ -127,8 +114,10 @@ class PseudoClass {
         $this->getByPosition($name, $value);
         break;
       case 'first':
+      case 'first-child':
         return $this->isFirst($node);
       case 'last':
+      case 'last-child':
         return $this->isLast($node);
       case 'only-child':
         return $this->isFirst($node) && $this->isLast($node);
@@ -251,6 +240,46 @@ class PseudoClass {
     $text = $node->textContent;
     $value = Util::removeQuotes($value);
     return isset($text) && $text == $value;
+  }
+
+  protected function isNthChild($node, $value, $reverse = FALSE) {
+    list($groupSize, $elementInGroup) = Util::parseAnB($value);
+    $parent = $node->parentNode;
+    if (empty($parent)
+      || ($groupSize == 0 && $elementInGroup == 0)
+      || ($groupSize > 0 && $elementInGroup > $groupSize)
+    ) {
+      return FALSE;
+    }
+
+    // First we need to find the position of $node in other elements.
+    $allSibs = $parent->childNodes;
+    $pos = 0;
+    foreach ($allSibs as $sib) {
+      if ($sib->nodeType == XML_ELEMENT_NODE) {
+        ++$pos;
+      }
+      if ($node->isSameNode($sib)) {
+        break;
+      }
+    }
+
+    // If group size is 0, we just check to see if this
+    // is the nth element:
+    if ($groupSize == 0) {
+      return $pos == $elementInGroup;
+    }
+
+    // Next, we normalize $elementInGroup
+    if ($elementInGroup < 0) {
+      $elementInGroup = $groupSize + $elementInGroup;
+    }
+
+
+    $prod = ($pos - $elementInGroup) / $groupSize;
+    //fprintf(STDOUT, "%d n + %d on %d is %3.5f\n", $groupSize, $elementInGroup, $pos, $prod);
+
+    return is_int($prod) && $prod >= 0;
   }
 
 }

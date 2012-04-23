@@ -304,10 +304,204 @@ class PseudoClassTest extends TestCase {
   public function testNthLastChild() {
   }
   public function testNthChild() {
+    $xml = '<?xml version="1.0"?><root>';
+    $xml .= str_repeat('<a/><b/><c/><d/>', 5);
+    $xml .= '</root>';
+
+    $ps = new PseudoClass();
+    list($ele, $root) = $this->doc($xml, 'root');
+    $nl = $root->childNodes;
+
+    // 2n + 1 -- Every odd row.
+    $i = 0;
+    $expects = array('a', 'c');
+    $j = 0;
+    foreach ($nl as $n) {
+      $res = $ps->elementMatches('nth-child', $n, $root, '2n+1');
+      if ($res) {
+        ++$i;
+        $name = $n->tagName;
+        $this->assertContains($name, $expects, sprintf('Expected b or d, got %s in slot %s',  $name, ++$j));
+      }
+    }
+    $this->assertEquals(10, $i, '2n+1 is ten items.');
+
+    // Odd
+    $i = 0;
+    $expects = array('a', 'c');
+    $j = 0;
+    foreach ($nl as $n) {
+      $res = $ps->elementMatches('nth-child', $n, $root, 'odd');
+      if ($res) {
+        ++$i;
+        $name = $n->tagName;
+        $this->assertContains($name, $expects, sprintf('Expected b or d, got %s in slot %s',  $name, ++$j));
+      }
+    }
+    $this->assertEquals(10, $i, '2n+1 is ten items.');
+
+    // 2n + 0 -- every even row
+    $i = 0;
+    $expects = array('b', 'd');
+    foreach ($nl as $n) {
+      $res = $ps->elementMatches('nth-child', $n, $root, '2n');
+      if ($res) {
+        ++$i;
+        $name = $n->tagName;
+        $this->assertContains($name, $expects, 'Expected a or c, got ' . $name);
+      }
+    }
+    $this->assertEquals(10, $i, '2n+0 is ten items.');
+
+    // Even (2n)
+    $i = 0;
+    $expects = array('b', 'd');
+    foreach ($nl as $n) {
+      $res = $ps->elementMatches('nth-child', $n, $root, 'even');
+      if ($res) {
+        ++$i;
+        $name = $n->tagName;
+        $this->assertContains($name, $expects, 'Expected a or c, got ' . $name);
+      }
+    }
+    $this->assertEquals(10, $i, ' even is ten items.');
+
+    // 4n - 1 == 4n + 3
+    $i = 0;
+    foreach ($nl as $n) {
+      $res = $ps->elementMatches('nth-child', $n, $root, '4n-1');
+      if ($res) {
+        ++$i;
+        $name = $n->tagName;
+        $this->assertEquals('c', $name, 'Expected c, got ' . $name);
+      }
+    }
+    $this->assertEquals(5, $i);
+
+    // 6n - 1
+    $i = 0;
+    foreach ($nl as $n) {
+      $res = $ps->elementMatches('nth-child', $n, $root, '6n-1');
+      if ($res) {
+        ++$i;
+      }
+    }
+    $this->assertEquals(3, $i);
+
+    // 6n + 1
+    $i = 0;
+    foreach ($nl as $n) {
+      $res = $ps->elementMatches('nth-child', $n, $root, '6n+1');
+      if ($res) {
+        ++$i;
+      }
+    }
+    $this->assertEquals(4, $i);
+
+    // 26n - 1
+    $i = 0;
+    foreach ($nl as $n) {
+      $res = $ps->elementMatches('nth-child', $n, $root, '26n-1');
+      if ($res) {
+        ++$i;
+      }
+    }
+    $this->assertEquals(0, $i);
+
+    // 0n + 0 -- spec says this is always FALSE.
+    $i = 0;
+    foreach ($nl as $n) {
+      $res = $ps->elementMatches('nth-child', $n, $root, '0n+0');
+      if ($res) {
+        ++$i;
+      }
+    }
+    $this->assertEquals(0, $i);
+
+    // 3 (0n+3)
+    $i = 0;
+    foreach ($nl as $n) {
+      $res = $ps->elementMatches('nth-child', $n, $root, '3');
+      if ($res) {
+        ++$i;
+        $this->assertEquals('c', $n->tagName);
+      }
+    }
+    $this->assertEquals(1, $i);
+
+    // -n+3: First three elements.
+    $i = 0;
+    foreach ($nl as $n) {
+      $res = $ps->elementMatches('nth-child', $n, $root, '-n+3');
+      if ($res) {
+        ++$i;
+        //$this->assertEquals('c', $n->tagName);
+      }
+    }
+    $this->assertEquals(3, $i);
+
     // :even
     // :odd
     // :nth-child
     // :first-child
+
+
+    // BROKEN RULES
+
+    // 6n + 7;
+    $i = 0;
+    foreach ($nl as $n) {
+      $res = $ps->elementMatches('nth-child', $n, $root, '6n+7');
+      if ($res) {
+        ++$i;
+      }
+    }
+    $this->assertEquals(0, $i);
+
+  }
+  public function testEven() {
+    $xml = '<?xml version="1.0"?><root>';
+    $xml .= str_repeat('<a/><b/><c/><d/>', 5);
+    $xml .= '</root>';
+
+    $ps = new PseudoClass();
+    list($ele, $root) = $this->doc($xml, 'root');
+    $nl = $root->childNodes;
+
+    $i = 0;
+    $expects = array('b', 'd');
+    foreach ($nl as $n) {
+      $res = $ps->elementMatches('even', $n, $root);
+      if ($res) {
+        ++$i;
+        $name = $n->tagName;
+        $this->assertContains($name, $expects, 'Expected a or c, got ' . $name);
+      }
+    }
+    $this->assertEquals(10, $i, ' even is ten items.');
+  }
+  public function testOdd() {
+    $xml = '<?xml version="1.0"?><root>';
+    $xml .= str_repeat('<a/><b/><c/><d/>', 5);
+    $xml .= '</root>';
+
+    $ps = new PseudoClass();
+    list($ele, $root) = $this->doc($xml, 'root');
+    $nl = $root->childNodes;
+
+    // Odd
+    $i = 0;
+    $expects = array('a', 'c');
+    $j = 0;
+    foreach ($nl as $n) {
+      $res = $ps->elementMatches('odd', $n, $root);
+      if ($res) {
+        ++$i;
+        $name = $n->tagName;
+        $this->assertContains($name, $expects, sprintf('Expected b or d, got %s in slot %s',  $name, ++$j));
+      }
+    }
+    $this->assertEquals(10, $i, 'Ten odds.');
   }
   public function testNthOfTypeChild() {
   }
