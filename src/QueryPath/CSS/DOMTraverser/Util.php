@@ -108,7 +108,13 @@ class Util {
       return array(0, 0);
     }
 
-    $aVal = isset($matches[1]) ? (int) $matches[1] : 1;
+    $aVal = isset($matches[1]) ? $matches[1] : 1;
+    if ($aVal == '-') {
+      $aVal = -1;
+    }
+    else {
+      $aVal = (int) $aVal;
+    }
 
     $bVal = 0;
     if (isset($matches[3])) {
