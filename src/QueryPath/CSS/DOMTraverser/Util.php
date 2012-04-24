@@ -77,12 +77,13 @@ class Util {
 
   /**
    * Parse an an+b rule for CSS pseudo-classes.
+   *
+   * Invalid rules return `array(0, 0)`. This is per the spec.
+   *
    * @param $rule
    *  Some rule in the an+b format.
-   * @return
-   *  Array (list($aVal, $bVal)) of the two values.
-   * @throws ParseException
-   *  If the rule does not follow conventions.
+   * @retval array
+   *  `array($aVal, $bVal)` of the two values.
    */
   public static function parseAnB($rule) {
     if ($rule == 'even') {
@@ -98,16 +99,24 @@ class Util {
       return array(0, (int)$rule);
     }
 
-    $rule = explode('n', $rule);
-    if (count($rule) == 0) {
-      throw new ParseException("nth-child value is invalid.");
+    $regex = '/^\s*([+\-]?[0-9]*)n\s*([+\-]?)\s*([0-9]*)\s*$/';
+    $matches = array();
+    $res = preg_match($regex, $rule, $matches);
+
+    // If it doesn't parse, return 0, 0.
+    if (!$res) {
+      return array(0, 0);
     }
 
-    // Each of these is legal: 1, -1, and -. '-' is shorthand for -1.
-    $aVal = trim($rule[0]);
-    $aVal = ($aVal == '-') ? -1 : (int)$aVal;
+    $aVal = isset($matches[1]) ? (int) $matches[1] : 1;
 
-    $bVal = !empty($rule[1]) ? (int)trim($rule[1]) : 0;
+    $bVal = 0;
+    if (isset($matches[3])) {
+      $bVal = (int) $matches[3];
+      if (isset($matches[2]) && $matches[2] == '-') {
+        $bVal *= -1;
+      }
+    }
     return array($aVal, $bVal);
   }
 
