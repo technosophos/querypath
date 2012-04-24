@@ -302,6 +302,48 @@ class PseudoClassTest extends TestCase {
     $this->assertFalse($ret);
   }
   public function testNthLastChild() {
+    $xml = '<?xml version="1.0"?><root>';
+    $xml .= str_repeat('<a/><b/><c/><d/>', 5);
+    $xml .= '</root>';
+
+    $ps = new PseudoClass();
+    list($ele, $root) = $this->doc($xml, 'root');
+    $nl = $root->childNodes;
+
+    // 2n + 1 -- Every odd row, from the last element.
+    $i = 0;
+    $expects = array('b', 'd');
+    $j = 0;
+    foreach ($nl as $n) {
+      $res = $ps->elementMatches('nth-last-child', $n, $root, '2n+1');
+      if ($res) {
+        ++$i;
+        $name = $n->tagName;
+        $this->assertContains($name, $expects, sprintf('Expected b or d, got %s in slot %s',  $name, ++$j));
+      }
+    }
+    $this->assertEquals(10, $i, '2n+1 is ten items.');
+
+    // 3 (0n+3) -- third from the end (b).
+    $i = 0;
+    foreach ($nl as $n) {
+      $res = $ps->elementMatches('nth-last-child', $n, $root, '3');
+      if ($res) {
+        ++$i;
+        $this->assertEquals('b', $n->tagName);
+      }
+    }
+    $this->assertEquals(1, $i);
+
+    // -n+3: Last three elements.
+    $i = 0;
+    foreach ($nl as $n) {
+      $res = $ps->elementMatches('nth-last-child', $n, $root, '-n+3');
+      if ($res) {
+        ++$i;
+      }
+    }
+    $this->assertEquals(3, $i);
   }
   public function testNthChild() {
     $xml = '<?xml version="1.0"?><root>';
@@ -440,13 +482,7 @@ class PseudoClassTest extends TestCase {
     }
     $this->assertEquals(3, $i);
 
-    // :even
-    // :odd
-    // :nth-child
-    // :first-child
-
-
-    // BROKEN RULES
+    // BROKEN RULES -- these should always fail to match.
 
     // 6n + 7;
     $i = 0;
@@ -504,8 +540,74 @@ class PseudoClassTest extends TestCase {
     $this->assertEquals(10, $i, 'Ten odds.');
   }
   public function testNthOfTypeChild() {
+    $xml = '<?xml version="1.0"?><root>';
+    $xml .= str_repeat('<a/><a/><a/><a/>', 5);
+    $xml .= '</root>';
+
+    $ps = new PseudoClass();
+    list($ele, $root) = $this->doc($xml, 'root');
+    $nl = $root->childNodes;
+
+    // Odd
+    $i = 0;
+    foreach ($nl as $n) {
+      $res = $ps->elementMatches('nth-of-type', $n, $root, '2n+1');
+      if ($res) {
+        ++$i;
+        $name = $n->tagName;
+        $this->assertEquals('a', $name);
+      }
+    }
+    $this->assertEquals(10, $i, 'Ten odds.');
+
+    // Fun with ambiguous pseudoclasses:
+    // This emulates the selector 'root > :nth-of-type(2n+1)'
+    $xml = '<?xml version="1.0"?><root>';
+    $xml .= '<a/><b/><c/><a/><a/><a/>';
+    $xml .= '</root>';
+
+    list($ele, $root) = $this->doc($xml, 'root');
+    $nl = $root->childNodes;
+
+    // Odd
+    $i = 0;
+    foreach ($nl as $n) {
+      $res = $ps->elementMatches('nth-of-type', $n, $root, '2n+1');
+      if ($res) {
+        ++$i;
+        $name = $n->tagName;
+      }
+    }
+    // THis should be: 2 x a + 1 x b + 1 x c = 4
+    $this->assertEquals(4, $i, 'Four odds.');
   }
   public function testNthLastOfTypeChild() {
+    $xml = '<?xml version="1.0"?><root>';
+    $xml .= '<a/><a/><OOPS/><a/><a/>';
+    $xml .= '</root>';
+
+    $ps = new PseudoClass();
+    list($ele, $root) = $this->doc($xml, 'root');
+    $nl = $root->childNodes;
+
+    // Third from beginning is second from last.
+    $third = $nl->item(2);
+    $res = $ps->elementMatches('nth-last-of-type', $third, $root, '3');
+    $this->assertFalse($res);
+
+    $first = $nl->item(0);
+    $res = $ps->elementMatches('nth-last-of-type', $first, $root, '3');
+    $this->assertFalse($res);
+
+    $last = $nl->item(3);
+    $res = $ps->elementMatches('nth-last-of-type', $last, $root, '3');
+    $this->assertFalse($res);
+
+    // Second from start is 3rd from last
+    $second = $nl->item(1);
+    $res = $ps->elementMatches('nth-last-of-type', $second, $root, '3');
+    $this->assertTrue($res);
+
   }
   public function testLink() {
     $ps = new PseudoClass();
@@ -541,4 +643,75 @@ class PseudoClassTest extends TestCase {
   public function testXReset() {
   }
    */
+  public function testLt() {
+    $xml = '<?xml version="1.0"?><root>';
+    $xml .= str_repeat('<a/><a/><a/><a/>', 5);
+    $xml .= '</root>';
+
+    $ps = new PseudoClass();
+    list($ele, $root) = $this->doc($xml, 'root');
+    $nl = $root->childNodes;
+
+    // Odd
+    $i = 0;
+    foreach ($nl as $n) {
+      $res = $ps->elementMatches('lt', $n, $root, '15');
+      if ($res) {
+        ++$i;
+        $name = $n->tagName;
+      }
+    }
+    $this->assertEquals(15, $i, 'Less than or equal to 15.');
+  }
+  public function testGt() {
+    $xml = '<?xml version="1.0"?><root>';
+    $xml .= str_repeat('<a/><a/><a/><a/>', 5);
+    $xml .= '</root>';
+
+    $ps = new PseudoClass();
+    list($ele, $root) = $this->doc($xml, 'root');
+    $nl = $root->childNodes;
+
+    // Odd
+    $i = 0;
+    foreach ($nl as $n) {
+      $res = $ps->elementMatches('gt', $n, $root, '15');
+      if ($res) {
+        ++$i;
+        $name = $n->tagName;
+      }
+    }
+    $this->assertEquals(5, $i, 'Greater than the 15th element.');
+  }
+  public function testEq() {
+    $xml = '<?xml version="1.0"?><root>';
+    $xml .= str_repeat('<a/><b/><c/><a/>', 5);
+    $xml .= '</root>';
+
+    $ps = new PseudoClass();
+    list($ele, $root) = $this->doc($xml, 'root');
+    $nl = $root->childNodes;
+
+    $i = 0;
+    foreach ($nl as $n) {
+      $res = $ps->elementMatches('eq', $n, $root, '15');
+      if ($res) {
+        ++$i;
+        $name = $n->tagName;
+        $this->assertEquals('c', $name);
+      }
+    }
+    $this->assertEquals(1, $i, 'The 15th element.');
+
+    $i = 0;
+    foreach ($nl as $n) {
+      $res = $ps->elementMatches('nth', $n, $root, '15');
+      if ($res) {
+        ++$i;
+        $name = $n->tagName;
+        $this->assertEquals('c', $name);
+      }
+    }
+    $this->assertEquals(1, $i, 'The 15th element.');
+  }
 }
