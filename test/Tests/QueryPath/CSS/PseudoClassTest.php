@@ -155,6 +155,16 @@ class PseudoClassTest extends TestCase {
     $this->assertFalse($ret);
   }
   public function testHas() {
+    $xml = '<?xml version="1.0"?><root><button disabled="disabled"/></root>';
+
+    list($ele, $root) = $this->doc($xml, 'button');
+    $ps = new PseudoClass();
+
+    // Example from CSS 4 spec
+    $ret = $ps->elementMatches('matches', $ele, $root, '[disabled]');
+    $this->assertTrue($ret);
+
+    $this->markTestIncomplete();
   }
   public function testParent() {
     $ps = new PseudoClass();
@@ -213,9 +223,17 @@ class PseudoClassTest extends TestCase {
     $ret = $ps->elementMatches('last', $ele, $root);
     $this->assertTrue($ret);
   }
-  public function testByPosition() {
-  }
   public function testNot() {
+    $xml = '<?xml version="1.0"?><root><button/></root>';
+
+    list($ele, $root) = $this->doc($xml, 'button');
+    $ps = new PseudoClass();
+
+    // Example from CSS 4 spec
+    $ret = $ps->elementMatches('not', $ele, $root, '[disabled]');
+    $this->assertTrue($ret);
+
+    $this->markTestIncomplete();
   }
   public function testEmpty() {
     $xml = '<?xml version="1.0"?><root><foo lang="en-US">test</foo><bar/><baz></baz></root>';
@@ -713,5 +731,49 @@ class PseudoClassTest extends TestCase {
       }
     }
     $this->assertEquals(1, $i, 'The 15th element.');
+  }
+
+  public function testAnyLink() {
+    $ps = new PseudoClass();
+    $xml = '<?xml version="1.0"?><root><a href="foo"><b hreff="bar">test</b></a><c/><d src="foo"/></root>';
+
+    list($ele, $root) = $this->doc($xml, 'c');
+    $ret = $ps->elementMatches('any-link', $ele, $root);
+    $this->assertFalse($ret);
+
+    list($ele, $root) = $this->doc($xml, 'a');
+    $ret = $ps->elementMatches('any-link', $ele, $root);
+    $this->assertTrue($ret);
+
+    list($ele, $root) = $this->doc($xml, 'd');
+    $ret = $ps->elementMatches('any-link', $ele, $root);
+    $this->assertTrue($ret);
+
+    list($ele, $root) = $this->doc($xml, 'b');
+    $ret = $ps->elementMatches('any-link', $ele, $root);
+    $this->assertFalse($ret);
+  }
+  public function testLocalLink() {
+    $ps = new PseudoClass();
+    $xml = '<?xml version="1.0"?><root><a href="foo"><b href="http://example.com/bar">test</b></a><c/><d href="file://foo"/></root>';
+
+    list($ele, $root) = $this->doc($xml, 'c');
+    $ret = $ps->elementMatches('local-link', $ele, $root);
+    $this->assertFalse($ret);
+
+    list($ele, $root) = $this->doc($xml, 'a');
+    $ret = $ps->elementMatches('local-link', $ele, $root);
+    $this->assertTrue($ret);
+
+    list($ele, $root) = $this->doc($xml, 'd');
+    $ret = $ps->elementMatches('local-link', $ele, $root);
+    $this->assertTrue($ret);
+
+    list($ele, $root) = $this->doc($xml, 'b');
+    $ret = $ps->elementMatches('local-link', $ele, $root);
+    $this->assertFalse($ret);
+  }
+  public function testScope() {
+    $this->markTestIncomplete();
   }
 }

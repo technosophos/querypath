@@ -22,6 +22,11 @@ RELEASE NOTES
   returns TRUE if it does. This means we do not need special case logic
   to deal with text fragments.
 10. Pseudo-classes :x-root and :x-reset were removed.
+11. Support for the following CSS 4 Selectors featues has been added:
+  - :matches() pseudoclass, which behaves the way :has() behaves.
+  - :any-link
+  - :local-link (with some restrictions, as it does not know what the real
+    URL of the document is).
 
 2.1.3
 

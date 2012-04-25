@@ -38,6 +38,9 @@ class PseudoClass {
     $name = strtolower($pseudoclass);
     // Need to handle known pseudoclasses.
     switch($name) {
+      case 'current':
+      case 'past':
+      case 'future':
       case 'visited':
       case 'hover':
       case 'active':
@@ -46,6 +49,20 @@ class PseudoClass {
       case 'visible':
       case 'hidden':
         // These require a UA, which we don't have.
+      case 'valid':
+      case 'invalid':
+      case 'required':
+      case 'optional':
+      case 'read-only':
+      case 'read-write':
+        // Since we don't know how to validate elements,
+        // we can't supply these.
+      case 'dir':
+        // FIXME: I don't know how to get directionality info.
+      case 'nth-column':
+      case 'nth-last-column':
+        // We don't know what a column is in most documents.
+        // FIXME: Can we do this for HTML?
       case 'target':
         // This requires a location URL, which we don't have.
         return FALSE;
@@ -58,8 +75,14 @@ class PseudoClass {
           throw new NotImplementedException(":lang() requires a value.");
         }
         return $this->lang($node, $value);
+      case 'any-link':
+        return Util::matchesAttribute($node, 'href')
+          || Util::matchesAttribute($node, 'src')
+          || Util::matchesAttribute($node, 'link');
       case 'link':
         return Util::matchesAttribute($node, 'href');
+      case 'local-link':
+        return $this->isLocalLink($node);
       case 'root':
         return $node->isSameNode($node->ownerDocument->documentElement);
 
@@ -67,7 +90,8 @@ class PseudoClass {
       // the constructor. Deprecated.
       case 'x-root':
       case 'x-reset':
-        throw new NotImplementedExcetion("No longer supported.");
+      case 'scope':
+        throw new NotImplementedExcetion(":scope is not yet supported.");
       // NON-STANDARD extensions for simple support of even and odd. These
       // are supported by jQuery, FF, and other user agents.
       case 'even':
@@ -133,14 +157,14 @@ class PseudoClass {
       case 'header':
         return $this->header($node);
       case 'has':
-        return $this->has($value);
+      case 'matches':
+        return $this->has($node, $value);
         break;
       case 'not':
         if (empty($value)) {
           throw new ParseException(":not() requires a value.");
         }
-        $this->not($value);
-        break;
+        return $this->isNot($node, $value);
       // Contains == text matches.
       // In QP 2.1, this was changed.
       case 'contains':
@@ -271,14 +295,16 @@ class PseudoClass {
    * Provides :has pseudoclass.
    */
   protected function has($node, $selector) {
-    return FALSE;
+    $traverser = new \QueryPath\CSS\DOMTraverser($node, TRUE);
+    $results = $traverser->find($selector)->matches();
+    return count($results) > 0;
   }
 
   /**
    * Provides :not pseudoclass.
    */
   protected function isNot($node, $selector) {
-    return FALSE;
+    return !$this->has($node, $selector);
   }
 
   /**
@@ -362,6 +388,15 @@ class PseudoClass {
     // fprintf(STDOUT, "%d n + %d on %d is %3.5f\n", $groupSize, $elementInGroup, $pos, $prod);
 
     return is_int($prod) && $prod >= 0;
+  }
+
+  protected function isLocalLink($node) {
+    if (!$node->hasAttribute('href')) {
+      return FALSE;
+    }
+    $url = $node->getAttribute('href');
+    $scheme = parse_url($url, PHP_URL_SCHEME);
+    return empty($scheme) || $scheme == 'file';
   }
 
 }

@@ -64,10 +64,10 @@ class DOMTraverser implements Traverser {
    *
    * This requires a DOM-like object or collection of DOM nodes.
    */
-  public function __construct($dom) {
+  public function __construct($dom, $initialized = FALSE) {
     // This assumes a DOM. Need to also accomodate the case
     // where we get a set of elements.
-    $this->initialized = FALSE;
+    $this->initialized = $initialized;
     $this->dom = $dom;
     $this->matches = new \SplObjectStorage();
     $this->matches->attach($this->dom);
