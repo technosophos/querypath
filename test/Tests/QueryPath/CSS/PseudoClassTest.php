@@ -171,7 +171,6 @@ class PseudoClassTest extends TestCase {
     $nl = $ele->childNodes;
     $ps = new PseudoClass();
 
-    // Example from CSS 4 spec
     $i = 0;
     foreach ($nl as $n) {
       $ret = $ps->elementMatches('matches', $n, $root, '[src^="/foo/"]');
@@ -248,7 +247,19 @@ class PseudoClassTest extends TestCase {
     $ret = $ps->elementMatches('not', $ele, $root, '[disabled]');
     $this->assertTrue($ret);
 
-    $this->markTestIncomplete();
+    $xml = '<?xml version="1.0"?><root><b/><b/><c/><b/></root>';
+    list($ele, $root) = $this->doc($xml, 'root');
+    $nl = $ele->childNodes;
+
+    $i = 0;
+    foreach ($nl as $n) {
+      $ret = $ps->elementMatches('not', $n, $root, 'c');
+      if ($ret) {
+        ++$i;
+      }
+    }
+    $this->assertEquals(3, $i);
+
   }
   public function testEmpty() {
     $xml = '<?xml version="1.0"?><root><foo lang="en-US">test</foo><bar/><baz></baz></root>';
