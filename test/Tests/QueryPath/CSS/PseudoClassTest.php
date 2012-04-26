@@ -164,7 +164,22 @@ class PseudoClassTest extends TestCase {
     $ret = $ps->elementMatches('matches', $ele, $root, '[disabled]');
     $this->assertTrue($ret);
 
-    $this->markTestIncomplete();
+    // Regression for Issue #84:
+    $xml = '<?xml version="1.0"?><root><a/><a/><a src="/foo/bar"/><b src="http://example.com/foo/bar"/></root>';
+
+    list($ele, $root) = $this->doc($xml, 'root');
+    $nl = $ele->childNodes;
+    $ps = new PseudoClass();
+
+    // Example from CSS 4 spec
+    $i = 0;
+    foreach ($nl as $n) {
+      $ret = $ps->elementMatches('matches', $n, $root, '[src^="/foo/"]');
+      if ($ret) {
+        ++$i;
+      }
+    }
+    $this->assertEquals(1, $i);
   }
   public function testParent() {
     $ps = new PseudoClass();
