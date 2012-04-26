@@ -58,6 +58,7 @@ class DOMTraverser implements Traverser {
   protected $selector;
   protected $dom;
   protected $initialized = TRUE;
+  protected $psHandler;
 
   /**
    * Build a new DOMTraverser.
@@ -71,6 +72,7 @@ class DOMTraverser implements Traverser {
     $this->dom = $dom;
     $this->matches = new \SplObjectStorage();
     $this->matches->attach($this->dom);
+    $this->psHandler = new \QueryPath\CSS\DOMTraverser\PseudoClass();
   }
 
   public function debug($msg) {
@@ -571,7 +573,14 @@ class DOMTraverser implements Traverser {
     return count($missing) == 0;
   }
   protected function matchPseudoClasses($node, $pseudoClasses) {
-    return TRUE;
+    $ret = TRUE;
+    foreach ($pseudoClasses as $pseudoClass) {
+      $name = $pseudoClass['name'];
+      // Avoid E_STRICT violation.
+      $value = isset($pseudoClass['value']) ? $pseudoClass['value'] : NULL;
+      $ret &= $this->psHandler->elementMatches($name, $node, $this->dom, $value);
+    }
+    return $ret;
   }
   /**
    * Test whether the given node matches the pseudoElements.

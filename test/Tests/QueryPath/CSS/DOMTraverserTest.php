@@ -155,7 +155,13 @@ class DOMTraverserTest extends TestCase {
   }
 
   public function testMatchPseudoClasses() {
-    $this->markTestIncomplete();
+
+    $matches = $this->find('ul>li:first');
+    $this->assertEquals(1, count($matches));
+
+    $matches = $this->find('ul>li:not(.first)');
+    $this->assertEquals(5, count($matches));
+
   }
 
   public function testMatchPseudoElements() {
