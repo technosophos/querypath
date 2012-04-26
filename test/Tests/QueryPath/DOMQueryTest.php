@@ -33,6 +33,9 @@ define('HTML_IN_XML_FILE', __DIR__ . '/../../html.xml');
  */
 class DOMQueryTest extends TestCase {
 
+  /**
+   * @group basic
+   */
   public function testDOMQueryConstructors() {
 
     // From XML file
@@ -89,6 +92,7 @@ class DOMQueryTest extends TestCase {
   }
   /**
    * Test alternate constructors.
+   * @group basic
    */
   public function testDOMQueryHtmlConstructors() {
     $qp = htmlqp(\QueryPath::HTML_STUB);
@@ -297,6 +301,9 @@ class DOMQueryTest extends TestCase {
     \QueryPath\Options::set(array());
   }
 
+  /**
+   * @group basic
+   */
   public function testFind() {
     $file = DATA_FILE;
     $qp = qp($file)->find('#head');
@@ -305,12 +312,20 @@ class DOMQueryTest extends TestCase {
 
     $this->assertEquals('inner', qp($file)->find('.innerClass')->tag());
 
+    $string = '<?xml version="1.0"?><root><a/>Test</root>';
+    $qp = qp($string)->find('root');
+    $this->assertEquals(1, count($qp->get()), 'Check tag.');
+    $this->assertEquals($qp->get(0)->tagName, 'root');
+
     $string = '<?xml version="1.0"?><root class="findme">Test</root>';
     $qp = qp($string)->find('.findme');
     $this->assertEquals(1, count($qp->get()), 'Check class.');
     $this->assertEquals($qp->get(0)->tagName, 'root');
   }
 
+  /**
+   * @group basic
+   */
   public function testTop() {
     $file = DATA_FILE;
     $qp = qp($file)->find('li');
@@ -324,6 +339,9 @@ class DOMQueryTest extends TestCase {
     $this->assertEquals(2, $qp->top('u')->size());
   }
 
+  /**
+   * @group basic
+   */
   public function testAttr() {
     $file = DATA_FILE;
 
@@ -348,6 +366,9 @@ class DOMQueryTest extends TestCase {
     $this->assertEquals('1', $attrs['a1'], 'Attribute a1 has value 1.');
   }
 
+  /**
+   * @group basic
+   */
   public function testHasAttr() {
     $xml = '<?xml version="1.0"?><root><div foo="bar"/></root>';
 

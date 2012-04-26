@@ -29,7 +29,10 @@ class DOMTraverserTest extends TestCase {
     $dom = new \DOMDocument('1.0');
     $dom->load($this->xml_file);
 
-    $traverser = new DOMTraverser($dom);
+    $splos = new \SPLObjectStorage();
+    $splos->attach($dom);
+
+    $traverser = new DOMTraverser($splos);
 
     $this->assertInstanceOf('\QueryPath\CSS\Traverser', $traverser);
     $this->assertInstanceOf('\QueryPath\CSS\DOMTraverser', $traverser);
@@ -39,7 +42,10 @@ class DOMTraverserTest extends TestCase {
     $dom = new \DOMDocument('1.0');
     $dom->load($this->xml_file);
 
-    $traverser = new DOMTraverser($dom);
+    $splos = new \SPLObjectStorage();
+    $splos->attach($dom->documentElement);
+
+    $traverser = new DOMTraverser($splos);
 
     return $traverser;
   }

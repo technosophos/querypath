@@ -252,74 +252,10 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
    */
   public function find($selector) {
 
-    /* DEPRECATED: This was moved into the traverser logic.
-
-    // Optimize for ID/Class searches. These two take a long time
-    // when a rdp is used. Using an XPath pushes work to C code.
-    $ids = array();
-
-    $regex = '/^#([\w-]+)$|^\.([\w-]+)$/'; // $1 is ID, $2 is class.
-    //$regex = '/^#([\w-]+)$/';
-    if (preg_match($regex, $selector, $ids) === 1) {
-      // If $1 is a match, we have an ID.
-      if (!empty($ids[1])) {
-        $xpath = new \DOMXPath($this->document);
-        foreach ($this->matches as $item) {
-
-          // For whatever reasons, the .// does not work correctly
-          // if the selected element is the root element. So we have
-          // an awful hack.
-          if ($item->isSameNode($this->document->documentElement) ) {
-            $xpathQuery = "//*[@id='{$ids[1]}']";
-          }
-          // This is the correct XPath query.
-          else {
-            $xpathQuery = ".//*[@id='{$ids[1]}']";
-          }
-          //$nl = $xpath->query("//*[@id='{$ids[1]}']", $item);
-          //$nl = $xpath->query(".//*[@id='{$ids[1]}']", $item);
-          $nl = $xpath->query($xpathQuery, $item);
-          if ($nl->length > 0) {
-            $this->setMatches($nl->item(0));
-            break;
-          }
-          else {
-            // If no match is found, we set an empty.
-            $this->noMatches();
-          }
-        }
-      }
-      // Quick search for class values. While the XPath can't do it
-      // all, it is faster than doing a recusive node search.
-      else {
-        $xpath = new \DOMXPath($this->document);
-        $found = new \SplObjectStorage();
-        foreach ($this->matches as $item) {
-          // See comments on this in the #id code above.
-          if ($item->isSameNode($this->document->documentElement) ) {
-            $xpathQuery = "//*[@class]";
-          }
-          // This is the correct XPath query.
-          else {
-            $xpathQuery = ".//*[@class]";
-          }
-          $nl = $xpath->query($xpathQuery, $item);
-          for ($i = 0; $i < $nl->length; ++$i) {
-            $vals = explode(' ', $nl->item($i)->getAttribute('class'));
-            if (in_array($ids[2], $vals)) $found->attach($nl->item($i));
-          }
-        }
-        $this->setMatches($found);
-      }
-
-      return $this;
-    }
-*/
-
-
-    $query = new QueryPathEventHandler($this->matches);
+    //$query = new QueryPathEventHandler($this->matches);
+    $query = new \QueryPath\CSS\DOMTraverser($this->matches);
     $query->find($selector);
-    $this->setMatches($query->getMatches());
+    $this->setMatches($query->matches());
     return $this;
   }
 

@@ -12,6 +12,9 @@ docs :
 test :
 	phpunit --verbose --color --exclude-group=deprecated $(TESTS);
 
+test-group :
+	phpunit --verbose --color --group=$(GROUP) $(TESTS);
+
 fulltest:
 	phpunit --color $(TESTS)
 

@@ -59,20 +59,45 @@ class DOMTraverser implements Traverser {
   protected $dom;
   protected $initialized = TRUE;
   protected $psHandler;
+  protected $scopeNode;
 
   /**
    * Build a new DOMTraverser.
    *
    * This requires a DOM-like object or collection of DOM nodes.
    */
-  public function __construct($dom, $initialized = FALSE) {
+  public function __construct(\SPLObjectStorage $splos, $initialized = FALSE, $scopeNode = NULL) {
+
+    $this->psHandler = new \QueryPath\CSS\DOMTraverser\PseudoClass();
+    $this->initialized = $initialized;
+
+    // Re-use the initial splos
+    $this->matches = $splos;
+
+    if (count($splos) != 0) {
+      $splos->rewind();
+      $first = $splos->current();
+      if ($first instanceof \DOMDocument) {
+        $this->dom = $first;//->documentElement;
+      }
+      else {
+        $this->dom = $first->ownerDocument;//->documentElement;
+      }
+      if (empty($scopeNode)) {
+        $this->scopeNode = $this->dom->documentElement;
+      }
+      else {
+        $this->scopeNode = $scopeNode;
+      }
+    }
+
     // This assumes a DOM. Need to also accomodate the case
     // where we get a set of elements.
-    $this->initialized = $initialized;
+    /*
     $this->dom = $dom;
     $this->matches = new \SplObjectStorage();
     $this->matches->attach($this->dom);
-    $this->psHandler = new \QueryPath\CSS\DOMTraverser\PseudoClass();
+     */
   }
 
   public function debug($msg) {
@@ -456,6 +481,11 @@ class DOMTraverser implements Traverser {
     }
     $found = $this->newMatches();
     foreach ($this->getMatches() as $node) {
+      // Capture the case where the initial element is the root element.
+      if ($node->tagName == $element
+          || $element == '*' && $node->parentNode instanceof \DOMDocument) {
+        $found->attach($node);
+      }
       $nl = $node->getElementsByTagName($element);
       $this->attachNodeList($nl, $found);
     }
@@ -578,7 +608,7 @@ class DOMTraverser implements Traverser {
       $name = $pseudoClass['name'];
       // Avoid E_STRICT violation.
       $value = isset($pseudoClass['value']) ? $pseudoClass['value'] : NULL;
-      $ret &= $this->psHandler->elementMatches($name, $node, $this->dom, $value);
+      $ret &= $this->psHandler->elementMatches($name, $node, $this->scopeNode, $value);
     }
     return $ret;
   }

@@ -26,7 +26,7 @@ class PseudoClass {
    *   The string name of the pseudoclass
    * @param resource $node
    *   The DOMNode to be tested.
-   * @param resource $document
+   * @param resource $scope
    *   The DOMElement that is the active root for this node.
    * @param mixed $value
    *   The optional value string provided with this class. This is
@@ -34,7 +34,7 @@ class PseudoClass {
    * @retval boolean
    *   TRUE if the node matches, FALSE otherwise.
    */
-  public function elementMatches($pseudoclass, $node, $document, $value = NULL) {
+  public function elementMatches($pseudoclass, $node, $scope, $value = NULL) {
     $name = strtolower($pseudoclass);
     // Need to handle known pseudoclasses.
     switch($name) {
@@ -91,7 +91,7 @@ class PseudoClass {
       case 'x-root':
       case 'x-reset':
       case 'scope':
-        return $node->isSameNode($document);
+        return $node->isSameNode($scope);
       // NON-STANDARD extensions for simple support of even and odd. These
       // are supported by jQuery, FF, and other user agents.
       case 'even':
@@ -295,7 +295,9 @@ class PseudoClass {
    * Provides :has pseudoclass.
    */
   protected function has($node, $selector) {
-    $traverser = new \QueryPath\CSS\DOMTraverser($node, TRUE);
+    $splos = new \SPLObjectStorage();
+    $splos->attach($node);
+    $traverser = new \QueryPath\CSS\DOMTraverser($splos, TRUE);
     $results = $traverser->find($selector)->matches();
     return count($results) > 0;
   }
