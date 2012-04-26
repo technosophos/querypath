@@ -800,6 +800,12 @@ class PseudoClassTest extends TestCase {
     $this->assertFalse($ret);
   }
   public function testScope() {
-    $this->markTestIncomplete();
+    $ps = new PseudoClass();
+    $xml = '<?xml version="1.0"?><root><a href="foo"><b>test</b></a></root>';
+
+    list($ele, $root) = $this->doc($xml, 'a');
+    $node = $ele->childNodes->item(0);
+    $ret = $ps->elementMatches('scope', $node, $ele);
+    $this->assertFalse($ret);
   }
 }

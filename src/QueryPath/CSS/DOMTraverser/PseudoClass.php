@@ -27,7 +27,7 @@ class PseudoClass {
    * @param resource $node
    *   The DOMNode to be tested.
    * @param resource $document
-   *   The DOMDocument that is the active root for this node.
+   *   The DOMElement that is the active root for this node.
    * @param mixed $value
    *   The optional value string provided with this class. This is
    *   used, for example, in an+b psuedoclasses.
@@ -86,12 +86,12 @@ class PseudoClass {
       case 'root':
         return $node->isSameNode($node->ownerDocument->documentElement);
 
-      // NON-STANDARD extensions for reseting to the "top" items set in
-      // the constructor. Deprecated.
+        // CSS 4 declares the :scope pseudo-class, which describes what was
+        // the :x-root QueryPath extension.
       case 'x-root':
       case 'x-reset':
       case 'scope':
-        throw new NotImplementedExcetion(":scope is not yet supported.");
+        return $node->isSameNode($document);
       // NON-STANDARD extensions for simple support of even and odd. These
       // are supported by jQuery, FF, and other user agents.
       case 'even':
