@@ -69,6 +69,8 @@ class SimpleSelector {
         return '>';
       case self::sibling:
         return '~';
+      case self::anotherSelector:
+        return ', ';
       case self::anyDescendant:
         return '   ';
     }
@@ -112,6 +114,9 @@ class SimpleSelector {
       if (!empty($this->pseudoClasses)) {
         foreach ($this->pseudoClasses as $ps) {
           $buffer[] = ':' . $ps['name'];
+          if (isset($ps['value'])) {
+            $buffer[] = '(' . $ps['value'] . ')';
+          }
         }
       }
       foreach ($this->pseudoElements as $pe) {

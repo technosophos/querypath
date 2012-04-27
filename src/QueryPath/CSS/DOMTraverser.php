@@ -123,22 +123,32 @@ class DOMTraverser implements Traverser {
     $parser->parse();
     $this->selector = $handler;
 
-    $selector = $handler->toArray();
-
-    // Initialize matches if necessary.
-    if (!$this->initialized) {
-      $this->initialMatch($selector[0]);
-      $this->initialized = TRUE;
-    }
-
+    //$selector = $handler->toArray();
     $found = $this->newMatches();
-    foreach ($this->matches as $candidate) {
-      if ($this->matchesSelector($candidate, $selector)) {
-        //$this->debug('Attaching ' . $candidate->nodeName);
-        $found->attach($candidate);
+    foreach ($handler as $selectorGroup) {
+      // fprintf(STDOUT, "Selector group.\n");
+      // Initialize matches if necessary.
+      if ($this->initialized) {
+        $candidates = $this->matches;
+      }
+      else {
+        //if (empty($selectorGroup)) {
+          // fprintf(STDOUT, "%s", print_r($handler->toArray(), TRUE));
+        //}
+        $candidates = $this->initialMatch($selectorGroup[0], $this->matches);
+        //$this->initialized = TRUE;
+      }
+
+      foreach ($candidates as $candidate) {
+        // fprintf(STDOUT, "Testing %s against %s.\n", $candidate->tagName, $selectorGroup[0]);
+        if ($this->matchesSelector($candidate, $selectorGroup)) {
+          // $this->debug('Attaching ' . $candidate->nodeName);
+          $found->attach($candidate);
+        }
       }
     }
     $this->setMatches($found);
+
 
     return $this;
   }
@@ -197,9 +207,21 @@ class DOMTraverser implements Traverser {
       && $this->matchPseudoClasses($node, $selector->pseudoClasses)
       && $this->matchPseudoElements($node, $selector->pseudoElements);
 
+    $isNextRule = isset($selectors[++$index]);
+    // If there is another selector, we process that if there a match
+    // hasn't been found.
+    /*
+    if ($isNextRule && $selectors[$index]->combinator == SimpleSelector::anotherSelector) {
+      // We may need to re-initialize the match set for the next selector.
+      if (!$this->initialized) {
+        $this->initialMatch($selectors[$index]);
+      }
+      if (!$result) fprintf(STDOUT, "Element: %s, Next selector: %s\n", $node->tagName, $selectors[$index]);
+      return $result || $this->matchesSimpleSelector($node, $selectors, $index);
+    }
     // If we have a match and we have a combinator, we need to
     // recurse up the tree.
-    if ($result && isset($selectors[++$index])) {
+    else*/if ($isNextRule && $result) {
       $result = $this->combine($node, $selectors, $index);
     }
 
@@ -236,6 +258,9 @@ class DOMTraverser implements Traverser {
         return $this->combineDirectDescendant($node, $selectors, $index);
       case SimpleSelector::anyDescendant:
         return $this->combineAnyDescendant($node, $selectors, $index);
+      case SimpleSelector::anotherSelector:
+        // fprintf(STDOUT, "Next selector: %s\n", $selectors[$index]);
+        return $this->matchesSimpleSelector($node, $selectors, $index);
       ;
     }
     return FALSE;
@@ -357,7 +382,7 @@ class DOMTraverser implements Traverser {
    * This should only be executed when not working with
    * an existing match set.
    */
-  protected function initialMatch($selector) {
+  protected function initialMatch($selector, $matches) {
     $element = $selector->element;
 
     // If no element is specified, we have to start with the
@@ -370,6 +395,8 @@ class DOMTraverser implements Traverser {
       throw new \Exception('FIXME: Need namespace support.');
     }
 
+    // fprintf(STDOUT, "Initial match using %s.\n", $selector);
+
     // We try to do some optimization here to reduce the
     // number of matches to the bare minimum. This will
     // reduce the subsequent number of operations that
@@ -380,19 +407,21 @@ class DOMTraverser implements Traverser {
     // to work with.
     if (/*$element == '*' &&*/ !empty($selector->id)) {
       // fprintf(STDOUT, "ID Fastrack on %s\n", $selector);
-      $this->initialMatchOnID($selector);
+      $initialMatches = $this->initialMatchOnID($selector, $matches);
     }
     // If the element is a wildcard, using class can
     // substantially reduce the number of elements that
     // we start with.
     elseif ($element == '*' && !empty($selector->classes)) {
       // fprintf(STDOUT, "Class Fastrack on %s\n", $selector);
-      $this->initialMatchOnClasses($selector);
+      $initialMatches = $this->initialMatchOnClasses($selector, $matches);
     }
     else {
-      $this->initialMatchOnElement($selector);
+      $initialMatches = $this->initialMatchOnElement($selector, $matches);
     }
 
+    //fprintf(STDOUT, "Found %d nodes.\n", count($this->matches));
+    return $initialMatches;
   }
 
   /**
@@ -404,21 +433,20 @@ class DOMTraverser implements Traverser {
    * comparison operations done in PHP.
    *
    */
-  protected function initialMatchOnID($selector) {
+  protected function initialMatchOnID($selector, $matches) {
     $id = $selector->id;
     $found = $this->newMatches();
     $baseQuery = ".//*[@id='{$id}']";
     $xpath = new \DOMXPath($this->dom);
 
     // Now we try to find any matching IDs.
-    foreach ($this->getMatches() as $node) {
+    foreach ($matches as $node) {
       $nl = $this->initialXpathQuery($xpath, $node, $baseQuery);
       $this->attachNodeList($nl, $found);
     }
-    $this->setMatches($found);
-
     // Unset the ID selector.
     $selector->id = NULL;
+    return $found;
   }
 
   /**
@@ -430,13 +458,13 @@ class DOMTraverser implements Traverser {
    * In any other case, the element finding algo is
    * faster and should be used instead.
    */
-  protected function initialMatchOnClasses($selector) {
+  protected function initialMatchOnClasses($selector, $matches) {
     $found = $this->newMatches();
     $baseQuery = ".//*[@class]";
     $xpath = new \DOMXPath($this->dom);
 
     // Now we try to find any matching IDs.
-    foreach ($this->getMatches() as $node) {
+    foreach ($matches as $node) {
       $nl = $this->initialXpathQuery($xpath, $node, $baseQuery);
 
       foreach ($nl as $node) {
@@ -449,10 +477,11 @@ class DOMTraverser implements Traverser {
         }
       }
     }
-    $this->setMatches($found);
 
     // Unset the classes selector.
     $selector->classes = array();
+
+    return $found;
   }
 
   /**
@@ -474,13 +503,13 @@ class DOMTraverser implements Traverser {
   /**
    * Shortcut for setting the initial match.
    */
-  protected function initialMatchOnElement($selector) {
+  protected function initialMatchOnElement($selector, $matches) {
     $element = $selector->element;
     if (is_null($element)) {
       $element = '*';
     }
     $found = $this->newMatches();
-    foreach ($this->getMatches() as $node) {
+    foreach ($matches as $node) {
       // Capture the case where the initial element is the root element.
       if ($node->tagName == $element
           || $element == '*' && $node->parentNode instanceof \DOMDocument) {
@@ -489,9 +518,9 @@ class DOMTraverser implements Traverser {
       $nl = $node->getElementsByTagName($element);
       $this->attachNodeList($nl, $found);
     }
-    $this->setMatches($found);
 
     $selector->element = NULL;
+    return $found;
   }
 
   /**

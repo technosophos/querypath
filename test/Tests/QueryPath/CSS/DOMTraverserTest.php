@@ -287,6 +287,11 @@ class DOMTraverserTest extends TestCase {
     $matches = $this->find('root two four');
     $this->assertEquals(1, count($matches));
   }
+  public function testMultipleSelectors() {
+    // fprintf(STDOUT, "=========TEST=========\n\n");
+    $matches = $this->find('one, two');
+    $this->assertEquals(2, count($matches));
+  }
 
 }
 

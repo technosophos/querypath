@@ -19,41 +19,41 @@ class SelectorTest extends TestCase {
     $selector = $this->parse('test')->toArray();
 
     $this->assertEquals(1, count($selector));
-    $this->assertEquals('test', $selector['0']->element);
+    $this->assertEquals('test', $selector[0]['0']->element);
   }
 
   public function testElementNS() {
     $selector = $this->parse('foo|test')->toArray();
 
     $this->assertEquals(1, count($selector));
-    $this->assertEquals('test', $selector['0']->element);
-    $this->assertEquals('foo', $selector['0']->ns);
+    $this->assertEquals('test', $selector[0]['0']->element);
+    $this->assertEquals('foo', $selector[0]['0']->ns);
   }
 
   public function testId() {
     $selector = $this->parse('#test')->toArray();
 
     $this->assertEquals(1, count($selector));
-    $this->assertEquals('test', $selector[0]->id);
+    $this->assertEquals('test', $selector[0][0]->id);
   }
 
   public function testClasses() {
     $selector = $this->parse('.test')->toArray();
 
     $this->assertEquals(1, count($selector));
-    $this->assertEquals('test', $selector[0]->classes[0]);
+    $this->assertEquals('test', $selector[0][0]->classes[0]);
 
     $selector = $this->parse('.test.foo.bar')->toArray();
-    $this->assertEquals('test', $selector[0]->classes[0]);
-    $this->assertEquals('foo', $selector[0]->classes[1]);
-    $this->assertEquals('bar', $selector[0]->classes[2]);
+    $this->assertEquals('test', $selector[0][0]->classes[0]);
+    $this->assertEquals('foo', $selector[0][0]->classes[1]);
+    $this->assertEquals('bar', $selector[0][0]->classes[2]);
 
   }
 
   public function testAttributes() {
     $selector = $this->parse('foo[bar=baz]')->toArray();
     $this->assertEquals(1, count($selector));
-    $attrs = $selector[0]->attributes;
+    $attrs = $selector[0][0]->attributes;
 
     $this->assertEquals(1, count($attrs));
 
@@ -63,7 +63,7 @@ class SelectorTest extends TestCase {
     $this->assertEquals('baz', $attr['value']);
 
     $selector = $this->parse('foo[bar=baz][size=one]')->toArray();
-    $attrs = $selector[0]->attributes;
+    $attrs = $selector[0][0]->attributes;
 
     $this->assertEquals('one', $attrs[1]['value']);
   }
@@ -71,7 +71,7 @@ class SelectorTest extends TestCase {
   public function testAttributesNS() {
     $selector = $this->parse('[myns|foo=bar]')->toArray();
 
-    $attr = $selector[0]->attributes[0];
+    $attr = $selector[0][0]->attributes[0];
 
     $this->assertEquals('myns', $attr['ns']);
     $this->assertEquals('foo', $attr['name']);
@@ -79,7 +79,7 @@ class SelectorTest extends TestCase {
 
   public function testPseudoClasses() {
     $selector = $this->parse('foo:first')->toArray();
-    $pseudo = $selector[0]->pseudoClasses;
+    $pseudo = $selector[0][0]->pseudoClasses;
 
     $this->assertEquals(1, count($pseudo));
 
@@ -88,7 +88,7 @@ class SelectorTest extends TestCase {
 
   public function testPseudoElements() {
     $selector = $this->parse('foo::bar')->toArray();
-    $pseudo = $selector[0]->pseudoElements;
+    $pseudo = $selector[0][0]->pseudoElements;
 
     $this->assertEquals(1, count($pseudo));
 
@@ -99,16 +99,16 @@ class SelectorTest extends TestCase {
     // This implies *>foo
     $selector = $this->parse('>foo')->toArray();
 
-    $this->assertEquals(SimpleSelector::directDescendant, $selector[1]->combinator);
+    $this->assertEquals(SimpleSelector::directDescendant, $selector[0][1]->combinator);
 
     // This will be a selector with three simples:
     // 'bar'
     // 'foo '
     // '*>'
     $selector = $this->parse('>foo bar')->toArray();
-    $this->assertNull($selector[0]->combinator);
-    $this->assertEquals(SimpleSelector::anyDescendant, $selector[1]->combinator);
-    $this->assertEquals(SimpleSelector::directDescendant, $selector[2]->combinator);
+    $this->assertNull($selector[0][0]->combinator);
+    $this->assertEquals(SimpleSelector::anyDescendant, $selector[0][1]->combinator);
+    $this->assertEquals(SimpleSelector::directDescendant, $selector[0][2]->combinator);
   }
 
   public function testIterator() {

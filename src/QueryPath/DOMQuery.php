@@ -3113,6 +3113,11 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
    * @todo It would be trivially easy to add support for iterating over an array or Iterable of DOMNodes.
    */
   public function has($contained) {
+    /*
+    if (count($this->matches) == 0) {
+      return false;
+    }
+     */
     $found = new \SplObjectStorage();
 
     // If it's a selector, we just get all of the DOMNodes that match the selector.

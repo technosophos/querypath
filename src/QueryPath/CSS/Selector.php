@@ -46,14 +46,16 @@ namespace QueryPath\CSS;
  *
  * @since QueryPath 3.0.0
  */
-class Selector implements EventHandler, \IteratorAggregate {
+class Selector implements EventHandler, \IteratorAggregate, \Countable {
   protected $selectors = array();
   protected $currSelector;
+  protected $selectorGroups = array();
+  protected $groupIndex = 0;
 
   public function __construct() {
     $this->currSelector = new SimpleSelector();
 
-    $this->selectors[] = $this->currSelector;
+    $this->selectors[$this->groupIndex][] = $this->currSelector;
   }
 
   public function getIterator() {
@@ -69,6 +71,10 @@ class Selector implements EventHandler, \IteratorAggregate {
    */
   public function toArray() {
     return $this->selectors;
+  }
+
+  public function count() {
+    return count($this->selectors);
   }
 
   public function elementID($id) {
@@ -115,7 +121,7 @@ class Selector implements EventHandler, \IteratorAggregate {
   public function combinator($combinatorName) {
     $this->currSelector->combinator = $combinatorName;
     $this->currSelector = new SimpleSelector();
-    array_unshift($this->selectors, $this->currSelector);
+    array_unshift($this->selectors[$this->groupIndex], $this->currSelector);
     //$this->selectors[]= $this->currSelector;
   }
   public function directDescendant() {
@@ -125,7 +131,9 @@ class Selector implements EventHandler, \IteratorAggregate {
     $this->combinator(SimpleSelector::adjacent);
   }
   public function anotherSelector() {
-    $this->combinator(SimpleSelector::anotherSelector);
+    $this->groupIndex++;
+    $this->currSelector = new SimpleSelector();
+    $this->selectors[$this->groupIndex] = array($this->currSelector);
   }
   public function sibling() {
     $this->combinator(SimpleSelector::sibling);
