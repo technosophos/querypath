@@ -14,6 +14,7 @@ use \QueryPath\Extension\QPList;
 
 /**
  * @ingroup querypath_tests
+ * @group extension
  */
 class QPListTests extends TestCase {
   public static function setUpBeforeClass() {

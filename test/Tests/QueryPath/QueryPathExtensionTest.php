@@ -4,10 +4,14 @@
  * @author M Butcher <matt@aleph-null.tv>
  * @license The GNU Lesser GPL (LGPL) or an MIT-like license.
  */
- 
+namespace QueryPath\Tests;
 require_once 'PHPUnit/Autoload.php';
-require_once __DIR__ . '/../../../src/QueryPath.php';
-require_once 'QueryPathTest.php';
+require_once __DIR__ . '/TestCase.php';
+require_once __DIR__ . '/../../../src/QueryPath/Extension.php';
+//require_once __DIR__ . '/../../../src/QueryPath.php';
+//require_once 'QueryPathTest.php';
+
+use \QueryPath\Extension;
 
 /**
  * 
@@ -17,25 +21,25 @@ require_once 'QueryPathTest.php';
 /**
  * Run all of the usual tests, plus some extras, with some extensions loaded.
  * @ingroup querypath_tests
+ * @group extension
  */
-class QueryPathExtensionTest extends QueryPathTest {
-//class QueryPathExtensionTest extends PHPUnit_Framework_TestCase {
- public function testExtensions() {
+class QueryPathExtensionTest extends TestCase {
+  public function testExtensions() {
    $this->assertNotNull(qp());
- }
- 
- public function testHasExtension() {
+  }
+
+  public function testHasExtension() {
    $this->assertTrue(QueryPathExtensionRegistry::hasExtension('StubExtensionOne'));
- }
- 
- public function testStubToe() {
+  }
+
+  public function testStubToe() {
    $this->assertEquals(1, qp(DATA_FILE, 'unary')->stubToe()->find(':root > toe')->size());
- }
- 
- public function testStuble() {
+  }
+
+  public function testStuble() {
    $this->assertEquals('arg1arg2', qp(DATA_FILE)->stuble('arg1', 'arg2'));
- }
- 
+  }
+
  /**
   * @expectedException QueryPathException
   */
@@ -94,12 +98,12 @@ class QueryPathExtensionTest extends QueryPathTest {
  *
  * @ingroup querypath_tests
  */
-class StubExtensionOne implements QueryPathExtension {
+class StubExtensionOne implements Extension {
   private $qp = NULL;
-  public function __construct(QueryPath $qp) {
+  public function __construct(\QueryPath\Query $qp) {
     $this->qp = $qp;
   }
-  
+
   public function stubToe() {
     $this->qp->find(':root')->append('<toe/>')->end();
     return $this->qp;
@@ -110,9 +114,9 @@ class StubExtensionOne implements QueryPathExtension {
  *
  * @ingroup querypath_tests
  */
-class StubExtensionTwo implements QueryPathExtension {
+class StubExtensionTwo implements Extension {
   private $qp = NULL;
-  public function __construct(QueryPath $qp) {
+  public function __construct(\QueryPath\Query $qp) {
     $this->qp = $qp;
   }
   public function stuble($arg1, $arg2) {
@@ -124,9 +128,9 @@ class StubExtensionTwo implements QueryPathExtension {
  *
  * @ingroup querypath_tests
  */
-class StubExtensionThree implements QueryPathExtension {
+class StubExtensionThree implements Extension {
   private $qp = NULL;
-  public function __construct(QueryPath $qp) {
+  public function __construct(\QueryPath\Query $qp) {
     $this->qp = $qp;
   }
   public function stuble($arg1, $arg2) {
@@ -134,5 +138,5 @@ class StubExtensionThree implements QueryPathExtension {
   }
 }
 
-QueryPathExtensionRegistry::extend('StubExtensionOne');
-QueryPathExtensionRegistry::extend('StubExtensionTwo');
+//QueryPathExtensionRegistry::extend('StubExtensionOne');
+//QueryPathExtensionRegistry::extend('StubExtensionTwo');

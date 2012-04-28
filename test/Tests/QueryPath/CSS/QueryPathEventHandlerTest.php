@@ -14,7 +14,7 @@ use \QueryPath\CSS\EventHandler;
 /**
  * Tests for QueryPathEventHandler class.
  * @ingroup querypath_tests
- * @group CSS
+ * @group deprecated
  */
 class QueryPathEventHandlerTest extends TestCase {
 

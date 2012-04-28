@@ -13,8 +13,6 @@ namespace QueryPath\Tests;
  * Unit tests and regression tests for QueryPath.
  */
 
-use QueryPath\QueryPath;
-
 /** */
 require_once 'PHPUnit/Autoload.php';
 require_once __DIR__ . '/TestCase.php';
@@ -58,7 +56,7 @@ class XMLishTest extends TestCase {
  *
  * @ingroup querypath_tests
  */
-class XMLishMock extends QueryPath {
+class XMLishMock extends \QueryPath\DOMQuery {
   public function exposedIsXMLish($str) {
     return $this->isXMLish($str);
   }

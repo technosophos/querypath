@@ -16,7 +16,7 @@ use \QueryPath\CSS\EventHandler;
  * @ingroup querypath_tests
  * @group CSS
  */
-class CssEventParserTests extends TestCase {
+class ParserTest extends TestCase {
 
   private function getMockHandler($method) {
     $mock = $this->getMock('\QueryPath\Tests\TestEventHandler', array($method));

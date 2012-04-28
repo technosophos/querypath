@@ -19,6 +19,7 @@ QPDB::baseDB('sqlite:./test/db/qpTest.db');
 
 /**
  * @ingroup querypath_tests
+ * @group extension
  */
 class QPDBTest extends TestCase {
   private $dsn = 'sqlite:./test/db/qpTest.db';

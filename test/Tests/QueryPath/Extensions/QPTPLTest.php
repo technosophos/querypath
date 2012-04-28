@@ -13,6 +13,7 @@ require_once 'src/QueryPath/Extension/QPTPL.php';
 use \QueryPath\Extension\QPTPL;
 /**
  * @ingroup querypath_tests
+ * @group extension
  */
 class QPTPLTest extends TestCase {
   public static function setUpBeforeClass() {

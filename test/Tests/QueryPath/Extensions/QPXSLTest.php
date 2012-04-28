@@ -12,6 +12,7 @@ require_once 'src/QueryPath/Extension/QPXSL.php';
 require_once __DIR__ . '/../TestCase.php';
 /**
  * @ingroup querypath_tests
+ * @extension
  */
 class QPXSLTests extends TestCase {
 

@@ -11,6 +11,7 @@ require_once __DIR__ . '/../TestCase.php';
 require_once 'src/QueryPath/Extension/QPXML.php';
 /**
  * @ingroup querypath_tests
+ * @group extension
  */
 class QPXMLTests extends TestCase {
 
