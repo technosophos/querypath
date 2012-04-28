@@ -2,6 +2,14 @@ RELEASE NOTES
 
 3.0.0
 
+*REALLY IMPORTANT CHANGE*: To match jQuery, and to correctly implement
+  a bottom-up parser, the following will no longer work:
+  $qp($html, 'li')->find(':root ul');
+  You can no longer use find() to ever, ever move UP the document true
+  (like back to the root from somewhere in the tree). You MUST use
+  top() to do this now. This is how jQuery works, and making this
+  minor change makes things much faster.
+
 1. removeAll() now works as it does in recent jQuery. Thanks to GDMac
   (issues #77 #78) for the fix.
 2. Refactored to use namespaces.
@@ -27,6 +35,9 @@ RELEASE NOTES
   - :any-link
   - :local-link (with some restrictions, as it does not know what the real
     URL of the document is).
+12. Traversing UP the DOM tree with find() is no longer allowed. Use top().
+13. :first is an alias of :nth(1) instead of :first-of-type. This follows
+  jQuery now.
 
 2.1.3
 

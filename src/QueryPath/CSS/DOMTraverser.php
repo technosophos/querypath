@@ -441,6 +441,9 @@ class DOMTraverser implements Traverser {
 
     // Now we try to find any matching IDs.
     foreach ($matches as $node) {
+      if ($node->getAttribute('id') == $id) {
+        $found->attach($node);
+      }
       $nl = $this->initialXpathQuery($xpath, $node, $baseQuery);
       $this->attachNodeList($nl, $found);
     }
@@ -465,8 +468,15 @@ class DOMTraverser implements Traverser {
 
     // Now we try to find any matching IDs.
     foreach ($matches as $node) {
-      $nl = $this->initialXpathQuery($xpath, $node, $baseQuery);
+      // Refactor me!
+      if ($node->hasAttribute('class')) {
+        $intersect = array_intersect($selector->classes, explode(' ', $node->getAttribute('class')));
+        if (count($intersect) == count($selector->classes)) {
+          $found->attach($node);
+        }
+      }
 
+      $nl = $this->initialXpathQuery($xpath, $node, $baseQuery);
       foreach ($nl as $node) {
         $classes = $node->getAttribute('class');
         $classArray = explode(' ', $classes);

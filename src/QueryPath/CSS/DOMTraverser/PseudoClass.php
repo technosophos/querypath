@@ -127,6 +127,7 @@ class PseudoClass {
         $rule = (int)$value;
         return $this->isNthChild($node, $rule);
       case 'first':
+        return $this->isNthChild($node, 1);
       case 'first-child':
         return $this->isFirst($node);
       case 'last':

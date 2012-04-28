@@ -744,8 +744,9 @@ class DOMQueryTest extends TestCase {
 
   public function testBefore() {
     $file = DATA_FILE;
-    $this->assertEquals(1, qp($file,'unary')->before('<test/>')->find(':root > head ~ test')->size());
-    $this->assertEquals('unary', qp($file,'unary')->before('<test/>')->find(':root > test')->get(0)->nextSibling->tagName);
+    $this->assertEquals(1, qp($file,'unary')->before('<test/>')->find(':root > test ~ unary')->size());
+    $this->assertEquals(1, qp($file,'unary')->before('<test/>')->top('head ~ test')->size());
+    $this->assertEquals('unary', qp($file,'unary')->before('<test/>')->top(':root > test')->get(0)->nextSibling->tagName);
 
     // Test repeated insert
     $this->assertEquals(2, qp($file,'inner')->before('<test/>')->top()->find('test')->size());
@@ -753,8 +754,8 @@ class DOMQueryTest extends TestCase {
 
   public function testAfter() {
     $file = DATA_FILE;
-    $this->assertEquals(1, qp($file,'unary')->after('<test/>')->find(':root > unary ~ test')->size());
-    $this->assertEquals('unary', qp($file,'unary')->after('<test/>')->find(':root > test')->get(0)->previousSibling->tagName);
+    $this->assertEquals(1, qp($file,'unary')->after('<test/>')->top(':root > unary ~ test')->size());
+    $this->assertEquals('unary', qp($file,'unary')->after('<test/>')->top(':root > test')->get(0)->previousSibling->tagName);
 
     $this->assertEquals(2, qp($file,'inner')->after('<test/>')->top()->find('test')->size());
 
@@ -764,7 +765,7 @@ class DOMQueryTest extends TestCase {
     $file = DATA_FILE;
     $dest = qp('<?xml version="1.0"?><root><dest/></root>', 'dest');
     $qp = qp($file,'li')->insertBefore($dest);
-    $this->assertEquals(5, $dest->find(':root > li')->size());
+    $this->assertEquals(5, $dest->top(':root > li')->size());
     $this->assertEquals('li', $dest->end()->find('dest')->get(0)->previousSibling->tagName);
   }
   public function testInsertAfter() {
@@ -772,11 +773,11 @@ class DOMQueryTest extends TestCase {
     $dest = qp('<?xml version="1.0"?><root><dest/></root>', 'dest');
     $qp = qp($file,'li')->insertAfter($dest);
     //print $dest->get(0)->ownerDocument->saveXML();
-    $this->assertEquals(5, $dest->find(':root > li')->size());
+    $this->assertEquals(5, $dest->top(':root > li')->size());
   }
   public function testReplaceWith() {
     $file = DATA_FILE;
-    $qp = qp($file,'unary')->replaceWith('<test><foo/></test>')->find(':root test');
+    $qp = qp($file,'unary')->replaceWith('<test><foo/></test>')->top('test');
     //print $qp->get(0)->ownerDocument->saveXML();
     $this->assertEquals(1, $qp->size());
   }
@@ -1362,7 +1363,7 @@ class DOMQueryTest extends TestCase {
 
     //throw new Exception($qp->top()->xml());
 
-    $this->assertEquals('Hello', $qp->top('p:first')->text(), "Test First P");
+    $this->assertEquals('Hello', $qp->top('p:first-of-type')->text(), "Test First P ");
     $i = 0;
     while($qp->next('p')->html() != null) {
       $this->assertEquals($testarray[$i], $qp->text(), $i." didn't match");
@@ -1435,7 +1436,7 @@ class DOMQueryTest extends TestCase {
     // Deep test: make sure children are also cloned.
     $qp = qp($file, 'inner');
     $one = $qp->find('li')->get(0);
-    $two = $qp->find(':root inner')->cloneAll()->find('li')->get(0);
+    $two = $qp->top('inner')->cloneAll()->find('li')->get(0);
     $this->assertTrue($one !== $two);
     $this->assertEquals('li', $two->tagName);
   }
@@ -1443,10 +1444,11 @@ class DOMQueryTest extends TestCase {
   public function testBranch() {
     $qp = qp(\QueryPath::HTML_STUB);
     $branch = $qp->branch();
-    $branch->find('title')->text('Title');
+    $branch->top('title')->text('Title');
+    $qp->top('title')->text('FOOOOO')->top();
     $qp->find('body')->text('This is the body');
 
-    $this->assertEquals($qp->top()->find('title')->text(), $branch->top()->find('title')->text());
+    $this->assertEquals($qp->top('title')->text(), $branch->top('title')->text(), $branch->top()->html());
 
     $qp = qp(\QueryPath::HTML_STUB);
     $branch = $qp->branch('title');
@@ -1464,12 +1466,12 @@ class DOMQueryTest extends TestCase {
   public function test__clone() {
     $file = DATA_FILE;
 
-    $qp = qp($file, 'inner:first');
+    $qp = qp($file, 'inner:first-of-type');
     $qp2 = clone $qp;
     $this->assertFalse($qp === $qp2);
     $qp2->find('li')->attr('foo', 'bar');
     $this->assertEquals('', $qp->find('li')->attr('foo'));
-    $this->assertEquals('bar', $qp2->attr('foo'));
+    $this->assertEquals('bar', $qp2->attr('foo'), $qp2->top()->xml());
   }
 
   public function testStub() {
