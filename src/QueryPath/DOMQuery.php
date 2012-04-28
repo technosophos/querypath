@@ -80,8 +80,6 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
    */
   public $length = 0;
 
-  protected $initialized = FALSE;
-
   /**
    * Constructor.
    *
@@ -122,7 +120,6 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
 
       if ($document instanceof DOMQuery) {
         $this->matches = $document->get(NULL, TRUE);
-        $this->initialized = TRUE;
         if ($this->matches->count() > 0)
           $this->document = $this->getFirstMatch()->ownerDocument;
       }
@@ -143,7 +140,6 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
         $this->setMatches($import);
       }
       elseif ($document instanceof \SplObjectStorage) {
-        //$this->initialized = TRUE;
         if ($document->count() == 0) {
           throw new \QueryPath\Exception('Cannot initialize QueryPath from an empty SplObjectStore');
         }
@@ -156,7 +152,6 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
     }
     elseif (is_array($document)) {
       //trigger_error('Detected deprecated array support', E_USER_NOTICE);
-      $this->initialized = TRUE;
       if (!empty($document) && $document[0] instanceof \DOMNode) {
         $found = new \SplObjectStorage();
         foreach ($document as $item) $found->attach($item);
@@ -258,7 +253,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
   public function find($selector) {
 
     //$query = new QueryPathEventHandler($this->matches);
-    $query = new \QueryPath\CSS\DOMTraverser($this->matches, $this->initialized);
+    $query = new \QueryPath\CSS\DOMTraverser($this->matches);
     $query->find($selector);
     $this->setMatches($query->matches());
     return $this;
