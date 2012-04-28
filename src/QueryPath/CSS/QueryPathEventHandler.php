@@ -278,7 +278,7 @@ class QueryPathEventHandler implements EventHandler, Traverser {
     if (!empty($nsuri)) {
       $matches = $this->candidateList();
       foreach ($matches as $item) {
-        if ($item instanceOf DOMNode && $nsuri == $item->namespaceURI) {
+        if ($item instanceOf \DOMNode && $nsuri == $item->namespaceURI) {
           $found->attach($item);
         }
       }
