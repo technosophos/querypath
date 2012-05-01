@@ -93,7 +93,40 @@ class DOMTraverserTest extends TestCase {
 
 
     // Test with namespace
-    $this->markTestIncomplete();
+    //$this->markTestIncomplete();
+    $matches = $this->find('ns_test');
+    $this->assertEquals(3, count($matches));
+
+    $matches = $this->find('test|ns_test');
+    $this->assertEquals(1, count($matches));
+
+    $matches = $this->find('test|ns_test>ns_attr');
+    $this->assertEquals(1, count($matches));
+
+    $matches = $this->find('*|ns_test');
+    $this->assertEquals(3, count($matches));
+
+    $matches = $this->find('test|*');
+    $this->assertEquals(1, count($matches));
+
+    // Test where namespace is declared on the element.
+    $matches = $this->find('newns|my_element');
+    $this->assertEquals(1, count($matches));
+
+    $matches = $this->find('test|ns_test>newns|my_element');
+    $this->assertEquals(1, count($matches));
+
+    $matches = $this->find('test|*>newns|my_element');
+    $this->assertEquals(1, count($matches));
+
+    $matches = $this->find('*|ns_test>newns|my_element');
+    $this->assertEquals(1, count($matches));
+
+    $matches = $this->find('*|*>newns|my_element');
+    $this->assertEquals(1, count($matches));
+
+    $matches = $this->find('*>newns|my_element');
+    $this->assertEquals(1, count($matches));
   }
 
   public function testMatchAttributes() {

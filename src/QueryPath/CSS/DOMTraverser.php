@@ -391,10 +391,6 @@ class DOMTraverser implements Traverser {
       $element = '*';
     }
 
-    if (!empty($ns)) {
-      throw new \Exception('FIXME: Need namespace support.');
-    }
-
     // fprintf(STDOUT, "Initial match using %s.\n", $selector);
 
     // We try to do some optimization here to reduce the
@@ -408,6 +404,10 @@ class DOMTraverser implements Traverser {
     if (/*$element == '*' &&*/ !empty($selector->id)) {
       // fprintf(STDOUT, "ID Fastrack on %s\n", $selector);
       $initialMatches = $this->initialMatchOnID($selector, $matches);
+    }
+    // If a namespace is set, find the namespace matches.
+    elseif (!empty($selector->ns)) {
+      $initialMatches = $this->initialMatchOnElementNS($selector, $matches);
     }
     // If the element is a wildcard, using class can
     // substantially reduce the number of elements that
@@ -534,29 +534,76 @@ class DOMTraverser implements Traverser {
   }
 
   /**
+   * Get elements and filter by namespace.
+   */
+  protected function initialMatchOnElementNS($selector, $matches) {
+    $ns = $selector->ns;
+
+    $elements = $this->initialMatchOnElement($selector, $matches);
+
+    // "any namespace" matches anything.
+    if ($ns == '*') {
+      return $elements;
+    }
+
+    // Loop through and make a list of items that need to be filtered
+    // out, then filter them. This is required b/c ObjectStorage iterates
+    // wrongly when an item is detached in an access loop.
+    $detach = array();
+    foreach ($elements as $node) {
+      // This lookup must be done PER NODE.
+      $nsuri = $node->lookupNamespaceURI($ns);
+      if (empty($nsuri) || $node->namespaceURI != $nsuri) {
+        $detach[] = $node;
+      }
+    }
+    foreach ($detach as $rem) {
+      $elements->detach($rem);
+    }
+    $selector->ns = NULL;
+    return $elements;
+  }
+
+  /**
    * Checks to see if the DOMNode matches the given element selector.
+   *
+   * This handles the following cases:
+   *
+   * - element (foo)
+   * - namespaced element (ns|foo)
+   * - namespaced wildcard (ns|*)
+   * - wildcard (* or *|*)
    */
   protected function matchElement($node, $element, $ns = NULL) {
     if (empty($element)) {
       return TRUE;
     }
 
-    if (!empty($ns)) {
-      throw new \Exception('FIXME: Need namespace support.');
+    // Handle namespace.
+    if (!empty($ns) && $ns != '*') {
+      // Check whether we have a matching NS URI.
+      $nsuri = $node->lookupNamespaceURI($ns);
+      if(empty($nsuri) || $node->namespaceURI !== $nsuri) {
+        return FALSE;
+      }
     }
 
-    return $node->tagName == $element;
-
+    // Compare local name to given element name.
+    return $element == '*' || $node->localName == $element;
   }
 
   /**
-   * Checks to see fi the given DOMNode matches an "any element" (*).
+   * Checks to see if the given DOMNode matches an "any element" (*).
+   *
+   * This does not handle namespaced whildcards.
    */
+  /*
   protected function matchAnyElement($node) {
     $ancestors = $this->ancestors($node);
 
     return count($ancestors) > 0;
   }
+   */
 
   /**
    * Get a list of ancestors to the present node.
