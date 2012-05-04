@@ -619,6 +619,9 @@ class DOMTraverser implements Traverser {
 
   /**
    * Check to see if DOMNode has all of the given attributes.
+   *
+   * This can handle namespaced attributes, including namespace
+   * wildcards.
    */
   protected function matchAttributes($node, $attributes) {
     if (empty($attributes)) {
@@ -626,34 +629,36 @@ class DOMTraverser implements Traverser {
     }
 
     foreach($attributes as $attr) {
-      // FIXME
-      if (isset($attr['ns'])) {
-        throw new \Exception('FIXME: Attribute namespace support missing.');
-      }
       $val = isset($attr['value']) ? $attr['value'] : NULL;
-      $matches = Util::matchesAttribute($node, $attr['name'], $val, $attr['op']);
+
+      // Namespaced attributes.
+      if (isset($attr['ns']) && $attr['ns'] != '*') {
+        $nsuri = $node->lookupNamespaceURI($attr['ns']);
+        if (empty($nsuri) || !$node->hasAttributeNS($nsuri, $attr['name'])) {
+          return FALSE;
+        }
+        $matches = Util::matchesAttributeNS($node, $attr['name'], $nsuri, $val, $attr['op']);
+      }
+      elseif (isset($attr['ns']) && $attr['ns'] == '*' && $node->hasAttributes()) {
+        // Cycle through all of the attributes in the node. Note that
+        // these are DOMAttr objects.
+        $matches = FALSE;
+        $name = $attr['name'];
+        foreach ($node->attributes as $attrNode) {
+          if ($attrNode->localName == $name) {
+            $nsuri = $attrNode->namespaceURI;
+            $matches = Util::matchesAttributeNS($node, $name, $nsuri, $val, $attr['op']);
+          }
+        }
+      }
+      // No namespace.
+      else {
+        $matches = Util::matchesAttribute($node, $attr['name'], $val, $attr['op']);
+      }
 
       if (!$matches) {
         return FALSE;
       }
-      /*
-      $name = $attr['name'];
-      if ($node->hasAttribute($name)) {
-        if (isset($attr['value'])) {
-          $attrVal = $node->getAttribute($name);
-          $res = Util::matchesAttributeValue($attr['value'], $attrVal, $attr['op']);
-
-          // As soon as we fail to match, return FALSE.
-          if (!$res) {
-            return FALSE;
-          }
-        }
-      }
-      // If the element doesn't have the attribute, fail the test.
-      else {
-        return FALSE;
-      }
-       */
     }
     return TRUE;
   }

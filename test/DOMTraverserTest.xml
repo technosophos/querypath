@@ -27,9 +27,9 @@
   <p author="T.S. Eliot">this is the way the world ends. Not with a bang, but a whimper.</p>
   ==FOO==
   <one><two><three><four>target</four></three></two></one>
-  <test:ns_test>
+  <test:ns_test test:level="1">
     <ns_attr test:myattr="foo">text</ns_attr>
     <newns:my_element xmlns:newns="urn:new/ns">More text</newns:my_element>
   </test:ns_test>
-  <ns_test/><ns_test/>
+  <ns_test/><ns_test xmlns:nuther="urn:nuther" ping="1" test:ping="2" nuther:ping="3"/>
 </root>

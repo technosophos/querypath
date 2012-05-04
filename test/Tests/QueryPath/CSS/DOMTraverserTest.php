@@ -156,9 +156,36 @@ class DOMTraverserTest extends TestCase {
     $matches = $this->find('[attr1]');
     $this->assertEquals(1, count($matches));
 
-    // Test without namespace
-    // Test with namespace
-    $this->markTestIncomplete();
+    $matches = $this->find('[test|myattr]');
+    $this->assertEquals(1, count($matches));
+
+    $matches = $this->find('[test|myattr=foo]');
+    $this->assertEquals(1, count($matches));
+
+    $matches = $this->find('[*|myattr=foo]');
+    $this->assertEquals(1, count($matches));
+
+    $matches = $this->find('[|myattr=foo]');
+    $this->assertEquals(0, count($matches));
+
+    $matches = $this->find('[|level=1]');
+    $this->assertEquals(3, count($matches));
+
+    $matches = $this->find('[*|level=1]');
+    $this->assertEquals(4, count($matches));
+
+    // Test namespace on attr where namespace
+    // is declared on that element
+    $matches = $this->find('[nuther|ping]');
+    $this->assertEquals(1, count($matches));
+
+    // Test multiple namespaces on an element.
+    $matches = $this->find('[*|ping=3]');
+    $this->assertEquals(1, count($matches));
+
+    // Test multiple namespaces on an element.
+    $matches = $this->find('[*|ping]');
+    $this->assertEquals(1, count($matches));
   }
 
   public function testMatchId() {

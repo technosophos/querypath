@@ -27,9 +27,19 @@ class Util {
 
     return self::matchesAttributeValue($value, $node->getAttribute($name), $operation);
   }
-  public static function matchesAttributeNS($node, $name, $ns, $value = NULL, $operation = EventHandler::isExactly) {
-    return FALSE;
-    //throw new \Exception('Not implemented yet! FIXME.');
+  /**
+   * Check whether the given DOMElement has the given namespaced attribute.
+   */
+  public static function matchesAttributeNS($node, $name, $nsuri, $value = NULL, $operation = EventHandler::isExactly) {
+    if (!$node->hasAttributeNS($nsuri, $name)) {
+      return FALSE;
+    }
+
+    if (is_null($value)) {
+      return TRUE;
+    }
+
+    return self::matchesAttributeValue($value, $node->getAttributeNS($nsuri, $name), $operation);
   }
 
   /**
