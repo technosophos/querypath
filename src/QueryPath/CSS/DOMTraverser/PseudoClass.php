@@ -192,8 +192,23 @@ class PseudoClass {
     // language from the parent... but this is unclear.
     $operator = (strpos($value, '-') !== FALSE) ? EventHandler::isExactly : EventHandler::containsWithHyphen;
 
-    return Util::matchesAttribute($node, 'lang', $value, $operator)
-      ||   Util::matchesAttributeNS($node, 'lang', 'xml', $value, $operator);
+    $match = TRUE;
+    foreach ($node->attributes as $attrNode) {
+      if ($attrNode->localName == 'lang') {
+
+        if ($attrNode->nodeName == $attrNode->localName) {
+          // fprintf(STDOUT, "%s in NS %s\n", $attrNode->name, $attrNode->nodeName);
+          return Util::matchesAttribute($node, 'lang', $value, $operator);
+        }
+        else {
+          $nsuri = $attrNode->namespaceURI;
+          // fprintf(STDOUT, "%s in NS %s\n", $attrNode->name, $nsuri);
+          return Util::matchesAttributeNS($node, 'lang', $nsuri, $value, $operator);
+        }
+
+      }
+    }
+    return FALSE;
   }
 
   /**

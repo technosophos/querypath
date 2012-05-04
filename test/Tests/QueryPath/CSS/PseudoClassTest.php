@@ -61,7 +61,24 @@ class PseudoClassTest extends TestCase {
   }
 
   public function testLangNS() {
-    $this->markTestIncomplete();
+    $xml = '<?xml version="1.0"?><root><foo xml:lang="en-US">test</foo></root>';
+
+    list($ele, $root) = $this->doc($xml, 'foo');
+    $ps = new PseudoClass();
+
+    $ret = $ps->elementMatches('lang', $ele, $root, 'en-US');
+    $this->assertTrue($ret);
+    $ret = $ps->elementMatches('lang', $ele, $root, 'en');
+    $this->assertTrue($ret);
+    $ret = $ps->elementMatches('lang', $ele, $root, 'fr-FR');
+    $this->assertFalse($ret);
+    $ret = $ps->elementMatches('lang', $ele, $root, 'fr');
+    $this->assertFalse($ret);
+
+
+    // Check on ele that doesn't have lang.
+    $ret = $ps->elementMatches('lang', $root, $root, 'fr');
+    $this->assertFalse($ret);
   }
 
   public function testFormType() {
