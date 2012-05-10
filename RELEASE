@@ -29,12 +29,15 @@ RELEASE NOTES
   it checks to see if the condition is met by the present element, and
   returns TRUE if it does. This means we do not need special case logic
   to deal with text fragments.
-10. Pseudo-classes :x-root and :x-reset were removed.
+10. :x-root, :x-reset, and :scope are now implemented using the
+  same algorithm (they are, in other words, aliases). Since
+  :scope is part of CSS 4, you should use that.
 11. Support for the following CSS 4 Selectors featues has been added:
   - :matches() pseudoclass, which behaves the way :has() behaves.
   - :any-link
   - :local-link (with some restrictions, as it does not know what the real
     URL of the document is).
+  - :scope (see above)
 12. Traversing UP the DOM tree with find() is no longer allowed. Use top().
 13. :first is an alias of :nth(1) instead of :first-of-type. This follows
   jQuery now.
