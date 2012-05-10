@@ -36,7 +36,7 @@ namespace QueryPath;
  * Here is an example QueryPath extension:
  * @code
  * <?php
- * class StubExtensionOne implements Extension {
+ * class StubExtensionOne implements \QueryPath\Extension {
  *   private $qp = NULL;
  *   public function __construct(\QueryPath\Query $qp) {
  *     $this->qp = $qp;

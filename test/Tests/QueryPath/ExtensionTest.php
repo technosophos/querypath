@@ -12,11 +12,12 @@ require_once __DIR__ . '/../../../src/QueryPath/Extension.php';
 //require_once 'QueryPathTest.php';
 
 use \QueryPath\Extension;
+use \QueryPath\ExtensionRegistry;
 
 /**
  * 
  */
-//define('DATA_FILE', 'test/data.xml');
+//define('self::DATA_FILE', 'test/data.xml');
 
 /**
  * Run all of the usual tests, plus some extras, with some extensions loaded.
@@ -24,60 +25,66 @@ use \QueryPath\Extension;
  * @group extension
  */
 class QueryPathExtensionTest extends TestCase {
+
+  public static function setUpBeforeClass() {
+    ExtensionRegistry::extend('\QueryPath\Tests\StubExtensionOne');
+    ExtensionRegistry::extend('\QueryPath\Tests\StubExtensionTwo');
+  }
+
   public function testExtensions() {
    $this->assertNotNull(qp());
   }
 
   public function testHasExtension() {
-   $this->assertTrue(QueryPathExtensionRegistry::hasExtension('StubExtensionOne'));
+   $this->assertTrue(ExtensionRegistry::hasExtension('\QueryPath\Tests\StubExtensionOne'));
   }
 
   public function testStubToe() {
-   $this->assertEquals(1, qp(DATA_FILE, 'unary')->stubToe()->find(':root > toe')->size());
+   $this->assertEquals(1, qp(self::DATA_FILE, 'unary')->stubToe()->top(':root > toe')->size());
   }
 
   public function testStuble() {
-   $this->assertEquals('arg1arg2', qp(DATA_FILE)->stuble('arg1', 'arg2'));
+   $this->assertEquals('arg1arg2', qp(self::DATA_FILE)->stuble('arg1', 'arg2'));
   }
 
  /**
-  * @expectedException QueryPathException
+  * @expectedException \QueryPath\Exception
   */
  public function testNoRegistry() {
-   QueryPathExtensionRegistry::$useRegistry = FALSE;
+   ExtensionRegistry::$useRegistry = FALSE;
    try {
-    qp(DATA_FILE)->stuble('arg1', 'arg2'); 
+    qp(self::DATA_FILE)->stuble('arg1', 'arg2'); 
    }
    catch (QueryPathException $e) {
-     QueryPathExtensionRegistry::$useRegistry = TRUE;
+     ExtensionRegistry::$useRegistry = TRUE;
      throw $e;
    }
-   
+
  }
- 
+
  public function testExtend() {
-   $this->assertFalse(QueryPathExtensionRegistry::hasExtension('StubExtensionThree'));
-   QueryPathExtensionRegistry::extend('StubExtensionThree');
-   $this->assertTrue(QueryPathExtensionRegistry::hasExtension('StubExtensionThree'));
+   $this->assertFalse(ExtensionRegistry::hasExtension('\QueryPath\Tests\StubExtensionThree'));
+   ExtensionRegistry::extend('\QueryPath\Tests\StubExtensionThree');
+   $this->assertTrue(ExtensionRegistry::hasExtension('\QueryPath\Tests\StubExtensionThree'));
  }
- 
+
  /**
-  * @expectedException QueryPathException
+  * @expectedException \QueryPath\Exception
   */
  public function testAutoloadExtensions() {
    // FIXME: This isn't really much of a test.
-   QueryPathExtensionRegistry::autoloadExtensions(FALSE);
+   ExtensionRegistry::autoloadExtensions(FALSE);
    try {
     qp()->stubToe();
    }
    catch (Exception $e) {
-     QueryPathExtensionRegistry::autoloadExtensions(TRUE);
+     ExtensionRegistry::autoloadExtensions(TRUE);
      throw $e;
    }
  }
  
  /**
-  * @expectedException QueryPathException
+  * @expectedException \QueryPath\Exception
   */
  public function testCallFailure() {
    qp()->foo();
@@ -88,7 +95,7 @@ class QueryPathExtensionTest extends TestCase {
  //   * @expectedException QueryPathException
  //   */
  //  public function testExtendNoSuchClass() {
- //    QueryPathExtensionRegistry::extend('StubExtensionFour');
+ //    ExtensionRegistry::extend('StubExtensionFour');
  //  }
  
 }
@@ -105,7 +112,7 @@ class StubExtensionOne implements Extension {
   }
 
   public function stubToe() {
-    $this->qp->find(':root')->append('<toe/>')->end();
+    $this->qp->top()->append('<toe/>')->end();
     return $this->qp;
   }
 }
@@ -138,5 +145,5 @@ class StubExtensionThree implements Extension {
   }
 }
 
-//QueryPathExtensionRegistry::extend('StubExtensionOne');
-//QueryPathExtensionRegistry::extend('StubExtensionTwo');
+//ExtensionRegistry::extend('StubExtensionOne');
+//ExtensionRegistry::extend('StubExtensionTwo');
