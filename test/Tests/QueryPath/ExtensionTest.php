@@ -55,7 +55,7 @@ class QueryPathExtensionTest extends TestCase {
    try {
     qp(self::DATA_FILE)->stuble('arg1', 'arg2'); 
    }
-   catch (QueryPathException $e) {
+   catch (\QueryPath\Exception $e) {
      ExtensionRegistry::$useRegistry = TRUE;
      throw $e;
    }
@@ -66,6 +66,10 @@ class QueryPathExtensionTest extends TestCase {
    $this->assertFalse(ExtensionRegistry::hasExtension('\QueryPath\Tests\StubExtensionThree'));
    ExtensionRegistry::extend('\QueryPath\Tests\StubExtensionThree');
    $this->assertTrue(ExtensionRegistry::hasExtension('\QueryPath\Tests\StubExtensionThree'));
+ }
+
+ public function tearDown() {
+   ExtensionRegistry::$useRegistry = TRUE;
  }
 
  /**

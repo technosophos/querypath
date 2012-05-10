@@ -25,6 +25,7 @@ class QPDBTest extends TestCase {
   private $dsn = 'sqlite:./test/db/qpTest.db';
 
   public static function setUpBeforeClass() {
+    fwrite(STDOUT, "SETUP\n");
     \QueryPath::enable('\QueryPath\Extension\QPDB');
     \QueryPath::enable('\QueryPath\Extension\QPTPL');
   }
