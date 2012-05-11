@@ -7,8 +7,8 @@
 namespace QueryPath\Tests;
 
 require_once 'PHPUnit/Autoload.php';
-require_once 'src/QueryPath/Extension/QPList.php';
 require_once __DIR__ . '/../TestCase.php';
+require_once 'src/QueryPath/Extension/QPList.php';
 
 use \QueryPath\Extension\QPList;
 
@@ -38,8 +38,8 @@ class QPListTests extends TestCase {
     $this->assertEquals('aa', $qp->find(':root .qplist>li:first')->text());
 
     $qp = qp(\QueryPath::HTML_STUB, 'body')->appendList($list, QPList::DL);
-    $this->assertEquals('a', $qp->find(':root .qplist>dt:first')->text());
-    $this->assertEquals('aa', $qp->find(':root .qplist>dd:first')->text());
+    $this->assertEquals('a', $qp->top(':root .qplist>dt:first-of-type')->text());
+    $this->assertEquals('aa', $qp->top('.qplist>dd:first-of-type')->text());
     //$qp->writeXML();
   }
 
