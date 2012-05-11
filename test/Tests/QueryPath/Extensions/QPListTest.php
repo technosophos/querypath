@@ -23,22 +23,22 @@ class QPListTests extends TestCase {
   public function testAppendList() {
     $list = array('one', 'two', 'three');
     $qp = qp(\QueryPath::HTML_STUB, 'body')->appendList($list, QPList::UL);
-    $this->assertEquals(3, $qp->find(':root ul>li')->size());
-    $this->assertEquals('one', $qp->find(':root ul>li:first')->text());
+    $this->assertEquals(3, $qp->find('ul>li')->size());
+    $this->assertEquals('one', $qp->find('ul>li:first')->text());
 
     $list = array('zero-one','two','three', array('four-one', 'four-two', array('four-three-one', 'four-three-two')));
     $qp = qp(\QueryPath::HTML_STUB, 'body')->appendList($list, QPList::UL);
-    $this->assertEquals(4, $qp->find(':root .qplist>li')->size());
+    $this->assertEquals(4, $qp->find('.qplist>li')->size());
     // Find bottom layer of recursive tree.
-    $this->assertEquals(2, $qp->find(':root ul>li>ul>li>ul>li')->size());
+    $this->assertEquals(2, $qp->find('ul>li>ul>li>ul>li')->size());
 
     // Assoc array tests...
     $list = array('a' => 'aa', 'b' => 'bb', 'c' => 'cc');
     $qp = qp(\QueryPath::HTML_STUB, 'body')->appendList($list, QPList::UL);
-    $this->assertEquals('aa', $qp->find(':root .qplist>li:first')->text());
+    $this->assertEquals('aa', $qp->find('.qplist>li:first')->text());
 
     $qp = qp(\QueryPath::HTML_STUB, 'body')->appendList($list, QPList::DL);
-    $this->assertEquals('a', $qp->top(':root .qplist>dt:first-of-type')->text());
+    $this->assertEquals('a', $qp->top('.qplist>dt:first-of-type')->text());
     $this->assertEquals('aa', $qp->top('.qplist>dd:first-of-type')->text());
     //$qp->writeXML();
   }
