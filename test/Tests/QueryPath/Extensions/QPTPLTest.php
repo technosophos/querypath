@@ -36,18 +36,22 @@ class QPTPLTest extends TestCase {
     $tpl = '<?xml version="1.0"?><data><item class="myclass"/><item id="one"/></data>';
     $data = array('.myclass' => 'VALUE', '#one' => '<b>OTHER VALUE</b>');
     $qp = qp($xml, 'root')->tpl($tpl, $data);
-    $this->assertEquals('VALUE', $qp->find(':root .myclass')->text());
-    $this->assertEquals(1, $qp->find(':root b')->size());
+    //fwrite(STDOUT, "FINAL: " . $qp->top()->xml());
+    $this->assertEquals('VALUE', $qp->top('.myclass')->text());
+    $this->assertEquals(1, $qp->top('b')->size());
   }
 
+  /* Support for unmarked selectors has been removed.
   public function testTplUnmarkedArray() {
     $xml = '<?xml version="1.0"?><root/>';
     $tpl = '<?xml version="1.0"?><data><item class="myclass"/><item class="other"/></data>';
     $data = array('myclass' => 'VALUE', 'other' => '<b>OTHER VALUE</b>');
     $qp = qp($xml, 'root')->tpl($tpl, $data);
-    $this->assertEquals('VALUE', $qp->find(':root .myclass')->text());
-    $this->assertEquals(1, $qp->find(':root b')->size());
+    fwrite(STDOUT, 'XML: ' . $qp->top()->xml());
+    $this->assertEquals('VALUE', $qp->top('.myclass')->text());
+    $this->assertEquals(1, $qp->top('b')->size());
   }
+   */
 
   public function testTplObject() {
     $xml = '<?xml version="1.0"?><root/>';
@@ -60,7 +64,7 @@ class QPTPLTest extends TestCase {
     $o = new FixtureTwo();
     $qp = qp($xml)->tpl($tpl, $o);
     $this->assertEquals(2, $qp->find('.MyClass br')->size());
-    $this->assertEquals('This is a message', $qp->find(':root .OtherData')->text());
+    $this->assertEquals('This is a message', $qp->top('.OtherData')->text());
 
   }
 
@@ -71,7 +75,7 @@ class QPTPLTest extends TestCase {
     $qp = qp($xml)->tplAll($tpl, $objects);
 
     $this->assertEquals('FOOFOO', $qp->find('.MyClass')->text());
-    $this->assertEquals(1, $qp->find(':root #baz')->size());
+    $this->assertEquals(1, $qp->top('#baz')->size());
     $this->assertTrue($qp->is('#baz'));
   }
 
@@ -81,7 +85,7 @@ class QPTPLTest extends TestCase {
     $data = array('.myclass' => 'VALUE', '#one' => '<b>OTHER VALUE</b>');
     $qp = qp($xml, 'root')->tpl($tpl, $data);
     $this->assertEquals('VALUE', $qp->find(':root .myclass')->text());
-    $this->assertEquals(1, $qp->find(':root b')->size());
+    $this->assertEquals(1, $qp->top('b')->size());
   }
 
   public function testTplRecursion() {

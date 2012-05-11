@@ -193,7 +193,8 @@ class QPTPL implements \QueryPath\Extension {
    * Recursively merge array data into a template.
    * Attributes may be manipulated as well
    * Example:
-PHP:
+   * @code
+   * <?php
 $html  =  '<select multiple="multiple">
         <optgroup>
           <option class="option" value=""></option>
@@ -225,8 +226,11 @@ $data6['select'][] = array(
   'optgroup'  =>  $groups,
   );
 $htmlqp()->tplArrayR()->writeHTML();
+?>
+@endcode
 
 OUTPUT:
+@code
 <select name="filter" multiple="multiple">
   <optgroup class="opt-group" label="Group One">
     <option class="option" value="one">Option One</option>
@@ -237,53 +241,58 @@ OUTPUT:
   <option class="option" value="two">Option Two</option>
   </optgroup>
 </select>
+@endcode
 */
 public function tplArrayR($qp, $array, $options = NULL) {
-  //If $array looks primitive, append it.
+  // If $array looks primitive, append it.
   if (!is_array($array) && !($array instanceof \Traversable)) {
-    $qp->append($array);
+    return $qp->append($array);
   }
-  else {
-    foreach($array as $k => $v){
-      //store the modifier if $k is a string, else null
-      $kmod = ( $k_is_str = is_string($k) ) ? substr($k,0,1) : NULL;
-      
-      //$v is array or primitive
-      if( !$k_is_str ) {
-        //deep copy the current document selection
-        $elements  = $qp->get();
-        $dom_tpl  = array();
-        foreach($elements as $element) {
-          $dom_tpl[]  =  $element->cloneNode(true);
-        }
-        //populate the copy via recursion
-        $tpl = $this->tplArrayR(htmlqp($dom_tpl), $v, $options);
-        //insert the copy into the document
-        $qp->before($tpl);
+
+  foreach ($array as $k => $v) {
+    // Store the modifier if $k is a string, else null
+    $kmod = ( $k_is_str = is_string($k) ) ? substr($k, 0, 1) : NULL;
+
+    // $v is array or primitive
+    if( !$k_is_str ) {
+      // Deep copy the current document selection
+      $elements  = $qp->get();
+      $dom_tpl  = array();
+      foreach($elements as $element) {
+        $dom_tpl[]  =  $element->cloneNode(true);
       }
-      //$k is a string
-      elseif (!($kmod==':' || $kmod=='@') && $qp->count($k)>0) {
-        //create a branch pointing to with $k scope and recurse
-        $this->tplArrayR($qp->branch($k), $v, $options);
+      //populate the copy via recursion
+      $tpl = $this->tplArrayR(htmlqp($dom_tpl), $v, $options);
+      //insert the copy into the document
+      $qp->before($tpl);
+    }
+    //$k is a string
+    elseif (!($kmod==':' || $kmod=='@') && $qp->count($k)>0) {
+      // Do we really want to support this?
+      //if ($kmod != '.' && $kmod != '#') {
+      //  $k = '.' . $k;
+      //}
+      //create a branch pointing to with $k scope and recurse
+      $this->tplArrayR($qp->branch($k), $v, $options);
+
+    }
+    //$k is non-selector string or invalid selector
+    elseif (!is_array($v)) {
+      if ($kmod=='@') {
+        //$v is a attr
+        $k = ltrim($k,'@');
+        $qp->attr($k,$v);
       }
-      //$k is non-selector string or invalid selector
-      elseif (!is_array($v)) {
-        if ($kmod=='@') {
-          //$v is a attr
-          $k = ltrim($k,'@');
-          $qp->attr($k,$v);
-        }
-        elseif ($k==':self') {
-          $qp->append($v); 
-        }
+      elseif ($k==':self') {
+        $qp->append($v); 
       }
     }
-    //if $array is not assoc
-    if(!$k_is_str) {
-      //remove the template element
-      $dead = $qp->remove();
-      unset($dead);
-    }
+  }
+  //if $array is not assoc
+  if(!$k_is_str) {
+    //remove the template element
+    $dead = $qp->remove();
+    unset($dead);
   }
   return $qp;
 }
