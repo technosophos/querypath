@@ -25,7 +25,6 @@ class QPDBTest extends TestCase {
   private $dsn = 'sqlite:./test/db/qpTest.db';
 
   public static function setUpBeforeClass() {
-    fwrite(STDOUT, "SETUP\n");
     \QueryPath::enable('\QueryPath\Extension\QPDB');
     \QueryPath::enable('\QueryPath\Extension\QPTPL');
   }
@@ -74,7 +73,7 @@ class QPDBTest extends TestCase {
       ->queryInto($sql, $args, $template)
       ->doneWithQuery()
       ;//->writeHTML();
-    $this->assertEquals('Footer 4', $qp->top()->find('td:last')->text());
+    $this->assertEquals('Footer 4', $qp->top('tr:last>td:last')->text());
   }
 
   /*
@@ -126,6 +125,6 @@ class QPDBTest extends TestCase {
       ->appendColumn('colOne', $wrap)
       ->doneWithQuery()
       ;//->writeHTML();
-    $this->assertEquals('Title 0', $qp->top()->find('td:first')->text());
+    $this->assertEquals('Title 0', $qp->top()->find('tr:first>td:first')->text());
   }
 }

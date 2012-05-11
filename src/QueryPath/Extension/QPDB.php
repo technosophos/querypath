@@ -467,7 +467,13 @@ class QPDB implements \QueryPath\Extension {
     }
     // Otherwise, we run the results through a template, and then append.
     else {
-      foreach ($stmt as $row) $this->qp->tpl($template, $row);
+      foreach ($stmt as $row) {
+        $subs = array();
+        foreach ($row as $name => $value) {
+          $subs['.' . $name] = $value;
+        }
+        $this->qp->tpl($template, $subs);
+      }
     }
 
     $stmt->closeCursor();
