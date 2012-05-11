@@ -1,16 +1,27 @@
 <?php
 /** @file
- * The Query Path package provides tools for manipulating a Document Object Model.
+ * The Query Path package provides tools for manipulating a structured document.
+ * Typically, the sort of structured document is one using a Document Object Model
+ * (DOM).
  * The two major DOMs are the XML DOM and the HTML DOM. Using Query Path, you can
  * build, parse, search, and modify DOM documents.
  *
- * To use Query Path, this is the only file you should need to import.
+ * To use QueryPath, only one file must be imported: qp.php. This file defines
+ * the `qp()` function, and also registers an autoloader if necessary.
  *
  * Standard usage:
  * @code
  * <?php
- * require 'QueryPath/QueryPath.php';
- * $qp = qp('#myID', '<?xml version="1.0"?><test><foo id="myID"/></test>');
+ * require 'qp.php';
+ *
+ * $xml = '<?xml version="1.0"?><test><foo id="myID"/></test>';
+ *
+ * // Procedural call a la jQuery:
+ * $qp = qp($xml, '#myID');
+ * $qp->append('<new><elements/></new>')->writeHTML();
+ *
+ * // Object-oriented version with a factory:
+ * $qp = QueryPath::with($xml)->find('#myID')
  * $qp->append('<new><elements/></new>')->writeHTML();
  * ?>
  * @endcode
@@ -27,26 +38,39 @@
  * </test>
  * @endcode
  *
- * To learn about the functions available to a Query Path object,
- * see QueryPath. The qp() function is used to build
- * new DOMNode objects. The documentation for that function explains the
- * wealth of arguments that the function can take.
+ * ## Discovering the Library
+ *
+ * To gain familiarity with QueryPath, the following three API docs are
+ * the best to start with:
+ *
+ *- qp(): This function constructs new queries, and is the starting point
+ *  for manipulating a document. htmlqp() is an alias tuned for HTML
+ *  documents (especially old HTML), and QueryPath::with(), QueryPath::withXML()
+ *  and QueryPath::withHTML() all perform a similar role, but in a purely
+ *  object oriented way.
+ *- QueryPath: This is the top-level class for the library. It defines the
+ *  main factories and some useful functions.
+ *- QueryPath::Query: This defines all of the functions in QueryPath. When
+ *  working with HTML and XML, the QueryPath::DOMQuery is the actual
+ *  implementation that you work with.
  *
  * Included with the source code for QueryPath is a complete set of unit tests
  * as well as some example files. Those are good resources for learning about
  * how to apply QueryPath's tools. The full API documentation can be generated
- * from these files using PHPDocumentor.
+ * from these files using Doxygen, or you can view it online at
+ * http://api.querypath.org.
  *
- * If you are interested in building extensions for QueryParser, see the
- * QueryPath and QueryPath::Extension classes. There, you will find information on adding
+ * If you are interested in building extensions for QueryPath, see the
+ * QueryPath and QueryPath::Extension classes. There you will find information on adding
  * your own tools to QueryPath.
  *
- * QueryPath also comes with a full CSS 3 selector parser implementation. If
+ * QueryPath also comes with a full CSS 3 selector implementation (now
+ * with partial support for the current draft of the CSS 4 selector spec). If
  * you are interested in reusing that in other code, you will want to start
- * with {@link EventHandler.php}, which is the event interface for the parser.
+ * with QueryPath::CSS::EventHandler.php, which is the event interface for the parser.
  *
  * All of the code in QueryPath is licensed under either the LGPL or an MIT-like
- * license (you may choose which you prefer). All of the code is Copyright, 2009
+ * license (you may choose which you prefer). All of the code is Copyright, 2012
  * by Matt Butcher.
  *
  * @author M Butcher <matt @aleph-null.tv>
@@ -57,7 +81,7 @@
  * @see http://api.querypath.org An online version of the API docs.
  * @see http://technosophos.com For how-tos and examples.
  * @copyright Copyright (c) 2009-2012, Matt Butcher.
- * @version -UNSTABLE%
+ * @version -UNSTABLE% (3.x.x)
  *
  */
 
@@ -87,10 +111,10 @@ class QueryPath {
    * <b>Using {@link QueryPath::XHTML_STUB} is preferred.</b>
    *
    * This is primarily for generating legacy HTML content. Modern web applications
-   * should use {@link QueryPath::XHTML_STUB}.
+   * should use QueryPath::XHTML_STUB.
    *
-   * Use this stub with the HTML familiy of methods ({@link html()},
-   * {@link writeHTML()}, {@link innerHTML()}).
+   * Use this stub with the HTML familiy of methods (QueryPath::Query::html(),
+   * QueryPath::Query::writeHTML(), QueryPath::Query::innerHTML()).
    */
   const HTML_STUB = '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
   <html lang="en">
