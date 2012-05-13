@@ -3,7 +3,7 @@
   "type": "library",
   "description": "HTML/XML querying and processing (like jQuery)",
   "homepage": "https://github.com/technosophos/querypath",
-  "license": "MIT-style",
+  "license": ["LGPL-2.1+", "MIT"],
   "keywords": ["xml", "html", "css", "jquery", "xslt"],
   "require" : {
     "php" : ">=5.2.0"
