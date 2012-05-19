@@ -1685,7 +1685,7 @@ class DOMQueryTest extends TestCase {
   }
 
   public function testSort() {
-    $xml = '<?xml version="1.0"?><r><i>1</i><i>5</i><i>2</i><i>1</i></r>';
+    $xml = '<?xml version="1.0"?><r><s/><i>1</i><i>5</i><i>2</i><i>1</i><e/></r>';
 
     // Canary.
     $qp = qp($xml, 'i');
@@ -1721,6 +1721,22 @@ class DOMQueryTest extends TestCase {
     foreach($qp as $item) {
       $this->assertEquals(array_shift($expect), $item->text());
     }
+
+    // Test DOM re-ordering
+    $comp = function (\DOMNode $a, \DOMNode $b) {
+      if ($a->textContent == $b->textContent) {
+        return 0;
+      }
+      return $a->textContent > $b->textContent ? 1 : -1;
+    };
+    $qp = qp($xml, 'i')->sort($comp, TRUE);
+    $expect = array(1, 1, 2, 5);
+    foreach($qp as $item) {
+      $this->assertEquals(array_shift($expect), $item->text());
+    }
+    $res = $qp->top()->xml();
+    $expect_xml = '<?xml version="1.0"?><r><s/><i>1</i><i>1</i><i>2</i><i>5</i><e/></r>';
+    $this->assertXmlStringEqualsXmlString($expect_xml, $res);
   }
 
   /**

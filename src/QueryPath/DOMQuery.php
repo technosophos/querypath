@@ -808,9 +808,16 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
    * @retval object DOMQuery
    *   This object.
    */
-  public function sort($comparator) {
+  public function sort($comparator, $modifyDOM = FALSE) {
     // Sort as an array.
     $list = iterator_to_array($this->matches);
+
+    if (empty($list)) {
+      return $this;
+    }
+
+    $oldFirst = $list[0];
+
     usort($list, $comparator);
 
     // Copy back into SplObjectStorage.
@@ -819,6 +826,21 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
       $found->attach($node);
     }
     $this->setMatches($found);
+
+
+    // Do DOM modifications only if necessary.
+    if ($modifyDOM) {
+      $placeholder = $oldFirst->ownerDocument->createElement('_PLACEHOLDER_');
+      $placeholder = $oldFirst->parentNode->insertBefore($placeholder, $oldFirst);
+      $len = count($list);
+      for ($i = 0; $i < $len; ++$i) {
+        $node = $list[$i];
+        $node = $node->parentNode->removeChild($node);
+        $placeholder->parentNode->insertBefore($node, $placeholder);
+      }
+      $placeholder->parentNode->removeChild($placeholder);
+    }
+
     return $this;
   }
   /**
