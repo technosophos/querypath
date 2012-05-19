@@ -763,11 +763,18 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
   /**
    * Sort the contents of the QueryPath object.
    *
-   * This does not change their order in DOM, but changes the order in which
-   * they are returned from an iterator.
+   * By default, this does not change the order of the elements in the
+   * DOM. Instead, it just sorts the internal list. However, if TRUE
+   * is passed in as the second parameter then QueryPath will re-order
+   * the DOM, too.
    *
-   * The argument $compartor is a callback, such as a function name or a 
-   * closure.
+   * @attention
+   * DOM re-ordering is done by finding the location of the original first
+   * item in the list, and then placing the sorted list at that location.
+   *
+   * The argument $compartor is a callback, such as a function name or a
+   * closure. The callback receives two DOMNode objects, which you can use
+   * as DOMNodes, or wrap in QueryPath objects.
    *
    * A simple callback:
    * @code
@@ -805,6 +812,9 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
    * @param callback $comparator
    *   A callback. This will be called during sorting to compare two DOMNode
    *   objects.
+   * @param boolean $modifyDOM
+   *   If this is TRUE, the sorted results will be inserted back into
+   *   the DOM at the position of the original first element.
    * @retval object DOMQuery
    *   This object.
    */
