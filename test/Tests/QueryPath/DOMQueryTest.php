@@ -1684,6 +1684,45 @@ class DOMQueryTest extends TestCase {
     $this->assertEquals(2, qp($file, 'li')->parentsUntil('root')->size());
   }
 
+  public function testSort() {
+    $xml = '<?xml version="1.0"?><r><i>1</i><i>5</i><i>2</i><i>1</i></r>';
+
+    // Canary.
+    $qp = qp($xml, 'i');
+    $expect = array(1, 5, 2, 1);
+    foreach($qp as $item) {
+      $this->assertEquals(array_shift($expect), $item->text());
+    }
+
+    // Test simple ordering.
+    $comp = function (\DOMNode $a, \DOMNode $b) {
+      if ($a->textContent == $b->textContent) {
+        return 0;
+      }
+      return $a->textContent > $b->textContent ? 1 : -1;
+    };
+    $qp = qp($xml, 'i')->sort($comp);
+    $expect = array(1, 1, 2, 5);
+    foreach($qp as $item) {
+      $this->assertEquals(array_shift($expect), $item->text());
+    }
+
+    $comp = function (\DOMNode $a, \DOMNode $b) {
+      $qpa = qp($a);
+      $qpb = qp($b);
+
+      if ($qpa->text() == $qpb->text()) {
+        return 0;
+      }
+      return $qpa->text()> $qpb->text()? 1 : -1;
+    };
+    $qp = qp($xml, 'i')->sort($comp);
+    $expect = array(1, 1, 2, 5);
+    foreach($qp as $item) {
+      $this->assertEquals(array_shift($expect), $item->text());
+    }
+  }
+
   /**
    * Regression test for issue #14.
    */

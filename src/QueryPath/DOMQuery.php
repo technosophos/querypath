@@ -761,6 +761,67 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
     return $this;
   }
   /**
+   * Sort the contents of the QueryPath object.
+   *
+   * This does not change their order in DOM, but changes the order in which
+   * they are returned from an iterator.
+   *
+   * The argument $compartor is a callback, such as a function name or a 
+   * closure.
+   *
+   * A simple callback:
+   * @code
+   * <?php
+   * $comp = function (\DOMNode $a, \DOMNode $b) {
+   *   if ($a->textContent == $b->textContent) {
+   *     return 0;
+   *   }
+   *   return $a->textContent > $b->textContent ? 1 : -1;
+   * };
+   * $qp = QueryPath::with($xml, $selector)->sort($comp);
+   * ?>
+   * @endcode
+   *
+   * The above sorts the matches into lexical order using the text of each node.
+   * If you would prefer to work with QueryPath objects instead of DOMNode
+   * objects, you may prefer something like this:
+   *
+   * @code
+   * <?php
+   * $comp = function (\DOMNode $a, \DOMNode $b) {
+   *   $qpa = qp($a);
+   *   $qpb = qp($b);
+   *
+   *   if ($qpa->text() == $qpb->text()) {
+   *     return 0;
+   *   }
+   *   return $qpa->text()> $qpb->text()? 1 : -1;
+   * };
+   *
+   * $qp = QueryPath::with($xml, $selector)->sort($comp);
+   * ?>
+   * @endcode
+   *
+   * @param callback $comparator
+   *   A callback. This will be called during sorting to compare two DOMNode
+   *   objects.
+   * @retval object DOMQuery
+   *   This object.
+   */
+  public function sort($comparator) {
+    // Sort as an array.
+    $list = iterator_to_array($this->matches);
+    usort($list, $comparator);
+
+    // Copy back into SplObjectStorage.
+    $found = new \SplObjectStorage();
+    foreach ($list as $node) {
+      $found->attach($node);
+    }
+    $this->setMatches($found);
+    return $this;
+  }
+  /**
    * Filter based on a lambda function.
    *
    * The function string will be executed as if it were the body of a
