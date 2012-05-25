@@ -135,6 +135,10 @@ if (!class_exists('\QueryPath\QueryPath')) {
  *  - omit_xml_declaration: Boolean. If this is TRUE, then certain output
  *    methods (like {@link QueryPath::xml()}) will omit the XML declaration
  *    from the beginning of a document.
+ *  - format_output: Boolean. If this is set to TRUE, QueryPath will format
+ *    the HTML or XML output to make it more readible. If this is set to
+ *    FALSE, QueryPath will minimize whitespace to keep the document smaller
+ *    but harder to read.
  *  - replace_entities: Boolean. If this is TRUE, then any of the insertion
  *    functions (before(), append(), etc.) will replace named entities with
  *    their decimal equivalent, and will replace un-escaped ampersands with

@@ -173,6 +173,14 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
       $this->setMatches($this->document->documentElement);
     }
 
+    // Globally set the output option.
+    if (isset($this->options['format_output']) && $this->options['format_output'] == FALSE) {
+      $this->document->formatOutput = FALSE;
+    }
+    else {
+      $this->document->formatOutput = TRUE;
+    }
+
     // Do a find if the second param was set.
     if (isset($string) && strlen($string) > 0) {
       $this->find($string);
