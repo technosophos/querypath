@@ -1,3 +1,7 @@
+API Changes in 3.0.0
+
+This is a major update. See the main changes for details.
+
 API Changes in 2.1.1
 
   * NEW METHOD: document() returns the DOMDocument

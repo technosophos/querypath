@@ -1,5 +1,47 @@
 RELEASE NOTES
 
+3.0.0
+
+*REALLY IMPORTANT CHANGE*: To match jQuery, and to correctly implement
+  a bottom-up parser, the following will no longer work:
+  $qp($html, 'li')->find(':root ul');
+  You can no longer use find() to ever, ever move UP the document true
+  (like back to the root from somewhere in the tree). You MUST use
+  top() to do this now. This is how jQuery works, and making this
+  minor change makes things much faster.
+
+1. removeAll() now works as it does in recent jQuery. Thanks to GDMac
+  (issues #77 #78) for the fix.
+2. Refactored to use namespaces.
+3. Refactored to be SPR-0 compliant.
+4. Now uses Composer.
+5. The traversal mechanism is now bottom-up, which means Querypath is
+  faster.
+6. Issue #83: Fixed broken forloop in techniques.php. Thanks to BillOrtell for
+  the fix.
+7. ID-based searches no longer guarantee that only one element will be returned.
+  This accomodates XML documents that may use 'id' in a way different than
+  HTML.
+8. The base CSS Traverser is now optimized for selectors that use ID or
+  class, but no element.
+9. Pseudo-element behavior has been rewritten to better conform to the
+  standard. Using a pseudo-element no longer changes the match. Rather,
+  it checks to see if the condition is met by the present element, and
+  returns TRUE if it does. This means we do not need special case logic
+  to deal with text fragments.
+10. :x-root, :x-reset, and :scope are now implemented using the
+  same algorithm (they are, in other words, aliases). Since
+  :scope is part of CSS 4, you should use that.
+11. Support for the following CSS 4 Selectors featues has been added:
+  - :matches() pseudoclass, which behaves the way :has() behaves.
+  - :any-link
+  - :local-link (with some restrictions, as it does not know what the real
+    URL of the document is).
+  - :scope (see above)
+12. Traversing UP the DOM tree with find() is no longer allowed. Use top().
+13. :first is an alias of :nth(1) instead of :first-of-type. This follows
+  jQuery now.
+
 2.1.3
 
 1. QueryPath Templates have gotten an overhaul from TomorrowToday (Issue #59).

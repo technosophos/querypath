@@ -27,7 +27,7 @@
  * HTML table.
  *
  * If you are doing many database operations across multiple QueryPath objects,
- * it is better to avoid using {@link QPDB::dbInit()}. Instead, you should 
+ * it is better to avoid using {@link QPDB::dbInit()}. Instead, you should
  * call the static {@link QPDB::baseDB()} method to configure a single database
  * connection that can be shared by all {@link QueryPath} instances.
  *
@@ -54,7 +54,7 @@
  *
  * The result of both of these examples will be identical.
  * The output looks something like this:
- * 
+ *
  * @code
  * <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
  * <html xmlns="http://www.w3.org/1999/xhtml">
@@ -99,24 +99,28 @@
  * Note how the CSS classes are used to correlate DB table names to template
  * locations.
  *
- * 
+ *
  * @author M Butcher <matt@aleph-null.tv>
  * @license http://opensource.org/licenses/lgpl-2.1.php LGPL or MIT-like license.
- * @see QueryPathExtension
- * @see QueryPathExtensionRegistry::extend()
+ * @see QueryPath::Extension
+ * @see QueryPath::ExtensionRegistry::extend()
  * @see QPDB
+ * @todo This documentation needs to be updated for QueryPath 3.0
  */
- 
+
+namespace QueryPath\Extension;
+use \PDO;
+
 /**
  * Provide DB access to a QueryPath object.
  *
- * This extension provides tools for communicating with a database using the 
+ * This extension provides tools for communicating with a database using the
  * QueryPath library. It relies upon PDO for underlying database communiction. This
- * means that it supports all databases that PDO supports, including MySQL, 
+ * means that it supports all databases that PDO supports, including MySQL,
  * PostgreSQL, and SQLite.
  *
  * Here is an extended example taken from the unit tests for this library.
- * 
+ *
  * Let's say we create a database with code like this:
  * @code
  *<?php
@@ -124,11 +128,11 @@
  *   $this->db = new PDO($this->dsn);
  *   $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
  *   $this->db->exec('CREATE TABLE IF NOT EXISTS qpdb_test (colOne, colTwo, colThree)');
- *   
+ *
  *   $stmt = $this->db->prepare(
  *     'INSERT INTO qpdb_test (colOne, colTwo, colThree) VALUES (:one, :two, :three)'
  *   );
- *   
+ *
  *   for ($i = 0; $i < 5; ++$i) {
  *     $vals = array(':one' => 'Title ' . $i, ':two' => 'Body ' . $i, ':three' => 'Footer ' . $i);
  *     $stmt->execute($vals);
@@ -137,7 +141,7 @@
  * }
  * ?>
  * @endcode
- * 
+ *
  * From QueryPath with QPDB, we can now do very elaborate DB chains like this:
  *
  * @code
@@ -159,7 +163,7 @@
  *   ->columnAfter('colThree') // Get row 2 col 3. (Footer 1)
  *   ->doneWithQuery() // Let QueryPath clean up. YOU SHOULD ALWAYS DO THIS.
  *   ->writeHTML(); // Write the output as HTML.
- * ?> 
+ * ?>
  * @endcode
  *
  * With the code above, we step through the document, selectively building elements
@@ -167,7 +171,7 @@
  *
  * When the last command, {@link QueryPath:::writeHTML()}, is run, we will get output
  * like this:
- * 
+ *
  * @code
  *   <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
  *   <html xmlns="http://www.w3.org/1999/xhtml">
@@ -185,9 +189,9 @@
  * Notice the body section in particular. This is where the data has been
  * inserted.
  *
- * Sometimes you want to do something a lot simpler, like give QueryPath a 
+ * Sometimes you want to do something a lot simpler, like give QueryPath a
  * template and have it navigate a query, inserting the data into a template, and
- * then inserting the template into the document. This can be done simply with 
+ * then inserting the template into the document. This can be done simply with
  * the {@link queryInto()} function.
  *
  * Here's an example from another unit test:
@@ -202,11 +206,11 @@
  *   ->children() // Select the <ul/>
  *   ->dbInit($this->dsn) // Initialize the DB
  *   // BIG LINE: Query the results, run them through the template, and insert them.
- *   ->queryInto($sql, $args, $template) 
+ *   ->queryInto($sql, $args, $template)
  *   ->doneWithQuery()
  *   ->writeHTML(); // Write the results as HTML.
  * ?>
- * @endcode 
+ * @endcode
  *
  * The simple code above puts the first column of the select statement
  * into an unordered list. The example output looks like this:
@@ -230,21 +234,21 @@
  * </html>
  * @endcode
  *
- * Typical starting methods for this class are {@link QPDB::baseDB()}, 
+ * Typical starting methods for this class are {@link QPDB::baseDB()},
  * {@link QPDB::query()}, and {@link QPDB::queryInto()}.
  *
  * @ingroup querypath_extensions
  */
-class QPDB implements QueryPathExtension {
+class QPDB implements \QueryPath\Extension {
   protected $qp;
   protected $dsn;
   protected $db;
   protected $opts;
   protected $row = NULL;
   protected $stmt = NULL;
-  
+
   protected static $con = NULL;
-  
+
   /**
    * Create a new database instance for all QueryPath objects to share.
    *
@@ -275,19 +279,19 @@ class QPDB implements QueryPathExtension {
    *  - password => (string)
    *  - db params => (array) These will be passed into the new PDO object.
    *    See the PDO documentation for a list of options. By default, the
-   *    only flag set is {@link PDO::ATTR_ERRMODE}, which is set to 
+   *    only flag set is {@link PDO::ATTR_ERRMODE}, which is set to
    *    {@link PDO::ERRMODE_EXCEPTION}.
    * @throws PDOException
    *  An exception may be thrown if the connection cannot be made.
    */
   static function baseDB($dsn, $options = array()) {
-    
+
     $opts = $options + array(
       'username' => NULL,
       'password' => NULL,
       'db params' => array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION),
     );
-    
+
     // Allow this to handle the case where an outside
     // connection does the initialization.
     if ($dsn instanceof PDO) {
@@ -296,37 +300,37 @@ class QPDB implements QueryPathExtension {
     }
     self::$con = new PDO($dsn, $opts['username'], $opts['password'], $opts['db params']);
   }
-  
+
   /**
-   * 
-   * This method may be used to share the connection with other, 
+   *
+   * This method may be used to share the connection with other,
    * non-QueryPath objects.
    */
   static function getBaseDB() {return self::$con;}
-  
+
   /**
    * Used to control whether or not all rows in a result should be cycled through.
    */
   protected $cycleRows = FALSE;
-  
+
   /**
    * Construct a new QPDB object. This is usually done by QueryPath itself.
    */
-  public function __construct(QueryPath $qp) {
+  public function __construct(\QueryPath\Query $qp) {
     $this->qp = $qp;
     // By default, we set it up to use the base DB.
     $this->db = self::$con;
   }
-  
+
   /**
-   * Create a new connection to the database. Use the PDO DSN syntax for a 
+   * Create a new connection to the database. Use the PDO DSN syntax for a
    * connection string.
    *
-   * This creates a database connection that will last for the duration of 
+   * This creates a database connection that will last for the duration of
    * the QueryPath object. This method ought to be used only in two cases:
-   * - When you will only run a couple of queries during the life of the 
+   * - When you will only run a couple of queries during the life of the
    *   process.
-   * - When you need to connect to a database that will only be used for 
+   * - When you need to connect to a database that will only be used for
    *   a few things.
    * Otherwise, you should use {@link QPDB::baseDB} to configure a single
    * database connection that all of {@link QueryPath} can share.
@@ -343,12 +347,12 @@ class QPDB implements QueryPathExtension {
    *  - password => (string)
    *  - db params => (array) These will be passed into the new PDO object.
    *    See the PDO documentation for a list of options. By default, the
-   *    only flag set is {@link PDO::ATTR_ERRMODE}, which is set to 
+   *    only flag set is {@link PDO::ATTR_ERRMODE}, which is set to
    *    {@link PDO::ERRMODE_EXCEPTION}.
    * @return QueryPath
    *  The QueryPath object.
    * @throws PDOException
-   *  The PDO library is configured to throw exceptions, so any of the 
+   *  The PDO library is configured to throw exceptions, so any of the
    *  database functions may throw a PDOException.
    */
   public function dbInit($dsn, $options = array()) {
@@ -363,40 +367,40 @@ class QPDB implements QueryPathExtension {
     foreach ($this->opts['db params'] as $key => $val)
       $this->db->setAttribute($key, $val);
     */
-    
+
     return $this->qp;
   }
-  
+
   /**
    * Execute a SQL query, and store the results.
    *
    * This will execute a SQL query (as a prepared statement), and then store
-   * the results internally for later use. The data can be iterated using 
+   * the results internally for later use. The data can be iterated using
    * {@link nextRow()}. QueryPath can also be instructed to do internal iteration
-   * using the {@link withEachRow()} method. Finally, on the occasion that the 
+   * using the {@link withEachRow()} method. Finally, on the occasion that the
    * statement itself is needed, {@link getStatement()} can be used.
    *
-   * Use this when you need to access the results of a query, or when the 
-   * parameter to a query should be escaped. If the query takes no external 
-   * parameters and does not return results, you may wish to use the 
+   * Use this when you need to access the results of a query, or when the
+   * parameter to a query should be escaped. If the query takes no external
+   * parameters and does not return results, you may wish to use the
    * (ever so slightly faster) {@link exec()} function instead.
-   * 
+   *
    * Make sure you use {@link doneWithQuery()} after finishing with the database
    * results returned by this method.
    *
    * <b>Usage</b>
-   * 
+   *
    * Here is a simple example:
    * <code>
    * <?php
    * QPQDB::baseDB($someDSN);
-   * 
+   *
    * $args = array(':something' => 'myColumn');
    * qp()->query('SELECT :something FROM foo', $args)->doneWithQuery();
    * ?>
    * </code>
    *
-   * The above would execute the given query, substituting myColumn in place of 
+   * The above would execute the given query, substituting myColumn in place of
    * :something before executing the query The {@link doneWithQuery()} method
    * indicates that we are not going to use the results for anything. This method
    * discards the results.
@@ -405,7 +409,7 @@ class QPDB implements QueryPathExtension {
    * using {@link appendColumn()}, {@link prependColumn()}, {@link columnBefore()},
    * or {@link columnAfter()}. See the main documentation for {@link QPDB} to view
    * a more realistic example.
-   * 
+   *
    * @param string $sql
    *  The query to be executed.
    * @param array $args
@@ -418,15 +422,15 @@ class QPDB implements QueryPathExtension {
     $this->stmt->execute($args);
     return $this->qp;
   }
-  
+
   /**
    * Query and append the results.
    *
-   * Run a query and inject the results directly into the 
+   * Run a query and inject the results directly into the
    * elements in the QueryPath object.
    *
    * If the third argument is empty, the data will be inserted directly into
-   * the QueryPath elements unaltered. However, if a template is provided in 
+   * the QueryPath elements unaltered. However, if a template is provided in
    * the third parameter, the query data will be merged into that template
    * and then be added to each QueryPath element.
    *
@@ -440,7 +444,7 @@ class QPDB implements QueryPathExtension {
    * to call {@link doneWithQuery()} after this method.
    *
    * @param string $sql
-   *  The SQL query to execute. In this context, the query is typically a 
+   *  The SQL query to execute. In this context, the query is typically a
    *  SELECT statement.
    * @param array $args
    *  An array of arguments to be substituted into the query. See {@link query()}
@@ -456,27 +460,33 @@ class QPDB implements QueryPathExtension {
     $stmt = $this->db->prepare($sql);
     $stmt->setFetchMode(PDO::FETCH_ASSOC);
     $stmt->execute($args);
-    
+
     // If no template, put all values in together.
     if (empty($template)) {
       foreach ($stmt as $row) foreach ($row as $datum) $this->qp->append($datum);
     }
     // Otherwise, we run the results through a template, and then append.
     else {
-      foreach ($stmt as $row) $this->qp->tpl($template, $row);
+      foreach ($stmt as $row) {
+        $subs = array();
+        foreach ($row as $name => $value) {
+          $subs['.' . $name] = $value;
+        }
+        $this->qp->tpl($template, $subs);
+      }
     }
-    
+
     $stmt->closeCursor();
     return $this->qp;
   }
-  
+
   /**
    * Free up resources when a query is no longer used.
    *
    * This function should <i>always</i> be called when the database
-   * results for a query are no longer needed. This frees up the 
+   * results for a query are no longer needed. This frees up the
    * database cursor, discards the data, and resets resources for future
-   * use. 
+   * use.
    *
    * If this method is not called, some PDO database drivers will not allow
    * subsequent queries, while others will keep tables in a locked state where
@@ -491,34 +501,34 @@ class QPDB implements QueryPathExtension {
       //while($this->stmt->fetch()) {}
       $this->stmt->closeCursor();
     }
-      
+
     unset($this->stmt);
     $this->row = NULL;
     $this->cycleRows = FALSE;
     return $this->qp;
   }
-  
+
   /**
    * Execute a SQL query, but expect no value.
-   * 
+   *
    * If your SQL query will have parameters, you are encouraged to
-   * use {@link query()}, which includes built-in SQL Injection 
+   * use {@link query()}, which includes built-in SQL Injection
    * protection.
    *
    * @param string $sql
    *  A SQL statement.
-   * @throws PDOException 
+   * @throws PDOException
    *  An exception will be thrown if a query cannot be executed.
    */
   public function exec($sql) {
     $this->db->exec($sql);
     return $this->qp;
   }
-  
+
   /**
    * Advance the query results row cursor.
    *
-   * In a result set where more than one row was returned, this will 
+   * In a result set where more than one row was returned, this will
    * move the pointer to the next row in the set.
    *
    * The PDO library does not have a consistent way of determining how many
@@ -535,11 +545,11 @@ class QPDB implements QueryPathExtension {
     $this->row = $this->stmt->fetch(PDO::FETCH_ASSOC);
     return $this->qp;
   }
-  
+
   /**
    * Set the object to use each row, instead of only one row.
    *
-   * This is used primarily to instruct QPDB to iterate through all of the 
+   * This is used primarily to instruct QPDB to iterate through all of the
    * rows when appending, prepending, inserting before, or inserting after.
    *
    * @return QueryPath
@@ -553,7 +563,7 @@ class QPDB implements QueryPathExtension {
     $this->cycleRows = TRUE;
     return $this->qp;
   }
-  
+
   /**
    * This is the implementation behind the append/prepend and before/after methods.
    *
@@ -575,7 +585,7 @@ class QPDB implements QueryPathExtension {
         foreach ($columns as $col) {
           if (isset($row[$col])) {
             $data = $row[$col];
-            if ($hasWrap) 
+            if ($hasWrap)
               $data = qp()->append($wrap)->deepest()->append($data)->top();
             $this->qp->$qpFunc($data);
           }
@@ -589,7 +599,7 @@ class QPDB implements QueryPathExtension {
         foreach ($columns as $col) {
           if (isset($this->row[$col])) {
             $data = $this->row[$col];
-            if ($hasWrap) 
+            if ($hasWrap)
               $data = qp()->append($wrap)->deepest()->append($data)->top();
             $this->qp->$qpFunc($data);
           }
@@ -598,7 +608,7 @@ class QPDB implements QueryPathExtension {
     }
     return $this->qp;
   }
-  
+
   /**
    * Get back the raw PDOStatement object after a {@link query()}.
    *
@@ -610,7 +620,7 @@ class QPDB implements QueryPathExtension {
   public function getStatement() {
     return $this->stmt;
   }
-  
+
   /**
    * Get the last insert ID.
    *
@@ -626,7 +636,7 @@ class QPDB implements QueryPathExtension {
     $con = self::$con;
     return $con->lastInsertId();
   }
-  
+
   /**
    * Append the data in the given column(s) to the QueryPath.
    *
@@ -634,7 +644,7 @@ class QPDB implements QueryPathExtension {
    * be retrieved from the database result, using $columnName as the key.
    *
    * @param mixed $columnName
-   *  Either a string or an array of strings. The value(s) here should match 
+   *  Either a string or an array of strings. The value(s) here should match
    *  one or more column headers from the current SQL {@link query}'s results.
    * @param string $wrap
    *  IF this is supplied, then the value or values retrieved from the database
@@ -643,16 +653,16 @@ class QPDB implements QueryPathExtension {
    * @see QueryPath::append()
    */
   public function appendColumn($columnName, $wrap = NULL) {
-    return $this->addData($columnName, 'append', $wrap); 
+    return $this->addData($columnName, 'append', $wrap);
   }
-  
+
   /**
    * Prepend the data from the given column into the QueryPath.
    *
    * This takes the data from the given column(s) and inserts it into each
    * element currently found in the QueryPath.
    * @param mixed $columnName
-   *  Either a string or an array of strings. The value(s) here should match 
+   *  Either a string or an array of strings. The value(s) here should match
    *  one or more column headers from the current SQL {@link query}'s results.
    * @param string $wrap
    *  IF this is supplied, then the value or values retrieved from the database
@@ -663,14 +673,14 @@ class QPDB implements QueryPathExtension {
   public function prependColumn($columnName, $wrap = NULL) {
     return $this->addData($columnName, 'prepend', $wrap);
   }
-  
+
   /**
    * Insert the data from the given column before each element in the QueryPath.
    *
    * This inserts the data before each element in the currently matched QueryPath.
    *
    * @param mixed $columnName
-   *  Either a string or an array of strings. The value(s) here should match 
+   *  Either a string or an array of strings. The value(s) here should match
    *  one or more column headers from the current SQL {@link query}'s results.
    * @param string $wrap
    *  IF this is supplied, then the value or values retrieved from the database
@@ -682,7 +692,7 @@ class QPDB implements QueryPathExtension {
   public function columnBefore($columnName, $wrap = NULL) {
     return $this->addData($columnName, 'before', $wrap);
   }
-  
+
   /**
    * Insert data from the given column(s) after each element in the QueryPath.
    *
@@ -691,7 +701,7 @@ class QPDB implements QueryPathExtension {
    * will be wrapped in that markup before being inserted into the QueryPath.
    *
    * @param mixed $columnName
-   *  Either a string or an array of strings. The value(s) here should match 
+   *  Either a string or an array of strings. The value(s) here should match
    *  one or more column headers from the current SQL {@link query}'s results.
    * @param string $wrap
    *  IF this is supplied, then the value or values retrieved from the database
@@ -703,9 +713,5 @@ class QPDB implements QueryPathExtension {
   public function columnAfter($columnName, $wrap = NULL) {
     return $this->addData($columnName, 'after', $wrap);
   }
-  
-}
 
-// The define allows another class to extend this.
-if (!defined('QPDB_OVERRIDE'))
-  QueryPathExtensionRegistry::extend('QPDB');
+}

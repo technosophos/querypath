@@ -2,10 +2,12 @@
 /** @file
  * QueryPath templates. See QPTPL.
  */
+
+namespace QueryPath\Extension;
 /**
  * QPTPL is a template library for QueryPath.
  *
- * The QPTPL extension provides template tools that can be used in 
+ * The QPTPL extension provides template tools that can be used in
  * conjunction with QueryPath.
  *
  * There are two basic modes in which this tool operates. Both merge data into
@@ -24,42 +26,42 @@
  *
  * @author M Butcher <matt@aleph-null.tv>
  * @license http://opensource.org/licenses/lgpl-2.1.php LGPL or MIT-like license.
- * @see QueryPathExtension
- * @see QueryPathExtensionRegistry::extend()
+ * @see QueryPath::Extension
+ * @see QueryPath::ExtensionRegistry::extend()
  * @see https://fedorahosted.org/querypath/wiki/QueryPathTemplate
  * @ingroup querypath_extensions
  */
-class QPTPL implements QueryPathExtension {
+class QPTPL implements \QueryPath\Extension {
   protected $qp;
-  public function __construct(QueryPath $qp) {
+  public function __construct(\QueryPath\Query $qp) {
     $this->qp = $qp;
   }
-  
+
   /**
    * Apply a template to an object and then insert the results.
    *
    * This takes a template (an arbitrary fragment of XML/HTML) and an object
-   * or array and inserts the contents of the object into the template. The 
+   * or array and inserts the contents of the object into the template. The
    * template is then appended to all of the nodes in the current list.
    *
-   * Note that the data in the object is *not* escaped before it is merged 
-   * into the template. For that reason, an object can return markup (as 
+   * Note that the data in the object is *not* escaped before it is merged
+   * into the template. For that reason, an object can return markup (as
    * long as it is well-formed).
-   * 
+   *
    * @param mixed $template
    *  The template. It can be of any of the types that {@link qp()} supports
    *  natively. Typically it is a string of XML/HTML.
    * @param mixed $object
-   *  Either an object or an associative array. 
+   *  Either an object or an associative array.
    *  - In the case where the parameter
    *  is an object, this will introspect the object, looking for getters (a la
    *  Java bean behavior). It will then search the document for CSS classes
    *  that match the method name. The function is then executed and its contents
-   *  inserted into the document. (If the function returns NULL, nothing is 
+   *  inserted into the document. (If the function returns NULL, nothing is
    *  inserted.)
    *  - In the case where the paramter is an associative array, the function will
-   *  look through the template for CSS classes that match the keys of the 
-   *  array. When an array key is found, the array value is inserted into the 
+   *  look through the template for CSS classes that match the keys of the
+   *  array. When an array key is found, the array value is inserted into the
    *  DOM as a child of the currently matched element(s).
    * @param array $options
    *  The options for this function. Valid options are:
@@ -74,22 +76,22 @@ class QPTPL implements QueryPathExtension {
 
     //$tqp = ($template instanceof QueryPath) ? clone $template: qp($template);
     $tqp = qp($template);
-    
-    if (is_array($object) || $object instanceof Traversable) {
+
+    if (is_array($object) || $object instanceof \Traversable) {
       $this->tplArrayR($tqp, $object, $options);
       return $this->qp->append($tqp->top());
     }
     elseif (is_object($object)) {
       $this->tplObject($tqp, $object, $options);
     }
-    
+
     return $this->qp->append($tqp->top());
   }
-  
+
   /**
    * Given one template, do substitutions for all objects.
    *
-   * Using this method, one template can be populated from a variety of 
+   * Using this method, one template can be populated from a variety of
    * sources. That one template is then appended to the QueryPath object.
    * @see tpl()
    * @param mixed $template
@@ -106,17 +108,17 @@ class QPTPL implements QueryPathExtension {
   public function tplAll($template, $objects, $options = array()) {
     $tqp = qp($template, ':root');
     foreach ($objects as $object) {
-      if (is_array($object)) 
+      if (is_array($object))
         $tqp = $this->tplArrayR($tqp, $object, $options);
-      elseif (is_object($object)) 
+      elseif (is_object($object))
         $tqp = $this->tplObject($tqp, $object, $options);
     }
     return $this->qp->append($tqp->top());
   }
-  
+
   /*
   protected function tplArray($tqp, $array, $options = array()) {
-    
+
     // If we find something that's not an array, we try to handle it.
     if (!is_array($array)) {
      is_object($array) ? $this->tplObject($tqp, $array, $options) : $tqp->append($array);
@@ -130,7 +132,7 @@ class QPTPL implements QueryPathExtension {
         // We allow classes and IDs if explicit. Otherwise we assume
         // a class.
         if ($first != '.' && $first != '#') $key = '.' . $key;
-        
+
         if ($tqp->top()->find($key)->size() > 0) {
           print "Value: " . $value . PHP_EOL;
           if (is_array($value)) {
@@ -141,7 +143,7 @@ class QPTPL implements QueryPathExtension {
           }
           else {
             print 'QP is ' . $tqp->size() . " inserting value: " . $value . PHP_EOL;
-            
+
             $tqp->append($value);
           }
         }
@@ -158,18 +160,18 @@ class QPTPL implements QueryPathExtension {
         $tqp->append($clone->parent());
       }
     }
-    
-    
+
+
     //return $tqp->top();
     return $tqp;
   }
   */
-  
+
   /**
    * Introspect objects to map their functions to CSS classes in a template.
    */
   protected function tplObject($tqp, $object, $options = array()) {
-    $ref = new ReflectionObject($object);
+    $ref = new \ReflectionObject($object);
     $methods = $ref->getMethods();
     foreach ($methods as $method) {
       if (strpos($method->getName(), 'get') === 0) {
@@ -186,45 +188,49 @@ class QPTPL implements QueryPathExtension {
     //return $tqp->top();
     return $tqp;
   }
-  
-   /**
+
+  /**
    * Recursively merge array data into a template.
    * Attributes may be manipulated as well
    * Example:
-PHP:
-$html	=	'<select multiple="multiple">
-				<optgroup>
-					<option class="option" value=""></option>
-				</optgroup>
-			</select>';
-$data		= array();
-$optgroups	= array();
-$options	= array();
+   * @code
+   * <?php
+$html  =  '<select multiple="multiple">
+        <optgroup>
+          <option class="option" value=""></option>
+        </optgroup>
+      </select>';
+$data    = array();
+$optgroups  = array();
+$options  = array();
 
-$options[]=	array(
-	'@value'=>'one',
-	':self'	=>'One',
-	);
-$options[]=	array(
-	':self'	=>'Two',
-	'@value'=>'two',
-	);
-$groups[]=	array(
-	'@label'	=> 'Group One',
-	'.option'		=> $options,
-	);
-$groups[]=	array(
-	'@label'	=> 'Group Two',
-	'.option'	=> $options,
-	);
+$options[]=  array(
+  '@value'=>'one',
+  ':self'  =>'One',
+  );
+$options[]=  array(
+  ':self'  =>'Two',
+  '@value'=>'two',
+  );
+$groups[]=  array(
+  '@label'  => 'Group One',
+  '.option'    => $options,
+  );
+$groups[]=  array(
+  '@label'  => 'Group Two',
+  '.option'  => $options,
+  );
 $data6['option'] = 'Option ';
 $data6['select']['@name'] = 'filter';
 $data6['select'][] = array(
-	'optgroup'	=>	$groups,
-	);
+  'optgroup'  =>  $groups,
+  );
 $htmlqp()->tplArrayR()->writeHTML();
+?>
+@endcode
 
 OUTPUT:
+@code
 <select name="filter" multiple="multiple">
   <optgroup class="opt-group" label="Group One">
     <option class="option" value="one">Option One</option>
@@ -232,60 +238,65 @@ OUTPUT:
   </optgroup>
   <optgroup class="opt-group" label="Group Two">
     <option class="option" value="one">Option One</option>
-	<option class="option" value="two">Option Two</option>
+  <option class="option" value="two">Option Two</option>
   </optgroup>
 </select>
+@endcode
 */
 public function tplArrayR($qp, $array, $options = NULL) {
-	//If $array looks primitive, append it.
-	if (!is_array($array) && !($array instanceof Traversable)) {
-		$qp->append($array);
-	}
-	else {
-		foreach($array as $k => $v){
-			//store the modifier if $k is a string, else null
-			$kmod = ( $k_is_str = is_string($k) ) ? substr($k,0,1) : NULL;
-			
-			//$v is array or primitive
-			if( !$k_is_str ) {
-				//deep copy the current document selection
-				$elements	= $qp->get();
-				$dom_tpl	= array();
-				foreach($elements as $element) {
-					$dom_tpl[]	=	$element->cloneNode(true);
-				}
-				//populate the copy via recursion
-				$tpl = $this->tplArrayR(htmlqp($dom_tpl), $v, $options);
-				//insert the copy into the document
-				$qp->before($tpl);
-			}
-			//$k is a string
-			elseif (!($kmod==':' || $kmod=='@') && $qp->count($k)>0) {
-				//create a branch pointing to with $k scope and recurse
-				$this->tplArrayR($qp->branch($k), $v, $options);
-			}
-			//$k is non-selector string or invalid selector
-			elseif (!is_array($v)) {
-				if ($kmod=='@') {
-					//$v is a attr
-					$k = ltrim($k,'@');
-					$qp->attr($k,$v);
-				}
-				elseif ($k==':self') {
-					$qp->append($v); 
-				}
-			} 
-		}
-		//if $array is not assoc
-		if(!$k_is_str) {
-			//remove the template element
-			$dead = $qp->remove();
-			unset($dead);
-		}
-	}
-	return $qp;
+  // If $array looks primitive, append it.
+  if (!is_array($array) && !($array instanceof \Traversable)) {
+    return $qp->append($array);
+  }
+
+  foreach ($array as $k => $v) {
+    // Store the modifier if $k is a string, else null
+    $kmod = ( $k_is_str = is_string($k) ) ? substr($k, 0, 1) : NULL;
+
+    // $v is array or primitive
+    if( !$k_is_str ) {
+      // Deep copy the current document selection
+      $elements  = $qp->get();
+      $dom_tpl  = array();
+      foreach($elements as $element) {
+        $dom_tpl[]  =  $element->cloneNode(true);
+      }
+      //populate the copy via recursion
+      $tpl = $this->tplArrayR(htmlqp($dom_tpl), $v, $options);
+      //insert the copy into the document
+      $qp->before($tpl);
+    }
+    //$k is a string
+    elseif (!($kmod==':' || $kmod=='@') && $qp->count($k)>0) {
+      // Do we really want to support this?
+      //if ($kmod != '.' && $kmod != '#') {
+      //  $k = '.' . $k;
+      //}
+      //create a branch pointing to with $k scope and recurse
+      $this->tplArrayR($qp->branch($k), $v, $options);
+
+    }
+    //$k is non-selector string or invalid selector
+    elseif (!is_array($v)) {
+      if ($kmod=='@') {
+        //$v is a attr
+        $k = ltrim($k,'@');
+        $qp->attr($k,$v);
+      }
+      elseif ($k==':self') {
+        $qp->append($v); 
+      }
+    }
+  }
+  //if $array is not assoc
+  if(!$k_is_str) {
+    //remove the template element
+    $dead = $qp->remove();
+    unset($dead);
+  }
+  return $qp;
 }
-	
+
   /**
    * Check whether an array is associative.
    * If the keys of the array are not consecutive integers starting with 0,
@@ -314,4 +325,3 @@ public function tplArrayR($qp, $array, $options = NULL) {
     return '.' . substr($mname, 3);
   }
 }
-QueryPathExtensionRegistry::extend('QPTPL');

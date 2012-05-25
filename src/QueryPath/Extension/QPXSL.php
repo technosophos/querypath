@@ -9,12 +9,14 @@
  *
  * @author M Butcher <matt@aleph-null.tv>
  * @license http://opensource.org/licenses/lgpl-2.1.php LGPL or MIT-like license.
- * @see QueryPathExtension
- * @see QueryPathExtensionRegistry::extend()
+ * @see QueryPath::Extension
+ * @see QueryPath::ExtensionRegistry::extend()
  * @see QPXSL
  * @see QPXML
  */
- 
+
+namespace QueryPath\Extension;
+
 /**
  * Provide tools for running XSL Transformation (XSLT) on a document.
  *
@@ -31,21 +33,21 @@
  * qp('src.xml')->xslt('stylesheet.xml')->writeXML();
  * ?>
  *
- * This will transform src.xml according to the XSLT rules in 
- * stylesheet.xml. The results are returned as a QueryPath object, which 
+ * This will transform src.xml according to the XSLT rules in
+ * stylesheet.xml. The results are returned as a QueryPath object, which
  * is written to XML using {@link QueryPath::writeXML()}.
  * </code>
  *
  * @ingroup querypath_extensions
  */
-class QPXSL implements QueryPathExtension {
-  
+class QPXSL implements \QueryPath\Extension {
+
   protected $src = NULL;
-  
-  public function __construct(QueryPath $qp) {
+
+  public function __construct(\QueryPath\Query $qp) {
     $this->src = $qp;
   }
-  
+
   /**
    * Given an XSLT stylesheet, run a transformation.
    *
@@ -53,10 +55,10 @@ class QPXSL implements QueryPathExtension {
    * execute it on the current source document.
    *
    * @param mixed $style
-   *  This takes a QueryPath object or <em>any</em> of the types that the 
+   *  This takes a QueryPath object or <em>any</em> of the types that the
    *  {@link qp()} function can take.
    * @return QueryPath
-   *  A QueryPath object wrapping the transformed document. Note that this is a 
+   *  A QueryPath object wrapping the transformed document. Note that this is a
    *  <i>different</em> document than the original. As such, it has no history.
    *  You cannot call {@link QueryPath::end()} to undo a transformation. (However,
    *  the original source document will remain unchanged.)
@@ -67,9 +69,8 @@ class QPXSL implements QueryPathExtension {
     }
     $sourceDoc = $this->src->top()->get(0)->ownerDocument;
     $styleDoc = $style->get(0)->ownerDocument;
-    $processor = new XSLTProcessor();
+    $processor = new \XSLTProcessor();
     $processor->importStylesheet($styleDoc);
     return qp($processor->transformToDoc($sourceDoc));
   }
 }
-QueryPathExtensionRegistry::extend('QPXSL');
