@@ -2,7 +2,7 @@
 
 **New development is happening on the `3.x` branch.**
 
-Authors: Matt Butcher (lead), Emily Brand, and others
+Authors: Matt Butcher (lead), Emily Brand, and many others
 
 [Website](http://querypath.org) | 
 [API Docs](http://api.querypath.org) |
@@ -11,16 +11,63 @@ Authors: Matt Butcher (lead), Emily Brand, and others
 [Developer List](http://groups.google.com/group/devel-querypath) |
 [Pear channel](http://pear.querypath.org) |
 
-This package is licensed under the GNU LGPL 2.1 (COPYING-LGPL.txt) or, at your choice, an MIT-style
-license (COPYING-MIT.txt). The licenses should have been distributed with this library.
+This package is licensed under an MIT license (COPYING-MIT.txt) or, at your option, the 
+LGPL version 2.1 or later. The licenses should have been distributed with this library.
+
+## At A Glance
+
+QueryPath is a jQuery-like library for working with XML and HTML
+documents in PHP.
+
+Say we have a document like this:
+```xml
+<?xml version="1.0"?>
+<table>
+  <tr id="row1">
+    <td>one</td><td>two</td><td>three</td>
+  </tr>
+  <tr id="row2">
+    <td>four</td><td>five</td><td>six</td>
+  </tr>
+</table>
+```
+
+And say that the above is stored in the variable `$xml`. Now
+we can use QueryPath like this:
+
+```php
+<?php
+// Get all of the <td> elements in the document and add the
+// attribute `foo='bar'`:
+qp($xml, 'td')->attr('foo', 'bar');
+
+// Or print the contents of the third TD in the second row:
+print qp($xml, '#row2>td:nth(3)')->text();
+
+// Or append another row to the XML and then write the 
+// result to standard output:
+qp($xml, 'tr:last')->after('<tr><td/><td/><td/></tr>')->writeXML();
+
+?>
+```
+
+(This example is in `examples/at-a-glance.php`.)
+
+With over 60 functions and robust support for chaining, you can 
+accomplish sophisticated XML and HTML processing using QueryPath.
 
 ## QueryPath Installers
 
 The following packages of QueryPath are available:
 
-  * PEAR package (`pear install querypath/QueryPath`): Installs the library and documentation.
-  * Download from the [GitHub Tags page](https://github.com/technosophos/querypath/tags).
-  * [Composer](http://packagist.org): Add this to the 'require' section of your `composer.json`:
+  * A PEAR package (`pear install querypath/QueryPath`): Installs the library and documentation.
+  * A download from the [GitHub Tags page](https://github.com/technosophos/querypath/tags).
+  * Via [Composer](http://getcomposer.org)
+
+### Composer
+
+To add QueryPath as a library in your project, add this to the 'require'
+section of your `composer.json`:
 
 ```json
 {
@@ -30,44 +77,54 @@ The following packages of QueryPath are available:
 }
 ```
 
-Or if you prefer PEAR:
+The run `php composer.phar install` in that directory.
+
+### Pear
+
+To install QueryPath as a server-wide library, you may wish to use 
+PEAR or Pyrus. See [pear.querypath.org](http://pear.querypath.org)
+for more information, or simply run these commands:
 
 ```
 $ pear channel-discover pear.querypath.org
 $ pear install querypath/QueryPath
 ```
 
-### Downloads (for manual installation)
+### Manual
 
-  * Phar (QueryPath-VERSION.phar): This is a Phar package which can be used as-is. Its size has been
-    minimized by stripping comments. It is designed for direct inclusion in PHP 5.3 applications.
-  * Minimal (QueryPath-VERSION-minimal.tgz): This contains *only* the QueryPath library, with no
-    documentation or additional build environment. It is designed for production systems.
-  * Full (QueryPath-VERSION.tgz): This contains QueryPath, its unit tests, its documentation, 
-    examples, and all supporting material. If you are starting with QueryPath, this might be the
-    best package.
-  * Docs (QueryPath-VERSION-docs.tgz): This package contains *only* the documentation for QueryPath.
-    Generally, this is useful to install as a complement to the minimal package.
-  * Git repository clone: You can always clone [this repository](http://github.com/technosophos/querypath) and work from that code.
-
-    
-If in doubt, you probably want the PEAR version or the [Full package](http://github.com/technosophos/querypath/downloads).
+You can either download a stable release from the 
+[GitHub Tags page](https://github.com/technosophos/querypath/tags)
+or you can use `git` to clone
+[this repository](http://github.com/technosophos/querypath) and work from
+the code. `master` typically has the latest stable, while `3.x` is where
+active development is happening.
 
 ## Including QueryPath
+
+As of QueryPath 3.x, QueryPath uses the Composer autoloader if you
+installed with composer:
+```php
+<?php
+require 'vendor/autoload.php';
+
+// Optional: Use this to load `qp()` and `htmlqp()`
+require 'vendor/querypath/QueryPath/src/qp.php';
+?>
+```
 
 If you installed QueryPath as a PEAR package, use it like this:
 
 ```php
 <?php
-require 'QueryPath/QueryPath.php';
+require 'QueryPath/qp.php';
 ?>
 ```
 
-From the Full Install:
+From the download or git clone:
 
 ```php
 <?php
-require 'QueryPath/src/QueryPath/QueryPath.php';
+require 'QueryPath/src/QueryPath/qp.php';
 ?>
 ```
 
@@ -79,14 +136,7 @@ require 'QueryPath.phar';
 ?>
 ```
 
-Unfortunately, in the 2.1 branch of QueryPath, the Composer include is:
-
-```php
-<?php
-require 'vendor/querypath/QueryPath/src/QueryPath/QueryPath.php';
-?>
-```
-
-The next major release of QueryPath will support Composer autoloading.
-
-From there, the main functions you will want to use are `qp()` and `htmlqp()`. Start with the [API docs](http://api.querypath.org/docs).
+From there, the main functions you will want to use are `qp()` 
+(alias of `QueryPath::with()`) and `htmlqp()` (alias of
+`QueryPath::withHTML()`). Start with the
+[API docs](http://api.querypath.org/docs).
