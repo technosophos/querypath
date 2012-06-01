@@ -46,10 +46,12 @@ print qp($xml, '#row2>td:nth(3)')->text();
 
 // Or append another row to the XML and then write the 
 // result to standard output:
-qp($xml, 'tr:last')->append('<tr><td/><td/><td/></tr>')->writeXML();
+qp($xml, 'tr:last')->after('<tr><td/><td/><td/></tr>')->writeXML();
 
 ?>
 ```
+
+(This example is in `examples/at-a-glance.php`.)
 
 With over 60 functions and robust support for chaining, you can 
 accomplish sophisticated XML and HTML processing using QueryPath.
