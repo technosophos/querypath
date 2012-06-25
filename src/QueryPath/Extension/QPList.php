@@ -36,7 +36,7 @@ class QPList implements \QueryPath\Extension {
     </tbody>
     </table>';
 
-    $qp = qp($base, 'table')->addClass($opts['table class'])->find('tr');
+    $qp = \QueryPath::with($base, 'table')->addClass($opts['table class'])->find('tr');
     if ($items instanceof TableAble) {
       $headers = $items->getHeaders();
       $rows = $items->getRows();
@@ -90,7 +90,7 @@ class QPList implements \QueryPath\Extension {
       'list class' => 'qplist',
     );
     if ($type == self::DL) {
-      $q = qp('<?xml version="1.0"?><dl></dl>', 'dl')->addClass($opts['list class']);
+      $q = \QueryPath::with('<?xml version="1.0"?><dl></dl>', 'dl')->addClass($opts['list class']);
       foreach ($items as $dt => $dd) {
         $q->append('<dt>' . $dt . '</dt><dd>' . $dd . '</dd>');
       }
@@ -110,7 +110,7 @@ class QPList implements \QueryPath\Extension {
   protected function listImpl($items, $type, $opts, $q = NULL) {
     $ele = '<' . $type . '/>';
     if (!isset($q))
-      $q = qp()->append($ele)->addClass($opts['list class']);
+      $q = \QueryPath::with()->append($ele)->addClass($opts['list class']);
 
     foreach ($items as $li) {
       if ($li instanceof QueryPath) {

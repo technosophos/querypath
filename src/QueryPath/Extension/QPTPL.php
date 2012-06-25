@@ -4,6 +4,8 @@
  */
 
 namespace QueryPath\Extension;
+
+use \QueryPath;
 /**
  * QPTPL is a template library for QueryPath.
  *
@@ -75,7 +77,7 @@ class QPTPL implements \QueryPath\Extension {
     // Handle default options here.
 
     //$tqp = ($template instanceof QueryPath) ? clone $template: qp($template);
-    $tqp = qp($template);
+    $tqp = QueryPath::with($template);
 
     if (is_array($object) || $object instanceof \Traversable) {
       $this->tplArrayR($tqp, $object, $options);
@@ -106,7 +108,7 @@ class QPTPL implements \QueryPath\Extension {
    *  Returns the QueryPath object.
    */
   public function tplAll($template, $objects, $options = array()) {
-    $tqp = qp($template, ':root');
+    $tqp = QueryPath::with($template, ':root');
     foreach ($objects as $object) {
       if (is_array($object))
         $tqp = $this->tplArrayR($tqp, $object, $options);
@@ -262,7 +264,7 @@ public function tplArrayR($qp, $array, $options = NULL) {
         $dom_tpl[]  =  $element->cloneNode(true);
       }
       //populate the copy via recursion
-      $tpl = $this->tplArrayR(htmlqp($dom_tpl), $v, $options);
+      $tpl = $this->tplArrayR(QueryPath::withHTML($dom_tpl), $v, $options);
       //insert the copy into the document
       $qp->before($tpl);
     }

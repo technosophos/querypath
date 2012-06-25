@@ -152,21 +152,21 @@ class QueryPath {
   </html>';
 
 
-  public static function with($document, $selector = NULL, $options = array()) {
+  public static function with($document = NULL, $selector = NULL, $options = array()) {
     $qpClass = isset($options['QueryPath_class']) ? $options['QueryPath_class'] : '\QueryPath\DOMQuery';
 
     $qp = new $qpClass($document, $selector, $options);
     return $qp;
   }
 
-  public static function withXML($source, $selector = NULL, $options = array()) {
+  public static function withXML($source = NULL, $selector = NULL, $options = array()) {
     $options += array(
       'use_parser' => 'xml',
     );
     return self::with($source, $selector, $options);
   }
 
-  public static function withHTML($source, $selector = NULL, $options = array()) {
+  public static function withHTML($source = NULL, $selector = NULL, $options = array()) {
     // Need a way to force an HTML parse instead of an XML parse when the
     // doctype is XHTML, since many XHTML documents are not valid XML
     // (because of coding errors, not by design).

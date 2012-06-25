@@ -14,6 +14,7 @@
 namespace QueryPath;
 
 use \QueryPath\CSS\QueryPathEventHandler;
+use \QueryPath;
 
 
 /**
@@ -764,7 +765,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
    */
   public function filter($selector) {
     $found = new \SplObjectStorage();
-    foreach ($this->matches as $m) if (qp($m, NULL, $this->options)->is($selector)) $found->attach($m);
+    foreach ($this->matches as $m) if (QueryPath::with($m, NULL, $this->options)->is($selector)) $found->attach($m);
     $this->setMatches($found);
     return $this;
   }
@@ -1009,7 +1010,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
       foreach ($this->matches as $m) if ($selector->contains($m)) $found->attach($m);
     }
     else {
-      foreach ($this->matches as $m) if (!qp($m, NULL, $this->options)->is($selector)) $found->attach($m);
+      foreach ($this->matches as $m) if (!QueryPath::with($m, NULL, $this->options)->is($selector)) $found->attach($m);
     }
     $this->setMatches($found);
     return $this;
@@ -1863,7 +1864,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
       $node = $document->importNode($node);
       $item->parentNode->replaceChild($node, $item);
     }
-    return qp($document, NULL, $this->options);
+    return QueryPath::with($document, NULL, $this->options);
   }
   /**
    * Add more elements to the current set of matches.
@@ -1886,8 +1887,9 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
     // This is destructive, so we need to set $last:
     $this->last = $this->matches;
 
-    foreach (qp($this->document, $selector, $this->options)->get() as $item)
+    foreach (QueryPath::with($this->document, $selector, $this->options)->get() as $item) {
       $this->matches->attach($item);
+    }
     return $this;
   }
   /**
@@ -2097,14 +2099,14 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
     $found = new \SplObjectStorage();
     foreach ($this->matches as $m) {
 
-      if (qp($m, NULL, $this->options)->is($selector) > 0) {
+      if (QueryPath::with($m, NULL, $this->options)->is($selector) > 0) {
         $found->attach($m);
       }
       else {
         while ($m->parentNode->nodeType !== XML_DOCUMENT_NODE) {
           $m = $m->parentNode;
           // Is there any case where parent node is not an element?
-          if ($m->nodeType === XML_ELEMENT_NODE && qp($m, NULL, $this->options)->is($selector) > 0) {
+          if ($m->nodeType === XML_ELEMENT_NODE && QueryPath::with($m, NULL, $this->options)->is($selector) > 0) {
             $found->attach($m);
             break;
           }
@@ -2137,7 +2139,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
         // Is there any case where parent node is not an element?
         if ($m->nodeType === XML_ELEMENT_NODE) {
           if (!empty($selector)) {
-            if (qp($m, NULL, $this->options)->is($selector) > 0) {
+            if (QueryPath::with($m, NULL, $this->options)->is($selector) > 0) {
               $found->attach($m);
               break;
             }
@@ -2173,7 +2175,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
         // Is there any case where parent node is not an element?
         if ($m->nodeType === XML_ELEMENT_NODE) {
           if (!empty($selector)) {
-            if (qp($m, NULL, $this->options)->is($selector) > 0)
+            if (QueryPath::with($m, NULL, $this->options)->is($selector) > 0)
               $found->attach($m);
           }
           else
@@ -2775,7 +2777,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
         $m = $m->nextSibling;
         if ($m->nodeType === XML_ELEMENT_NODE) {
           if (!empty($selector)) {
-            if (qp($m, NULL, $this->options)->is($selector) > 0) {
+            if (QueryPath::with($m, NULL, $this->options)->is($selector) > 0) {
               $found->attach($m);
               break;
             }
@@ -2813,7 +2815,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
         $m = $m->nextSibling;
         if ($m->nodeType === XML_ELEMENT_NODE) {
           if (!empty($selector)) {
-            if (qp($m, NULL, $this->options)->is($selector) > 0) {
+            if (QueryPath::with($m, NULL, $this->options)->is($selector) > 0) {
               $found->attach($m);
             }
           }
@@ -2850,7 +2852,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
         $m = $m->previousSibling;
         if ($m->nodeType === XML_ELEMENT_NODE) {
           if (!empty($selector)) {
-            if (qp($m, NULL, $this->options)->is($selector)) {
+            if (QueryPath::with($m, NULL, $this->options)->is($selector)) {
               $found->attach($m);
               break;
             }
@@ -2888,7 +2890,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
         $m = $m->previousSibling;
         if ($m->nodeType === XML_ELEMENT_NODE) {
           if (!empty($selector)) {
-            if (qp($m, NULL, $this->options)->is($selector)) {
+            if (QueryPath::with($m, NULL, $this->options)->is($selector)) {
               $found->attach($m);
             }
           }
@@ -2910,7 +2912,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
       foreach ($m->parentNode->childNodes as $kid) {
         if ($kid->nodeType == XML_ELEMENT_NODE && $m !== $kid) {
           if (!empty($selector)) {
-            if (qp($kid, NULL, $this->options)->is($selector)) {
+            if (QueryPath::with($kid, NULL, $this->options)->is($selector)) {
               $found->attach($kid);
             }
           }
@@ -3458,7 +3460,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
         $m = $m->nextSibling;
         if ($m->nodeType === XML_ELEMENT_NODE) {
           if (!empty($selector)) {
-            if (qp($m, NULL, $this->options)->is($selector) > 0) {
+            if (QueryPath::with($m, NULL, $this->options)->is($selector) > 0) {
               break;
             }
             else {
@@ -3500,7 +3502,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
       while (isset($m->previousSibling)) {
         $m = $m->previousSibling;
         if ($m->nodeType === XML_ELEMENT_NODE) {
-          if (!empty($selector) && qp($m, NULL, $this->options)->is($selector))
+          if (!empty($selector) && QueryPath::with($m, NULL, $this->options)->is($selector))
           break;
           else
           $found->attach($m);
@@ -3534,7 +3536,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
         // Is there any case where parent node is not an element?
         if ($m->nodeType === XML_ELEMENT_NODE) {
           if (!empty($selector)) {
-            if (qp($m, NULL, $this->options)->is($selector) > 0)
+            if (QueryPath::with($m, NULL, $this->options)->is($selector) > 0)
             break;
             else
             $found->attach($m);
