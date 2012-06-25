@@ -3,6 +3,8 @@
  * XML extensions. See QPXML.
  */
 namespace QueryPath\Extension;
+
+use \QueryPath;
 /**
  * Provide QueryPath with additional XML tools.
  *
@@ -185,7 +187,7 @@ class QPXML implements \QueryPath\Extension {
       } else {
         $node = $element->ownerDocument->createElement($text);
       }
-        return qp($node);
+        return QueryPath::with($node);
       }
     }
     return;
@@ -201,7 +203,7 @@ class QPXML implements \QueryPath\Extension {
     if (isset ($text)) {
       foreach ($this->qp->get() as $element) {
         $node = $this->qp->createElement($text);
-        qp($element)->append($node);
+        QueryPath::with($element)->append($node);
       }
     }
     return $this->qp;

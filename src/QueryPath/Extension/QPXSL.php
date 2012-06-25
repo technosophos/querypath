@@ -65,12 +65,12 @@ class QPXSL implements \QueryPath\Extension {
    */
   public function xslt($style) {
     if (!($style instanceof QueryPath)) {
-      $style = qp($style);
+      $style = \QueryPath::with($style);
     }
     $sourceDoc = $this->src->top()->get(0)->ownerDocument;
     $styleDoc = $style->get(0)->ownerDocument;
     $processor = new \XSLTProcessor();
     $processor->importStylesheet($styleDoc);
-    return qp($processor->transformToDoc($sourceDoc));
+    return \QueryPath::with($processor->transformToDoc($sourceDoc));
   }
 }

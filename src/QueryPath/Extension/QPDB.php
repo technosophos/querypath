@@ -109,7 +109,9 @@
  */
 
 namespace QueryPath\Extension;
+
 use \PDO;
+use \QueryPath;
 
 /**
  * Provide DB access to a QueryPath object.
@@ -586,7 +588,7 @@ class QPDB implements \QueryPath\Extension {
           if (isset($row[$col])) {
             $data = $row[$col];
             if ($hasWrap)
-              $data = qp()->append($wrap)->deepest()->append($data)->top();
+              $data = QueryPath::with()->append($wrap)->deepest()->append($data)->top();
             $this->qp->$qpFunc($data);
           }
         }
@@ -600,7 +602,7 @@ class QPDB implements \QueryPath\Extension {
           if (isset($this->row[$col])) {
             $data = $this->row[$col];
             if ($hasWrap)
-              $data = qp()->append($wrap)->deepest()->append($data)->top();
+              $data = QueryPath::with()->append($wrap)->deepest()->append($data)->top();
             $this->qp->$qpFunc($data);
           }
         }
