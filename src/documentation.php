@@ -45,7 +45,7 @@
  * // URL to fetch:
  * $url = 'http://technosophos.com';
  *
- * print qp($url, 'title')->text();
+ * print htmlqp($url, 'title')->text();
  * @endcode
  *
  * The above will fetch the HTML from the given URL and then find the <code>title</code> tag. It will extract

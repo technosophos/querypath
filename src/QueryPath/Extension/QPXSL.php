@@ -8,7 +8,7 @@
  * You must have PHP XSL support for this to function.
  *
  * @author M Butcher <matt@aleph-null.tv>
- * @license http://opensource.org/licenses/lgpl-2.1.php LGPL or MIT-like license.
+ * @license MIT
  * @see QueryPath::Extension
  * @see QueryPath::ExtensionRegistry::extend()
  * @see QPXSL

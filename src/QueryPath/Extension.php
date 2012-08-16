@@ -12,7 +12,7 @@
  * all you need to do is {@link require_once} the file that contains the extension.
  *
  * @author M Butcher <matt@aleph-null.tv>
- * @license http://opensource.org/licenses/lgpl-2.1.php LGPL or MIT-like license.
+ * @license MIT
  * @see Extension
  * @see ExtensionRegistry::extend()
  */

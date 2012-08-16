@@ -10,7 +10,7 @@ use \QueryPath;
  *
  * @author M Butcher <matt@aleph-null.tv>
  * @author Xander Guzman <theshadow@shadowpedia.info>
- * @license http://opensource.org/licenses/lgpl-2.1.php LGPL or MIT-like license.
+ * @license MIT
  * @see QueryPath::Extension
  * @see QueryPath::ExtensionRegistry::extend()
  * @see QPXML

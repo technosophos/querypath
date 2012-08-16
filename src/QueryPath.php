@@ -69,12 +69,11 @@
  * you are interested in reusing that in other code, you will want to start
  * with QueryPath::CSS::EventHandler.php, which is the event interface for the parser.
  *
- * All of the code in QueryPath is licensed under either the LGPL or an MIT-like
- * license (you may choose which you prefer). All of the code is Copyright, 2012
- * by Matt Butcher.
+ * All of the code in QueryPath is licensed under an MIT-style license
+ * license. All of the code is Copyright, 2012 by Matt Butcher.
  *
  * @author M Butcher <matt @aleph-null.tv>
- * @license http://opensource.org/licenses/lgpl-2.1.php The GNU Lesser GPL (LGPL) or an MIT-like license.
+ * @license MIT
  * @see QueryPath
  * @see qp()
  * @see http://querypath.org The QueryPath home page.

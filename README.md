@@ -11,8 +11,7 @@ Authors: Matt Butcher (lead), Emily Brand, and many others
 [Developer List](http://groups.google.com/group/devel-querypath) |
 [Pear channel](http://pear.querypath.org) |
 
-This package is licensed under an MIT license (COPYING-MIT.txt) or, at your option, the 
-LGPL version 2.1 or later. The licenses should have been distributed with this library.
+This package is licensed under an MIT license (COPYING-MIT.txt).
 
 ## At A Glance
 
