@@ -27,7 +27,7 @@ use \QueryPath;
  * The unit tests are a good place for documentation, as is the QueryPath webste.
  *
  * @author M Butcher <matt@aleph-null.tv>
- * @license http://opensource.org/licenses/lgpl-2.1.php LGPL or MIT-like license.
+ * @license MIT
  * @see QueryPath::Extension
  * @see QueryPath::ExtensionRegistry::extend()
  * @see https://fedorahosted.org/querypath/wiki/QueryPathTemplate

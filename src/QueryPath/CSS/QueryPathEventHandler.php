@@ -36,7 +36,7 @@
  * testing this implementation.
  *
  * @author M Butcher <matt@aleph-null.tv>
- * @license http://opensource.org/licenses/lgpl-2.1.php LGPL (The GNU Lesser GPL) or an MIT-like license.
+ * @license MIT
  */
 
 namespace QueryPath\CSS;

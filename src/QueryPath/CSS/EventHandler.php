@@ -10,7 +10,7 @@
  * of how this is done, see {@link EventHandler.php}.
  *
  * @author M Butcher <matt@aleph-null.tv>
- * @license http://opensource.org/licenses/lgpl-2.1.php The GNU Lesser GPL (LGPL) or an MIT-like license.
+ * @license MIT
  */
 namespace QueryPath\CSS;
 
