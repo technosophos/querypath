@@ -964,7 +964,7 @@ class DOMQueryTest extends TestCase {
     $pack[] = $source->html();
 
     foreach ($children as $child) {
-      $pack += $this->contentsRecurse($source, $pack);
+      $pack += $this->contentsRecurse($child, $pack);
     }
 
     return $pack;
