@@ -17,7 +17,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </description>
  <lead>
    <name>Matt Butcher</name>
-   <user>mbutcher</name>
+   <user>mbutcher</user>
    <email>matt@aleph-null.tv</email>
    <active>yes</active>
  </lead>
@@ -60,7 +60,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </notes>
  <contents>
    <dir name="/" baseinstalldir="QueryPath">
-    <dir name="QueryPath"/>
+    <dir name="QueryPath">
       <file name="QueryPath.php" role="php"/>
       <file name="QueryPathExtension.php" role="php"/>
       <file name="CssParser.php" role="php"/>
