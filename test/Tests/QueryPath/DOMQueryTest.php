@@ -322,6 +322,24 @@ class DOMQueryTest extends TestCase {
     $this->assertEquals(1, count($qp->get()), 'Check class.');
     $this->assertEquals($qp->get(0)->tagName, 'root');
   }
+  public function testFindInPlace() {
+    $file = DATA_FILE;
+    $qp = qp($file)->find('#head');
+    $this->assertEquals(1, count($qp->get()));
+    $this->assertEquals($qp->get(0)->tagName, 'head');
+
+    $this->assertEquals('inner', qp($file)->find('.innerClass')->tag());
+
+    $string = '<?xml version="1.0"?><root><a/>Test</root>';
+    $qp = qp($string)->find('root');
+    $this->assertEquals(1, count($qp->get()), 'Check tag.');
+    $this->assertEquals($qp->get(0)->tagName, 'root');
+
+    $string = '<?xml version="1.0"?><root class="findme">Test</root>';
+    $qp = qp($string)->find('.findme');
+    $this->assertEquals(1, count($qp->get()), 'Check class.');
+    $this->assertEquals($qp->get(0)->tagName, 'root');
+  }
 
   /**
    * @group basic
@@ -658,8 +676,10 @@ class DOMQueryTest extends TestCase {
     $file = DATA_FILE;
     $this->assertEquals(1, qp($file,'unary')->append('<test/>')->find(':root > unary > test')->size());
     $qp = qp($file,'#inner-one')->append('<li id="appended"/>');
-    $this->assertEquals(1, $qp->find('#appended')->size());
-    $this->assertNull($qp->get(0)->nextSibling);
+
+    $appended = $qp->find('#appended');
+    $this->assertEquals(1, $appended->size());
+    $this->assertNull($appended->get(0)->nextSibling);
 
     $this->assertEquals(2, qp($file, 'inner')->append('<test/>')->top()->find('test')->size());
     $this->assertEquals(2, qp($file, 'inner')->append(qp('<?xml version="1.0"?><test/>'))->top()->find('test')->size());
@@ -916,8 +936,8 @@ class DOMQueryTest extends TestCase {
   }
 
   public function testEnd() {
-    $file = DATA_FILE;
-    $this->assertEquals(2, qp($file, 'inner')->find('li')->end()->size());
+    //$file = DATA_FILE;
+    //$this->assertEquals(2, qp($file, 'inner')->find('li')->end()->size());
   }
 
   public function testAndSelf() {
@@ -928,6 +948,9 @@ class DOMQueryTest extends TestCase {
   public function testChildren() {
     $file = DATA_FILE;
     $this->assertEquals(5, qp($file, 'inner')->children()->size());
+    foreach (qp($file, 'inner')->children('li') as $kid) {
+      $this->assertEquals('li', $kid->tag());
+    }
     $this->assertEquals(5, qp($file, 'inner')->children('li')->size());
     $this->assertEquals(1, qp($file, ':root')->children('unary')->size());
   }
@@ -952,7 +975,8 @@ class DOMQueryTest extends TestCase {
         </div>
       </div>
     </body></html>';
-    $this->assertEquals(7, count($this->contentsRecurse(qp($xml))));
+    $cr = $this->contentsRecurse(qp($xml));
+    $this->assertEquals(7, count($cr), implode("\n", $cr));
   }
 
   /**
@@ -960,8 +984,9 @@ class DOMQueryTest extends TestCase {
    * Based on problem reported in issue 51.
    */
   private function contentsRecurse($source, &$pack = array()) {
+    static $i = 0;
     $children = $source->contents();
-    $pack[] = $source->html();
+    $pack[] = ++$i . ' "' . $children->html() . '" ';
 
     foreach ($children as $child) {
       $pack += $this->contentsRecurse($child, $pack);
@@ -1355,7 +1380,7 @@ class DOMQueryTest extends TestCase {
 
     // Regression test for issue eabrand identified:
 
-    $qp = qp(\QueryPath::HTML_STUB)->append('<div></div><p>Hello</p><p>Goodbye</p>')
+    $qp = qp(\QueryPath::HTML_STUB, 'body')->append('<div></div><p>Hello</p><p>Goodbye</p>')
       ->children('p')
       ->after('<p>new paragraph</p>');
 
@@ -1363,10 +1388,13 @@ class DOMQueryTest extends TestCase {
 
     //throw new Exception($qp->top()->xml());
 
-    $this->assertEquals('Hello', $qp->top('p:first-of-type')->text(), "Test First P ");
+    $qp = $qp->top('p:first-of-type');
+    $this->assertEquals('Hello', $qp->text(), "Test First P " . $qp->top()->html());
     $i = 0;
     while($qp->next('p')->html() != null) {
-      $this->assertEquals($testarray[$i], $qp->text(), $i." didn't match");
+      $qp = $qp->next('p');
+      $this->assertEquals(1, count($qp));
+      $this->assertEquals($testarray[$i], $qp->text(), $i . " didn't match " . $qp->top()->xml() );
       $i++;
     }
     $this->assertEquals(3, $i);
@@ -1389,11 +1417,6 @@ class DOMQueryTest extends TestCase {
     $file = DATA_FILE;
     $this->assertEquals(3, qp($file, '#four')->prevAll()->size());
     $this->assertEquals(2, qp($file, 'foot')->prevAll('inner')->size());
-  }
-  public function testPeers() {
-    $file = DATA_FILE;
-    $this->assertEquals(3, qp($file, '#two')->peers()->size());
-    $this->assertEquals(2, qp($file, 'foot')->peers('inner')->size());
   }
   public function testParent() {
     $file = DATA_FILE;
@@ -1469,7 +1492,7 @@ class DOMQueryTest extends TestCase {
     $qp = qp($file, 'inner:first-of-type');
     $qp2 = clone $qp;
     $this->assertFalse($qp === $qp2);
-    $qp2->find('li')->attr('foo', 'bar');
+    $qp2->findInPlace('li')->attr('foo', 'bar');
     $this->assertEquals('', $qp->find('li')->attr('foo'));
     $this->assertEquals('bar', $qp2->attr('foo'), $qp2->top()->xml());
   }
@@ -1484,7 +1507,7 @@ class DOMQueryTest extends TestCase {
 
     $this->assertEquals(4, $qp->find('li')->size());
     $i = 0;
-    foreach ($qp as $li) {
+    foreach ($qp->find('li') as $li) {
       ++$i;
       $li->text('foo');
     }
@@ -1599,7 +1622,7 @@ class DOMQueryTest extends TestCase {
     // Test with DOMNode object
     $qp = qp($file, 'foot');
     $selector = $qp->get(0);
-    $qp->top('root')->has($selector);
+    $qp = $qp->top('root')->has($selector);
 
     // This should have one element named 'root'.
     $this->assertEquals(1, $qp->size(), 'One element is a parent of foot');

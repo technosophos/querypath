@@ -119,8 +119,19 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
     // Figure out if document is DOM, HTML/XML, or a filename
     elseif (is_object($document)) {
 
-      if ($document instanceof DOMQuery) {
-        $this->matches = $document->get(NULL, TRUE);
+      // This is the most frequent object type.
+      if ($document instanceof \SplObjectStorage) {
+        $this->matches = $document;
+        if ($document->count() != 0) {
+          $first = $this->getFirstMatch();
+          if (!empty($first->ownerDocument)) {
+            $this->document = $first->ownerDocument;
+          }
+        }
+      }
+      elseif ($document instanceof DOMQuery) {
+        //$this->matches = $document->get(NULL, TRUE);
+        $this->setMatches($document->get(NULL, TRUE));
         if ($this->matches->count() > 0)
           $this->document = $this->getFirstMatch()->ownerDocument;
       }
@@ -139,13 +150,6 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
         $this->document = $import->ownerDocument;
         //$this->matches = array($import);
         $this->setMatches($import);
-      }
-      elseif ($document instanceof \SplObjectStorage) {
-        if ($document->count() == 0) {
-          throw new \QueryPath\Exception('Cannot initialize QueryPath from an empty SplObjectStore');
-        }
-        $this->matches = $document;
-        $this->document = $this->getFirstMatch()->ownerDocument;
       }
       else {
         throw new \QueryPath\Exception('Unsupported class type: ' . get_class($document));
@@ -184,7 +188,12 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
 
     // Do a find if the second param was set.
     if (isset($string) && strlen($string) > 0) {
-      $this->find($string);
+      // We don't issue a find because that creates a new DOMQuery.
+      //$this->find($string);
+
+      $query = new \QueryPath\CSS\DOMTraverser($this->matches);
+      $query->find($string);
+      $this->setMatches($query->matches());
     }
   }
 
@@ -240,8 +249,9 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
    *  for the current document.
    */
   public function top($selector = NULL) {
-    $this->setMatches($this->document->documentElement);
-    return !empty($selector) ? $this->find($selector) : $this;
+    //$this->setMatches($this->document->documentElement);
+    //return !empty($selector) ? $this->find($selector) : $this;
+    return $this->inst($this->document->documentElement, $selector, $this->options);
   }
 
   /**
@@ -262,6 +272,13 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
   public function find($selector) {
 
     //$query = new QueryPathEventHandler($this->matches);
+    $query = new \QueryPath\CSS\DOMTraverser($this->matches);
+    $query->find($selector);
+    //$this->setMatches($query->matches());
+    //return $this;
+    return $this->inst($query->matches(), NULL , $this->options);
+  }
+  public function findInPlace($selector) {
     $query = new \QueryPath\CSS\DOMTraverser($this->matches);
     $query->find($selector);
     $this->setMatches($query->matches());
@@ -309,8 +326,9 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
         for ($i = 0; $i < $nl->length; ++$i) $found->attach($nl->item($i));
       }
     }
-    $this->setMatches($found);
-    return $this;
+    return $this->inst($found, NULL, $this->options);
+    //$this->setMatches($found);
+    //return $this;
   }
 
   /**
@@ -693,9 +711,10 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
    * @see end()
    */
   public function eq($index) {
+    return $this->inst($this->getNthMatch($index), NULL, $this->options);
     // XXX: Might there be a more efficient way of doing this?
-    $this->setMatches($this->getNthMatch($index));
-    return $this;
+    //$this->setMatches($this->getNthMatch($index));
+    //return $this;
   }
   /**
    * Given a selector, this checks to see if the current set has one or more matches.
@@ -737,6 +756,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
     }
 
     // Testing based on Issue #70.
+    //fprintf(STDOUT, __FUNCTION__  .' found %d', $this->find($selector)->count());
     return $this->branch($selector)->count() > 0;
 
     // Old version:
@@ -765,9 +785,16 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
    */
   public function filter($selector) {
     $found = new \SplObjectStorage();
-    foreach ($this->matches as $m) if (QueryPath::with($m, NULL, $this->options)->is($selector)) $found->attach($m);
-    $this->setMatches($found);
-    return $this;
+    foreach ($this->matches as $m) {
+      if (QueryPath::with($m, NULL, $this->options)->is($selector)) {
+        //fprintf(STDOUT, 'Attaching  %s for %s', $m->tagName, $selector);
+        $found->attach($m);
+      }
+    }
+
+    return $this->inst($found, NULL, $this->options);
+    //$this->setMatches($found);
+    //return $this;
   }
   /**
    * Sort the contents of the QueryPath object.
@@ -844,7 +871,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
     foreach ($list as $node) {
       $found->attach($node);
     }
-    $this->setMatches($found);
+    //$this->setMatches($found);
 
 
     // Do DOM modifications only if necessary.
@@ -860,7 +887,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
       $placeholder->parentNode->removeChild($placeholder);
     }
 
-    return $this;
+    return $this->inst($found, NULL, $this->options);
   }
   /**
    * Filter based on a lambda function.
@@ -895,8 +922,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
     foreach ($this->matches as $item)
       if ($function($i++, $item) !== FALSE) $found->attach($item);
 
-    $this->setMatches($found);
-    return $this;
+    return $this->inst($found, NULL, $this->options);
   }
 
   /**
@@ -942,9 +968,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
         $found->attach($item);
       }
     }
-    $this->setMatches($found);
-
-    return $this;
+    return $this->inst($found, NULL, $this->options);
   }
   /**
    * Filter based on a callback function.
@@ -983,8 +1007,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
     else {
       throw new \QueryPath\Exception('The specified callback is not callable.');
     }
-    $this->setMatches($found);
-    return $this;
+    return $this->inst($found, NULL, $this->options);
   }
   /**
    * Filter a list to contain only items that do NOT match.
@@ -1012,8 +1035,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
     else {
       foreach ($this->matches as $m) if (!QueryPath::with($m, NULL, $this->options)->is($selector)) $found->attach($m);
     }
-    $this->setMatches($found);
-    return $this;
+    return $this->inst($found, NULL, $this->options);
   }
   /**
    * Get an item's index.
@@ -1102,8 +1124,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
     else {
       throw new \QueryPath\Exception('Callback is not callable.');
     }
-    $this->setMatches($found, FALSE);
-    return $this;
+    return $this->inst($found, NULL, $this->options);
   }
   /**
    * Narrow the items in this object down to only a slice of the starting items.
@@ -1121,8 +1142,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
     $end = $length;
     $found = new \SplObjectStorage();
     if ($start >= $this->size()) {
-      $this->setMatches($found);
-      return $this;
+      return $this->inst($found, NULL, $this->options);
     }
 
     $i = $j = 0;
@@ -1137,8 +1157,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
       ++$i;
     }
 
-    $this->setMatches($found);
-    return $this;
+    return $this->inst($found, NULL, $this->options);
   }
   /**
    * Run a callback on each item in the list of items.
@@ -1440,8 +1459,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
       $parent->insertBefore($data->cloneNode(TRUE), $m);
       $found->attach($parent->removeChild($m));
     }
-    $this->setMatches($found);
-    return $this;
+    return $this->inst($found, NULL, $this->options);
   }
   /**
    * Remove the parent element from the selected node or nodes.
@@ -1671,8 +1689,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
           $winner->attach($lele);
       }
     }
-    $this->setMatches($winner);
-    return $this;
+    return $this->inst($winner, NULL, $this->options);
   }
 
   /**
@@ -1895,6 +1912,8 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
   /**
    * Revert to the previous set of matches.
    *
+   * <b>DEPRECATED</b> Do not use.
+   *
    * This will revert back to the last set of matches (before the last
    * "destructive" set of operations). This undoes any change made to the set of
    * matched objects. Functions like find() and filter() change the
@@ -1924,12 +1943,13 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
    *  operation.
    * @see andSelf()
    * @see add()
+   * @deprecated This function will be removed.
    */
   public function end() {
     // Note that this does not use setMatches because it must set the previous
     // set of matches to empty array.
-    $this->matches = $this->last;
-    $this->last = new \SplObjectStorage();
+    //$this->matches = $this->last;
+    //$this->last = new \SplObjectStorage();
     return $this;
   }
   /**
@@ -2002,14 +2022,11 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
         if ($c->nodeType == XML_ELEMENT_NODE) $found->attach($c);
       }
     }
-    if (empty($selector)) {
-      $this->setMatches($found);
+    $new = $this->inst($found, NULL, $this->options);
+    if (!empty($selector)) {
+      return $new->filter($selector);
     }
-    else {
-      $this->matches = $found; // Don't buffer this. It is temporary.
-      $this->filter($selector);
-    }
-    return $this;
+    return $new;
   }
   /**
    * Get all child nodes (not just elements) of all items in the matched set.
@@ -2037,8 +2054,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
         $found->attach($c);
       }
     }
-    $this->setMatches($found);
-    return $this;
+    return $this->inst($found, NULL, $this->options);
   }
   /**
    * Get a list of siblings for elements currently wrapped by this object.
@@ -2073,13 +2089,11 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
       }
     }
     if (empty($selector)) {
-      $this->setMatches($found);
+      return $this->inst($found, NULL, $this->options);
     }
     else {
-      $this->matches = $found; // Don't buffer this. It is temporary.
-      $this->filter($selector);
+      return $this->inst($found, NULL, $this->options)->filter($selector);
     }
-    return $this;
   }
   /**
    * Find the closest element matching the selector.
@@ -2114,8 +2128,10 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
       }
 
     }
-    $this->setMatches($found);
-    return $this;
+    // XXX: Should this be an in-place modification?
+    return $this->inst($found, NULL, $this->options);
+    //$this->setMatches($found);
+    //return $this;
   }
   /**
    * Get the immediate parent of each element in the DOMQuery.
@@ -2151,8 +2167,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
         }
       }
     }
-    $this->setMatches($found);
-    return $this;
+    return $this->inst($found, NULL, $this->options);
   }
   /**
    * Get all ancestors of each element in the DOMQuery.
@@ -2183,8 +2198,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
         }
       }
     }
-    $this->setMatches($found);
-    return $this;
+    return $this->inst($found, NULL, $this->options);
   }
   /**
    * Set or get the markup for an element.
@@ -2789,8 +2803,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
         }
       }
     }
-    $this->setMatches($found);
-    return $this;
+    return $this->inst($found, NULL, $this->options);
   }
   /**
    * Get all siblings after an element.
@@ -2825,8 +2838,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
         }
       }
     }
-    $this->setMatches($found);
-    return $this;
+    return $this->inst($found, NULL, $this->options);
   }
   /**
    * Get the next sibling before each element in the DOMQuery.
@@ -2864,8 +2876,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
         }
       }
     }
-    $this->setMatches($found);
-    return $this;
+    return $this->inst($found, NULL, $this->options);
   }
   /**
    * Get the previous siblings for each element in the DOMQuery.
@@ -2900,30 +2911,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
         }
       }
     }
-    $this->setMatches($found);
-    return $this;
-  }
-  /**
-   * @deprecated Use {@link siblings()}.
-   */
-  public function peers($selector = NULL) {
-    $found = new \SplObjectStorage();
-    foreach ($this->matches as $m) {
-      foreach ($m->parentNode->childNodes as $kid) {
-        if ($kid->nodeType == XML_ELEMENT_NODE && $m !== $kid) {
-          if (!empty($selector)) {
-            if (QueryPath::with($kid, NULL, $this->options)->is($selector)) {
-              $found->attach($kid);
-            }
-          }
-          else {
-            $found->attach($kid);
-          }
-        }
-      }
-    }
-    $this->setMatches($found);
-    return $this;
+    return $this->inst($found, NULL, $this->options);
   }
   /**
    * Add a class to all elements in the current DOMQuery.
@@ -3100,11 +3088,23 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
    */
   public function branch($selector = NULL) {
     $temp = \QueryPath::with($this->matches, NULL, $this->options);
-    if (isset($selector)) $temp->find($selector);
+    //if (isset($selector)) $temp->find($selector);
+    $temp->document = $this->document;
+    if (isset($selector)) $temp->findInPlace($selector);
+    return $temp;
+  }
+  protected function inst($matches, $selector, $options) {
+    $temp = \QueryPath::with($matches, NULL, $options);
+    //if (isset($selector)) $temp->find($selector);
+    $temp->document = $this->document;
+    if (isset($selector)) $temp->findInPlace($selector);
     return $temp;
   }
   /**
    * Perform a deep clone of each node in the DOMQuery.
+   *
+   * @attention
+   *   This is an in-place modification of the current QueryPath object.
    *
    * This does not clone the DOMQuery object, but instead clones the
    * list of nodes wrapped by the DOMQuery. Every element is deeply
@@ -3120,7 +3120,8 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
   public function cloneAll() {
     $found = new \SplObjectStorage();
     foreach ($this->matches as $m) $found->attach($m->cloneNode(TRUE));
-    $this->setMatches($found, FALSE);
+    //return $this->inst($found, NULL, $this->options);
+    $this->setMatches($found);
     return $this;
   }
 
@@ -3142,7 +3143,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
   /**
    * Detach any items from the list if they match the selector.
    *
-   * In other words, each item that matches the selector will be remove
+   * In other words, each item that matches the selector will be removed
    * from the DOM document. The returned DOMQuery wraps the list of
    * removed elements.
    *
@@ -3171,8 +3172,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
       // the one passed in, so we have to re-store it.
       $found->attach($item->parentNode->removeChild($item));
     }
-    $this->setMatches($found);
-    return $this;
+    return $this->inst($found, NULL, $this->options);
   }
 
   /**
@@ -3247,8 +3247,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
       }
     }
 
-    $this->setMatches($found);
-    return $this;
+    return $this->inst($found, NULL, $this->options);
   }
 
   /**
@@ -3292,9 +3291,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
       if ($even && $m->nodeType == XML_ELEMENT_NODE) $found->attach($m);
       $even = ($even) ? false : true;
     }
-    $this->setMatches($found);
-    $this->matches = $found; // Don't buffer this. It is temporary.
-    return $this;
+    return $this->inst($found, NULL, $this->options);
   }
 
   /**
@@ -3319,9 +3316,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
       if ($odd && $m->nodeType == XML_ELEMENT_NODE) $found->attach($m);
       $odd = ($odd) ? false : true;
     }
-    $this->setMatches($found);
-    $this->matches = $found; // Don't buffer this. It is temporary.
-    return $this;
+    return $this->inst($found, NULL, $this->options);
   }
 
   /**
@@ -3343,9 +3338,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
         break;
       }
     }
-    $this->setMatches($found);
-    $this->matches = $found; // Don't buffer this. It is temporary.
-    return $this;
+    return $this->inst($found, NULL, $this->options);
   }
 
   /**
@@ -3373,9 +3366,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
       }
       if($flag) break;
     }
-    $this->setMatches($found);
-    $this->matches = $found; // Don't buffer this. It is temporary.
-    return $this;
+    return $this->inst($found, NULL, $this->options);
   }
 
   /**
@@ -3400,9 +3391,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
     if ($item) {
       $found->attach($item);
     }
-    $this->setMatches($found);
-    $this->matches = $found; // Don't buffer this. It is temporary.
-    return $this;
+    return $this->inst($found, NULL, $this->options);
   }
 
   /**
@@ -3430,9 +3419,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
         $item = null;
       }
     }
-    $this->setMatches($found);
-    $this->matches = $found; // Don't buffer this. It is temporary.
-    return $this;
+    return $this->inst($found, NULL, $this->options);
   }
 
   /**
@@ -3473,8 +3460,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
         }
       }
     }
-    $this->setMatches($found);
-    return $this;
+    return $this->inst($found, NULL, $this->options);
   }
 
   /**
@@ -3509,8 +3495,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
         }
       }
     }
-    $this->setMatches($found);
-    return $this;
+    return $this->inst($found, NULL, $this->options);
   }
 
   /**
@@ -3546,8 +3531,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
         }
       }
     }
-    $this->setMatches($found);
-    return $this;
+    return $this->inst($found, NULL, $this->options);
   }
 
   /////// INTERNAL FUNCTIONS ////////
