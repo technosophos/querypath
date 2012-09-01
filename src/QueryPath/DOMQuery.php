@@ -3094,11 +3094,19 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
     return $temp;
   }
   protected function inst($matches, $selector, $options) {
+    /*
     $temp = \QueryPath::with($matches, NULL, $options);
     //if (isset($selector)) $temp->find($selector);
     $temp->document = $this->document;
     if (isset($selector)) $temp->findInPlace($selector);
     return $temp;
+     */
+    // https://en.wikipedia.org/wiki/Dolly_(sheep)
+    $dolly = clone $this;
+    $dolly->setMatches($matches);
+    //var_dump($dolly); exit;
+    if (isset($selector)) $dolly->findInPlace($selector);
+    return $dolly;
   }
   /**
    * Perform a deep clone of each node in the DOMQuery.
