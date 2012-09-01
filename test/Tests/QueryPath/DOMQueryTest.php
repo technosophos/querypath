@@ -936,8 +936,8 @@ class DOMQueryTest extends TestCase {
   }
 
   public function testEnd() {
-    //$file = DATA_FILE;
-    //$this->assertEquals(2, qp($file, 'inner')->find('li')->end()->size());
+    $file = DATA_FILE;
+    $this->assertEquals(2, qp($file, 'inner')->find('li')->end()->size());
   }
 
   public function testAndSelf() {
@@ -976,7 +976,7 @@ class DOMQueryTest extends TestCase {
       </div>
     </body></html>';
     $cr = $this->contentsRecurse(qp($xml));
-    $this->assertEquals(7, count($cr), implode("\n", $cr));
+    $this->assertEquals(14, count($cr), implode("\n", $cr));
   }
 
   /**
@@ -984,9 +984,11 @@ class DOMQueryTest extends TestCase {
    * Based on problem reported in issue 51.
    */
   private function contentsRecurse($source, &$pack = array()) {
-    static $i = 0;
+    //static $i = 0;
+    //static $filter = "%d. Node type: %d, Content: '%s'\n";
     $children = $source->contents();
-    $pack[] = ++$i . ' "' . $children->html() . '" ';
+    //$node = $source->get(0);
+    $pack[] = 1; //sprintf($filter, ++$i, $node->nodeType, $source->html());
 
     foreach ($children as $child) {
       $pack += $this->contentsRecurse($child, $pack);

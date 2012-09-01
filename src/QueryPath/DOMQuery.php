@@ -1948,8 +1948,8 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
   public function end() {
     // Note that this does not use setMatches because it must set the previous
     // set of matches to empty array.
-    //$this->matches = $this->last;
-    //$this->last = new \SplObjectStorage();
+    $this->matches = $this->last;
+    $this->last = new \SplObjectStorage();
     return $this;
   }
   /**
