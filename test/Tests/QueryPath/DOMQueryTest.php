@@ -1461,9 +1461,9 @@ class DOMQueryTest extends TestCase {
     // Deep test: make sure children are also cloned.
     $qp = qp($file, 'inner');
     $one = $qp->find('li')->get(0);
-    $two = $qp->top('inner')->cloneAll()->find('li')->get(0);
-    $this->assertTrue($one !== $two);
+    $two = $qp->top('inner')->cloneAll(TRUE)->findInPlace('li')->get(0);
     $this->assertEquals('li', $two->tagName);
+    $this->assertTrue($one !== $two);
   }
 
   public function testBranch() {
