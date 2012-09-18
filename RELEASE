@@ -1,14 +1,20 @@
-RELEASE NOTES
+# RELEASE NOTES
 
 3.0.0
 
-*REALLY IMPORTANT CHANGE*: To match jQuery, and to correctly implement
+** REALLY IMPORTANT CHANGE:** To match jQuery, and to correctly implement
   a bottom-up parser, the following will no longer work:
   $qp($html, 'li')->find(':root ul');
   You can no longer use find() to ever, ever move UP the document true
   (like back to the root from somewhere in the tree). You MUST use
   top() to do this now. This is how jQuery works, and making this
   minor change makes things much faster.
+
+** REALLY IMPORTANT CHANGE:** Many "destructive" operations now return a
+  new QueryPath object. This mirrors jQuery's behavior.
+
+  THAT MEANS: find() now works like jQuery find(), branch() is 
+  deprecated. findInPlace() does what find() used to do.
 
 1. removeAll() now works as it does in recent jQuery. Thanks to GDMac
   (issues #77 #78) for the fix.
