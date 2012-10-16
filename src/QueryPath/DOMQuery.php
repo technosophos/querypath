@@ -1196,6 +1196,9 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
   /**
    * An each() iterator that takes a lambda function.
    *
+   * @deprecated
+   *   Since PHP 5.3 supports anonymous functions -- REAL Lambdas -- this
+   *   method is not necessary and should be avoided.
    * @param string $lambda
    *  The lambda function. This will be passed ($index, &$item).
    * @retval object DOMQuery
