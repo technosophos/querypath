@@ -229,7 +229,7 @@ class QueryPath {
   public static function enable($extensionNames) {
 
     if (is_array($extensionNames)) {
-      foreach ($extensionnames as $extension) {
+      foreach ($extensionNames as $extension) {
         \QueryPath\ExtensionRegistry::extend($extension);
       }
     }
