@@ -1,5 +1,10 @@
 # RELEASE NOTES
 
+
+3.0.1
+
+- Issue #102: Added QueryPath.VERSION_MAJOR, changed QueryPath.VERSION
+
 3.0.0
 
 ** REALLY IMPORTANT CHANGE:** To match jQuery, and to correctly implement
