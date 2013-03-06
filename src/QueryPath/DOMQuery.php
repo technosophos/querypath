@@ -2022,8 +2022,6 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
    * @see prev()
    */
   public function children($selector = NULL) {
-    static $ccc = 0;
-    print "$ccc =>children()";++$ccc;
     $found = new \SplObjectStorage();
     $filter = strlen($selector) > 0;
 
@@ -2044,6 +2042,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
             $tmp->detach($c);
 
           }
+          // No filter. Just attach it.
           else {
             $found->attach($c);
           }
@@ -2051,12 +2050,6 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
       }
     }
     $new = $this->inst($found, NULL, $this->options);
-    /*
-    if (!empty($selector)) {
-      return $new->filter($selector);
-    }
-     */
-    print "<-children()\n";
     return $new;
   }
   /**
