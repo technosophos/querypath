@@ -784,18 +784,21 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
    * @see is()
    */
   public function filter($selector) {
+
     $found = new \SplObjectStorage();
+    $tmp = new \SplObjectStorage();
     foreach ($this->matches as $m) {
-      if (QueryPath::with($m, NULL, $this->options)->is($selector)) {
-        //fprintf(STDOUT, 'Attaching  %s for %s', $m->tagName, $selector);
+      $tmp->attach($m);
+      $query = new \QueryPath\CSS\DOMTraverser($tmp);
+      $query->find($selector);
+      if (count($query->matches())) {
         $found->attach($m);
       }
+      $tmp->detach($m);
     }
-
     return $this->inst($found, NULL, $this->options);
-    //$this->setMatches($found);
-    //return $this;
   }
+
   /**
    * Sort the contents of the QueryPath object.
    *
@@ -2019,16 +2022,41 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
    * @see prev()
    */
   public function children($selector = NULL) {
+    static $ccc = 0;
+    print "$ccc =>children()";++$ccc;
     $found = new \SplObjectStorage();
+    $filter = strlen($selector) > 0;
+
+    if ($filter) {
+      $tmp = new \SplObjectStorage();
+    }
     foreach ($this->matches as $m) {
       foreach($m->childNodes as $c) {
-        if ($c->nodeType == XML_ELEMENT_NODE) $found->attach($c);
+        if ($c->nodeType == XML_ELEMENT_NODE) {
+          // This is basically an optimized filter() just for children().
+          if ($filter) {
+            $tmp->attach($c);
+            $query = new \QueryPath\CSS\DOMTraverser($tmp);
+            $query->find($selector);
+            if (count($query->matches()) > 0) {
+              $found->attach($c);
+            }
+            $tmp->detach($c);
+
+          }
+          else {
+            $found->attach($c);
+          }
+        }
       }
     }
     $new = $this->inst($found, NULL, $this->options);
+    /*
     if (!empty($selector)) {
       return $new->filter($selector);
     }
+     */
+    print "<-children()\n";
     return $new;
   }
   /**
