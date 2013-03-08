@@ -3,6 +3,7 @@
 
 3.0.1
 
+- Issue #100: qp.php divided into qp.php and qp_functions.php. Composer now includes qp(). (via hakre)
 - Issue #102: Added QueryPath.VERSION_MAJOR, changed QueryPath.VERSION
 - Issue #97: Rewrite children() and filter() to be a little more efficient.
 
