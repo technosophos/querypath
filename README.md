@@ -105,9 +105,6 @@ installed with composer:
 ```php
 <?php
 require 'vendor/autoload.php';
-
-// Optional: Use this to load `qp()` and `htmlqp()`
-require 'vendor/querypath/QueryPath/src/qp.php';
 ?>
 ```
 

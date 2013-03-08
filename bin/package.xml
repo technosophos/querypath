@@ -85,5 +85,5 @@ http://pear.php.net/dtd/package-2.0.xsd">
     </pearinstaller>
   </required>
 </dependencies>
-<phprealease></phprelease>
-<changelog></package>
+<phprelease></phprelease>
+<changelog/></package>
