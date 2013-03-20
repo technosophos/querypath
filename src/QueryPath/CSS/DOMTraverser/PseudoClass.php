@@ -294,7 +294,7 @@ class PseudoClass {
   protected function contains($node, $value) {
     $text = $node->textContent;
     $value = Util::removeQuotes($value);
-    return isset($text) && (strpos($text, $value) !== FALSE);
+    return isset($text) && (stripos($text, $value) !== FALSE);
   }
   /**
    * Provides :contains-exactly QueryPath pseudoclass.
