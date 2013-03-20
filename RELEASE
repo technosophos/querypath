@@ -1,5 +1,8 @@
 # RELEASE NOTES
 
+3.0.2
+
+- Feature #106: :contains() is now case-insensitive. (via katzwebservices)
 
 3.0.1
 
