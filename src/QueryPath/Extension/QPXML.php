@@ -187,7 +187,7 @@ class QPXML implements \QueryPath\Extension {
       } else {
         $node = $element->ownerDocument->createElement($text);
       }
-        return QueryPath::with($node);
+        return \QueryPath\QueryPath::with($node);
       }
     }
     return;
@@ -203,7 +203,7 @@ class QPXML implements \QueryPath\Extension {
     if (isset ($text)) {
       foreach ($this->qp->get() as $element) {
         $node = $this->qp->createElement($text);
-        QueryPath::with($element)->append($node);
+        \QueryPath\QueryPath::with($element)->append($node);
       }
     }
     return $this->qp;

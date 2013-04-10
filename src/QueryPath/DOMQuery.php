@@ -7,20 +7,19 @@
  * was done for a few reasons:
  * - The library has been refactored, and it made more sense to call the top
  *   level class QueryPath. This is not the top level class.
- * - There have been requests for a JSONQuery class, which would be the 
+ * - There have been requests for a JSONQuery class, which would be the
  *   natural complement of DOMQuery.
  */
 
 namespace QueryPath;
 
 use \QueryPath\CSS\QueryPathEventHandler;
-use \QueryPath;
 
 
 /**
  * The DOMQuery object is the primary tool in this library.
  *
- * To create a new DOMQuery, use QueryPath::with() or qp() function.
+ * To create a new DOMQuery, use QueryPath::with() or qp3() function.
  *
  * If you are new to these documents, start at the QueryPath.php page.
  * There you will find a quick guide to the tools contained in this project.
@@ -30,7 +29,7 @@ use \QueryPath;
  * extensions, and there is no guarantee that extensions can serialize. The
  * moral of the story: Don't serialize DOMQuery.
  *
- * @see qp()
+ * @see qp3()
  * @see QueryPath.php
  * @ingroup querypath_core
  */
@@ -85,7 +84,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
    * Constructor.
    *
    * Typically, a new DOMQuery is created by QueryPath::with(), QueryPath::withHTML(),
-   * qp(), or htmlqp().
+   * qp3(), or htmlqp3().
    *
    * @param mixed $document
    *   A document-like object.
@@ -93,7 +92,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
    *   A CSS 3 Selector
    * @param array $options
    *   An associative array of options.
-   * @see qp()
+   * @see qp3()
    */
   public function __construct($document = NULL, $string = NULL, $options = array()) {
     $string = trim($string);
@@ -203,14 +202,14 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
    *
    * This returns an associative array of all of the options as set
    * for the current DOMQuery object. This includes default options,
-   * options directly passed in via {@link qp()} or the constructor,
+   * options directly passed in via {@link qp3()} or the constructor,
    * an options set in the QueryPath::Options object.
    *
    * The order of merging options is this:
-   *  - Options passed in using qp() are highest priority, and will
+   *  - Options passed in using qp3() are highest priority, and will
    *    override other options.
    *  - Options set with QueryPath::Options will override default options,
-   *    but can be overridden by options passed into qp().
+   *    but can be overridden by options passed into qp3().
    *  - Default options will be used when no overrides are present.
    *
    * This function will return the options currently used, with the above option
@@ -219,7 +218,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
    * @return array
    *  An associative array of options, calculated from defaults and overridden
    *  options.
-   * @see qp()
+   * @see qp3()
    * @see QueryPath::Options::set()
    * @see QueryPath::Options::merge()
    * @since 2.0
@@ -234,7 +233,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
    * This sets the current match to the document's root element. For
    * practical purposes, this is the same as:
    * @code
-   * qp($someDoc)->find(':root');
+   * qp3($someDoc)->find(':root');
    * @endcode
    * However, since it doesn't invoke a parser, it has less overhead. It also
    * works in cases where the QueryPath has been reduced to zero elements (a
@@ -352,7 +351,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
    *
    * @code
    * <?php
-   *  count(qp($xml, 'div'));
+   *  count(qp3($xml, 'div'));
    * ?>
    * @endcode
    *
@@ -377,8 +376,8 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
    * Calling this method does not change the DOMQuery (e.g. it is
    * non-destructive).
    *
-   * You can use qp()->get() to iterate over all elements matched. You can
-   * also iterate over qp() itself (DOMQuery implementations must be Traversable).
+   * You can use qp3()->get() to iterate over all elements matched. You can
+   * also iterate over qp3() itself (DOMQuery implementations must be Traversable).
    * In the later case, though, each item
    * will be wrapped in a DOMQuery object. To learn more about iterating
    * in QueryPath, see {@link examples/techniques.php}.
@@ -535,7 +534,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
    * For example, consider this code:
    * @code
    * <?php
-   * qp(HTML_STUB, 'body')->css('background-color','red')->html();
+   * qp3(HTML_STUB, 'body')->css('background-color','red')->html();
    * ?>
    * @endcode
    * This will return the following HTML:
@@ -547,7 +546,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
    * element will be returned unparsed. Example:
    * @code
    * <?php
-   * qp(HTML_STUB, 'body')->css('background-color','red')->css();
+   * qp3(HTML_STUB, 'body')->css('background-color','red')->css();
    * ?>
    * @endcode
    * This will return the following:
@@ -669,7 +668,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
       }
     }
     else {
-      $attVal = \QueryPath::encodeDataURL($data, $mime, $context);
+      $attVal = \QueryPath\QueryPath::encodeDataURL($data, $mime, $context);
       return $this->attr($attr, $attVal);
     }
   }
@@ -835,8 +834,8 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
    * @code
    * <?php
    * $comp = function (\DOMNode $a, \DOMNode $b) {
-   *   $qpa = qp($a);
-   *   $qpb = qp($b);
+   *   $qpa = qp3($a);
+   *   $qpb = qp3($b);
    *
    *   if ($qpa->text() == $qpb->text()) {
    *     return 0;
@@ -904,7 +903,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
    *
    * Example:
    * @code
-   * qp('li')->filterLambda('qp($item)->attr("id") == "test"');
+   * qp3('li')->filterLambda('qp3($item)->attr("id") == "test"');
    * @endcode
    *
    * The above would filter down the list to only an item whose ID is
@@ -946,11 +945,11 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
    * @code
    *  <?php
    *    // This will be 1.
-   *    qp($xml, 'div')->filterPreg('/World/')->size();
+   *    qp3($xml, 'div')->filterPreg('/World/')->size();
    *  ?>
    * @endcode
    *
-   * The return value above will be 1 because the text content of @codeqp($xml, 'div')@endcode is
+   * The return value above will be 1 because the text content of @codeqp3($xml, 'div')@endcode is
    * @codeHello World@endcode.
    *
    * Compare this to the behavior of the <em>:contains()</em> CSS3 pseudo-class.
@@ -1356,7 +1355,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
    *
    * @param mixed $data
    *  The data to be inserted. This can be XML in a string, a DomFragment, a DOMElement,
-   *  or the other usual suspects. (See {@link qp()}).
+   *  or the other usual suspects. (See {@link qp3()}).
    * @retval object DOMQuery
    *  Returns the DOMQuery with the new modifications. The list of elements currently
    *  selected will remain the same.
@@ -1481,7 +1480,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
    *
    * Now we can run this code:
    * @code
-   *   qp($xml, 'content')->unwrap();
+   *   qp3($xml, 'content')->unwrap();
    * @endcode
    *
    * This will result in:
@@ -1887,7 +1886,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
       $node = $document->importNode($node);
       $item->parentNode->replaceChild($node, $item);
     }
-    return QueryPath::with($document, NULL, $this->options);
+    return \QueryPath\QueryPath::with($document, NULL, $this->options);
   }
   /**
    * Add more elements to the current set of matches.
@@ -1910,7 +1909,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
     // This is destructive, so we need to set $last:
     $this->last = $this->matches;
 
-    foreach (QueryPath::with($this->document, $selector, $this->options)->get() as $item) {
+    foreach (\QueryPath\QueryPath::with($this->document, $selector, $this->options)->get() as $item) {
       $this->matches->attach($item);
     }
     return $this;
@@ -1934,12 +1933,12 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
    * an empty set of matches. Example:
    *
    * @code
-   * // The line below returns the same thing as qp(document, 'p');
-   * qp(document, 'p')->find('div')->end();
+   * // The line below returns the same thing as qp3(document, 'p');
+   * qp3(document, 'p')->find('div')->end();
    * // This returns an empty array:
-   * qp(document, 'p')->end();
+   * qp3(document, 'p')->end();
    * // This returns an empty array:
-   * qp(document, 'p')->find('div')->find('span')->end()->end();
+   * qp3(document, 'p')->find('div')->find('span')->end()->end();
    * @endcode
    *
    * The last one returns an empty array because only one level of changes is stored.
@@ -1964,7 +1963,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
    * Example:
    *
    * @code
-   * qp(document, 'p')->find('div')->andSelf();
+   * qp3(document, 'p')->find('div')->andSelf();
    * @endcode
    *
    * The code above will contain a list of all p elements and all div elements that
@@ -2137,14 +2136,14 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
     $found = new \SplObjectStorage();
     foreach ($this->matches as $m) {
 
-      if (QueryPath::with($m, NULL, $this->options)->is($selector) > 0) {
+      if (\QueryPath\QueryPath::with($m, NULL, $this->options)->is($selector) > 0) {
         $found->attach($m);
       }
       else {
         while ($m->parentNode->nodeType !== XML_DOCUMENT_NODE) {
           $m = $m->parentNode;
           // Is there any case where parent node is not an element?
-          if ($m->nodeType === XML_ELEMENT_NODE && QueryPath::with($m, NULL, $this->options)->is($selector) > 0) {
+          if ($m->nodeType === XML_ELEMENT_NODE && \QueryPath\QueryPath::with($m, NULL, $this->options)->is($selector) > 0) {
             $found->attach($m);
             break;
           }
@@ -2179,7 +2178,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
         // Is there any case where parent node is not an element?
         if ($m->nodeType === XML_ELEMENT_NODE) {
           if (!empty($selector)) {
-            if (QueryPath::with($m, NULL, $this->options)->is($selector) > 0) {
+            if (\QueryPath\QueryPath::with($m, NULL, $this->options)->is($selector) > 0) {
               $found->attach($m);
               break;
             }
@@ -2214,7 +2213,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
         // Is there any case where parent node is not an element?
         if ($m->nodeType === XML_ELEMENT_NODE) {
           if (!empty($selector)) {
-            if (QueryPath::with($m, NULL, $this->options)->is($selector) > 0)
+            if (\QueryPath\QueryPath::with($m, NULL, $this->options)->is($selector) > 0)
               $found->attach($m);
           }
           else
@@ -2305,7 +2304,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
    * We can retrieve just the contents of this code by doing something like
    * this:
    * @code
-   * qp($xml, 'div')->innerHTML();
+   * qp3($xml, 'div')->innerHTML();
    * @endcode
    *
    * This would return the following:
@@ -2482,10 +2481,10 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
    * $xml = '<?xml version="1.0"?><root>Foo<a>Bar</a><b/></root>';
    *
    * // This will return 'Foo'
-   * qp($xml, 'a')->textBefore();
+   * qp3($xml, 'a')->textBefore();
    *
    * // This will insert 'Baz' right before <b/>.
-   * qp($xml, 'b')->textBefore('Baz');
+   * qp3($xml, 'b')->textBefore('Baz');
    * ?>
    * @endcode
    *
@@ -2815,7 +2814,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
         $m = $m->nextSibling;
         if ($m->nodeType === XML_ELEMENT_NODE) {
           if (!empty($selector)) {
-            if (QueryPath::with($m, NULL, $this->options)->is($selector) > 0) {
+            if (\QueryPath\QueryPath::with($m, NULL, $this->options)->is($selector) > 0) {
               $found->attach($m);
               break;
             }
@@ -2852,7 +2851,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
         $m = $m->nextSibling;
         if ($m->nodeType === XML_ELEMENT_NODE) {
           if (!empty($selector)) {
-            if (QueryPath::with($m, NULL, $this->options)->is($selector) > 0) {
+            if (\QueryPath\QueryPath::with($m, NULL, $this->options)->is($selector) > 0) {
               $found->attach($m);
             }
           }
@@ -2888,7 +2887,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
         $m = $m->previousSibling;
         if ($m->nodeType === XML_ELEMENT_NODE) {
           if (!empty($selector)) {
-            if (QueryPath::with($m, NULL, $this->options)->is($selector)) {
+            if (\QueryPath\QueryPath::with($m, NULL, $this->options)->is($selector)) {
               $found->attach($m);
               break;
             }
@@ -2925,7 +2924,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
         $m = $m->previousSibling;
         if ($m->nodeType === XML_ELEMENT_NODE) {
           if (!empty($selector)) {
-            if (QueryPath::with($m, NULL, $this->options)->is($selector)) {
+            if (\QueryPath\QueryPath::with($m, NULL, $this->options)->is($selector)) {
               $found->attach($m);
             }
           }
@@ -2980,7 +2979,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
    *
    * Executing this fragment of code will remove only the 'first' class:
    * @code
-   * qp(document, 'element')->removeClass('first');
+   * qp3(document, 'element')->removeClass('first');
    * @endcode
    *
    * The resulting XML will be:
@@ -3069,10 +3068,10 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
    *
    * @code
    * <?php
-   * $qp = qp( QueryPath::HTML_STUB);
-   * $branch = $qp->branch();
+   * $qp = qp3( QueryPath::HTML_STUB);
+   * $branch = $qp3->branch();
    * $branch->find('title')->text('Title');
-   * $qp->find('body')->text('This is the body')->writeHTML;
+   * $qp3->find('body')->text('This is the body')->writeHTML;
    * ?>
    * @endcode
    *
@@ -3111,7 +3110,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
    * @see find()
    */
   public function branch($selector = NULL) {
-    $temp = \QueryPath::with($this->matches, NULL, $this->options);
+    $temp = \QueryPath\QueryPath::with($this->matches, NULL, $this->options);
     //if (isset($selector)) $temp->find($selector);
     $temp->document = $this->document;
     if (isset($selector)) $temp->findInPlace($selector);
@@ -3119,7 +3118,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
   }
   protected function inst($matches, $selector, $options) {
     /*
-    $temp = \QueryPath::with($matches, NULL, $options);
+    $temp = \QueryPath\QueryPath::with($matches, NULL, $options);
     //if (isset($selector)) $temp->find($selector);
     $temp->document = $this->document;
     if (isset($selector)) $temp->findInPlace($selector);
@@ -3146,7 +3145,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
    *
    * This is a destructive operation, which means that end() will revert
    * the list back to the clone's original.
-   * @see qp()
+   * @see qp3()
    * @retval object DOMQuery
    */
   public function cloneAll() {
@@ -3479,7 +3478,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
         $m = $m->nextSibling;
         if ($m->nodeType === XML_ELEMENT_NODE) {
           if (!empty($selector)) {
-            if (QueryPath::with($m, NULL, $this->options)->is($selector) > 0) {
+            if (\QueryPath\QueryPath::with($m, NULL, $this->options)->is($selector) > 0) {
               break;
             }
             else {
@@ -3520,7 +3519,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
       while (isset($m->previousSibling)) {
         $m = $m->previousSibling;
         if ($m->nodeType === XML_ELEMENT_NODE) {
-          if (!empty($selector) && QueryPath::with($m, NULL, $this->options)->is($selector))
+          if (!empty($selector) && \QueryPath\QueryPath::with($m, NULL, $this->options)->is($selector))
           break;
           else
           $found->attach($m);
@@ -3553,7 +3552,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
         // Is there any case where parent node is not an element?
         if ($m->nodeType === XML_ELEMENT_NODE) {
           if (!empty($selector)) {
-            if (QueryPath::with($m, NULL, $this->options)->is($selector) > 0)
+            if (\QueryPath\QueryPath::with($m, NULL, $this->options)->is($selector) > 0)
             break;
             else
             $found->attach($m);
@@ -3683,7 +3682,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
       $this->matches = $found;
     }
 
-    // EXPERIMENTAL: Support for qp()->length.
+    // EXPERIMENTAL: Support for qp3()->length.
     $this->length = $this->matches->count();
   }
 
@@ -3829,7 +3828,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
     // enough extensions.)
     //
     // The main reason for moving this out of the constructor is that most
-    // new DOMQuery instances do not use extensions. Charging qp() calls
+    // new DOMQuery instances do not use extensions. Charging qp3() calls
     // with the additional hit is not a good idea.
     //
     // Also, this will at least limit the number of circular references.

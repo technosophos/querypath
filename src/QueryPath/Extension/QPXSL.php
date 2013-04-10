@@ -30,7 +30,7 @@ namespace QueryPath\Extension;
  * require 'QueryPath/QueryPath.php';
  * require 'QueryPath/Extension/QPXSL.php';
  *
- * qp('src.xml')->xslt('stylesheet.xml')->writeXML();
+ * qp3('src.xml')->xslt('stylesheet.xml')->writeXML();
  * ?>
  *
  * This will transform src.xml according to the XSLT rules in
@@ -56,7 +56,7 @@ class QPXSL implements \QueryPath\Extension {
    *
    * @param mixed $style
    *  This takes a QueryPath object or <em>any</em> of the types that the
-   *  {@link qp()} function can take.
+   *  {@link qp3()} function can take.
    * @return QueryPath
    *  A QueryPath object wrapping the transformed document. Note that this is a
    *  <i>different</em> document than the original. As such, it has no history.
@@ -64,13 +64,13 @@ class QPXSL implements \QueryPath\Extension {
    *  the original source document will remain unchanged.)
    */
   public function xslt($style) {
-    if (!($style instanceof QueryPath)) {
-      $style = \QueryPath::with($style);
+    if (!($style instanceof \QueryPath\QueryPath)) {
+      $style = \QueryPath\QueryPath::with($style);
     }
     $sourceDoc = $this->src->top()->get(0)->ownerDocument;
     $styleDoc = $style->get(0)->ownerDocument;
     $processor = new \XSLTProcessor();
     $processor->importStylesheet($styleDoc);
-    return \QueryPath::with($processor->transformToDoc($sourceDoc));
+    return \QueryPath\QueryPath::with($processor->transformToDoc($sourceDoc));
   }
 }

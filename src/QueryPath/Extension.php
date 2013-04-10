@@ -75,13 +75,13 @@ namespace QueryPath;
  * QueryPath extensions are called like regular QueryPath functions. For
  * example, the extension above can be called like this:
  * <code>
- * qp('some.xml')->stubToe();
+ * qp3('some.xml')->stubToe();
  * // or
  * QueryPath::with('some.xml')->stubToe();
  * </code>
  * Since it returns the Query ($qp) object, chaining is supported:
  * <code>
- * print qp('some.xml')->stubToe()->xml();
+ * print qp3('some.xml')->stubToe()->xml();
  * </code>
  * When you write your own extensions, anything that does not need to return a
  * specific value should return the Query object. Between that and the

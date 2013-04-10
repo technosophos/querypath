@@ -20,11 +20,11 @@ namespace QueryPath;
  * When a QueryPath object is created, it will evaluate options in the
  * following order:
  *
- * - Options passed into qp() have highest priority.
+ * - Options passed into qp3() have highest priority.
  * - Options in QueryPath::Options (this class) have the next highest priority.
  * - If the option is not specified elsewhere, QueryPath will use its own defaults.
  *
- * @see qp()
+ * @see qp3()
  * @see QueryPath::Options::set()
  * @ingroup querypath_util
  */
