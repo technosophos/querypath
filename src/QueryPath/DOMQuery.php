@@ -789,6 +789,9 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
     $tmp = new \SplObjectStorage();
     foreach ($this->matches as $m) {
       $tmp->attach($m);
+      // Seems like this should be right... but it fails unit
+      // tests. Need to compare to jQuery.
+      // $query = new \QueryPath\CSS\DOMTraverser($tmp, TRUE, $m);
       $query = new \QueryPath\CSS\DOMTraverser($tmp);
       $query->find($selector);
       if (count($query->matches())) {
@@ -2034,7 +2037,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
           // This is basically an optimized filter() just for children().
           if ($filter) {
             $tmp->attach($c);
-            $query = new \QueryPath\CSS\DOMTraverser($tmp);
+            $query = new \QueryPath\CSS\DOMTraverser($tmp, TRUE, $c);
             $query->find($selector);
             if (count($query->matches()) > 0) {
               $found->attach($c);
