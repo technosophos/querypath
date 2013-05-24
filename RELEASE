@@ -2,6 +2,7 @@
 
 3.0.2
 
+- Bug #112: children() was not correctly restricting filters.
 - Bug #108: QueryPath\Query interface was too restrictive. (via mkalkbrenner)
 - Feature #106: :contains() is now case-insensitive. (via katzwebservices)
 
