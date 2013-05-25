@@ -953,6 +953,13 @@ class DOMQueryTest extends TestCase {
     }
     $this->assertEquals(5, qp($file, 'inner')->children('li')->size());
     $this->assertEquals(1, qp($file, ':root')->children('unary')->size());
+
+    // For #112: testing children() to match jQuery behavior.
+    $html = '<?xml version="1.0"?><html><body><header><section>test</section></header></body></html>';
+    $qp = qp($html, 'body');
+    $this->assertEquals(1, $qp->children('header')->size());
+    $this->assertEquals(0, $qp->children('header>section')->size());
+    $this->assertEquals(1, $qp->children('html>body>header')->size());
   }
   public function testRemoveChildren() {
     $file = DATA_FILE;

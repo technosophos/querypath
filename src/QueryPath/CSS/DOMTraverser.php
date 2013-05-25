@@ -65,6 +65,16 @@ class DOMTraverser implements Traverser {
    * Build a new DOMTraverser.
    *
    * This requires a DOM-like object or collection of DOM nodes.
+   *
+   *
+   * @param SPLObjectStorage $splos
+   *   The storage container for matches.
+   * @param bolean $initialized
+   *   TRUE if the tree has already been initialized. If this is false, then
+   *   we will scan for an initial match by the fastest route possible.
+   * @param DOMNode $scopeNode
+   *   A node in the tree to treat as the "root" for this query. By default, the
+   *   document element is the scope node.
    */
   public function __construct(\SPLObjectStorage $splos, $initialized = FALSE, $scopeNode = NULL) {
 
