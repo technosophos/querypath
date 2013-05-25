@@ -960,6 +960,19 @@ class DOMQueryTest extends TestCase {
     $this->assertEquals(1, $qp->children('header')->size());
     $this->assertEquals(0, $qp->children('header>section')->size());
     $this->assertEquals(1, $qp->children('html>body>header')->size());
+
+    $xml = '<?xml version="1.0"?><test><p>a</p><p>b</p><b><p>c</p></b></test>';
+    $qp = qp($xml, 'test');
+    $this->assertEquals(3, $qp->children()->size());
+    $this->assertEquals(2, $qp->children('p')->size());
+    $this->assertEquals(2, $qp->children('>p')->size());
+    $this->assertEquals(0, $qp->children('b>p')->size());
+    $this->assertEquals(2, $qp->children('test>p')->size());
+
+    $xml = '<?xml version="1.0"?><test><d id="first"><d><d><a>Hi</a></d></d></d></test>';
+    $qp = qp($xml, 'test');
+    $this->assertEquals(0, $qp->children('a')->size());
+    $this->assertEquals(0, $qp->children('d')->children('a')->size());
   }
   public function testRemoveChildren() {
     $file = DATA_FILE;
