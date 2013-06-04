@@ -118,7 +118,7 @@ class QueryPath {
   /**
    * This is a stub HTML 4.01 document.
    *
-   * <b>Using {@link QueryPath::XHTML_STUB} is preferred.</b>
+   * <b>Using {@link QueryPath::HTML5_STUB} is preferred.</b>
    *
    * This is primarily for generating legacy HTML content. Modern web applications
    * should use QueryPath::XHTML_STUB.
@@ -131,6 +131,22 @@ class QueryPath {
   <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <title>Untitled</title>
+  </head>
+  <body></body>
+  </html>';
+
+  /**
+   * This is a stub HTML5 document.
+   *
+   * This is for generating HTML5 content.
+   *
+   * Use this stub with the HTML family of methods.
+   */
+  const HTML5_STUB = '<!DOCTYPE html>
+  <html>
+  <head>
+  <title>Untitled</title>
+  <meta charset="utf-8"/>
   </head>
   <body></body>
   </html>';
