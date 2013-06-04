@@ -3631,6 +3631,9 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
       if ($useParser == 'html') {
         $document->loadHTML($string);
       }
+      elseif ($useParser == 'html5') {
+        $document = \HTML5::loadHTML($string);
+      }
       // Parse as XML if it looks like XML, or if XML parser is requested.
       elseif ($lead == '<?xml' || $useParser == 'xml') {
         if ($this->options['replace_entities']) {
@@ -3789,6 +3792,9 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
       // If the parser is explicitly set to XML, use that parser.
       if ($useParser == 'xml') {
         $r = $document->load($filename, $flags);
+      }
+      elseif ($useParser == 'html5') {
+        $document = \HTML5::load($filename);
       }
       // Otherwise, see if it looks like HTML.
       elseif (isset($htmlExtensions[$ext]) || $useParser == 'html') {
