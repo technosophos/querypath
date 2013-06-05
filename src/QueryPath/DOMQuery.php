@@ -2292,6 +2292,23 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
   }
 
   /**
+   * This is the same as html() except that it outputs HTML5.
+   *
+   * EXPERIMENTAL: This is based on a pure PHP HTML5 parser.
+   *
+   * @see html()
+   * @see xml()
+   * @since 3.1.0
+   */
+  public function html5() {
+    $first = $this->getFirstMatch();
+    if ($first->isSameNode($first->ownerDocument->documentElement)) {
+      $first = $first->ownerDocument;
+    }
+    return \HTML5::saveHTML($first);
+  }
+
+  /**
    * Fetch the HTML contents INSIDE of the first DOMQuery item.
    *
    * <b>This behaves the way jQuery's @codehtml()@endcode function behaves.</b>
@@ -2360,6 +2377,35 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
       $buffer .= $this->document->saveXML($child, LIBXML_NOEMPTYTAG);
     }
 
+    return $buffer;
+  }
+
+  /**
+   * Fetch inner nodes of the first match return as a string.
+   * @since 3.1.0
+   */
+  public function innerHTML5() {
+    // TODO: Really, the innerXXX functions should be refactored. Same boilerplate is
+    // present in each one.
+    if ($this->size() == 0) {
+      return NULL;
+    }
+
+    $first = $this->getFirstMatch();
+
+    if (!($first instanceof \DOMNode)) {
+      return NULL;
+    }
+    elseif (!$first->hasChildNodes()) {
+      return '';
+    }
+
+    // The HTML5 serialize takes a DOMNode. Maybe it should also accept a
+    // DOMNodeList?
+    $buffer = '';
+    foreach ($first->childNodes as $child) {
+      $buffer .= \HTML5::saveHTML($child) . PHP_EOL;
+    }
     return $buffer;
   }
 

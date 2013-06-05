@@ -1050,7 +1050,19 @@ class DOMQueryTest extends TestCase {
     $this->assertNull(qp($file, 'li')->map(array($this, $fn))->html());
   }
 
+  public function testHTML5() {
+    $html = '<!DOCTYPE html><html><head><title>Untitled</title><meta charset="utf-8"></head><body></body></html>';
+    $result = str_replace("\n", '', qp($html)->HTML5());
+    $this->assertEquals($html, $result);
+  }
+
   public function testInnerHTML() {
+    $html = '<html><head></head><body><div id="me">Test<p>Again</p></div></body></html>';
+
+    $this->assertEquals('Test<p>Again</p>', qp($html,'#me')->innerHTML());
+  }
+
+  public function testInnerHTML5() {
     $html = '<html><head></head><body><div id="me">Test<p>Again</p></div></body></html>';
 
     $this->assertEquals('Test<p>Again</p>', qp($html,'#me')->innerHTML());
