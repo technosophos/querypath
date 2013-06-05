@@ -177,5 +177,26 @@ function qp($document = NULL, $string = NULL, $options = array()) {
  * @see qp()
  */
 function htmlqp($document = NULL, $selector = NULL, $options = array()) {
-    return QueryPath::withHTML($document, $selector, $options);
+
+  // Pass to HTML5 parser if set.
+  if (isset($options['use_parser']) && $options['use_parser'] == 'html5') {
+    return QueryPath::withHTML5($document, $selector, $options);
+  }
+
+  return QueryPath::withHTML($document, $selector, $options);
+}
+
+/**
+ * A special purpose version of qp() that uses an HTML5 parser.
+ *
+ * The parser is not the built-in libxml HTML parser that comes with PHP.
+ * Instead, this uses a pure PHP HTML5 parser.
+ *
+ * As an HTML5 parser, it will attempt to internally convert encoding to
+ * Unicode (per the spec), and will serialize to UTF-8.
+ *
+ * @see QueryPath::withHTML5().
+ */
+function html5qp($document = NULL, $selector = NULL, $options = array()) {
+    return QueryPath::withHTML5($document, $selector, $options);
 }
