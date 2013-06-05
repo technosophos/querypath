@@ -1,5 +1,9 @@
 # RELEASE NOTES
 
+3.1.0
+
+- Feature #114: QueryPath now supports HTML5 via HTML5-PHP.
+
 3.0.2
 
 - Bug #112: children() was not correctly restricting filters.

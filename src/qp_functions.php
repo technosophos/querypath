@@ -127,7 +127,8 @@
  *  - use_parser: If 'xml', Parse the document as XML. If 'html', parse the
  *    document as HTML. Note that the XML parser is very strict, while the
  *    HTML parser is more lenient, but does enforce some of the DTD/Schema.
- *    <i>By default, QueryPath autodetects the type.</i>
+ *    <i>By default, QueryPath autodetects the type.</i> <b>New in QueryPath
+ *    3.1: Parser 'html5' uses the HTML5 parser from HTML5-PHP.</b>
  *  - escape_xhtml_js_css_sections: XHTML needs script and css sections to be
  *    escaped. Yet older readers do not handle CDATA sections, and comments do not
  *    work properly (for numerous reasons). By default, QueryPath's *XHTML methods
