@@ -210,6 +210,16 @@ class QueryPath {
   }
 
   /**
+   * Uses the (experimental) HTML5-PHP parser.
+   */
+  public static function withHTML5($source = NULL, $selector = NULL, $options = array()) {
+    $options += array(
+      'use_parser' => 'html5',
+    );
+    return self::with($source, $selector, $options);
+  }
+
+  /**
    * Enable one or more extensions.
    *
    * Extensions provide additional features to QueryPath. To enable and 

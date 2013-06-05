@@ -21,6 +21,13 @@ class QueryPathTest extends TestCase {
     $this->assertInstanceOf('\QueryPath\DOMQuery', $qp);
   }
 
+  public function testWithHTML5() {
+    $qp = \QueryPath::withHTML5(\QueryPath::HTML5_STUB);
+
+    $this->assertInstanceOf('\QueryPath\DOMQuery', $qp);
+    $this->assertEquals('html', $qp->document()->doctype->name);
+  }
+
   public function testWithXML() {
     $qp = \QueryPath::with(\QueryPath::XHTML_STUB);
 

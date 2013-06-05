@@ -17,7 +17,6 @@ use \QueryPath\CSS\QueryPathEventHandler;
 use \QueryPath;
 use \HTML5;
 
-
 /**
  * The DOMQuery object is the primary tool in this library.
  *
