@@ -197,6 +197,11 @@ class QueryPath {
     // doctype is XHTML, since many XHTML documents are not valid XML
     // (because of coding errors, not by design).
 
+    // EXPERIMENTAL: use_parser=html5 sends to the HTML5 parser.
+    if (isset($options['use_parser']) && $options['use_parser'] == 'html5') {
+      self::withHTML5($source, $selector, $options);
+    }
+
     $options += array(
       'ignore_parser_warnings' => TRUE,
       'convert_to_encoding' => 'ISO-8859-1',
