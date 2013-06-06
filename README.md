@@ -112,7 +112,7 @@ If you installed QueryPath as a PEAR package, use it like this:
 
 ```php
 <?php
-require 'QueryPath/qp.php';
+require 'QueryPath/QueryPath.php';
 ?>
 ```
 
