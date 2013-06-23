@@ -24,7 +24,7 @@
 
 // This is sort of a last ditch attempt to load QueryPath if no
 // autoloader is used.
-if (!class_exists('\QueryPath\QueryPath')) {
+if (!class_exists('\QueryPath')) {
 
   // If classloaders are explicitly disabled, load everything.
   if (defined('QP_NO_AUTOLOADER')) {
