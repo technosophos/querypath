@@ -1,5 +1,7 @@
 # RELEASE NOTES
 
+- Bug #119: qp.php autoloader bug. (via Faryshta)
+
 3.0.2
 
 - Bug #112: children() was not correctly restricting filters.
