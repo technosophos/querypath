@@ -12,3 +12,7 @@ docs/*
 doc/*
 bin/querypath-200x333.png
 test/fakepear
+
+# Just for Composer
+composer.lock
+vendor/
