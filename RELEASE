@@ -1,5 +1,9 @@
 # RELEASE NOTES
 
+3.0.3
+
+- Bug #124: Fixed inheritance issue with late static binding (via noisan)
+
 3.0.2
 
 - Bug #112: children() was not correctly restricting filters.
