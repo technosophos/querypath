@@ -1852,8 +1852,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
 
     // Return a clone DOMQuery with just the removed items. If
     // no items are found, this will return an empty DOMQuery.
-    $klass = __CLASS__;
-    return count($found) == 0 ? new $klass() : new $klass($found);
+    return count($found) == 0 ? new static() : new static($found);
   }
   /**
    * This replaces everything that matches the selector with the first value
