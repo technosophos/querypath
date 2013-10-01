@@ -1331,6 +1331,7 @@ class DOMQueryTest extends TestCase {
     $xml = '<?xml version="1.0"?><root><div>Text A</div><div>Text B</div></root>';
     $this->assertEquals('Text AText B', qp($xml)->text());
     $this->assertEquals('Foo', qp($xml, 'div')->eq(0)->text('Foo')->text());
+    $this->assertEquals('BarBar', qp($xml, 'div')->text('Bar')->text());
   }
 
   public function testTextAfter() {
