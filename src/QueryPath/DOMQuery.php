@@ -2463,8 +2463,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
   public function text($text = NULL) {
     if (isset($text)) {
       $this->removeChildren();
-      $textNode = $this->document->createTextNode($text);
-      foreach ($this->matches as $m) $m->appendChild($textNode);
+      foreach ($this->matches as $m) $m->appendChild($this->document->createTextNode($text));
       return $this;
     }
     // Returns all text as one string:
