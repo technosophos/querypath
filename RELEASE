@@ -3,6 +3,7 @@
 3.0.3
 
 - Bug #124: Fixed inheritance issue with late static binding (via noisan)
+- Bug #126: text(string) was not updating all matched elements (via noisan)
 
 3.0.2
 
