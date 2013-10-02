@@ -886,6 +886,10 @@ class DOMQueryTest extends TestCase {
     $xml = qp($file,'#inner-one')->wrapInner('<test class="testWrap"></test>')->get(0)->ownerDocument->saveXML();
     // FIXME: 9 includes text nodes. Should fix this.
     $this->assertEquals(9, qp($xml, '.testWrap')->get(0)->childNodes->length);
+
+    $xml = qp($file,'inner')->wrapInner('<test class="testWrap"></test>')->get(0)->ownerDocument->saveXML();
+    $this->assertEquals(9, qp($xml, '.testWrap')->get(0)->childNodes->length);
+    $this->assertEquals(3, qp($xml, '.testWrap')->get(1)->childNodes->length);
   }
 
   public function testRemove() {
