@@ -1746,8 +1746,8 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
    * This handles a variety of boilerplate tasks that need doing before an
    * indeterminate object can be inserted into a DOM tree.
    * - If item is a string, this is converted into a document fragment and returned.
-   * - If item is a DOMQuery, then the first item is retrieved and this call function
-   *   is called recursivel.
+   * - If item is a DOMQuery, then all items are retrieved and converted into
+   *   a document fragment and returned.
    * - If the item is a DOMNode, it is imported into the current DOM if necessary.
    * - If the item is a SimpleXMLElement, it is converted into a DOM node and then
    *   imported.
@@ -1786,7 +1786,11 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
       if ($item->size() == 0)
         return;
 
-      return $this->prepareInsert($item->get(0));
+      $frag = $this->document->createDocumentFragment();
+      foreach ($item->matches as $m) {
+        $frag->appendXML($item->document->saveXML($m));
+      }
+      return $frag;
     }
     elseif ($item instanceof \DOMNode) {
       if ($item->ownerDocument !== $this->document) {
