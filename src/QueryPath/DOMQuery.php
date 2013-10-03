@@ -1645,22 +1645,25 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
     // No data? Short circuit.
     if (empty($data)) return $this;
 
-    if ($data->hasChildNodes()) {
-      $deepest = $this->deepestNode($data);
-      // FIXME: ???
-      $bottom = $deepest[0];
-    }
-    else
-      $bottom = $data;
-
     foreach ($this->matches as $m) {
+      $wrapper = $data->firstChild->cloneNode(true);
+
+      if ($wrapper->hasChildNodes()) {
+        $deepest = $this->deepestNode($wrapper);
+        // FIXME: ???
+        $bottom = $deepest[0];
+      }
+      else
+        $bottom = $wrapper;
+
       if ($m->hasChildNodes()) {
         while($m->firstChild) {
           $kid = $m->removeChild($m->firstChild);
           $bottom->appendChild($kid);
         }
       }
-      $m->appendChild($data);
+
+      $m->appendChild($wrapper);
     }
     return $this;
   }
