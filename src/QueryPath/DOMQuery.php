@@ -1561,7 +1561,11 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
     }
 
     foreach ($this->matches as $m) {
-      $copy = $data->firstChild->cloneNode(TRUE);
+      if ($data instanceof \DOMDocumentFragment) {
+        $copy = $data->firstChild->cloneNode(true);
+      } else {
+        $copy = $data->cloneNode(true);
+      }
 
       // XXX: Should be able to avoid doing this over and over.
       if ($copy->hasChildNodes()) {
@@ -1609,6 +1613,12 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
       return $this;
     }
 
+    if ($data instanceof \DOMDocumentFragment) {
+      $data = $data->firstChild->cloneNode(true);
+    } else {
+      $data = $data->cloneNode(true);
+    }
+
     if ($data->hasChildNodes()) {
       $deepest = $this->deepestNode($data);
       // FIXME: Does this need fixing?
@@ -1646,7 +1656,11 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
     if (empty($data)) return $this;
 
     foreach ($this->matches as $m) {
-      $wrapper = $data->firstChild->cloneNode(true);
+      if ($data instanceof \DOMDocumentFragment) {
+        $wrapper = $data->firstChild->cloneNode(true);
+      } else {
+        $wrapper = $data->cloneNode(true);
+      }
 
       if ($wrapper->hasChildNodes()) {
         $deepest = $this->deepestNode($wrapper);
@@ -1746,8 +1760,8 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
    * This handles a variety of boilerplate tasks that need doing before an
    * indeterminate object can be inserted into a DOM tree.
    * - If item is a string, this is converted into a document fragment and returned.
-   * - If item is a DOMQuery, then the first item is retrieved and this call function
-   *   is called recursivel.
+   * - If item is a DOMQuery, then all items are retrieved and converted into
+   *   a document fragment and returned.
    * - If the item is a DOMNode, it is imported into the current DOM if necessary.
    * - If the item is a SimpleXMLElement, it is converted into a DOM node and then
    *   imported.
@@ -1786,7 +1800,11 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
       if ($item->size() == 0)
         return;
 
-      return $this->prepareInsert($item->get(0));
+      $frag = $this->document->createDocumentFragment();
+      foreach ($item->matches as $m) {
+        $frag->appendXML($item->document->saveXML($m));
+      }
+      return $frag;
     }
     elseif ($item instanceof \DOMNode) {
       if ($item->ownerDocument !== $this->document) {
