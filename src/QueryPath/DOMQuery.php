@@ -1561,7 +1561,11 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
     }
 
     foreach ($this->matches as $m) {
-      $copy = $data->firstChild->cloneNode(TRUE);
+      if ($data instanceof \DOMDocumentFragment) {
+        $copy = $data->firstChild->cloneNode(true);
+      } else {
+        $copy = $data->cloneNode(true);
+      }
 
       // XXX: Should be able to avoid doing this over and over.
       if ($copy->hasChildNodes()) {
@@ -1609,6 +1613,12 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
       return $this;
     }
 
+    if ($data instanceof \DOMDocumentFragment) {
+      $data = $data->firstChild->cloneNode(true);
+    } else {
+      $data = $data->cloneNode(true);
+    }
+
     if ($data->hasChildNodes()) {
       $deepest = $this->deepestNode($data);
       // FIXME: Does this need fixing?
@@ -1646,7 +1656,11 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
     if (empty($data)) return $this;
 
     foreach ($this->matches as $m) {
-      $wrapper = $data->firstChild->cloneNode(true);
+      if ($data instanceof \DOMDocumentFragment) {
+        $wrapper = $data->firstChild->cloneNode(true);
+      } else {
+        $wrapper = $data->cloneNode(true);
+      }
 
       if ($wrapper->hasChildNodes()) {
         $deepest = $this->deepestNode($wrapper);
