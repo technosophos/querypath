@@ -5,6 +5,7 @@
 - Bug #124: Fixed inheritance issue with late static binding (via noisan)
 - Bug #126: text(string) was not updating all matched elements (via noisan)
 - Bug #127: wrapInner() was mangling the HTML if matched element set was greater than 1 (via noisan)
+- Bug #128: Improved jQuery compatibility with wrap*() *pend(), before(), after(), etc. (via noisan)
 
 3.0.2
 
