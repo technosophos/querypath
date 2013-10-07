@@ -683,6 +683,7 @@ class DOMQueryTest extends TestCase {
 
     $this->assertEquals(2, qp($file, 'inner')->append('<test/>')->top()->find('test')->size());
     $this->assertEquals(2, qp($file, 'inner')->append(qp('<?xml version="1.0"?><test/>'))->top()->find('test')->size());
+    $this->assertEquals(4, qp($file, 'inner')->append(qp('<?xml version="1.0"?><root><test/><test/></root>', 'test'))->top()->find('test')->size());
 
     // Issue #6: This seems to break on Debian Etch systems... no idea why.
     $this->assertEquals('test', qp()->append('<test/>')->top()->tag());
@@ -753,6 +754,7 @@ class DOMQueryTest extends TestCase {
 
     // Test repeated insert
     $this->assertEquals(2, qp($file,'inner')->prepend('<test/>')->top()->find('test')->size());
+    $this->assertEquals(4, qp($file,'inner')->prepend(qp('<?xml version="1.0"?><root><test/><test/></root>', 'test'))->top()->find('test')->size());
   }
 
   public function testPrependTo() {
@@ -770,6 +772,7 @@ class DOMQueryTest extends TestCase {
 
     // Test repeated insert
     $this->assertEquals(2, qp($file,'inner')->before('<test/>')->top()->find('test')->size());
+    $this->assertEquals(4, qp($file,'inner')->before(qp('<?xml version="1.0"?><root><test/><test/></root>', 'test'))->top()->find('test')->size());
   }
 
   public function testAfter() {
@@ -778,7 +781,7 @@ class DOMQueryTest extends TestCase {
     $this->assertEquals('unary', qp($file,'unary')->after('<test/>')->top(':root > test')->get(0)->previousSibling->tagName);
 
     $this->assertEquals(2, qp($file,'inner')->after('<test/>')->top()->find('test')->size());
-
+    $this->assertEquals(4, qp($file,'inner')->after(qp('<?xml version="1.0"?><root><test/><test/></root>', 'test'))->top()->find('test')->size());
   }
 
   public function testInsertBefore() {
@@ -800,6 +803,10 @@ class DOMQueryTest extends TestCase {
     $qp = qp($file,'unary')->replaceWith('<test><foo/></test>')->top('test');
     //print $qp->get(0)->ownerDocument->saveXML();
     $this->assertEquals(1, $qp->size());
+
+    $qp = qp($file,'unary')->replaceWith(qp('<?xml version="1.0"?><root><test/><test/></root>', 'test'));
+    //print $qp->get(0)->ownerDocument->saveXML();
+    $this->assertEquals(2, $qp->top()->find('test')->size());
   }
 
   public function testReplaceAll() {
@@ -857,6 +864,9 @@ class DOMQueryTest extends TestCase {
     $xml = qp($file,'unary')->wrap('<test id="testWrap"></test>')->get(0)->ownerDocument->saveXML();
     $this->assertEquals(1, qp($xml, '#testWrap')->get(0)->childNodes->length);
 
+    $xml = qp($file,'unary')->wrap(qp('<?xml version="1.0"?><root><test id="testWrap"></test><test id="ignored"></test></root>', 'test'))->get(0)->ownerDocument->saveXML();
+    $this->assertEquals(1, qp($xml, '#testWrap')->get(0)->childNodes->length);
+
     $xml = qp($file,'li')->wrap('<test class="testWrap"></test>')->get(0)->ownerDocument->saveXML();
     $this->assertEquals(5, qp($xml, '.testWrap')->size());
 
@@ -871,6 +881,9 @@ class DOMQueryTest extends TestCase {
     $this->assertTrue($xml instanceof DOMQuery);
 
     $xml = qp($file,'unary')->wrapAll('<test id="testWrap"></test>')->get(0)->ownerDocument->saveXML();
+    $this->assertEquals(1, qp($xml, '#testWrap')->get(0)->childNodes->length);
+
+    $xml = qp($file,'unary')->wrapAll(qp('<?xml version="1.0"?><root><test id="testWrap"></test><test id="ignored"></test></root>', 'test'))->get(0)->ownerDocument->saveXML();
     $this->assertEquals(1, qp($xml, '#testWrap')->get(0)->childNodes->length);
 
     $xml = qp($file,'li')->wrapAll('<test class="testWrap"><inside><center/></inside></test>')->get(0)->ownerDocument->saveXML();
@@ -890,6 +903,10 @@ class DOMQueryTest extends TestCase {
     $xml = qp($file,'inner')->wrapInner('<test class="testWrap"></test>')->get(0)->ownerDocument->saveXML();
     $this->assertEquals(9, qp($xml, '.testWrap')->get(0)->childNodes->length);
     $this->assertEquals(3, qp($xml, '.testWrap')->get(1)->childNodes->length);
+
+    $qp = qp($file,'inner')->wrapInner(qp('<?xml version="1.0"?><root><test class="testWrap"/><test class="ignored"/></root>', 'test'));
+    $this->assertEquals(2, $qp->find('inner > .testWrap')->size());
+    $this->assertEquals(0, $qp->find('.ignore')->size());
   }
 
   public function testRemove() {
