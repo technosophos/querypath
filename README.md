@@ -57,13 +57,14 @@ accomplish sophisticated XML and HTML processing using QueryPath.
 
 ## QueryPath Installers
 
-The following packages of QueryPath are available:
+The preferred method of installing QueryPath is via [Composer](http://getcomposer.org).
 
-  * A PEAR package (`pear install querypath/QueryPath`): Installs the library and documentation.
-  * A download from the [GitHub Tags page](https://github.com/technosophos/querypath/tags).
-  * Via [Composer](http://getcomposer.org)
+You can also download the package from GitHub.
 
-### Composer
+Older versions of QueryPath 2.x are still available from the PEAR repository.
+
+
+### Composer (Preferred)
 
 To add QueryPath as a library in your project, add this to the 'require'
 section of your `composer.json`:
@@ -80,7 +81,9 @@ The run `php composer.phar install` in that directory.
 
 ### Pear
 
-To install QueryPath as a server-wide library, you may wish to use 
+_This is not supported any longer._
+
+To install QueryPath 2.x as a server-wide library, you may wish to use 
 PEAR or Pyrus. See [pear.querypath.org](http://pear.querypath.org)
 for more information, or simply run these commands:
 
@@ -120,11 +123,11 @@ From the download or git clone:
 
 ```php
 <?php
-require 'QueryPath/src/QueryPath/qp.php';
+require 'QueryPath/src/qp.php';
 ?>
 ```
 
-With the Phar archive, you can include QueryPath like this:
+QueryPath can also be compiled into a Phar and then included like this:
 
 ```php
 <?php
