@@ -72,12 +72,14 @@ section of your `composer.json`:
 ```json
 {
   "require": {
-    "querypath/QueryPath": ">=2.0.0"
+    "querypath/QueryPath": ">=3.0.0"
   }
 }
 ```
 
 The run `php composer.phar install` in that directory.
+
+To stay up to date on stable code, you can use `dev-master` instead of `>=3.0.0`.
 
 ### Pear
 
