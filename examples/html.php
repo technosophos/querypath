@@ -16,14 +16,14 @@
  * @license LGPL The GNU Lesser GPL (LGPL) or an MIT-like license.
  */
  
-require_once '../src/QueryPath/QueryPath.php';
+require_once '../src/qp.php';
 
 // Begin with an HTML stub document (XHTML, actually), and navigate to the title.
 qp(QueryPath::HTML_STUB, 'title')
   // Add some text to the title
   ->text('Example of QueryPath.')
   // Now look for the <body> element
-  ->find(':root body')
+  ->top('body')
   // Inside the body, add a title and paragraph.
   ->append('<h1>This is a test page</h1><p>Test text</p>')
   // Now we select the paragraph we just created inside the body
@@ -37,7 +37,7 @@ qp(QueryPath::HTML_STUB, 'title')
   // Before the paragraph and the title, add an empty table.
   ->prepend('<table id="my-table"></table>')
   // Now let's go to the table...
-  ->find('#my-table')
+  ->top('#my-table')
   // Add a couple of empty rows
   ->append('<tr></tr><tr></tr>')
   // select the rows (both at once)
