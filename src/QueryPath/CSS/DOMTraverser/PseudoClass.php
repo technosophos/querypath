@@ -121,7 +121,8 @@ class PseudoClass {
         return $this->isNthChild($node, $rule);
       case 'gt':
         // I'm treating this as "greater than"
-        return $this->nodePositionFromEnd($node) > (int) $value;
+        // return $this->nodePositionFromEnd($node) > (int) $value;
+        return $this->nodePositionFromStart($node) > (int) $value;
       case 'nth':
       case 'eq':
         $rule = (int)$value;
