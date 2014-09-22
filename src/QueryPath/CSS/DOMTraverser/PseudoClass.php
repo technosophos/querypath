@@ -117,7 +117,7 @@ class PseudoClass {
       case 'lt':
         // I'm treating this as "less than or equal to".
         $rule = sprintf('-n + %d', (int) $value);
-        $rule = '-n+15';
+        // $rule = '-n+15';
         return $this->isNthChild($node, $rule);
       case 'gt':
         // I'm treating this as "greater than"
@@ -356,7 +356,7 @@ class PseudoClass {
 
   /**
    * Provides functionality for all "An+B" rules.
-   * Provides ntoh-child and also the functionality required for:
+   * Provides nth-child and also the functionality required for:
    *
    *- nth-last-child
    *- even
