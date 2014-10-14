@@ -12,7 +12,7 @@
  * <?php
  * require 'qp.php';
  *
- * qp($xml)->find('foo')->count();
+ * qp3($xml)->find('foo')->count();
  * ?>
  * @endcode
  */
@@ -21,7 +21,7 @@
  * Core classes and functions for QueryPath.
  *
  * These are the classes, objects, and functions that developers who use QueryPath
- * are likely to use. The qp() and htmlqp() functions are the best place to start,
+ * are likely to use. The qp3() and htmlqp3() functions are the best place to start,
  * while most of the frequently used methods are part of the QueryPath object.
  */
 
@@ -56,14 +56,14 @@
  * Example:
  * @code
  * <?php
- * qp(); // New empty QueryPath
- * qp('path/to/file.xml'); // From a file
- * qp('<html><head></head><body></body></html>'); // From HTML or XML
- * qp(QueryPath::XHTML_STUB); // From a basic HTML document.
- * qp(QueryPath::XHTML_STUB, 'title'); // Create one from a basic HTML doc and position it at the title element.
+ * qp3(); // New empty QueryPath
+ * qp3('path/to/file.xml'); // From a file
+ * qp3('<html><head></head><body></body></html>'); // From HTML or XML
+ * qp3(\QueryPath\QueryPath::XHTML_STUB); // From a basic HTML document.
+ * qp3(\QueryPath\QueryPath::XHTML_STUB, 'title'); // Create one from a basic HTML doc and position it at the title element.
  *
  * // Most of the time, methods are chained directly off of this call.
- * qp(QueryPath::XHTML_STUB, 'body')->append('<h1>Title</h1>')->addClass('body-class');
+ * qp3(\QueryPath\QueryPath::XHTML_STUB, 'body')->append('<h1>Title</h1>')->addClass('body-class');
  * ?>
  * @endcode
  *
@@ -73,7 +73,7 @@
  *
  * <b>Types of documents that QueryPath can support</b>
  *
- *  qp() can take any of these as its first argument:
+ *  qp3() can take any of these as its first argument:
  *
  *  - A string of XML or HTML (See {@link XHTML_STUB})
  *  - A path on the file system or a URL
@@ -135,7 +135,7 @@
  *    If you want to change this, you can set this option with one of the
  *    JS_CSS_ESCAPE_* constants, or you can write your own.
  *  - QueryPath_class: (ADVANCED) Use this to set the actual classname that
- *    {@link qp()} loads as a QueryPath instance. It is assumed that the
+ *    {@link qp3()} loads as a QueryPath instance. It is assumed that the
  *    class is either {@link QueryPath} or a subclass thereof. See the test
  *    cases for an example.
  *
@@ -148,14 +148,14 @@
  *  An associative array of options. Currently supported options are listed above.
  * @return QueryPath
  */
-function qp($document = NULL, $string = NULL, $options = array()) {
-    return QueryPath::with($document, $string, $options);
+function qp3($document = NULL, $string = NULL, $options = array()) {
+    return \QueryPath\QueryPath::with($document, $string, $options);
 }
 
 /**
- * A special-purpose version of {@link qp()} designed specifically for HTML.
+ * A special-purpose version of {@link qp3()} designed specifically for HTML.
  *
- * XHTML (if valid) can be easily parsed by {@link qp()} with no problems. However,
+ * XHTML (if valid) can be easily parsed by {@link qp3()} with no problems. However,
  * because of the way that libxml handles HTML, there are several common steps that
  * need to be taken to reliably parse non-XML HTML documents. This function is
  * a convenience tool for configuring QueryPath to parse HTML.
@@ -168,14 +168,47 @@ function qp($document = NULL, $string = NULL, $options = array()) {
  *
  * Parser warning messages are also suppressed, so if the parser emits a warning,
  * the application will not be notified. This is equivalent to
- * calling @code@qp()@endcode.
+ * calling @code@qp3()@endcode.
  *
  * Warning: Character set conversions will only work if the Multi-Byte (mb) library
  * is installed and enabled. This is usually enabled, but not always.
  *
  * @ingroup querypath_core
- * @see qp()
+ * @see qp3()
  */
-function htmlqp($document = NULL, $selector = NULL, $options = array()) {
-    return QueryPath::withHTML($document, $selector, $options);
+function htmlqp3($document = NULL, $selector = NULL, $options = array()) {
+    return \QueryPath\QueryPath::withHTML($document, $selector, $options);
+}
+
+/*
+ * Register the old API in the global namespace for backwards compatibility
+ * except an old querypath version has been loaded already.
+ */
+if (!function_exists('qp')) {
+
+  /**
+   * Backwards compatibility wrapper for qp3().
+   *
+   * @ingroup querypath_core
+   * @see qp3()
+   */
+  function qp($document = NULL, $string = NULL, $options = array()) {
+    return qp3($document, $string, $options);
+  }
+
+  /**
+   * Backwards compatibility wrapper for htmlqp3().
+   *
+   * @ingroup querypath_core
+   * @see htmlqp3()
+   */
+  function htmlqp($document = NULL, $selector = NULL, $options = array()) {
+    return htmlqp3($document, $selector, $options);
+  }
+
+  /**
+   * Populate QueryPath class to global namespace for backwards compatibility.
+   */
+  class_alias('\\QueryPath\\QueryPath', '\\QueryPath');
+
 }

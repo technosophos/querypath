@@ -19,12 +19,12 @@ namespace QueryPath\CSS;
  *
  *
  * Typically the parser is not accessed directly. Most developers will use it indirectly from
- * qp(), htmlqp(), or one of the methods on a QueryPath object.
+ * qp3(), htmlqp3(), or one of the methods on a QueryPath object.
  *
  * This parser is modular and is not tied to QueryPath, so you can use it in your
  * own (non-QueryPath) projects if you wish. To dive in, start with EventHandler, the
  * event interface that works like a SAX API for CSS selectors. If you want to check out
- * the details, check out the parser (QueryPath::CSS::Parser),  scanner 
+ * the details, check out the parser (QueryPath::CSS::Parser),  scanner
  * (QueryPath::CSS::Scanner), and token list (QueryPath::CSS::Token).
  */
 

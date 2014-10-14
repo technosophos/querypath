@@ -12,13 +12,13 @@
  * <?php
  * require 'qp.php';
  *
- * qp($xml)->find('foo')->count();
+ * qp3($xml)->find('foo')->count();
  * ?>
  * @endcode
  *
  * If no autoloader is currently operating, this will use
- * QueryPath's default autoloader **unless** 
- * QP_NO_AUTOLOADER is defined, in which case all of the 
+ * QueryPath's default autoloader **unless**
+ * QP_NO_AUTOLOADER is defined, in which case all of the
  * files will be statically required in.
  */
 
@@ -55,7 +55,7 @@ if (!class_exists('\QueryPath')) {
     require __DIR__ . '/QueryPath/Options.php';
     require __DIR__ . '/QueryPath/QueryPathIterator.php';
     require __DIR__ . '/QueryPath/DOMQuery.php';
-    require __DIR__ . '/QueryPath.php';
+    require __DIR__ . '/QueryPath/QueryPath.php';
   }
   else {
     spl_autoload_register(function ($klass) {
@@ -70,7 +70,7 @@ if (!class_exists('\QueryPath')) {
   }
 }
 
-// Define qp() and qphtml() function.
-if (!function_exists('qp')) {
+// Define qp3() and qphtml3() function.
+if (!function_exists('qp3')) {
     require __DIR__ . '/qp_functions.php';
 }

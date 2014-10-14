@@ -7,7 +7,7 @@
  * build, parse, search, and modify DOM documents.
  *
  * To use QueryPath, only one file must be imported: qp.php. This file defines
- * the `qp()` function, and also registers an autoloader if necessary.
+ * the `qp3()` function, and also registers an autoloader if necessary.
  *
  * Standard usage:
  * @code
@@ -17,7 +17,7 @@
  * $xml = '<?xml version="1.0"?><test><foo id="myID"/></test>';
  *
  * // Procedural call a la jQuery:
- * $qp = qp($xml, '#myID');
+ * $qp = qp3($xml, '#myID');
  * $qp->append('<new><elements/></new>')->writeHTML();
  *
  * // Object-oriented version with a factory:
@@ -43,7 +43,7 @@
  * To gain familiarity with QueryPath, the following three API docs are
  * the best to start with:
  *
- *- qp(): This function constructs new queries, and is the starting point
+ *- qp3(): This function constructs new queries, and is the starting point
  *  for manipulating a document. htmlqp() is an alias tuned for HTML
  *  documents (especially old HTML), and QueryPath::with(), QueryPath::withXML()
  *  and QueryPath::withHTML() all perform a similar role, but in a purely
@@ -75,7 +75,7 @@
  * @author M Butcher <matt @aleph-null.tv>
  * @license MIT
  * @see QueryPath
- * @see qp()
+ * @see qp3()
  * @see http://querypath.org The QueryPath home page.
  * @see http://api.querypath.org An online version of the API docs.
  * @see http://technosophos.com For how-tos and examples.
@@ -83,6 +83,8 @@
  * @version -UNSTABLE% (3.x.x)
  *
  */
+
+namespace QueryPath;
 
 /**
  *
@@ -142,11 +144,11 @@ class QueryPath {
    * fragment. For example, you should use {@link xml()}, {@link innerXML()}, and
    * {@link writeXML()}.
    *
-   * This can be passed into {@link qp()} to begin a new basic HTML document.
+   * This can be passed into {@link qp3()} to begin a new basic HTML document.
    *
    * Example:
    * @code
-   * $qp = qp(QueryPath::XHTML_STUB); // Creates a new XHTML document
+   * $qp = qp3(QueryPath::XHTML_STUB); // Creates a new XHTML document
    * $qp->writeXML(); // Writes the document as well-formed XHTML.
    * @endcode
    * @since 2.0
@@ -196,7 +198,7 @@ class QueryPath {
   /**
    * Enable one or more extensions.
    *
-   * Extensions provide additional features to QueryPath. To enable and 
+   * Extensions provide additional features to QueryPath. To enable and
    * extension, you can use this method.
    *
    * In this example, we enable the QPTPL extension:
