@@ -177,5 +177,39 @@ function qp($document = NULL, $string = NULL, $options = array()) {
  * @see qp()
  */
 function htmlqp($document = NULL, $selector = NULL, $options = array()) {
-    return QueryPath::withHTML($document, $selector, $options);
+
+  return QueryPath::withHTML($document, $selector, $options);
+}
+
+/**
+ * Parse HTML5 documents.
+ *
+ * This uses HTML5-PHP to parse the document. In actuality, this parser does
+ * a fine job with pre-HTML5 documents in most cases, though really old HTML
+ * (like 2.0) may have some substantial quirks.
+ *
+ * <b>Supported Options</b>
+ * Any options supported by HTML5-PHP are allowed here. Additionally, the
+ * following options have meaning to QueryPath.
+ * - QueryPath_class
+ *
+ *
+ * @param mixed $source
+ *  A document as an HTML string, or a path/URL. For compatibility with
+ *  existing functions, a DOMDocument, SimpleXMLElement, DOMNode or array
+ *  of DOMNodes will be passed through as well. However, these types are not
+ *  validated in any way.
+ *
+ * @param string $selector
+ *  A CSS3 selector.
+ *
+ * @param array $options
+ *   An associative array of options, which is passed on into HTML5-PHP. Note
+ *   that the standard QueryPath options may be ignored for this function,
+ *   since it uses a different parser.
+ *
+ * @return QueryPath
+ */
+function html5qp($document = NULL, $selector = NULL, $options = array()) {
+  return QueryPath::withHTML5($document, $selector, $options);
 }

@@ -15,6 +15,7 @@ namespace QueryPath;
 
 use \QueryPath\CSS\QueryPathEventHandler;
 use \QueryPath;
+use \Masterminds\HTML5;
 
 
 /**
@@ -2312,6 +2313,47 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
   }
 
   /**
+   * Write the QueryPath document to HTML5.
+   *
+   * See html()
+   */
+  function html5($markup = NULL) {
+    $html5 = new \HTML5($this->options);
+
+    // append HTML to existing
+    if (isset($markup)) {
+
+      // Parse the HTML and insert it into the DOM
+      $doc = $html5->loadFragment($markup);
+      $this->removeChildren();
+      $this->append($doc);
+      return $this;
+    }
+
+    $length = $this->size();
+    if ($length == 0) {
+      return NULL;
+    }
+    // Only return the first item -- that's what JQ does.
+    $first = $this->getFirstMatch();
+
+    // Catch cases where first item is not a legit DOM object.
+    if (!($first instanceof \DOMNode)) {
+      return NULL;
+    }
+
+    // Added by eabrand.
+    if(!$first->ownerDocument->documentElement) {
+      return NULL;
+    }
+
+    if ($first instanceof \DOMDocument || $first->isSameNode($first->ownerDocument->documentElement)) {
+      return $html5->saveHTML($this->document); //$this->document->saveHTML();
+    }
+    return $html5->saveHTML($first);
+  }
+
+  /**
    * Fetch the HTML contents INSIDE of the first DOMQuery item.
    *
    * <b>This behaves the way jQuery's @codehtml()@endcode function behaves.</b>
@@ -2415,6 +2457,37 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
     $buffer = '';
     foreach ($first->childNodes as $child) {
       $buffer .= $this->document->saveXML($child);
+    }
+
+    return $buffer;
+  }
+
+  /**
+   * Get child elements as an HTML5 string.
+   *
+   * TODO: This is a very simple alteration of innerXML. Do we need better
+   * support?
+   */
+  public function innerHTML5() {
+    $length = $this->size();
+    if ($length == 0) {
+      return NULL;
+    }
+    // Only return the first item -- that's what JQ does.
+    $first = $this->getFirstMatch();
+
+    // Catch cases where first item is not a legit DOM object.
+    if (!($first instanceof \DOMNode)) {
+      return NULL;
+    }
+    elseif (!$first->hasChildNodes()) {
+      return '';
+    }
+
+    $html5 = new $HTML5($this->options);
+    $buffer = '';
+    foreach ($first->childNodes as $child) {
+      $buffer .= $html5->saveHTML($child);
     }
 
     return $buffer;
@@ -2785,6 +2858,27 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
       restore_error_handler();
     }
     return $this;
+  }
+
+  /**
+   * Write the document to HTML5.
+   *
+   * This works the same as the other write* functions, but it encodes the output
+   * as HTML5 with UTF-8.
+   * @see html5()
+   * @see innerHTML5()
+   * @throws Exception
+   *  In the event that a file cannot be written, an Exception will be thrown.
+   */
+  public function writeHTML5($path = NULL) {
+    $html5 = new HTML5();
+    if ($path == NULL) {
+      // Print the document to stdout.
+      print $html5->saveHTML($this->document);
+      return;
+    }
+
+    $html5->save($this->document, $path);
   }
 
   /**

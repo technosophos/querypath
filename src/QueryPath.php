@@ -84,6 +84,8 @@
  *
  */
 
+use \Masterminds\HTML5;
+
 /**
  *
  */
@@ -134,6 +136,14 @@ class QueryPath {
   </head>
   <body></body>
   </html>';
+
+  const HTML5_STUB = '<!DOCTYPE html>
+    <html>
+    <head>
+    <title>Untitled</title>
+    </head>
+    <body></body>
+    </html>';
 
   /**
    * This is a stub XHTML document.
@@ -191,6 +201,52 @@ class QueryPath {
       //'strip_low_ascii' => TRUE,
     );
     return @self::with($source, $selector, $options);
+  }
+
+  /**
+   * Parse HTML5 documents.
+   *
+   * This uses HTML5-PHP to parse the document. In actuality, this parser does
+   * a fine job with pre-HTML5 documents in most cases, though really old HTML
+   * (like 2.0) may have some substantial quirks.
+   *
+   * <b>Supported Options</b>
+   * Any options supported by HTML5-PHP are allowed here. Additionally, the
+   * following options have meaning to QueryPath.
+   * - QueryPath_class
+   *
+   *
+   * @param mixed $source
+   *  A document as an HTML string, or a path/URL. For compatibility with
+   *  existing functions, a DOMDocument, SimpleXMLElement, DOMNode or array
+   *  of DOMNodes will be passed through as well. However, these types are not
+   *  validated in any way.
+   *
+   * @param string $selector
+   *  A CSS3 selector.
+   *
+   * @param array $options
+   *   An associative array of options, which is passed on into HTML5-PHP. Note
+   *   that the standard QueryPath options may be ignored for this function,
+   *   since it uses a different parser.
+   *
+   * @return QueryPath
+   */
+  public static function withHTML5($source = NULL, $selector = NULL, $options = array()) {
+    $qpClass = isset($options['QueryPath_class']) ? $options['QueryPath_class'] : '\QueryPath\DOMQuery';
+
+    if(is_string($source)) {
+      $html5 = new HTML5();
+      if (strpos($string, '<') !== FALSE && strpos($string, '>') !== FALSE) {
+        $source = $html5->loadHTML($source);
+      }
+      else {
+        $source = $html5->loadHTML($source);
+      }
+    }
+
+    $qp = new $qpClass($source, $selector, $options);
+    return $qp;
   }
 
   /**
