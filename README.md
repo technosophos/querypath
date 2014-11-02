@@ -1,7 +1,5 @@
 # QueryPath: Find your way.
 
-**New development is happening on the `3.x` branch.**
-
 Authors: Matt Butcher (lead), Emily Brand, and many others
 
 [Website](http://querypath.org) | 
@@ -16,7 +14,34 @@ This package is licensed under an MIT license (COPYING-MIT.txt).
 ## At A Glance
 
 QueryPath is a jQuery-like library for working with XML and HTML
-documents in PHP.
+documents in PHP. It now contains support for HTML5 via the
+[HTML5-PHP project](https://github.com/Masterminds/HTML5).
+
+### Gettings Started
+
+Assuming you have successfully installed QueryPath via Composer, you can
+parse documents like this:
+
+```
+require_once "vendor/autoload.php";
+
+// HTML5 (new)
+$qp = html5qp("path/to/file.html");
+
+// Legacy HTML via libxml
+$qp = htmlqp("path/to/file.html");
+
+// XML or XHTML
+$qp = qp("path/to/file.html");
+
+// All of the above can take string markup instead of a file name:
+$qp = qp("<?xml version='1.0'?><hello><world/></hello>")
+
+```
+
+But the real power comes from chaining. Check out the example below.
+
+### Example Usage
 
 Say we have a document like this:
 ```xml
@@ -36,14 +61,13 @@ we can use QueryPath like this:
 
 ```php
 <?php
-// Get all of the <td> elements in the document and add the
-// attribute `foo='bar'`:
+// Add the attribute "foo=bar" to every "td" element.
 qp($xml, 'td')->attr('foo', 'bar');
 
-// Or print the contents of the third TD in the second row:
+// Print the contents of the third TD in the second row:
 print qp($xml, '#row2>td:nth(3)')->text();
 
-// Or append another row to the XML and then write the 
+// Append another row to the XML and then write the
 // result to standard output:
 qp($xml, 'tr:last')->after('<tr><td/><td/><td/></tr>')->writeXML();
 
@@ -52,7 +76,7 @@ qp($xml, 'tr:last')->after('<tr><td/><td/><td/></tr>')->writeXML();
 
 (This example is in `examples/at-a-glance.php`.)
 
-With over 60 functions and robust support for chaining, you can 
+With over 60 functions and robust support for chaining, you can
 accomplish sophisticated XML and HTML processing using QueryPath.
 
 ## QueryPath Installers
@@ -60,9 +84,6 @@ accomplish sophisticated XML and HTML processing using QueryPath.
 The preferred method of installing QueryPath is via [Composer](http://getcomposer.org).
 
 You can also download the package from GitHub.
-
-Older versions of QueryPath 2.x are still available from the PEAR repository.
-
 
 ### Composer (Preferred)
 
@@ -81,27 +102,13 @@ The run `php composer.phar install` in that directory.
 
 To stay up to date on stable code, you can use `dev-master` instead of `>=3.0.0`.
 
-### Pear
-
-_This is not supported any longer._
-
-To install QueryPath 2.x as a server-wide library, you may wish to use 
-PEAR or Pyrus. See [pear.querypath.org](http://pear.querypath.org)
-for more information, or simply run these commands:
-
-```
-$ pear channel-discover pear.querypath.org
-$ pear install querypath/QueryPath
-```
-
-### Manual
+### Manual Install
 
 You can either download a stable release from the 
 [GitHub Tags page](https://github.com/technosophos/querypath/tags)
 or you can use `git` to clone
 [this repository](http://github.com/technosophos/querypath) and work from
-the code. `master` typically has the latest stable, while `3.x` is where
-active development is happening.
+the code.
 
 ## Including QueryPath
 
@@ -113,15 +120,7 @@ require 'vendor/autoload.php';
 ?>
 ```
 
-If you installed QueryPath as a PEAR package, use it like this:
-
-```php
-<?php
-require 'QueryPath/qp.php';
-?>
-```
-
-From the download or git clone:
+Without Composer, you can include QueryPath like this:
 
 ```php
 <?php
