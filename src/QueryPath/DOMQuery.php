@@ -145,7 +145,11 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
         $this->document = $document->ownerDocument;
         //$this->matches = array($document);
         $this->setMatches($document);
-      }
+	  }
+	  elseif ($document instanceof \Masterminds\HTML5) {
+		$this->document = $document;
+		$this->setMatches($document->documentElement);
+	  }
       elseif ($document instanceof \SimpleXMLElement) {
         $import = dom_import_simplexml($document);
         $this->document = $import->ownerDocument;
