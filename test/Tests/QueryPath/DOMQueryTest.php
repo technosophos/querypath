@@ -116,6 +116,11 @@ class DOMQueryTest extends TestCase {
     $this->assertEquals(1, count($qp->get()));
     $this->assertTrue($qp->get(0) instanceof \DOMNode);
 
+	// HTML5
+	$html5 = new \Masterminds\HTML5();
+	$dom = $html5->loadHTML(\QueryPath::HTML_STUB);
+	qp($dom,'html');
+
     // Stripping #13 (CR) from HTML.
     $borken = '<html><head></head><body><p>' . chr(13) . '</p><div id="after"/></body></html>';
     $this->assertFalse(strpos(htmlqp($borken)->html(), '&#13;'), 'Test that CRs are not encoded.');
