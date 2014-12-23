@@ -241,7 +241,7 @@ class QueryPath {
         $source = $html5->loadHTML($source);
       }
       else {
-        $source = $html5->loadHTML($source);
+        $source = $html5->load($source);
       }
     }
 
