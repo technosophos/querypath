@@ -237,7 +237,7 @@ class QueryPath {
 
     if(is_string($source)) {
       $html5 = new HTML5();
-      if (strpos($string, '<') !== FALSE && strpos($string, '>') !== FALSE) {
+      if (strpos($source, '<') !== FALSE && strpos($source, '>') !== FALSE) {
         $source = $html5->loadHTML($source);
       }
       else {
