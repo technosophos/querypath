@@ -140,3 +140,4 @@ From there, the main functions you will want to use are `qp()`
 (alias of `QueryPath::with()`) and `htmlqp()` (alias of
 `QueryPath::withHTML()`). Start with the
 [API docs](http://api.querypath.org/docs).
+

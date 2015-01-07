@@ -436,6 +436,12 @@ class DOMTraverser implements Traverser {
   protected function initialMatchOnID($selector, $matches) {
     $id = $selector->id;
     $found = $this->newMatches();
+
+    // Issue #145: DOMXPath will through an exception if the DOM is
+    // not set.
+    if (!($this->dom instanceof \DOMDocument)) {
+      return $found;
+    }
     $baseQuery = ".//*[@id='{$id}']";
     $xpath = new \DOMXPath($this->dom);
 
@@ -463,6 +469,12 @@ class DOMTraverser implements Traverser {
    */
   protected function initialMatchOnClasses($selector, $matches) {
     $found = $this->newMatches();
+
+    // Issue #145: DOMXPath will through an exception if the DOM is
+    // not set.
+    if (!($this->dom instanceof \DOMDocument)) {
+      return $found;
+    }
     $baseQuery = ".//*[@class]";
     $xpath = new \DOMXPath($this->dom);
 
