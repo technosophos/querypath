@@ -146,7 +146,8 @@
  *  A CSS 3 selector.
  * @param array $options
  *  An associative array of options. Currently supported options are listed above.
- * @return QueryPath
+ * @return \QueryPath\DOMQuery
+ *  Or possibly another QueryPath-like object if you overrode QueryPath_class.
  */
 function qp($document = NULL, $string = NULL, $options = array()) {
     return QueryPath::with($document, $string, $options);
@@ -208,7 +209,7 @@ function htmlqp($document = NULL, $selector = NULL, $options = array()) {
  *   that the standard QueryPath options may be ignored for this function,
  *   since it uses a different parser.
  *
- * @return QueryPath
+ * @return \QueryPath\DOMQuery
  */
 function html5qp($document = NULL, $selector = NULL, $options = array()) {
   return QueryPath::withHTML5($document, $selector, $options);
