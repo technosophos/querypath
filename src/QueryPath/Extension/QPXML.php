@@ -164,7 +164,7 @@ class QPXML implements \QueryPath\Extension {
    * @param string $text
    * @param string $nsUri
    *   The namespace URI for the given element.
-   * @retval object
+   * @return \QueryPath\DOMQuery
    */
   public function createElement($text, $nsUri = null) {
     if (isset ($text)) {
@@ -197,7 +197,7 @@ class QPXML implements \QueryPath\Extension {
    * Append an element.
    *
    * @param string $text
-   * @retval object QueryPath
+   * @return \QueryPath\DOMQuery
    */
   public function appendElement($text) {
     if (isset ($text)) {

@@ -1224,9 +1224,10 @@ class QueryPathEventHandler implements EventHandler, Traverser {
           $lines = explode("\n", $str);
           if (!empty($lines)) {
             $line = trim($lines[0]);
-            if (!empty($line))
+            if (!empty($line)) {
               $o->textContent = $line;
               $found->attach($o);//trim($lines[0]);
+            }
           }
         }
         $this->matches = $found;

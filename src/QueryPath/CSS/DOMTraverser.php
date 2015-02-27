@@ -112,7 +112,7 @@ class DOMTraverser implements Traverser {
    *
    * @param string $selector
    *   The selector.
-   * @retval object SPLObjectStorage
+   * @return \SPLObjectStorage
    *   An SPLObjectStorage containing a list of matched
    *   DOMNode objects.
    */
@@ -175,7 +175,7 @@ class DOMTraverser implements Traverser {
    *   The DOMNode to check.
    * @param array Selector->toArray()
    *   The Selector to check.
-   * @retval boolean
+   * @return boolean
    *   A boolean TRUE if the node matches, false otherwise.
    */
   public function matchesSelector($node, $selector) {
@@ -193,7 +193,7 @@ class DOMTraverser implements Traverser {
    *   The DOMNode to check.
    * @param object SimpleSelector
    *   The Selector to check.
-   * @retval boolean
+   * @return boolean
    *   A boolean TRUE if the node matches, false otherwise.
    */
   public function matchesSimpleSelector($node, $selectors, $index) {
@@ -243,7 +243,7 @@ class DOMTraverser implements Traverser {
    *   The array of simple selectors.
    * @param int $index
    *   The index of the current selector.
-   * @retval boolean
+   * @return boolean
    *   TRUE if the next selector(s) match.
    */
   public function combine($node, $selectors, $index) {

@@ -19,7 +19,7 @@ interface Traverser {
    *
    * @param string $selector
    *   A selector. Typically this is a CSS 3 Selector.
-   * @retval object Traverser
+   * @return \Traverser
    *  The Traverser that can return matches.
    */
   public function find($selector);
@@ -28,7 +28,7 @@ interface Traverser {
    *
    * Return an array of matching items.
    *
-   * @retval array
+   * @return array
    *   An array of matched values. The specific data type in the matches
    *   will differ depending on the data type searched, but in the core
    *   QueryPath implementation, this will be an array of DOMNode

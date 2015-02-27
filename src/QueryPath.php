@@ -305,7 +305,7 @@ class QueryPath {
    * ?>
    * @endcode
    *
-   * @retval array
+   * @return array
    *   An array of extension names.
    *
    * @see QueryPath::ExtensionRegistry
