@@ -1439,6 +1439,9 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
    *  Thrown if $data is an unsupported object type.
    */
   public function after($data) {
+    if (empty($data)) {
+      return $this;
+    }
     $data = $this->prepareInsert($data);
     foreach ($this->matches as $m) {
       $ins = $data->cloneNode(TRUE);
