@@ -60,6 +60,12 @@ if (!class_exists('\QueryPath')) {
   else {
     spl_autoload_register(function ($klass) {
       $parts = explode('\\', $klass);
+
+      // Issue #164
+      if ($parts[0] == '') {
+        array_shift($parts);
+      }
+
       if ($parts[0] == 'QueryPath') {
         $path = __DIR__ . '/' . implode('/', $parts) . '.php';
         if (file_exists($path)) {
