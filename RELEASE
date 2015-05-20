@@ -1,5 +1,9 @@
 # RELEASE NOTES
 
+3.0.4 (Unstable)
+- Basic support for HTML5 via Masterminds\HTML5
+- Fixed #164
+
 3.0.3
 
 - Bug #141: Fixed :gt and :lt pseudoclasses (thanks to lsv)
