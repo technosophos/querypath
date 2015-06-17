@@ -2325,7 +2325,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
    * See html()
    */
   function html5($markup = NULL) {
-    $html5 = new \HTML5($this->options);
+    $html5 = new HTML5($this->options);
 
     // append HTML to existing
     if (isset($markup)) {
@@ -2491,7 +2491,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
       return '';
     }
 
-    $html5 = new $HTML5($this->options);
+    $html5 = new HTML5($this->options);
     $buffer = '';
     foreach ($first->childNodes as $child) {
       $buffer .= $html5->saveHTML($child);
