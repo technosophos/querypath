@@ -1,6 +1,11 @@
 # RELEASE NOTES
 
-3.0.4 (Unstable)
+3.0.5 (unstable)
+
+
+3.0.4
+- Addition of namespace fetching method ns().
+- Various fixes
 - Basic support for HTML5 via Masterminds\HTML5
 - Fixed #164
 
