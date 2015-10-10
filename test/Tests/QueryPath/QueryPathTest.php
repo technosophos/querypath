@@ -1,7 +1,7 @@
 <?php
 namespace QueryPath\Tests;
 
-require_once 'PHPUnit/Autoload.php';
+//require_once 'PHPUnit/Autoload.php';
 require_once __DIR__ . '/TestCase.php';
 //require_once __DIR__ . '/../../../src/qp.php';
 require_once __DIR__ . '/../../../src/QueryPath.php';

@@ -14,9 +14,11 @@ namespace QueryPath\Tests;
  */
 
 use QueryPath\DOMQuery;
+use \Masterminds\HTML5;
 
 /** */
-require_once 'PHPUnit/Autoload.php';
+//require_once 'PHPUnit/Autoload.php';
+require __DIR__ . '/../../../vendor/autoload.php';
 require_once __DIR__ . '/TestCase.php';
 
 define('DATA_FILE', __DIR__ . '/../../data.xml');
@@ -1003,6 +1005,16 @@ class DOMQueryTest extends TestCase {
     </body></html>';
     $cr = $this->contentsRecurse(qp($xml));
     $this->assertEquals(14, count($cr), implode("\n", $cr));
+  }
+
+  public function testNS() {
+    $xml = '<?xml version="1.0"?><root xmlns="foo:bar"><e>test</e></root>';
+
+    $q = qp($xml, "e");
+
+    $this->assertEquals(1, $q->size());
+
+    $this->assertEquals("foo:bar", $q->ns());
   }
 
   /**

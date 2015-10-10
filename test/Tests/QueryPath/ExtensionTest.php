@@ -5,7 +5,7 @@
  * @license The GNU Lesser GPL (LGPL) or an MIT-like license.
  */
 namespace QueryPath\Tests;
-require_once 'PHPUnit/Autoload.php';
+//require_once 'PHPUnit/Autoload.php';
 require_once __DIR__ . '/TestCase.php';
 require_once __DIR__ . '/../../../src/QueryPath/Extension.php';
 //require_once __DIR__ . '/../../../src/QueryPath.php';

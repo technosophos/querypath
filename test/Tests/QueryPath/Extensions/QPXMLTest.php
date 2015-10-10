@@ -6,7 +6,7 @@
  */
 namespace QueryPath\Tests;
 
-require_once 'PHPUnit/Autoload.php';
+//require_once 'PHPUnit/Autoload.php';
 require_once __DIR__ . '/../TestCase.php';
 require_once 'src/QueryPath/Extension/QPXML.php';
 /**

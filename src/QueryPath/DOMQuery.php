@@ -414,6 +414,16 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
   }
 
   /**
+   * Get the namespace of the current element.
+   *
+   * If QP is currently pointed to a list of elements, this will get the
+   * namespace of the first element.
+   */
+  public function ns() {
+    return $this->get(0)->namespaceURI;
+  }
+
+  /**
    * Get the DOMDocument that we currently work with.
    *
    * This returns the current DOMDocument. Any changes made to this document will be

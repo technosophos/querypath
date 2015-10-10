@@ -7,8 +7,9 @@
 
 namespace QueryPath\Tests;
 
-require_once 'PHPUnit/Autoload.php';
-require_once __DIR__ . '/../../../src/qp.php';
+//require_once 'PHPUnit/Autoload.php';
+//require_once __DIR__ . '/../../../src/qp.php';
+require __DIR__ . '/../../../vendor/autoload.php';
 
 class TestCase extends \PHPUnit_Framework_TestCase {
   const DATA_FILE =  'test/data.xml';
