@@ -339,7 +339,8 @@ class Parser {
       }
       return $buf;
       */
-      $buf .= $this->scanner->getQuotedString();
+      //$buf .= $this->scanner->getQuotedString();
+      $buf .= $this->scanner->getPseudoClassString();
       return $buf;
     }
   }

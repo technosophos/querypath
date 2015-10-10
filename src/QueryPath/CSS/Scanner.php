@@ -241,6 +241,50 @@ final class Scanner {
     }
   }
 
+  // Get the contents inside of a pseudoClass().
+  public function getPseudoClassString() {
+    if ($this->token == Token::quote || $this->token == Token::squote || $this->token == Token::lparen) {
+      $end = ($this->token == Token::lparen) ? Token::rparen : $this->token;
+      $buf = '';
+      $escape = FALSE;
+
+      $this->nextToken(); // Skip the opening quote/paren
+
+      // The second conjunct is probably not necessary.
+      while ($this->token !== FALSE && $this->token > -1) {
+        //print "Char: $this->value \n";
+        if ($this->token == Token::bslash && !$escape) {
+          // XXX: The backslash (\) is removed here.
+          // Turn on escaping.
+          //$buf .= $this->value;
+          $escape = TRUE;
+        }
+        elseif ($escape) {
+          // Turn off escaping
+          $buf .= $this->value;
+          $escape = FALSE;
+        }
+        // Allow nested pseudoclasses.
+        elseif ($this->token == Token::lparen) {
+          $buf .= "(";
+          $buf .= $this->getPseudoClassString();
+          $buf .= ")";
+        }
+        elseif ($this->token === $end) {
+          // At end of string; skip token and break.
+          $this->nextToken();
+          break;
+        }
+        else {
+          // Append char.
+          $buf .= $this->value;
+        }
+        $this->nextToken();
+      }
+      return $buf;
+    }
+  }
+
   /**
    * Get a string from the input stream.
    * This is a convenience function for getting a string of
