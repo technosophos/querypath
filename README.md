@@ -2,7 +2,7 @@
 
 Authors: Matt Butcher (lead), Emily Brand, and many others
 
-[Website](http://querypath.org) | 
+[Website](http://querypath.org) |
 [API Docs](http://api.querypath.org/docs) |
 [VCS and Issue Tracking](http://github.com/technosophos/querypath) |
 [Support List](http://groups.google.com/group/support-querypath) |
@@ -15,7 +15,7 @@ This package is licensed under an MIT license (COPYING-MIT.txt).
 
 QueryPath is a jQuery-like library for working with XML and HTML
 documents in PHP. It now contains support for HTML5 via the
-[HTML5-PHP project](https://github.com/Masterminds/HTML5).
+[HTML5-PHP project](https://github.com/Masterminds/html5-php).
 
 ### Gettings Started
 
@@ -104,7 +104,7 @@ To stay up to date on stable code, you can use `dev-master` instead of `>=3.0.0`
 
 ### Manual Install
 
-You can either download a stable release from the 
+You can either download a stable release from the
 [GitHub Tags page](https://github.com/technosophos/querypath/tags)
 or you can use `git` to clone
 [this repository](http://github.com/technosophos/querypath) and work from
@@ -136,8 +136,7 @@ require 'QueryPath.phar';
 ?>
 ```
 
-From there, the main functions you will want to use are `qp()` 
+From there, the main functions you will want to use are `qp()`
 (alias of `QueryPath::with()`) and `htmlqp()` (alias of
 `QueryPath::withHTML()`). Start with the
 [API docs](http://api.querypath.org/docs).
-
