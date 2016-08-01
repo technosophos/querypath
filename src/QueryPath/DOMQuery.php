@@ -2341,7 +2341,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
     if (isset($markup)) {
 
       // Parse the HTML and insert it into the DOM
-      $doc = $html5->loadFragment($markup);
+      $doc = $html5->loadHTMLFragment($markup);
       $this->removeChildren();
       $this->append($doc);
       return $this;
