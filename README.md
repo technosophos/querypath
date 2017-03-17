@@ -1,4 +1,5 @@
 # QueryPath: Find your way.
+[![Stability: Maintenance](https://masterminds.github.io/stability/maintenance.svg)](https://masterminds.github.io/stability/maintenance.html)
 
 Authors: Matt Butcher (lead), Emily Brand, and many others
 
