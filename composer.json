@@ -1,5 +1,5 @@
 {
-  "name": "querypath/QueryPath",
+  "name": "querypath/querypath",
   "type": "library",
   "description": "HTML/XML querying (CSS 4 or XPath) and processing (like jQuery)",
   "homepage": "https://github.com/technosophos/querypath",
@@ -8,6 +8,9 @@
   "require" : {
     "php" : ">=5.3.0",
     "masterminds/html5": "2.*"
+  },
+  "extra": {
+    "installer-name": "QueryPath"
   },
   "autoload": {
     "psr-0": {"QueryPath": "src/"},
