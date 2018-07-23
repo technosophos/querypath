@@ -447,11 +447,13 @@ class DOMTraverser implements Traverser {
 
     // Now we try to find any matching IDs.
     foreach ($matches as $node) {
-      if ($node->getAttribute('id') == $id) {
-        $found->attach($node);
-      }
-      $nl = $this->initialXpathQuery($xpath, $node, $baseQuery);
-      $this->attachNodeList($nl, $found);
+        if ($node->getAttribute('id') == $id) {
+            $found->attach($node);
+        }
+        $nl = $this->initialXpathQuery($xpath, $node, $baseQuery);
+        if (!empty($nl) && $nl instanceof \DOMNodeList) {
+            $this->attachNodeList($nl, $found);
+        }
     }
     // Unset the ID selector.
     $selector->id = NULL;
