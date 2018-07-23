@@ -531,14 +531,17 @@ class DOMTraverser implements Traverser {
       $element = '*';
     }
     $found = $this->newMatches();
-    foreach ($matches as $node) {
+    /** @var \DOMDocument $node */
+      foreach ($matches as $node) {
       // Capture the case where the initial element is the root element.
       if ($node->tagName == $element
           || $element == '*' && $node->parentNode instanceof \DOMDocument) {
         $found->attach($node);
       }
       $nl = $node->getElementsByTagName($element);
-      $this->attachNodeList($nl, $found);
+      if (!empty($nl) && $nl instanceof \DOMNodeList) {
+          $this->attachNodeList($nl, $found);
+      }
     }
 
     $selector->element = NULL;
