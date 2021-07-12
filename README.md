@@ -94,7 +94,7 @@ section of your `composer.json`:
 ```json
 {
   "require": {
-    "querypath/QueryPath": ">=3.0.0"
+    "querypath/querypath": ">=3.0.0"
   }
 }
 ```
