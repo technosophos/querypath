@@ -1,4 +1,5 @@
-> QueryPath is now updated and maintained by the amazing folks at GravityPDF. https://github.com/GravityPDF/querypath. The version of QueryPath in this repository is no longer maintained. You are encouraged to use [GravityPDF's version](https://github.com/GravityPDF/querypath).
+## Use GravityPDF's QueryPath
+> QueryPath is now updated and maintained by the amazing folks at GravityPDF. https://github.com/GravityPDF/querypath. The version of QueryPath in this repository is no longer maintained. You are encouraged to use [GravityPDF's version](https://github.com/GravityPDF/querypath). -- Matt, Dec. 2022
 
 # QueryPath: Find your way.
 [![Stability: Maintenance](https://masterminds.github.io/stability/maintenance.svg)](https://masterminds.github.io/stability/maintenance.html)
