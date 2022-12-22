@@ -1,7 +1,7 @@
+> QueryPath is now updated and maintained by the amazing folks at GravityPDF. https://github.com/GravityPDF/querypath. The version of QueryPath in this repository is no longer maintained. You are encouraged to use [GravityPDF's version](https://github.com/GravityPDF/querypath).
+
 # QueryPath: Find your way.
 [![Stability: Maintenance](https://masterminds.github.io/stability/maintenance.svg)](https://masterminds.github.io/stability/maintenance.html)
-
-> QueryPath is now updated and maintained by the amazing folks at GravityPDF. https://github.com/GravityPDF/querypath. The version of QueryPath in this repository is no longer maintained. You are encouraged to use [GravityPDF's version](https://github.com/GravityPDF/querypath).
 
 Authors: Matt Butcher (lead), Emily Brand, and many others
 
