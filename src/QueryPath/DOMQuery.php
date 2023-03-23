@@ -587,10 +587,14 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
       return $this->attr('style');
     }
 
-    // Get any existing CSS.
-    $css = array();
-    foreach ($this->matches as $match) {
+    
+    foreach ($this->matches as $match) { 
+       // Get any existing CSS.  //+
+       $css = array();   //The css is restored in every repetition of the loop, so that it doesn't
+	    		 //homogenize all of the matches to share ALL their css attributes, only
+	    		 //the ones indicated in the parameters.
       $style = $match->getAttribute('style');
+      //$style =$this->attr('style');
       if (!empty($style)) {
         // XXX: Is this sufficient?
         $style_array = explode(';', $style);
@@ -604,26 +608,29 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
           $css[$css_att] = trim($css_val);
         }
       }
-    }
+	  if (is_array($name)) {
+	    // Use array_merge instead of + to preserve order.
+	    $css = array_merge($css, $name);
+	  }
+	  else {
+	    $css[$name] = $value;
+	  }
 
-    if (is_array($name)) {
-      // Use array_merge instead of + to preserve order.
-      $css = array_merge($css, $name);
-    }
-    else {
-      $css[$name] = $value;
-    }
+	  // Collapse CSS into a string.
+	  $format = '%s: %s;';
+	  $css_string = '';
+	  foreach ($css as $n => $v) {
+	    $css_string .= sprintf($format, $n, trim($v));
+	  }
 
-    // Collapse CSS into a string.
-    $format = '%s: %s;';
-    $css_string = '';
-    foreach ($css as $n => $v) {
-      $css_string .= sprintf($format, $n, trim($v));
+	  //$this->attr('style', $css_string);  //Deprecated: instead of sharing the same style for all the matches,
+	                                        //            the change in the css will be applied finely for 
+	                                        //            each match without homogenization
+	  $match->setAttribute('style', $css_string);
     }
-
-    $this->attr('style', $css_string);
     return $this;
-  }
+  } //End of css function 
+
 
   /**
    * Insert or retrieve a Data URL.
