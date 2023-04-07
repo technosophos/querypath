@@ -364,7 +364,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
    * @return int
    *  The number of matches in the DOMQuery.
    */
-  public function count() {
+  public function count(): int {
     return $this->matches->count();
   }
 
@@ -3985,7 +3985,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
    * @return Iterable
    *  Returns an iterator.
    */
-  public function getIterator() {
+  public function getIterator(): \Traversable {
     $i = new QueryPathIterator($this->matches);
     $i->options = $this->options;
     return $i;
