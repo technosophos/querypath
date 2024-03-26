@@ -21,6 +21,7 @@ namespace QueryPath\CSS;
  *
  * @ingroup querypath_css
  */
+#[\AllowDynamicProperties]
 class Parser {
   protected $scanner = NULL;
   protected $buffer = '';
