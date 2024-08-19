@@ -58,7 +58,7 @@ class Selector implements EventHandler, \IteratorAggregate, \Countable {
     $this->selectors[$this->groupIndex][] = $this->currSelector;
   }
 
-  public function getIterator() {
+  public function getIterator(): \Traversable {
     return new \ArrayIterator($this->selectors);
   }
 
@@ -73,7 +73,7 @@ class Selector implements EventHandler, \IteratorAggregate, \Countable {
     return $this->selectors;
   }
 
-  public function count() {
+  public function count():int {
     return count($this->selectors);
   }
 
